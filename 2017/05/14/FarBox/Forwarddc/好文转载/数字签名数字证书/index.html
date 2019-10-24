@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="https://fonts.cat.net/css?family=Microsoft YaHei:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|Microsoft YaHei:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="通常来说，服务器可以接受任何客户端的请求而无需在意客户端是谁，而客户端则需要知道自己访问的服务器是谁。 因为二者之间的立场不同，在加密时就区分了公钥和私钥。 公钥和私钥都由服务器颁发，私钥由服务器自己保留，公钥颁发给要访问自己的客户端。 公钥的作用是加密客户端传给服务器的数据，服务器端用私钥解密。 服务器端用私钥给自己的数据加密，生成数字签名附带在数据后面，一起发给客户端。客户端根据公钥解密数字">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数字签名数字证书">
+<meta property="og:url" content="http:&#x2F;&#x2F;dcbupt.github.io&#x2F;2017&#x2F;05&#x2F;14&#x2F;FarBox&#x2F;Forwarddc&#x2F;%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD&#x2F;%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6&#x2F;index.html">
+<meta property="og:site_name" content="Forwarddc&#39;s Blog">
+<meta property="og:description" content="通常来说，服务器可以接受任何客户端的请求而无需在意客户端是谁，而客户端则需要知道自己访问的服务器是谁。 因为二者之间的立场不同，在加密时就区分了公钥和私钥。 公钥和私钥都由服务器颁发，私钥由服务器自己保留，公钥颁发给要访问自己的客户端。 公钥的作用是加密客户端传给服务器的数据，服务器端用私钥解密。 服务器端用私钥给自己的数据加密，生成数字签名附带在数据后面，一起发给客户端。客户端根据公钥解密数字">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http:&#x2F;&#x2F;dcbupt.github.io&#x2F;2017&#x2F;05&#x2F;14&#x2F;FarBox&#x2F;Forwarddc&#x2F;%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD&#x2F;%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6&#x2F;%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D&#x2F;bg2011080901.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;dcbupt.github.io&#x2F;2017&#x2F;05&#x2F;14&#x2F;FarBox&#x2F;Forwarddc&#x2F;%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD&#x2F;%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6&#x2F;%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D&#x2F;bg2011080902.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;dcbupt.github.io&#x2F;2017&#x2F;05&#x2F;14&#x2F;FarBox&#x2F;Forwarddc&#x2F;%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD&#x2F;%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6&#x2F;%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D&#x2F;bg2011080903.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;dcbupt.github.io&#x2F;2017&#x2F;05&#x2F;14&#x2F;FarBox&#x2F;Forwarddc&#x2F;%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD&#x2F;%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6&#x2F;%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D&#x2F;bg2011080904.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;dcbupt.github.io&#x2F;2017&#x2F;05&#x2F;14&#x2F;FarBox&#x2F;Forwarddc&#x2F;%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD&#x2F;%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6&#x2F;%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D&#x2F;bg2011080905.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;dcbupt.github.io&#x2F;2017&#x2F;05&#x2F;14&#x2F;FarBox&#x2F;Forwarddc&#x2F;%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD&#x2F;%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6&#x2F;%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D&#x2F;bg2011080906.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;dcbupt.github.io&#x2F;2017&#x2F;05&#x2F;14&#x2F;FarBox&#x2F;Forwarddc&#x2F;%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD&#x2F;%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6&#x2F;%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D&#x2F;bg2011080907.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;dcbupt.github.io&#x2F;2017&#x2F;05&#x2F;14&#x2F;FarBox&#x2F;Forwarddc&#x2F;%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD&#x2F;%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6&#x2F;%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D&#x2F;bg2011080908.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;dcbupt.github.io&#x2F;2017&#x2F;05&#x2F;14&#x2F;FarBox&#x2F;Forwarddc&#x2F;%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD&#x2F;%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6&#x2F;%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D&#x2F;bg2011080909.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;dcbupt.github.io&#x2F;2017&#x2F;05&#x2F;14&#x2F;FarBox&#x2F;Forwarddc&#x2F;%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD&#x2F;%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6&#x2F;%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D&#x2F;bg2011080910.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;dcbupt.github.io&#x2F;2017&#x2F;05&#x2F;14&#x2F;FarBox&#x2F;Forwarddc&#x2F;%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD&#x2F;%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6&#x2F;%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D&#x2F;bg2011080911.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;dcbupt.github.io&#x2F;2017&#x2F;05&#x2F;14&#x2F;FarBox&#x2F;Forwarddc&#x2F;%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD&#x2F;%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6&#x2F;%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D&#x2F;bg2011080912.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;dcbupt.github.io&#x2F;2017&#x2F;05&#x2F;14&#x2F;FarBox&#x2F;Forwarddc&#x2F;%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD&#x2F;%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6&#x2F;%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D&#x2F;bg2011080913.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;dcbupt.github.io&#x2F;2017&#x2F;05&#x2F;14&#x2F;FarBox&#x2F;Forwarddc&#x2F;%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD&#x2F;%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6&#x2F;%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D&#x2F;bg2011080914.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;dcbupt.github.io&#x2F;2017&#x2F;05&#x2F;14&#x2F;FarBox&#x2F;Forwarddc&#x2F;%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD&#x2F;%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6&#x2F;%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D&#x2F;bg2011080915.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;dcbupt.github.io&#x2F;2017&#x2F;05&#x2F;14&#x2F;FarBox&#x2F;Forwarddc&#x2F;%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD&#x2F;%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6&#x2F;%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D&#x2F;bg2011080916.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;dcbupt.github.io&#x2F;2017&#x2F;05&#x2F;14&#x2F;FarBox&#x2F;Forwarddc&#x2F;%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD&#x2F;%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6&#x2F;%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D&#x2F;bg2011080917.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;dcbupt.github.io&#x2F;2017&#x2F;05&#x2F;14&#x2F;FarBox&#x2F;Forwarddc&#x2F;%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD&#x2F;%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6&#x2F;%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D&#x2F;bg2011080918.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;dcbupt.github.io&#x2F;2017&#x2F;05&#x2F;14&#x2F;FarBox&#x2F;Forwarddc&#x2F;%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD&#x2F;%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6&#x2F;%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D&#x2F;bg2011080919.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;dcbupt.github.io&#x2F;2017&#x2F;05&#x2F;14&#x2F;FarBox&#x2F;Forwarddc&#x2F;%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD&#x2F;%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6&#x2F;%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D&#x2F;bg2011080920.png">
+<meta property="og:updated_time" content="2019-10-21T18:19:25.616Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;dcbupt.github.io&#x2F;2017&#x2F;05&#x2F;14&#x2F;FarBox&#x2F;Forwarddc&#x2F;%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD&#x2F;%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6&#x2F;%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D&#x2F;bg2011080901.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://dcbupt.github.io/2017/05/14/FarBox/Forwarddc/好文转载/数字签名数字证书/"/>
+
+
+
+
+
+  <title>数字签名数字证书 | Forwarddc's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Forwarddc's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">西米大人的部落格</p>       
+        <blockquote class="blockquote-center">优秀的人，不是不合群，而是他们合群的人里面没有你</blockquote>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://dcbupt.github.io/2017/05/14/FarBox/Forwarddc/%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD/%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Forwarddc">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Forwarddc's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">数字签名数字证书</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-14T15:16:00+08:00">
+                2017-05-14
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2019-10-22T02:19:25+08:00">
+                2019-10-22
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD/" itemprop="url" rel="index">
+                    <span itemprop="name">好文转载</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/05/14/FarBox/Forwarddc/%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD/%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6/" class="leancloud_visitors" data-flag-title="数字签名数字证书">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+              <div class="post-description">
+                  <blockquote class="blockquote-center"> 通常来说，服务器可以接受任何客户端的请求而无需在意客户端是谁，而客户端则需要知道自己访问的服务器是谁。<br> 因为二者之间的立场不同，在加密时就区分了公钥和私钥。<BR> 公钥和私钥都由服务器颁发，私钥由服务器自己保留，公钥颁发给要访问自己的客户端。<BR> 公钥的作用是加密客户端传给服务器的数据，服务器端用私钥解密。<BR> 服务器端用私钥给自己的数据加密，生成数字签名附带在数据后面，一起发给客户端。客户端根据公钥解密数字签名后，将解密的数据与收到数据对比，防止数据被修改。 <BR> 更安全的做法是:服务器端申请第三方CA机构用它们的私钥加密服务器颁发给客户端的公钥生成数字证书，附带在数字签名后面发给客户端。客户端用CA的公钥解密数字证书得到公钥，再用该公钥去解密数字签名。</blockquote>
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="数字签名"><a href="#数字签名" class="headerlink" title="数字签名"></a>数字签名</h1><p>1.<br><img src="%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D/bg2011080901.png" alt="logo"><br>鲍勃有两把钥匙，一把是公钥，另一把是私钥。</p>
+<p>2.<br><img src="%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D/bg2011080902.png" alt="logo"><br>鲍勃把公钥送给他的朋友们—-帕蒂、道格、苏珊—-每人一把。</p>
+<p>3.<br><img src="%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D/bg2011080903.png" alt="logo"><br>苏珊要给鲍勃写一封保密的信。她写完后用鲍勃的公钥加密，就可以达到保密的效果。</p>
+<p>4.<br><img src="%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D/bg2011080904.png" alt="logo"><br>鲍勃收信后，用私钥解密，就看到了信件内容。这里要强调的是，只要鲍勃的私钥不泄露，这封信就是安全的，即使落在别人手里，也无法解密。</p>
+<p>5.<br><img src="%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D/bg2011080905.png" alt="logo"><br>鲍勃给苏珊回信，决定采用”数字签名”。他写完后先用Hash函数，生成信件的摘要（digest）。</p>
+<p>6.<br><img src="%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D/bg2011080906.png" alt="logo"><br>然后，鲍勃使用私钥，对这个摘要加密，生成”数字签名”（signature）。</p>
+<p>7.<br><img src="%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D/bg2011080907.png" alt="logo"><br>鲍勃将这个签名，附在信件下面，一起发给苏珊。</p>
+<p>8.<br><img src="%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D/bg2011080908.png" alt="logo"><br>苏珊收信后，取下数字签名，用鲍勃的公钥解密，得到信件的摘要。由此证明，这封信确实是鲍勃发出的。</p>
+<p>9.<br><img src="%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D/bg2011080909.png" alt="logo"><br>苏珊再对信件本身使用Hash函数，将得到的结果，与上一步得到的摘要进行对比。如果两者一致，就证明这封信未被修改过。</p>
+<p>10.<br><img src="%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D/bg2011080910.png" alt="logo"><br>复杂的情况出现了。道格想欺骗苏珊，他偷偷使用了苏珊的电脑，用自己的公钥换走了鲍勃的公钥。此时，苏珊实际拥有的是道格的公钥，但是还以为这是鲍勃的公钥。因此，道格就可以冒充鲍勃，用自己的私钥做成”数字签名”，写信给苏珊，让苏珊用假的鲍勃公钥进行解密。</p>
+<h1 id="数字证书"><a href="#数字证书" class="headerlink" title="数字证书"></a>数字证书</h1><p>11.<br><img src="%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D/bg2011080911.png" alt="logo"><br>后来，苏珊感觉不对劲，发现自己无法确定公钥是否真的属于鲍勃。她想到了一个办法，要求鲍勃去找”证书中心”（certificate authority，简称CA），为公钥做认证。证书中心用自己的私钥，对鲍勃的公钥和一些相关信息一起加密，生成”数字证书”（Digital Certificate）</p>
+<p>12.<br><img src="%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D/bg2011080912.png" alt="logo"><br>鲍勃拿到数字证书以后，就可以放心了。以后再给苏珊写信，只要在签名的同时，再附上数字证书就行了。</p>
+<p>13.<br><img src="%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D/bg2011080913.png" alt="logo"><br>苏珊收信后，用CA的公钥解开数字证书，就可以拿到鲍勃真实的公钥了，然后就能证明”数字签名”是否真的是鲍勃签的。</p>
+<p>14.<br><img src="%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D/bg2011080914.jpg" alt="logo"><br>下面，我们看一个应用”数字证书”的实例：https协议。这个协议主要用于网页加密。</p>
+<p>15.<br><img src="%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D/bg2011080915.png" alt="logo"><br>首先，客户端向服务器发出加密请求。</p>
+<p>16.<br><img src="%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D/bg2011080916.png" alt="logo"><br>服务器用自己的私钥加密网页以后，连同本身的数字证书，一起发送给客户端。  </p>
+<p>17.<br><img src="%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D/bg2011080917.png" alt="logo"><br>客户端（浏览器）的”证书管理器”，有”受信任的根证书颁发机构”列表。客户端会根据这张列表，查看解开数字证书的公钥是否在列表之内。</p>
+<p>18.<br><img src="%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D/bg2011080918.png" alt="logo"><br>如果数字证书记载的网址，与你正在浏览的网址不一致，就说明这张证书可能被冒用，浏览器会发出警告。</p>
+<p>19.<br><img src="%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D/bg2011080919.jpg" alt="logo"><br>如果这张数字证书不是由受信任的机构颁发的，浏览器会发出另一种警告。</p>
+<p>20.<br><img src="%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D/bg2011080920.png" alt="logo"><br>如果数字证书是可靠的，客户端就可以使用证书中的服务器公钥，对信息进行加密，然后与服务器交换加密信息。</p>
+
+        <blockquote class="blockquote-center">完</blockquote>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/13/FarBox/Forwarddc/%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD/Hive/" rel="next" title="Hive">
+                <i class="fa fa-chevron-left"></i> Hive
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/05/14/FarBox/Forwarddc/%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD/ssh%E5%8E%9F%E7%90%86%E4%B8%8E%E8%BF%90%E7%94%A8/" rel="prev" title="ssh原理与运用">
+                ssh原理与运用 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Forwarddc</p>
+              <p class="site-description motion-element" itemprop="description">description here</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">126</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#数字签名"><span class="nav-number">1.</span> <span class="nav-text">数字签名</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数字证书"><span class="nav-number">2.</span> <span class="nav-text">数字证书</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Forwarddc</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("OBdFsOOtfIDcNnWdzkGbICmj-gzGzoHsz", "89LmL4tP7hkyChAmEleq2MdO");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/love.js"></script>
+
+<!-- 背景动画 -->
+<script type="text/javascript" src="/js/src/particle.js"></script>
+
+</body>
+</html>

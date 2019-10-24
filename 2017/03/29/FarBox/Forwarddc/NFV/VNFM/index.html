@@ -1,0 +1,1481 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="https://fonts.cat.net/css?family=Microsoft YaHei:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|Microsoft YaHei:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="G-VNFM的实现">
+<meta property="og:type" content="article">
+<meta property="og:title" content="VNFM">
+<meta property="og:url" content="http:&#x2F;&#x2F;dcbupt.github.io&#x2F;2017&#x2F;03&#x2F;29&#x2F;FarBox&#x2F;Forwarddc&#x2F;NFV&#x2F;VNFM&#x2F;index.html">
+<meta property="og:site_name" content="Forwarddc&#39;s Blog">
+<meta property="og:description" content="G-VNFM的实现">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http:&#x2F;&#x2F;openbaton.github.io&#x2F;documentation&#x2F;images&#x2F;generic-vnfm-vnfm-or-communication.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;openbaton.github.io&#x2F;documentation&#x2F;images&#x2F;generic-vnfm-vnfm-ems-communication.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;openbaton.github.io&#x2F;documentation&#x2F;images&#x2F;generic-vnfm-or-vnfm-seq-dg.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;openbaton.github.io&#x2F;documentation&#x2F;images&#x2F;generic-vnfm-ns-with-dependency.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;openbaton.github.io&#x2F;documentation&#x2F;images&#x2F;nfvo-rest-vnfm-seq-dg.png">
+<meta property="og:updated_time" content="2017-06-21T15:56:10.804Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;openbaton.github.io&#x2F;documentation&#x2F;images&#x2F;generic-vnfm-vnfm-or-communication.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://dcbupt.github.io/2017/03/29/FarBox/Forwarddc/NFV/VNFM/"/>
+
+
+
+
+
+  <title>VNFM | Forwarddc's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Forwarddc's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">西米大人的部落格</p>       
+        <blockquote class="blockquote-center">优秀的人，不是不合群，而是他们合群的人里面没有你</blockquote>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://dcbupt.github.io/2017/03/29/FarBox/Forwarddc/NFV/VNFM/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Forwarddc">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Forwarddc's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">VNFM</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-29T22:27:00+08:00">
+                2017-03-29
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2017-06-21T23:56:10+08:00">
+                2017-06-21
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/NFV/" itemprop="url" rel="index">
+                    <span itemprop="name">NFV</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/03/29/FarBox/Forwarddc/NFV/VNFM/" class="leancloud_visitors" data-flag-title="VNFM">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+              <div class="post-description">
+                  <blockquote class="blockquote-center">G-VNFM的实现</blockquote>
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>OBv3为VNFM提供了三种选择：</p>
+<ul>
+<li>使用G-VNFM或者JujuVNFM作为项目一部分<br>这种方式能让你快速部署，将注意力集中在VNF包的实现上。两种VNFM都支持基于CSAR的VNF包</li>
+<li>使用JAVA SDK或者PYTHON SDK构建VNFM<br>OB提供了JAVA SDK称作vnfm-sdk，这能帮助你为你自己的VNF简单创建一个VNFM。关于NFVO与VNFM之间的通信，可以使用vnfm-sdk-amqp或者是vnfm-sdk-rest</li>
+<li>使用你自己的VNFM来连接NFVO（通过REST APIS或AMQP）<br>这种方式允许你整合你的VNFM和VNF到OB项目。这种方式下，O与M的通信需要通过REST接口。</li>
+</ul>
+<hr>
+<h1 id="G-VNFM"><a href="#G-VNFM" class="headerlink" title="G-VNFM"></a>G-VNFM</h1><blockquote>
+<p>G-VNFM是根据ETST MANO规范的一种实现。</p>
+</blockquote>
+<p>G-VNFM扮演O和VNFs中间件，特别是为了与装了VNF软件的虚机之间的交互。</p>
+<p>为了完成VNF的生命周期管理，其与EMS交互，EMS扮演了虚机代理的角色，执行VNF包中的脚本或者执行通过VNFD指定链接的脚本。</p>
+<p>可以认为，M对VNFs的生命周期管理，在VNF层面是通过运行在VM的EMS执行脚本完成的。</p>
+<p>G-VNFM可以管理一个VNF实例、多个同类型或不同类型VNF实例</p>
+<p>O-M-EMS之间的通信是基于RABBITMQ AMQP协议。</p>
+<p>NFVO与G-VNFM的通信：<br><img src="http://openbaton.github.io/documentation/images/generic-vnfm-vnfm-or-communication.png" alt=""></p>
+<p>G-VNFM与EMS的通信：<br><img src="http://openbaton.github.io/documentation/images/generic-vnfm-vnfm-ems-communication.png" alt=""></p>
+<p>你可以看到，G-VNFM发送脚本给EMS（EMS运行在虚机中）。然后EMS在VNFC（虚机）中执行脚本（EMS会使用root权限执行脚本），时序图如下：<br><img src="http://openbaton.github.io/documentation/images/generic-vnfm-or-vnfm-seq-dg.png" alt=""></p>
+<p>G-VNFM对各种类型的VNF的管理包括：</p>
+<ul>
+<li>虚机的部署</li>
+<li>脚本的执行</li>
+<li>虚机的终止</li>
+</ul>
+<h2 id="虚机的部署"><a href="#虚机的部署" class="headerlink" title="虚机的部署"></a>虚机的部署</h2><p>基于ETSI MANO B.3，VNF的实例化流程可以通过两种方式实现：<br>1、由NFVO完成资源分配<br>2、由VNFM完成资源分配</p>
+<p>G-VNFM采用第一种方式，向NFVO发送两条消息：<br>1、授权资源消息：<br>检测是否有足够的硬件资源部署VNF。如果收到了NFVO返回的此消息，说明资源充足，于是发送资源分配消息<br>2、分配资源消息：<br>此条消息要求NFVO去创建部署VNF需要的虚机</p>
+<p>虚机创建之后，VNFRecord就被值填充了，例如ips，可以直接通过<code>VirtualNetworkFunctionRecord→VirtualDeploymentUnit→VNFCInstance</code>对象找到</p>
+<h2 id="脚本执行"><a href="#脚本执行" class="headerlink" title="脚本执行"></a>脚本执行</h2><p>每一个VNF生命周期管理接口的操作中，VNFM发送脚本给EMS，运行在虚机本地<br>注：脚本来自VNF包，你需要创建</p>
+<p>脚本的顺序在<code>NetworkServiceDescriptor→VirtualNetworkFunctionDescriptor→LifecycleEvents.</code>中定义</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">&quot;lifecycle_event&quot;:[</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;event&quot;:&quot;INSTANTIATE&quot;,</span><br><span class="line">            &quot;lifecycle_events&quot;:[</span><br><span class="line">                &quot;pre-install.sh&quot;,</span><br><span class="line">                &quot;install.sh&quot;</span><br><span class="line">            ]</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;event&quot;:&quot;CONFIGURE&quot;,</span><br><span class="line">            &quot;lifecycle_events&quot;:[</span><br><span class="line">                &quot;server_configure.sh&quot;</span><br><span class="line">            ]</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;event&quot;:&quot;START&quot;,</span><br><span class="line">            &quot;lifecycle_events&quot;:[</span><br><span class="line">                 &quot;start.sh&quot;</span><br><span class="line">            ]</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;event&quot;:&quot;STOP&quot;,</span><br><span class="line">            &quot;lifecycle_events&quot;:[</span><br><span class="line">                 &quot;stop.sh&quot;</span><br><span class="line">            ]</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;event&quot;:&quot;TERMINATE&quot;,</span><br><span class="line">            &quot;lifecycle_events&quot;:[</span><br><span class="line">                 &quot;terminate.sh&quot;</span><br><span class="line">            ]</span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，脚本与VNF生命周期事件是对应的，事件与脚本执行的关系如下：</p>
+<ul>
+<li>INSTANTIATE<br>安装VNF阶段执行脚本</li>
+<li>CONFIGURE<br>安装完后执行脚本（如果VNF依赖其他VNFs，需要执行脚本得到其他VNFs提供的参数，例如ip）</li>
+<li>START<br>在INSTANTIATE和CONFIGURE（如果存在）事件后执行脚本</li>
+<li>STOP<br>关闭VNF阶段执行</li>
+<li>TERMINATE<br>终止VNF阶段执行</li>
+<li>SCALE_IN<br>当虚机VNFC扩缩时执行脚本</li>
+</ul>
+<p>脚本可获取的参数定义在了VNFD里，分为两类：</p>
+<ul>
+<li>配置参数</li>
+<li>脚本自动获取的参数（私有IP、浮动IP、主机名）</li>
+</ul>
+<p>在INSTANTIATE事件的脚本中，会将这两类参数设为环境变量</p>
+<p>在CONFIGURE脚本中，INSTANTIATE事件的参数依然可得，但还包括来自其他VNF源的环境变量，这些参数定义在其他VNF的VNFD的provide field里。而该VNF需要的参数定义在自己的VNFD的require field里。获取外部VNF变量后，这些环境变量名变为$type_of_vnf_source_name_of_parameter<br>CONFIGURE事件里执行的脚本需要用“VNF名_脚本名”的方式命名</p>
+<h2 id="虚机终止"><a href="#虚机终止" class="headerlink" title="虚机终止"></a>虚机终止</h2><p>STOP事件意味着仅仅是停止VNF服务，之后还会重启它。</p>
+<p>TERMINATE事件从入网点删除虚拟资源（虚机），由NFVO发起和执行。在终止之前会运行特定脚本。</p>
+<h2 id="依赖和脚本的例子"><a href="#依赖和脚本的例子" class="headerlink" title="依赖和脚本的例子"></a>依赖和脚本的例子</h2><p>让我们看一个简单的包含两个VNF的例子：VNF-SERVER和VNF-DATABASE</p>
+<p>VNF-SERVER需要VNF-DATABASE的IP来连接，下图展示了SOURCE（VNF-DATABASE）、TARGET（VNF-SERVER）和DEPENDENCY（IP），这样的VNFs连接在一个虚拟网络中，称为“vnet”<br><img src="http://openbaton.github.io/documentation/images/generic-vnfm-ns-with-dependency.png" alt=""></p>
+<h3 id="INSTANTIATE脚本"><a href="#INSTANTIATE脚本" class="headerlink" title="INSTANTIATE脚本"></a>INSTANTIATE脚本</h3><p>我们需要instantiate-vnf-server.sh和instantiate-vnf-database.sh脚本来启动VNF，instantiate-vnf-server脚本的样例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/bash</span><br><span class="line"></span><br><span class="line">echo &quot;INSTANTIATIATION of the VNF server&quot;</span><br><span class="line">echo &quot;The following parameters are available:&quot;</span><br><span class="line"></span><br><span class="line">echo &quot;Out-of-the-box parameters:&quot;</span><br><span class="line">echo &quot;Hostname: $&#123;hostname&#125;&quot;</span><br><span class="line">echo &quot;Private IP: $&#123;vnet&#125;&quot;</span><br><span class="line">echo &quot;Floating IP (if requested otherwise it does not exist): $&#123;vnet_floatingIp&#125;&quot;</span><br><span class="line"></span><br><span class="line">echo &quot;Configuration parameters:&quot;</span><br><span class="line">echo &quot;The answer to everything is.. $&#123;ANSWER_TO_EVERYTHING&#125;&quot;</span><br><span class="line"></span><br><span class="line"># ... Add the code to start the vnf_server ...</span><br></pre></td></tr></table></figure>
+
+<h3 id="CONFIGURE脚本"><a href="#CONFIGURE脚本" class="headerlink" title="CONFIGURE脚本"></a>CONFIGURE脚本</h3><p>在INSTANTIATE事件后，我们需要执行CONFIGURE事件，执行脚本database_connectToDb.sh</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/bash</span><br><span class="line"></span><br><span class="line">echo &quot;This is the ip of the vnf-database: $&#123;database_vnet&#125;&quot;</span><br><span class="line">echo &quot;This is the floating ip of the vnf-database: $&#123;database_vnet_floatingIp&#125;&quot;</span><br><span class="line">echo &quot;This is the hostname of the vnf-database: $&#123;database_hostname&#125;&quot;</span><br><span class="line"></span><br><span class="line"># ... Add the code to connect to the vnf-database with the ip: $&#123;database_vnet&#125; ...</span><br></pre></td></tr></table></figure>
+
+<p>注意，脚本名和脚本中定义的参数名，因为需要vnf-database的参数信息，所以脚本名要体现该vnf名，参数也要以该vnf名开头<br>所有的脚本都要在VNF包里或在一个指定仓库中</p>
+<p>为了部署VNFs，需要创建两个VNFD：vnf-database-descriptor.json和vnf-server-descriptor.json</p>
+<p>vnf-database-descriptor.json</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;name&quot;:&quot;vnf-database&quot;,</span><br><span class="line">    &quot;type&quot;:&quot;database&quot;,</span><br><span class="line">    &quot;endpoint&quot;:&quot;generic&quot;,</span><br><span class="line">    ...</span><br><span class="line">    &quot;lifecycle_event&quot;:[</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;event&quot;:&quot;INSTANTIATE&quot;,</span><br><span class="line">            &quot;lifecycle_events&quot;:[</span><br><span class="line">                &quot;instantiate-vnf-database.sh&quot;</span><br><span class="line">            ]</span><br><span class="line">        &#125;</span><br><span class="line">    ],</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>vnf-server-descriptor.json</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;name&quot;:&quot;vnf-server&quot;,</span><br><span class="line">    &quot;type&quot;:&quot;server&quot;,</span><br><span class="line">    &quot;endpoint&quot;:&quot;generic&quot;,</span><br><span class="line">    ...</span><br><span class="line">    &quot;configurations&quot;:&#123;</span><br><span class="line">            &quot;name&quot;:&quot;config_name&quot;,</span><br><span class="line">            &quot;configurationParameters&quot;:[</span><br><span class="line">            &#123;</span><br><span class="line">                &quot;confKey&quot;:&quot;ANSWER_TO_EVERYTHING&quot;,</span><br><span class="line">                &quot;value&quot;:&quot;42&quot;</span><br><span class="line">            &#125;</span><br><span class="line">            ]</span><br><span class="line">    &#125;,</span><br><span class="line">    ...</span><br><span class="line">    &quot;lifecycle_event&quot;:[</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;event&quot;:&quot;INSTANTIATE&quot;,</span><br><span class="line">            &quot;lifecycle_events&quot;:[</span><br><span class="line">                &quot;instantiate-vnf-server.sh&quot;</span><br><span class="line">            ]</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;event&quot;:&quot;CONFIGURE&quot;,</span><br><span class="line">            &quot;lifecycle_events&quot;:[</span><br><span class="line">                &quot;database_connectToDb.sh&quot;</span><br><span class="line">            ]</span><br><span class="line">        &#125;</span><br><span class="line">    ],</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注：VNFD中endpoint字段是generic，表示使用G-VNFM</p>
+<p>NSD中要包含这两个VNFD：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;name&quot;:&quot;simple-nsd&quot;,</span><br><span class="line">    &quot;vnfd&quot;:[</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;id&quot;:&quot;29d918b9-6245-4dc4-abc6-b7dd6e84f2c1&quot;</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;id&quot;:&quot;87820607-4048-4fad-b02b-dbcab8bb5c1c&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    ],</span><br><span class="line">    &quot;vld&quot;:[</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;name&quot;:&quot;vnet&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    ],</span><br><span class="line">    &quot;vnf_dependency&quot;:[</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;source&quot; : &#123;</span><br><span class="line">                &quot;name&quot;: &quot;vnf-database&quot;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;target&quot;:&#123;</span><br><span class="line">                &quot;name&quot;: &quot;vnf-server&quot;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;parameters&quot;:[</span><br><span class="line">                &quot;vnet&quot;</span><br><span class="line">            ]</span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="DUMMY-VNFM："><a href="#DUMMY-VNFM：" class="headerlink" title="DUMMY VNFM："></a>DUMMY VNFM：</h1><p>仿制的VNFM全称是：DUMMY VNF MANAGER AMQP，其模仿真正的VNFM的行为，使用AMQP与NFVO通信。</p>
+<p>如果你使用DUMMY VNFM部署一个网络服务，它不会创建任何的资源。当NFVO向DUMMY VNFM发送命令时，它会<br>给出回应，就好像它做了，尽管它什么都没做。通过这种方式可以测试OPENBATON而不用部署任何东西。</p>
+<p>为了执行DUMMY VNFM，你需要运行并配置NFVO。</p>
+<h2 id="源码安装DUMMY-VNFManager-AMQP"><a href="#源码安装DUMMY-VNFManager-AMQP" class="headerlink" title="源码安装DUMMY VNFManager AMQP"></a>源码安装DUMMY VNFManager AMQP</h2><p>git clone项目到/opt/openbaton</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mkdir /opt/openbaton</span><br><span class="line">git clone https://github.com/openbaton/dummy-vnfm-amqp.git</span><br></pre></td></tr></table></figure>
+
+<p>执行编译<br><code>cd /opt/openbaton/dummy-vnfm-amqp; ./dummy-vnfm.sh compile</code></p>
+<h2 id="使用DUMMY-VNFManager-AMQP"><a href="#使用DUMMY-VNFManager-AMQP" class="headerlink" title="使用DUMMY VNFManager AMQP"></a>使用DUMMY VNFManager AMQP</h2><p>运行DUMMY VNFM<br><code>cd /opt/openbaton/dummy-vnfm-amqp;./dummy-vnfm.sh start</code></p>
+<p>这样做会创建一个新的screen窗口，你可以使用<code>screen -x openbaton</code>进入</p>
+<p>如果你想要运行DUMMY VNFM在其他主机上而不是运行着RABBITMQ的主机，你首先需要进行配置。</p>
+<p>你可以通过项目资源路径的<code>application.properties</code>去配置，或者创建<code>/etc/openbaton/dummy-vnfm-amqp.properties</code> 并拷贝application.properties的内容进来后进行配置</p>
+<p>配置的具体内容为：改变属性<code>spring.rabbitmq.host</code>和属性<code>spring.rabbitmq.port</code>的值，指定RABBITMQ运行的主机和端口。</p>
+<p>如果你创建了<code>/etc/openbaton/dummy-vnfm-amqp.properties</code>，DUMMY VNFM只会使用此配置文件，所以需要确保<code>application.properties</code>文件的所有属性都在这个文件里</p>
+<p>使用DUMMY VNFM部署NS，你需要在NFVO中存储一个TEST类型的VIM实例以及一个VNFD文件来描述NS，并且VNFD必须定义使用TEST类型的VIM实例的端点。</p>
+<p>如何扩展DUMMY VNFM AMQP：</p>
+<p>如果你想扩展DUMMY VNFM的功能，你可以修改<code>DummyAMQPVNFManager.java</code>，这个类的所有方法都会在部署NS时被VNFM执行</p>
+<hr>
+<h1 id="如何开发VNFM"><a href="#如何开发VNFM" class="headerlink" title="如何开发VNFM"></a>如何开发VNFM</h1><p>下面介绍如何使用vnfm-sdk开发VNFM。vnfm-sdk包含了你开发VNFM所需的一切</p>
+<p>vnfm-sdk：</p>
+<ul>
+<li>提供多种vnfm-sdks选择</li>
+<li>与NFVO共享所有实体的目录</li>
+<li>VNFMHelper</li>
+</ul>
+<p>先决条件：<br>JDK 7 &amp;&amp; Gradle 1.12及以上</p>
+<p>实现一个基本的VNFM会使用特定的vnfm-sdk称为vnfm-sdk-amqp</p>
+<h2 id="Preparations"><a href="#Preparations" class="headerlink" title="Preparations"></a>Preparations</h2><p>创建项目结构、配置必要的文件。可以用IDE或者CLI</p>
+<p>等你配置好开发环境后，你可以通过使用不同的通信models、目录和多个helpers来实现你自己的VNFM</p>
+<p>开发工具使用idea，创建gradle项目，选择idea自带的gradle wrapper</p>
+<p>创建目录结构src/main/java，创建包：org.openbaton.vnfm，创建主类MyVNFM</p>
+<p>创建配置文件（运行时需要的参数）：创建目录resources（与java同目录），创建application.properties和conf.properties</p>
+<p>在build.gradle里声明主类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">bootRepackage &#123;</span><br><span class="line">    mainClass = &apos;org.openbaton.vnfm.MyVNFM&apos;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>配置文件：<br>applications.properties包含日志等级参数，配置SPRING框架很有用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line">logging.level.org.springframework=INFO</span><br><span class="line">logging.level.org.hibernate=INFO</span><br><span class="line">logging.level.org.apache=INFO</span><br><span class="line">logging.level.org.jclouds=WARN</span><br><span class="line"># logging.level.org.springframework.security=WARN</span><br><span class="line">logging.level.org.springframework.web = WARN</span><br><span class="line"></span><br><span class="line"># Level for loggers on classes inside the root package &quot;org.project.openbaton&quot; (and its</span><br><span class="line"># sub-packages)</span><br><span class="line">logging.level.org.openbaton=INFO</span><br><span class="line"></span><br><span class="line"># Direct log to a log file</span><br><span class="line">logging.file=/var/log/openbaton.log</span><br><span class="line"></span><br><span class="line">vnfm.rabbitmq.brokerIp=localhost</span><br><span class="line">vnfm.rabbitmq.management.port=15672</span><br><span class="line">vnfm.rabbitmq.autodelete=true</span><br><span class="line">vnfm.rabbitmq.durable=false</span><br><span class="line">vnfm.rabbitmq.exclusive=false</span><br><span class="line">vnfm.rabbitmq.minConcurrency=5</span><br><span class="line">vnfm.rabbitmq.maxConcurrency=15</span><br><span class="line"></span><br><span class="line">#########################################</span><br><span class="line">############## RabbitMQ #################</span><br><span class="line">#########################################</span><br><span class="line"></span><br><span class="line"># Comma-separated list of addresses to which the client should connect to.</span><br><span class="line"># spring.rabbitmq.addresses= 192.168.145.54</span><br><span class="line"># Create an AmqpAdmin bean.</span><br><span class="line"># spring.rabbitmq.dynamic=true</span><br><span class="line"># RabbitMQ host.</span><br><span class="line">spring.rabbitmq.host=$&#123;vnfm.rabbitmq.brokerIp&#125;</span><br><span class="line"># Acknowledge mode of container.</span><br><span class="line"># spring.rabbitmq.listener.acknowledge-mode=</span><br><span class="line"># Start the container automatically on startup.</span><br><span class="line"># spring.rabbitmq.listener.auto-startup=true</span><br><span class="line"># Minimum number of consumers.</span><br><span class="line">spring.rabbitmq.listener.concurrency=5</span><br><span class="line"># Maximum number of consumers.</span><br><span class="line">spring.rabbitmq.listener.max-concurrency=30</span><br><span class="line"># Number of messages to be handled in a single request. It should be greater than or equal to the transaction size (if used).</span><br><span class="line"># spring.rabbitmq.listener.prefetch=</span><br><span class="line"># Number of messages to be processed in a transaction. For best results it should be less than or equal to the prefetch count.</span><br><span class="line"># spring.rabbitmq.listener.transaction-size=</span><br><span class="line"># Login user to authenticate to the broker.</span><br><span class="line">spring.rabbitmq.username=admin</span><br><span class="line"># Login to authenticate against the broker.</span><br><span class="line">spring.rabbitmq.password=openbaton</span><br><span class="line"># RabbitMQ port.</span><br><span class="line">spring.rabbitmq.port=5672</span><br><span class="line"># Requested heartbeat timeout, in seconds; zero for none.</span><br><span class="line"># spring.rabbitmq.requested-heartbeat=</span><br><span class="line"># Enable SSL support.</span><br><span class="line"># spring.rabbitmq.ssl.enabled=false</span><br><span class="line"># Path to the key store that holds the SSL certificate.</span><br><span class="line"># spring.rabbitmq.ssl.key-store=</span><br><span class="line"># Password used to access the key store.</span><br><span class="line"># spring.rabbitmq.ssl.key-store-password=</span><br><span class="line"># Trust store that holds SSL certificates.</span><br><span class="line"># spring.rabbitmq.ssl.trust-store=</span><br><span class="line"># Password used to access the trust store.</span><br><span class="line"># spring.rabbitmq.ssl.trust-store-password=</span><br><span class="line"># Virtual host to use when connecting to the broker.</span><br><span class="line"># spring.rabbitmq.virtual-host=</span><br></pre></td></tr></table></figure>
+
+<p>如果你的VNFM与RABBITMQ BROKER不是跑在一台机器上，<code>vnfm.rabbit.brokerIp</code>需要改成RABBITMQ所在的IP</p>
+<p>conf.properties：定义你的VNFM的type和endpoint，用于到NFVO去注册。你还可以自定义运行时参数。还可以定义vim drivers的目录</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"># The type of VNF you are going to handle</span><br><span class="line">type=my-vnfm</span><br><span class="line"># The endpoint used for requesting this VNFManager</span><br><span class="line">endpoint=my-vnfm-endpoint</span><br><span class="line"># true if the VNFM will ALLOCATE_RESOURCES, false if the NFVO will do</span><br><span class="line">allocate = false</span><br><span class="line"># Just a useless description</span><br><span class="line">description=The VNFM able to handle all the VNFs that follow specific conventions, see http://openbaton.github.io/</span><br><span class="line"># true if you want your vnfm to be enabled</span><br><span class="line">enabled = true</span><br><span class="line"># type of the endpoint, either RABBIT or REST, depending on the sdk chosen</span><br><span class="line">endpoint-type = RABBIT</span><br><span class="line">script-max-time = 300000</span><br><span class="line"># The number of concurrent Receiver (only for vnfm-sdk-amqp)</span><br><span class="line">concurrency = 15</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#### Additionally</span><br><span class="line">vim-plugin-dir = ./plugins</span><br></pre></td></tr></table></figure>
+
+<h2 id="选择VNFM-SDK"><a href="#选择VNFM-SDK" class="headerlink" title="选择VNFM-SDK"></a>选择VNFM-SDK</h2><p>在开始开发前，你需要选择NFVO和VNFM通信的方式。你可以选择VNFM-SDK-AMQP，使用RABBITMQ，或者VNFM-SDK-REST，使用REST接口。但无论你选什么，不会影响你的实现，因为通信是自动在后台完成的。但请注意，这两种通信方式都依赖SPRING BOOT。如果你想避免这个依赖，你可以使用简单的vnfm-sdk artifact。这种方式你需要负责NFVO和VNFM的通信。</p>
+<p>一旦你import了其中一种vnfm-sdk，你就可以获取实现VNFM需要的所有model类和vnfm-sdk类</p>
+<p>以import vnfm-sdk-amqp为例：<br>build.gradle加入：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">dependencies &#123;</span><br><span class="line">    compile &apos;org.hibernate:hibernate-core:4.3.10.Final&apos;</span><br><span class="line">    compile &apos;org.openbaton:vnfm-sdk-amqp:3.2.0&apos;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果想使用rest，将<code>vnfm-sdk-amqp</code>改为<code>vnfm-sdk-rest</code>即可</p>
+<p>因此最终的build.gradle：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">buildscript &#123;</span><br><span class="line">    repositories &#123;</span><br><span class="line">        mavenCentral()</span><br><span class="line">    &#125;</span><br><span class="line">    dependencies &#123;</span><br><span class="line">        classpath(&quot;org.springframework.boot:spring-boot-gradle-plugin:1.3.1.RELEASE&quot;)</span><br><span class="line">    &#125;   </span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">apply plugin: &apos;java&apos;</span><br><span class="line">apply plugin: &apos;spring-boot&apos;</span><br><span class="line"></span><br><span class="line">repositories &#123;</span><br><span class="line">    mavenCentral()</span><br><span class="line">    /**</span><br><span class="line">     * Only needed for openbaton snapshots dependencies</span><br><span class="line">     */</span><br><span class="line">    maven &#123;</span><br><span class="line">        url &apos;https://oss.sonatype.org/content/repositories/snapshots/&apos;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">dependencies &#123;</span><br><span class="line">    compile &apos;org.openbaton:vnfm-sdk-amqp:3.2.0&apos;</span><br><span class="line">    compile &apos;org.hibernate:hibernate-core:4.3.10.Final&apos;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">group &apos;your.group&apos;</span><br><span class="line">version &apos;1.0-SNAPSHOT&apos;</span><br><span class="line"></span><br><span class="line">bootRepackage &#123;</span><br><span class="line">    mainClass = &apos;org.openbaton.vnfm.MyVNFM&apos;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后触发build.gradle，执行<code>./gradlew build</code></p>
+<p>这样会fetch所有的依赖，你也可以通过IDE相应的gradle task完成这些</p>
+<h2 id="实现VNFM"><a href="#实现VNFM" class="headerlink" title="实现VNFM"></a>实现VNFM</h2><p>此教程实现基于AMQP的VNFM，该VNFM有能力分配和终止资源（使用自己的OPENSTACK插件）</p>
+<p>首先定义main方法，因此添加如下的main类</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">package org.openbaton.vnfm;</span><br><span class="line"></span><br><span class="line">import org.springframework.boot.SpringApplication;</span><br><span class="line"></span><br><span class="line">public class MyVNFM &#123;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args)&#123;</span><br><span class="line">        SpringApplication.run(MyVNFM.class);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>之后你可以扩展你的MAIN类，使用<code>AbstractVnfmSpringAmqp</code>，该类负责所有VNFM在NFVO注册或注销的配置，并可以处理到来的消息。</p>
+<p>该类继承<code>AbstractVnfm</code>，AbstractVnfm与通信方式解耦。这意味着其处理到来的消息以及执行正确的方法都依赖于定义的行为。而且，他还负责加载预定义的配置文件、建立VNFM自身、创建VNFR（基于VNFD）以及向NFVO发起操作请求或决定谁有权分配资源。</p>
+<p>一旦你继承了<code>AbstractVnfmSpringAmqp</code>，你需要实现所有扩展自该类的方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br></pre></td><td class="code"><pre><span class="line">package org.openbaton.vnfm;</span><br><span class="line"></span><br><span class="line">import org.openbaton.catalogue.mano.record.VNFCInstance;</span><br><span class="line">import org.openbaton.catalogue.mano.record.VNFRecordDependency;</span><br><span class="line">import org.openbaton.catalogue.mano.record.VirtualNetworkFunctionRecord;</span><br><span class="line">import org.openbaton.catalogue.nfvo.Action;</span><br><span class="line">import org.openbaton.catalogue.nfvo.VimInstance;</span><br><span class="line">import org.openbaton.common.vnfm_sdk.amqp.AbstractVnfmSpringAmqp;</span><br><span class="line">import org.springframework.boot.SpringApplication;</span><br><span class="line">import org.springframework.boot.autoconfigure.SpringBootApplication;</span><br><span class="line"></span><br><span class="line">import java.util.Collection;</span><br><span class="line">import java.util.Map;</span><br><span class="line"></span><br><span class="line">@SpringBootApplication</span><br><span class="line">public class MyVNFM extends AbstractVnfmSpringAmqp&#123;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args)&#123;</span><br><span class="line">        SpringApplication.run(MyVNFM.class);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * This operation allows creating a VNF instance.</span><br><span class="line">     *</span><br><span class="line">     * @param virtualNetworkFunctionRecord</span><br><span class="line">     * @param scripts</span><br><span class="line">     * @param vimInstances</span><br><span class="line">     */</span><br><span class="line">    @Override</span><br><span class="line">    public VirtualNetworkFunctionRecord instantiate(VirtualNetworkFunctionRecord virtualNetworkFunctionRecord, Object scripts, Map&lt;String, Collection&lt;VimInstance&gt;&gt; vimInstances) throws Exception &#123;</span><br><span class="line">        return virtualNetworkFunctionRecord;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * This operation allows retrieving</span><br><span class="line">     * VNF instance state and attributes.</span><br><span class="line">     */</span><br><span class="line">    @Override</span><br><span class="line">    public void query() &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * This operation allows scaling</span><br><span class="line">     * (out/in, up/down) a VNF instance.</span><br><span class="line">     */</span><br><span class="line">    @Override</span><br><span class="line">    public VirtualNetworkFunctionRecord scale(Action scaleInOrOut, VirtualNetworkFunctionRecord virtualNetworkFunctionRecord, VNFComponent component, Object scripts, VNFRecordDependency dependency) throws Exception &#123;</span><br><span class="line">        return virtualNetworkFunctionRecord;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * This operation allows verifying if</span><br><span class="line">     * the VNF instantiation is possible.</span><br><span class="line">     */</span><br><span class="line">    @Override</span><br><span class="line">    public void checkInstantiationFeasibility() &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * This operation is called when one the VNFs fails</span><br><span class="line">     */</span><br><span class="line">    @Override</span><br><span class="line">    public VirtualNetworkFunctionRecord heal(VirtualNetworkFunctionRecord virtualNetworkFunctionRecord, VNFCInstance component, String cause) throws Exception &#123;</span><br><span class="line">        return virtualNetworkFunctionRecord;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * This operation allows applying a minor/limited</span><br><span class="line">     * software update (e.g. patch) to a VNF instance.</span><br><span class="line">     */</span><br><span class="line">    @Override</span><br><span class="line">    public VirtualNetworkFunctionRecord updateSoftware(Script script, VirtualNetworkFunctionRecord virtualNetworkFunctionRecord) throws Exception &#123;</span><br><span class="line">        return virtualNetworkFunctionRecord;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * This operation allows making structural changes</span><br><span class="line">     * (e.g. configuration, topology, behavior,</span><br><span class="line">     * redundancy model) to a VNF instance.</span><br><span class="line">     *</span><br><span class="line">     * @param virtualNetworkFunctionRecord</span><br><span class="line">     * @param dependency</span><br><span class="line">     */</span><br><span class="line">    @Override</span><br><span class="line">    public VirtualNetworkFunctionRecord modify(VirtualNetworkFunctionRecord virtualNetworkFunctionRecord, VNFRecordDependency dependency) throws Exception &#123;</span><br><span class="line">        return virtualNetworkFunctionRecord;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * This operation allows deploying a new</span><br><span class="line">     * software release to a VNF instance.</span><br><span class="line">     */</span><br><span class="line">    @Override</span><br><span class="line">    public void upgradeSoftware() &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * This operation allows terminating gracefully</span><br><span class="line">     * or forcefully a previously created VNF instance.</span><br><span class="line">     *</span><br><span class="line">     * @param virtualNetworkFunctionRecord</span><br><span class="line">     */</span><br><span class="line">    @Override</span><br><span class="line">    public VirtualNetworkFunctionRecord terminate(VirtualNetworkFunctionRecord virtualNetworkFunctionRecord) &#123;</span><br><span class="line">        log.info(&quot;Terminating vnfr with id &quot; + virtualNetworkFunctionRecord.getId());</span><br><span class="line">        return virtualNetworkFunctionRecord;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void handleError(VirtualNetworkFunctionRecord virtualNetworkFunctionRecord) &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    protected void checkEMS(String hostname) &#123;</span><br><span class="line">        log.warn(&quot;EMS is not supported by this VNFM&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    protected void checkEmsStarted(String hostname) throws RuntimeException &#123;</span><br><span class="line">        log.warn(&quot;EMS is not supported by this VNFM&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public VirtualNetworkFunctionRecord start(VirtualNetworkFunctionRecord virtualNetworkFunctionRecord) throws Exception &#123;</span><br><span class="line">        return virtualNetworkFunctionRecord;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public VirtualNetworkFunctionRecord stop(VirtualNetworkFunctionRecord virtualNetworkFunctionRecord) throws Exception &#123;</span><br><span class="line">        return virtualNetworkFunctionRecord;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public VirtualNetworkFunctionRecord startVNFCInstance(VirtualNetworkFunctionRecord virtualNetworkFunctionRecord, VNFCInstance vnfcInstance) throws Exception &#123;</span><br><span class="line">        return virtualNetworkFunctionRecord;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public VirtualNetworkFunctionRecord stopVNFCInstance(VirtualNetworkFunctionRecord virtualNetworkFunctionRecord, VNFCInstance vnfcInstance) throws Exception &#123;</span><br><span class="line">        return virtualNetworkFunctionRecord;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public VirtualNetworkFunctionRecord configure(VirtualNetworkFunctionRecord virtualNetworkFunctionRecord) throws Exception &#123;</span><br><span class="line">        return virtualNetworkFunctionRecord;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public VirtualNetworkFunctionRecord resume(VirtualNetworkFunctionRecord virtualNetworkFunctionRecord, VNFCInstance vnfcInstance, VNFRecordDependency dependency) throws Exception &#123;</span><br><span class="line">        return virtualNetworkFunctionRecord;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * This operation allows providing notifications on state changes</span><br><span class="line">     * of a VNF instance, related to the VNF Lifecycle.</span><br><span class="line">     */</span><br><span class="line">    @Override</span><br><span class="line">    public void NotifyChange() &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>现在你可以实现你想要的。如果VNFR返回了，它会直接交到NFVO</p>
+<p>其中一个可以被重写的方法是fillParameters。这个方法在你的VNFD中有一些<code>provides</code>类型的参数时尤其重要，事实上在该方法中你可以填充这些参数，并使之后的脚本可以获得这些参数。</p>
+<h3 id="VNF-参数"><a href="#VNF-参数" class="headerlink" title="VNF 参数"></a>VNF 参数</h3><p>VNF需要的参数在VNFD中分为两种定义：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&quot;configurations&quot;:&#123;</span><br><span class="line">                &quot;name&quot;:&quot;config_name&quot;,</span><br><span class="line">                &quot;configurationParameters&quot;:[</span><br><span class="line">                &#123;</span><br><span class="line">                    &quot;confKey&quot;:&quot;key1&quot;,</span><br><span class="line">                    &quot;value&quot;:&quot;the_value&quot;</span><br><span class="line">                &#125;</span><br><span class="line">                ]</span><br><span class="line">            &#125;,</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">&quot;provides&quot;:[</span><br><span class="line">        &quot;param1&quot;,</span><br><span class="line">        &quot;param2&quot;</span><br><span class="line">      ]</span><br></pre></td></tr></table></figure>
+
+<p>配置类参数：这类参数即key-value list，此类参数总可以从脚本中获得。</p>
+<p>provides参数：这类参数在所有脚本中可见，区别是参数值只有在运行时才能得到。因此这类参数值只能由特定的VNFM来填充（从特定VNFM的实现类的方法中填充）</p>
+<p>还有一些<code>out-of-the-box</code>参数，可以自动被加到VNFR里。这些参数包含floatingIP和hostname等</p>
+<h3 id="使用VNFM-Helper"><a href="#使用VNFM-Helper" class="headerlink" title="使用VNFM Helper"></a>使用VNFM Helper</h3><p>你可以注入VNFM Helper，来使用他提供的有用的方法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">package org.openbaton.vnfm;</span><br><span class="line"></span><br><span class="line">import org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line"></span><br><span class="line">public class MyVNFM extends AbstractVnfmSpringAmqp &#123;</span><br><span class="line"></span><br><span class="line">    @Autowired</span><br><span class="line">    private VnfmHelper vnfmHelper;</span><br><span class="line"></span><br><span class="line">    [...]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">package org.openbaton.common.vnfm_sdk;</span><br><span class="line"></span><br><span class="line">import org.openbaton.catalogue.nfvo.messages.Interfaces.NFVMessage;</span><br><span class="line"></span><br><span class="line">public abstract class VnfmHelper &#123;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * This operation sends a NFVMessage</span><br><span class="line">     * to the NFVO and doesn&apos;t wait for answer.</span><br><span class="line">     * @param nfvMessage</span><br><span class="line">     */</span><br><span class="line">    public abstract void sendToNfvo(NFVMessage nfvMessage);</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * This operation send a NFVMessage</span><br><span class="line">     * to the NFVO and waits for the answer.</span><br><span class="line">     * @param nfvMessage</span><br><span class="line">     */</span><br><span class="line">    public abstract NFVMessage sendAndReceive(NFVMessage nfvMessage) throws Exception;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>VNFM Helper的主要目的就是发消息给NFVO并等回复（如果需要）</p>
+<p>如果你只用VNFM-SDK，你必须实现该类，然后提供给AbstractVnfm</p>
+<h3 id="使用插件"><a href="#使用插件" class="headerlink" title="使用插件"></a>使用插件</h3><p>为了使用插件，你需要：</p>
+<ul>
+<li>启动一个插件</li>
+<li>连接VIM到插件或直接使用插件</li>
+</ul>
+<p>如果你想通过插件使用VIM，你需要fetch一些接口和VIM实现，因此在build.gradle里添加依赖：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">compile &apos;org.openbaton:vim-int:3.2.0&apos;</span><br><span class="line">compile &apos;org.openbaton:vim-impl:3.2.0&apos;</span><br><span class="line">compile &apos;org.openbaton:sdk:3.2.0&apos;</span><br></pre></td></tr></table></figure>
+
+<p>然后在你的VNFM里使用插件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">package org.openbaton.vnfm;</span><br><span class="line"></span><br><span class="line">import org.openbaton.catalogue.mano.record.VNFCInstance;</span><br><span class="line">import org.openbaton.catalogue.mano.record.VNFRecordDependency;</span><br><span class="line">import org.openbaton.catalogue.mano.record.VirtualNetworkFunctionRecord;</span><br><span class="line">import org.openbaton.catalogue.nfvo.Action;</span><br><span class="line">import org.openbaton.catalogue.nfvo.VimInstance;</span><br><span class="line">import org.openbaton.common.vnfm_sdk.amqp.AbstractVnfmSpringAmqp;</span><br><span class="line">import org.openbaton.nfvo.vim_interfaces.resource_management.ResourceManagement;</span><br><span class="line">import org.openbaton.plugin.utils.PluginStartup;</span><br><span class="line">import org.openbaton.plugin.utils.RabbitPluginBroker;</span><br><span class="line">import org.openbaton.vim.drivers.VimDriverCaller;</span><br><span class="line">import org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line">import org.springframework.boot.SpringApplication;</span><br><span class="line">import org.springframework.boot.autoconfigure.SpringBootApplication;</span><br><span class="line">import org.springframework.context.ConfigurableApplicationContext;</span><br><span class="line"></span><br><span class="line">import java.io.IOException;</span><br><span class="line">import java.util.Collection;</span><br><span class="line">import java.util.Map;</span><br><span class="line"></span><br><span class="line">public class MyVNFM extends AbstractVnfmSpringAmqp &#123;</span><br><span class="line"></span><br><span class="line">    @Autowired</span><br><span class="line">    private ConfigurableApplicationContext context;</span><br><span class="line"></span><br><span class="line">    private ResourceManagement resourceManagement;</span><br><span class="line"></span><br><span class="line">    private VimDriverCaller client;</span><br><span class="line"></span><br><span class="line">    [...]</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    protected void setup() &#123;</span><br><span class="line">        super.setup();</span><br><span class="line">        try &#123;</span><br><span class="line">            //Start all the plugins that are located in ./plugins</span><br><span class="line">            PluginStartup.startPluginRecursive(&quot;./plugins&quot;, true, &quot;localhost&quot;, &quot;5672&quot;, 15, &quot;admin&quot;, &quot;openbaton&quot;, &quot;15672&quot;);</span><br><span class="line">        &#125; catch (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        //Fetching the OpenstackVim using the openstack-plugin</span><br><span class="line">        resourceManagement = (ResourceManagement) context.getBean(&quot;openstackVIM&quot;, 19345, &quot;15672&quot;);</span><br><span class="line">        //Using the openstack-plugin directly</span><br><span class="line">        client = (VimDriverCaller) ((RabbitPluginBroker) context.getBean(&quot;rabbitPluginBroker&quot;)).getVimDriverCaller(&quot;localhost&quot;, &quot;admin&quot;, &quot;openbaton&quot;, 5672, &quot;openstack&quot;, &quot;openstack&quot;, &quot;15672&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这段代码认为插件就在<code>./plugins</code>目录，因此拷贝你选择的openstack插件到该路径。现在你可以使用VIM或直接用插件来分配和释放任意资源。</p>
+<h3 id="分配资源"><a href="#分配资源" class="headerlink" title="分配资源"></a>分配资源</h3><p>下面的代码展示了如何在VNFM侧依靠VIM来分配资源</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * This operation allows creating a VNF instance.</span><br><span class="line"> *</span><br><span class="line"> * @param virtualNetworkFunctionRecord</span><br><span class="line"> * @param scripts</span><br><span class="line"> * @param vimInstances</span><br><span class="line"> */</span><br><span class="line">@Override</span><br><span class="line">public VirtualNetworkFunctionRecord instantiate(VirtualNetworkFunctionRecord virtualNetworkFunctionRecord, Object scripts, Map&lt;String, Collection&lt;VimInstance&gt;&gt; vimInstances) throws Exception &#123;</span><br><span class="line">    log.debug(&quot;Processing allocation of Resources for vnfr: &quot; + virtualNetworkFunctionRecord);</span><br><span class="line">    /**</span><br><span class="line">     * Allocation of Resources</span><br><span class="line">     *  the grant operation is already done before this method</span><br><span class="line">     */</span><br><span class="line">    String userdata = &quot;&quot;;</span><br><span class="line">    Iterator&lt;ConfigurationParameter&gt; configIterator = virtualNetworkFunctionRecord.getConfigurations().getConfigurationParameters().iterator();</span><br><span class="line">    while (configIterator.hasNext()) &#123;</span><br><span class="line">        ConfigurationParameter configurationParameter = configIterator.next();</span><br><span class="line">        log.debug(&quot;Configuration Parameter: &quot; + configurationParameter);</span><br><span class="line">        if (configurationParameter.getConfKey().equals(&quot;GROUP_NAME&quot;)) &#123;</span><br><span class="line">            userdata = &quot;export GROUP_NAME=&quot; + configurationParameter.getValue() + &quot;\n&quot;;</span><br><span class="line">            userdata += &quot;echo $GROUP_NAME &gt; /home/ubuntu/group_name.txt\n&quot;;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    userdata += getUserData();</span><br><span class="line"></span><br><span class="line">    log.debug(&quot;Processing allocation of Recources for vnfr: &quot; + virtualNetworkFunctionRecord);</span><br><span class="line">    for (VirtualDeploymentUnit vdu : virtualNetworkFunctionRecord.getVdu()) &#123;</span><br><span class="line">        VimInstance vimInstance = vimInstances.get(vdu.getParent_vdu()).iterator().next();</span><br><span class="line">        log.debug(&quot;Creating &quot; + vdu.getVnfc().size() + &quot; VMs&quot;);</span><br><span class="line">        for (VNFComponent vnfComponent : vdu.getVnfc()) &#123;</span><br><span class="line">            Map&lt;String, String&gt; floatingIps = new HashMap&lt;&gt;();</span><br><span class="line">            for (VNFDConnectionPoint connectionPoint : vnfComponent.getConnection_point()) &#123;</span><br><span class="line">                if (connectionPoint.getFloatingIp() != null &amp;&amp; !connectionPoint.getFloatingIp().equals(&quot;&quot;)) &#123;</span><br><span class="line">                    floatingIps.put(connectionPoint.getVirtual_link_reference(), connectionPoint.getFloatingIp());</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            try &#123;</span><br><span class="line">                VNFCInstance vnfcInstance = resourceManagement.allocate(vimInstance, vdu, virtualNetworkFunctionRecord, vnfComponent, userdata, floatingIps, new HashSet&lt;&gt;()).get();</span><br><span class="line">                log.debug(&quot;Created VNFCInstance with id: &quot; + vnfcInstance);</span><br><span class="line">                vdu.getVnfc_instance().add(vnfcInstance);</span><br><span class="line">            &#125; catch (VimException e) &#123;</span><br><span class="line">                log.error(e.getMessage());</span><br><span class="line">                if (log.isDebugEnabled())</span><br><span class="line">                    log.error(e.getMessage(), e);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    log.debug(&quot;Allocated all Resources for vnfr: &quot; + virtualNetworkFunctionRecord);</span><br><span class="line">    return virtualNetworkFunctionRecord;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注意：在conf.properties里，如果你需要VNFM来分配资源，你需要将allocate设为false</p>
+<h3 id="释放资源"><a href="#释放资源" class="headerlink" title="释放资源"></a>释放资源</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * This operation allows terminating gracefully</span><br><span class="line"> * or forcefully a previously created VNF instance.</span><br><span class="line"> *</span><br><span class="line"> * @param virtualNetworkFunctionRecord</span><br><span class="line"> */</span><br><span class="line">@Override</span><br><span class="line">public VirtualNetworkFunctionRecord terminate(VirtualNetworkFunctionRecord virtualNetworkFunctionRecord) &#123;</span><br><span class="line">    log.info(&quot;Terminating vnfr with id &quot; + virtualNetworkFunctionRecord.getId());</span><br><span class="line">    NFVORequestor nfvoRequestor = new NFVORequestor(&quot;admin&quot;, &quot;openbaton&quot;, &quot;localhost&quot;, &quot;8080&quot;, &quot;1&quot;);</span><br><span class="line">    for (VirtualDeploymentUnit vdu : virtualNetworkFunctionRecord.getVdu()) &#123;</span><br><span class="line">        Set&lt;VNFCInstance&gt; vnfciToRem = new HashSet&lt;&gt;();</span><br><span class="line">        List&lt;VimInstance&gt; vimInstances = new ArrayList&lt;&gt;();</span><br><span class="line">        VimInstance vimInstance = null;</span><br><span class="line">        try &#123;</span><br><span class="line">            vimInstances = nfvoRequestor.getVimInstanceAgent().findAll();</span><br><span class="line">        &#125; catch (SDKException e) &#123;</span><br><span class="line">            log.error(e.getMessage(), e);</span><br><span class="line">        &#125; catch (ClassNotFoundException e) &#123;</span><br><span class="line">            log.error(e.getMessage(), e);</span><br><span class="line">        &#125;</span><br><span class="line">        for (VimInstance vimInstanceFind : vimInstances) &#123;</span><br><span class="line">            if (vdu.getVimInstanceName().contains(vimInstanceFind.getName())) &#123;</span><br><span class="line">                vimInstance = vimInstanceFind;</span><br><span class="line">                break;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        for (VNFCInstance vnfcInstance : vdu.getVnfc_instance()) &#123;</span><br><span class="line">            log.debug(&quot;Releasing resources for vdu with id &quot; + vdu.getId());</span><br><span class="line">            try &#123;</span><br><span class="line">                resourceManagement.release(vnfcInstance, vimInstance);</span><br><span class="line">            &#125; catch (VimException e) &#123;</span><br><span class="line">                log.error(e.getMessage(), e);</span><br><span class="line">                throw new RuntimeException(e.getMessage(), e);</span><br><span class="line">            &#125;</span><br><span class="line">            vnfciToRem.add(vnfcInstance);</span><br><span class="line">            log.debug(&quot;Released resources for vdu with id &quot; + vdu.getId());</span><br><span class="line">        &#125;</span><br><span class="line">        vdu.getVnfc_instance().removeAll(vnfciToRem);</span><br><span class="line">    &#125;</span><br><span class="line">    log.info(&quot;Terminated vnfr with id &quot; + virtualNetworkFunctionRecord.getId());</span><br><span class="line">    return virtualNetworkFunctionRecord;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="运行你的VNFM"><a href="#运行你的VNFM" class="headerlink" title="运行你的VNFM"></a>运行你的VNFM</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ ./gradlew clean build</span><br><span class="line">$ java -jar build/libs/my-vnfm-&#123;version&#125;.jar</span><br></pre></td></tr></table></figure>
+
+<h1 id="整合你的VNFM到OB"><a href="#整合你的VNFM到OB" class="headerlink" title="整合你的VNFM到OB"></a>整合你的VNFM到OB</h1><p>这一部分讲述REST接口，其使得你自己的VNFM可以使用NFVO</p>
+<p>NFVO暴露一个REST接口给VNFM，下图展示了NSR的实例化过程<br><img src="http://openbaton.github.io/documentation/images/nfvo-rest-vnfm-seq-dg.png" alt=""></p>
+<ul>
+<li><p>VNFM到O的注册<br>VNFM到NFVO的注册，会给这个URL<code>NFVOEndpoint/admin/v1/vnfm-register</code>发一个POST请求，POST参数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;type&quot;:&quot;dummy&quot;,</span><br><span class="line">    &quot;endpointType&quot;:&quot;REST&quot;,</span><br><span class="line">    &quot;endpoint&quot;:&quot;VnfmEndpoint&quot;,</span><br><span class="line">    &quot;description&quot;:&quot;MyVnfm&quot;,</span><br><span class="line">    &quot;enabled&quot;:&quot;true&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>INSTANTIATE<br>该步骤中，O发送VNFD给M，被用来生成VNFR，还会把脚本发送给M。这一步会触发VNFD定义的VNFCInstances对应的VM的创建，还会触发与INSTANTIATE生命周期相关的脚本的执行（定义在VNFD里）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;vnfd&quot;:&#123;  ...  &#125;, </span><br><span class="line">    &quot;vnfdf&quot;:&#123;  ...  &#125;,</span><br><span class="line">    &quot;vlrs&quot;:[  ...  ],</span><br><span class="line">    &quot;extention&quot;:&#123;  </span><br><span class="line">      &quot;nsr-id&quot;:&quot;...&quot;,</span><br><span class="line">      &quot;brokerIp&quot;:&quot;...&quot;,</span><br><span class="line">      ...</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;action&quot;:&quot;INSTANTIATE&quot;,</span><br><span class="line">    &quot;vimInstances&quot;: &#123;</span><br><span class="line">      &quot;vdu_id&quot;:[</span><br><span class="line">        &#123; ... &#125;,</span><br><span class="line">        &#123; ... &#125;</span><br><span class="line">      ]</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;vnfPackage&quot;: &#123; ... &#125;,</span><br><span class="line">    &quot;keypairs&quot;:[</span><br><span class="line">    &#123; ... &#125;</span><br><span class="line">    ]  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>GrantOperation<br>M发送VNFR给O来寻问是否有足够资源</p>
+</li>
+</ul>
+<p>发送POST请求到<code>NFVOEndpoint/admin/v1/vnfm-core-grant</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;action&quot;:&quot;GRANT_OPERATION&quot;,</span><br><span class="line">    &quot;virtualNetworkFunctionRecord&quot;:&#123;..&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>O发送响应给M</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;grantAllowed&quot;: true,</span><br><span class="line">    &quot;vduVim&quot;: &#123;</span><br><span class="line">      &quot;vdu_id&quot;: &#123;  &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;virtualNetworkFunctionRecord&quot;:&#123;</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>AllocateResource<br>M发送VNFR到O来请求其创建资源<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;virtualNetworkFunctionRecord&quot;:&#123;..&#125;,</span><br><span class="line">    &quot;vimInstances&quot;:&#123;</span><br><span class="line">      &quot;vdu_id&quot;:&#123; ... &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;userdata&quot;:&quot;&quot;,</span><br><span class="line">    &quot;keypairs&quot;:[</span><br><span class="line">    &#123; ... &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>O创建好资源后，将更新的VNFR返回给M</p>
+<ul>
+<li>INSTANTIATE<br>M把创建完成的VNFR发给O<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;virtualNetworkFunctionRecord&quot;:&#123;  ...  &#125;, </span><br><span class="line">    &quot;action&quot;:&quot;INSTANTIATE&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>action表示已经执行了INSTANTIATE脚本</p>
+<ul>
+<li>Modify<br>O通过发送请求把VNF的依赖发送给M，VNFR里与CONFIGURATION流程相关的脚本会被执行<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;vnfr&quot;:&#123; ... &#125;, </span><br><span class="line">    &quot;vnfrd&quot;:&#123; ... &#125;, </span><br><span class="line">    &quot;action&quot;:&quot;MODIFY&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>vnfr是正在部署的VNF的VNFR，vnfrd是VNFR需要的DEPENDENCIES参数</p>
+<p>M执行完脚本后，把更新后的VNFR发给O</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;virtualNetworkFunctionRecord&quot;:&#123; ... &#125;,</span><br><span class="line">    &quot;action&quot;:&quot;MODIFY&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里的action表示MODIFY流程已经被执行过了</p>
+<ul>
+<li>Start<br>O发送请求触发START流程脚本的执行<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;vnfr&quot;:&#123;  ...  &#125;,</span><br><span class="line">    &quot;action&quot;:&quot;START&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>M执行完脚本后通知O</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;virtualNetworkFunctionRecord&quot;:&#123;  ...  &#125;,</span><br><span class="line">    &quot;action&quot;:&quot;START&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>O收到这条消息后，VNF的状态在M和O上被设为Active，当NS需要的VNF都被设为Active，则NS被设为Active</p>
+
+        <blockquote class="blockquote-center">完</blockquote>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/29/FarBox/Forwarddc/NFV/C10%E6%8E%A5%E5%8F%A3/" rel="next" title="C10接口">
+                <i class="fa fa-chevron-left"></i> C10接口
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/03/30/FarBox/Forwarddc/%E7%AE%97%E6%B3%95/%E5%BC%82%E6%88%96/" rel="prev" title="异或">
+                异或 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Forwarddc</p>
+              <p class="site-description motion-element" itemprop="description">description here</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">126</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#G-VNFM"><span class="nav-number">1.</span> <span class="nav-text">G-VNFM</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#虚机的部署"><span class="nav-number">1.1.</span> <span class="nav-text">虚机的部署</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#脚本执行"><span class="nav-number">1.2.</span> <span class="nav-text">脚本执行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#虚机终止"><span class="nav-number">1.3.</span> <span class="nav-text">虚机终止</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#依赖和脚本的例子"><span class="nav-number">1.4.</span> <span class="nav-text">依赖和脚本的例子</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#INSTANTIATE脚本"><span class="nav-number">1.4.1.</span> <span class="nav-text">INSTANTIATE脚本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CONFIGURE脚本"><span class="nav-number">1.4.2.</span> <span class="nav-text">CONFIGURE脚本</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DUMMY-VNFM："><span class="nav-number">2.</span> <span class="nav-text">DUMMY VNFM：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#源码安装DUMMY-VNFManager-AMQP"><span class="nav-number">2.1.</span> <span class="nav-text">源码安装DUMMY VNFManager AMQP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用DUMMY-VNFManager-AMQP"><span class="nav-number">2.2.</span> <span class="nav-text">使用DUMMY VNFManager AMQP</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#如何开发VNFM"><span class="nav-number">3.</span> <span class="nav-text">如何开发VNFM</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Preparations"><span class="nav-number">3.1.</span> <span class="nav-text">Preparations</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#选择VNFM-SDK"><span class="nav-number">3.2.</span> <span class="nav-text">选择VNFM-SDK</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现VNFM"><span class="nav-number">3.3.</span> <span class="nav-text">实现VNFM</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#VNF-参数"><span class="nav-number">3.3.1.</span> <span class="nav-text">VNF 参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用VNFM-Helper"><span class="nav-number">3.3.2.</span> <span class="nav-text">使用VNFM Helper</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用插件"><span class="nav-number">3.3.3.</span> <span class="nav-text">使用插件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分配资源"><span class="nav-number">3.3.4.</span> <span class="nav-text">分配资源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#释放资源"><span class="nav-number">3.3.5.</span> <span class="nav-text">释放资源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#运行你的VNFM"><span class="nav-number">3.3.6.</span> <span class="nav-text">运行你的VNFM</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#整合你的VNFM到OB"><span class="nav-number">4.</span> <span class="nav-text">整合你的VNFM到OB</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Forwarddc</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("OBdFsOOtfIDcNnWdzkGbICmj-gzGzoHsz", "89LmL4tP7hkyChAmEleq2MdO");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/love.js"></script>
+
+<!-- 背景动画 -->
+<script type="text/javascript" src="/js/src/particle.js"></script>
+
+</body>
+</html>
