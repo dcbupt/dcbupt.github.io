@@ -137,7 +137,7 @@
 <meta property="og:site_name" content="Forwarddc&#39;s Blog">
 <meta property="og:description" content="next主题浅析与个性化定制">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-10-24T17:58:35.999Z">
+<meta property="og:updated_time" content="2019-11-01T16:31:48.322Z">
 <meta name="twitter:card" content="summary">
 
 
@@ -381,8 +381,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2019-10-25T01:58:35+08:00">
-                2019-10-25
+              <time title="更新于" itemprop="dateModified" datetime="2019-11-02T00:31:48+08:00">
+                2019-11-02
               </time>
             
           </span>
@@ -460,7 +460,7 @@
 <p>站点基本信息</p>
 </blockquote>
 <p>title和subtitle会显示在首页顶部</p>
-<p>language默认是英文，这里设为中文，使得页面元素均以中文显示<br>next/languages/路径下定义了多个语言对应的翻译文件，修改zh-Hans.yml，可以定制元素的中文文案</p>
+<p>language默认是英文，这里设为中文，使得页面元素均以中文显示<br>next/languages/路径下定义了多个语言对应的翻译文件，修改zh-Hans.yml，可以定制页面组件的中文文案</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># Site</span><br><span class="line">title: Forwarddc&apos;s Blog</span><br><span class="line">subtitle: 西米大人的部落格</span><br><span class="line">description: description here</span><br><span class="line">keywords:</span><br><span class="line">author: Forwarddc</span><br><span class="line">language: zh-Hans</span><br><span class="line">timezone:</span><br><span class="line">emai: email here</span><br></pre></td></tr></table></figure>
 
 <blockquote>
@@ -505,6 +505,7 @@
 </blockquote>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># local search</span><br><span class="line">search:</span><br><span class="line">  path: search.xml</span><br><span class="line">  field: post</span><br><span class="line">  format: html</span><br><span class="line">  content: true</span><br></pre></td></tr></table></figure>
 
+
 <hr>
 <h1 id="next主题的配置文件"><a href="#next主题的配置文件" class="headerlink" title="next主题的配置文件"></a>next主题的配置文件</h1><blockquote>
 <p>themes/next/_config.yml</p>
@@ -523,6 +524,13 @@
 <p>本地搜索</p>
 </blockquote>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">local_search:</span><br><span class="line">  enable: true</span><br><span class="line">  # if auto, trigger search by changing input</span><br><span class="line">  # if manual, trigger search by pressing enter key or search button</span><br><span class="line">  trigger: auto</span><br><span class="line">  # show top n results per article, show all results by setting to -1</span><br><span class="line">  top_n_per_article: 1</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="博文schema"><a href="#博文schema" class="headerlink" title="博文schema"></a>博文schema</h1><blockquote>
+<p>scaffolds/post.md</p>
+</blockquote>
+<p>该文件负责定义每篇博文的schema。<br>hexo new的md博文会自动带上这里定义好的schema<br>tags用于打标签，categories用于给博文分类，description用于在首页展示博文的概要</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">title: &#123;&#123; title &#125;&#125;</span><br><span class="line">date: &#123;&#123; date &#125;&#125;</span><br><span class="line">tags: &#123;&#123; tags &#125;&#125;</span><br><span class="line">categories: &#123;&#123; categories &#125;&#125;</span><br><span class="line">description: &#123;&#123; description &#125;&#125;</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
 
 <hr>
 <h1 id="布局layout"><a href="#布局layout" class="headerlink" title="布局layout"></a>布局layout</h1><h2 id="根布局"><a href="#根布局" class="headerlink" title="根布局"></a>根布局</h2><blockquote>
@@ -583,7 +591,7 @@
 <h3 id="增加每篇文章阅读量统计"><a href="#增加每篇文章阅读量统计" class="headerlink" title="增加每篇文章阅读量统计"></a>增加每篇文章阅读量统计</h3><blockquote>
 <p>文章标题下方，展示阅读量<br>参考：<a href="https://blog.csdn.net/weixin_39345384/article/details/80787998" target="_blank" rel="noopener">https://blog.csdn.net/weixin_39345384/article/details/80787998</a></p>
 </blockquote>
-<p>追文章标题下方展示<code>发布于xxx</code>的代码，发现next主题可以支持文章阅读量的配置<br>1、去leancloud申请一个应用<br>2、修改next配置文件，开启阅读量统计，填入应用的appid和appKey</p>
+<p>追文章标题下方展示<code>发布于xxx</code>的代码，发现next主题可以支持文章阅读量的配置<br>1、去leancloud申请一个应用：<a href="https://leancloud.cn/dashboard/login.html#/signin" target="_blank" rel="noopener">https://leancloud.cn/dashboard/login.html#/signin</a><br>2、修改next配置文件，开启阅读量统计，填入应用的appid和appKey</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">leancloud_visitors:</span><br><span class="line">  enable: false</span><br><span class="line">  app_id: #&lt;app_id&gt;</span><br><span class="line">  app_key: #&lt;app_key&gt;</span><br></pre></td></tr></table></figure>
 <p>3、leancloud为应用创建一张用于存储阅读量的表，命名为Counter<br>4、自己博客的域名绑定到应用的web安全设置域名中（防止其他域名拿到app信息）</p>
 <h3 id="增加页面特效-2"><a href="#增加页面特效-2" class="headerlink" title="增加页面特效"></a>增加页面特效</h3><blockquote>
@@ -593,7 +601,7 @@
 
 
 <hr>
-<h1 id="添加本地搜索功能"><a href="#添加本地搜索功能" class="headerlink" title="添加本地搜索功能"></a>添加本地搜索功能</h1><p>1、在本地博客路径下：<code>npm install hexo-generator-searchdb --save</code><br>2、在_config.yml里添加search字段</p>
+<h1 id="添加本地搜索功能"><a href="#添加本地搜索功能" class="headerlink" title="添加本地搜索功能"></a>添加本地搜索功能</h1><p>1、在本地博客路径下：<code>npm install hexo-generator-searchdb --save</code><br>2、在站点配置文件_config.yml里添加search字段</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">search:</span><br><span class="line">  path: search.xml</span><br><span class="line">  field: post</span><br><span class="line">  format: html</span><br><span class="line">  limit: 10000</span><br></pre></td></tr></table></figure>
 <p>3、修改next主题的_config.yml，将local_search改为<code>true</code></p>
 
@@ -773,7 +781,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#站点配置文件"><span class="nav-number">1.</span> <span class="nav-text">站点配置文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#next主题的配置文件"><span class="nav-number">2.</span> <span class="nav-text">next主题的配置文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#布局layout"><span class="nav-number">3.</span> <span class="nav-text">布局layout</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#根布局"><span class="nav-number">3.1.</span> <span class="nav-text">根布局</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#增加页面特效"><span class="nav-number">3.1.1.</span> <span class="nav-text">增加页面特效</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#header顶部"><span class="nav-number">3.2.</span> <span class="nav-text">header顶部</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#增加页面特效-1"><span class="nav-number">3.2.1.</span> <span class="nav-text">增加页面特效</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#body"><span class="nav-number">3.3.</span> <span class="nav-text">body</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#增加每篇文章阅读量统计"><span class="nav-number">3.3.1.</span> <span class="nav-text">增加每篇文章阅读量统计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#增加页面特效-2"><span class="nav-number">3.3.2.</span> <span class="nav-text">增加页面特效</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#添加本地搜索功能"><span class="nav-number">4.</span> <span class="nav-text">添加本地搜索功能</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#站点配置文件"><span class="nav-number">1.</span> <span class="nav-text">站点配置文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#next主题的配置文件"><span class="nav-number">2.</span> <span class="nav-text">next主题的配置文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#博文schema"><span class="nav-number">3.</span> <span class="nav-text">博文schema</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#布局layout"><span class="nav-number">4.</span> <span class="nav-text">布局layout</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#根布局"><span class="nav-number">4.1.</span> <span class="nav-text">根布局</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#增加页面特效"><span class="nav-number">4.1.1.</span> <span class="nav-text">增加页面特效</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#header顶部"><span class="nav-number">4.2.</span> <span class="nav-text">header顶部</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#增加页面特效-1"><span class="nav-number">4.2.1.</span> <span class="nav-text">增加页面特效</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#body"><span class="nav-number">4.3.</span> <span class="nav-text">body</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#增加每篇文章阅读量统计"><span class="nav-number">4.3.1.</span> <span class="nav-text">增加每篇文章阅读量统计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#增加页面特效-2"><span class="nav-number">4.3.2.</span> <span class="nav-text">增加页面特效</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#添加本地搜索功能"><span class="nav-number">5.</span> <span class="nav-text">添加本地搜索功能</span></a></li></ol></div>
             
 
           </div>

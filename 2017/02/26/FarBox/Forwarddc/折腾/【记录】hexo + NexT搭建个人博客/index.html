@@ -137,7 +137,7 @@
 <meta property="og:site_name" content="Forwarddc&#39;s Blog">
 <meta property="og:description" content="完整的博客搭建流程与日志">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-10-24T18:04:06.471Z">
+<meta property="og:updated_time" content="2019-11-01T13:46:48.034Z">
 <meta name="twitter:card" content="summary">
 
 
@@ -381,8 +381,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2019-10-25T02:04:06+08:00">
-                2019-10-25
+              <time title="更新于" itemprop="dateModified" datetime="2019-11-01T21:46:48+08:00">
+                2019-11-01
               </time>
             
           </span>
@@ -499,7 +499,7 @@
 <li>md编辑器使用的是vs code</li>
 </ul>
 <h1 id="部署本地hexo博客到GitPage"><a href="#部署本地hexo博客到GitPage" class="headerlink" title="部署本地hexo博客到GitPage"></a>部署本地hexo博客到GitPage</h1><ul>
-<li>首先需要在GitHub上新建一个repo，名字为：username.github.io</li>
+<li>首先需要在GitHub上新建一个repo，名字为：dcbupt.github.io</li>
 <li>配置本地的git全局信息<ul>
 <li><code>git config --global user.name &quot;username&quot;</code><br><code>git config --global user.email &quot;yourEmail&quot;</code></li>
 </ul>
@@ -510,9 +510,7 @@
 </li>
 <li>修改_config.yml<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">url: http://dcbupt.github.io</span><br><span class="line">deploy:</span><br><span class="line">      type: git</span><br><span class="line">      repository: https://github.com/dcbupt/dcbupt.github.io.git</span><br><span class="line">      branch: master</span><br><span class="line">      message: &apos;Daily updated：&#123;&#123;now(&quot;YYYY-MM-DD HH:mm:ss&quot;)&#125;&#125; by Forwarddc personal PC&apos;</span><br></pre></td></tr></table></figure></li>
 <li>hexo部署三部曲<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hexo clean</span><br><span class="line">hexo g</span><br><span class="line">hexo d</span><br></pre></td></tr></table></figure>
-<h1 id="用hexo-new写博文"><a href="#用hexo-new写博文" class="headerlink" title="用hexo new写博文"></a>用hexo new写博文</h1></li>
-<li><code>hexo new YrArticle</code>命令默认是跟post，即会在 source/_posts/ 下创建YrArticle.md</li>
-<li>创建的博文依据博文模板（与博文参数tltle\tags\。。有关），博文模板在 scaffolds/post.md ,可以自由定制</li>
+<h1 id="用hexo-new写博文"><a href="#用hexo-new写博文" class="headerlink" title="用hexo new写博文"></a>用hexo new写博文</h1><code>hexo new YrArticle</code>命令默认是跟post，即会在 source/_posts/ 下创建YrArticle.md</li>
 </ul>
 
         <blockquote class="blockquote-center">完</blockquote>
