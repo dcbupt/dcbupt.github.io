@@ -129,14 +129,14 @@
 
 
 
-<meta name="description" content="github上手教程">
+<meta name="description" content="git梳理">
 <meta property="og:type" content="article">
-<meta property="og:title" content="使用github">
+<meta property="og:title" content="git梳理">
 <meta property="og:url" content="http:&#x2F;&#x2F;dcbupt.github.io&#x2F;2017&#x2F;03&#x2F;27&#x2F;FarBox&#x2F;Forwarddc&#x2F;%E6%8A%98%E8%85%BE&#x2F;%E4%BD%BF%E7%94%A8github&#x2F;index.html">
 <meta property="og:site_name" content="Forwarddc&#39;s Blog">
-<meta property="og:description" content="github上手教程">
+<meta property="og:description" content="git梳理">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-04-12T10:08:40.268Z">
+<meta property="og:updated_time" content="2019-12-04T15:19:57.877Z">
 <meta name="twitter:card" content="summary">
 
 
@@ -173,7 +173,7 @@
 
 
 
-  <title>使用github | Forwarddc's Blog</title>
+  <title>git梳理 | Forwarddc's Blog</title>
   
 
 
@@ -352,7 +352,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">使用github</h1>
+          <h1 class="post-title" itemprop="name headline">git梳理</h1>
         
 
         <div class="post-meta">
@@ -380,8 +380,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2017-04-12T18:08:40+08:00">
-                2017-04-12
+              <time title="更新于" itemprop="dateModified" datetime="2019-12-04T23:19:57+08:00">
+                2019-12-04
               </time>
             
           </span>
@@ -416,7 +416,7 @@
 
           
           
-             <span id="/2017/03/27/FarBox/Forwarddc/%E6%8A%98%E8%85%BE/%E4%BD%BF%E7%94%A8github/" class="leancloud_visitors" data-flag-title="使用github">
+             <span id="/2017/03/27/FarBox/Forwarddc/%E6%8A%98%E8%85%BE/%E4%BD%BF%E7%94%A8github/" class="leancloud_visitors" data-flag-title="git梳理">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -441,7 +441,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1.4k
+                  1.6k
                 </span>
               
 
@@ -457,7 +457,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  5
+                  6
                 </span>
               
             </div>
@@ -465,7 +465,7 @@
 
           
               <div class="post-description">
-                  <blockquote class="blockquote-center">github上手教程</blockquote>
+                  <blockquote class="blockquote-center">git梳理</blockquote>
               </div>
           
 
@@ -483,22 +483,29 @@
 
       
         <h1 id="SSH"><a href="#SSH" class="headerlink" title="SSH"></a>SSH</h1><blockquote>
-<p>完成与远程仓库的认证</p>
+<p>用于本地和远程仓库的授权、验签</p>
 </blockquote>
-<p>远程仓库需要你在本地先通过命令：ssh-keygen -t rsa -C “<a href="mailto:youremail@example.com" target="_blank" rel="noopener">youremail@example.com</a>“ 创建.ssh目录，该目录下有SSH公钥和私钥，然后你在你自己的github上的SSH KEY里添加本地公钥（登陆github,选择settings-ssh key)，这么做的目的是当你用这台机器提交到远程仓库时验证你的身份防止别人冒充提交。SSH-KEY针对机器，你只需要获得一次 SSHKEY就可以了，一台机器上可以创建多个本地仓库与远程仓库建立关联。</p>
+<p>type <code>ssh-keygen -t rsa -C &quot;youremail@example.com&quot;</code> ，这会在本地创建.ssh目录，并在该目录下生成本地SSH公钥和私钥<br>在github远程仓库的SSH KEY里添加本地公钥（登陆github,选择settings-ssh key)，用于本地对远程仓库发起push操作的验签，以及本地拉取远程仓库代码操作的授权<br>单台机器（MAC地址唯一）只需要生成一次SSH KEY，即可完成与特定git账号下的git服务端加密、验签</p>
 <h1 id="git全局配置"><a href="#git全局配置" class="headerlink" title="git全局配置"></a>git全局配置</h1><p>git config –global user.emai …<br>git config –global user.name “…”<br>可以用git config –list查看全局global信息。</p>
-<h1 id="初始化本地仓库"><a href="#初始化本地仓库" class="headerlink" title="初始化本地仓库"></a>初始化本地仓库</h1><p>git init 之后就在本地文件夹内创建了仓库，也就是说：文件夹 = 仓库。 </p>
-<h1 id="建立本地仓库与远程仓库的关联"><a href="#建立本地仓库与远程仓库的关联" class="headerlink" title="建立本地仓库与远程仓库的关联"></a>建立本地仓库与远程仓库的关联</h1><p>远程仓库的名字就是origin<br>如果你把远程仓库的URL添加错了，可以git remote rm origin删除本地的远程仓库URL。<br>可以通过git remote -v查看本地关联的远程仓库URL</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git remote add origin git@github.com:dcbupt/java.git</span><br></pre></td></tr></table></figure>
-
+<h1 id="创建本地仓库"><a href="#创建本地仓库" class="headerlink" title="创建本地仓库"></a>创建本地仓库</h1><p><code>git init</code> 会在当前文件夹创建本地仓库</p>
+<h1 id="本地关联远程仓库"><a href="#本地关联远程仓库" class="headerlink" title="本地关联远程仓库"></a>本地关联远程仓库</h1><p><code>git remote add origin git@github.com:dcbupt/java.git</code><br>origin指代远程仓库<br>删除远程仓库：<code>git remote rm origin</code><br>查看本地关联的远程仓库：<code>git remote -v</code></p>
 <h1 id="本地仓库的三个空间"><a href="#本地仓库的三个空间" class="headerlink" title="本地仓库的三个空间"></a>本地仓库的三个空间</h1><p>首先，本地文件夹下还没add的文件存在于<code>工作区空间</code><br>add后的文件位于<code>暂存区空间</code><br>commit后的文件位于<code>分支空间</code>。</p>
 <h2 id="commit-id"><a href="#commit-id" class="headerlink" title="commit id"></a>commit id</h2><p>每次commit，git会分配一个唯一的commit id。分支空间里有一个HEAD指针唯一指向最新一次的commit。<br>可以理解为：HEAD = the newest commit id。<br>HEAD^指向上一次commit的commit id。</p>
-<h1 id="远程仓库-lt-gt-本地仓库"><a href="#远程仓库-lt-gt-本地仓库" class="headerlink" title="远程仓库&lt;==&gt;本地仓库"></a>远程仓库&lt;==&gt;本地仓库</h1><p>git pull 远程主机名 远程分支名：本地分支名<br>git pull origin master:master<br>git push 远程主机名 本地分支名：远程分支名<br> 一般写作：git pull/push origin master</p>
-<h1 id="gitignore"><a href="#gitignore" class="headerlink" title="gitignore"></a>gitignore</h1><p> 创建.gitignore：windows系统在git shell里 touch .gitignore<br>编写.gitignore提交指定的文件和文件夹：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">!.gitignore	//添加.gitignore文件</span><br><span class="line">/*/*	//这里是忽略根目录的下级目录里的所有文件，原因是不想忽略的文件都在根目录的下级目录里</span><br><span class="line">!/Spring*/src/</span><br><span class="line">!/Spring*/build.gradle</span><br><span class="line">!/Spring*/gradle.properties</span><br></pre></td></tr></table></figure>
-
-<h1 id="git常用指令"><a href="#git常用指令" class="headerlink" title="git常用指令"></a>git常用指令</h1><p><code>git status</code>的作用是检查这三个空间的状态。它的逻辑是：工作空间里出现的新文件或者被修改过的文件必须移动到暂存空间，暂存空间的文件必须移动到分支空间。<br><code>git reset --hard HEAD^</code> 的作用是让HEAD指针指向前一个commit id。效果是你最近一次commit对文件所做的修改失效，该文件回退到上上次提交后的状态。<br><code>git log --pretty=oneline</code>的作用是查看所有commit id和commit内容。最上面的一个ID就是最近一次的commit id，也是HEAD指向的ID。注意如果你改变了HEAD指针，例如让HEAD指向前一个commit id，则最新一次的commit就消失了，git log也查不到。<br><code>git reflog</code>的作用是记录每一次HEAD变更所做的操作，commit自然会造成HEAD变更，但是git reset –hard HEAD^也会造成HEAD变更，所以也会被reflog记录。根据git reflog可以找到所有的commit id，即使被改了HEAD指针造成丢失的commit id也会被找到，根据这个可以自由控制HEAD的值进行版本控制。做法是git reset –hard commit ID<br><code>git reset file</code>的作用是你add到暂存空间的文件撤回到工作空间。一般是你对文件做了修改后add，但你不满意还想继续修改于是就取回到工作空间。但前提是还没有commit到分支空间，一旦文件被commit，则文件不会存在于暂存空间。<br><code>git checkout file</code>的作用是对工作空间里的文件做的修改执行撤销，一般是你对文件修改后不满意想重新修改，于是撤销掉以前所有的修改。如果你add了，那么 checkout返回给你的是暂存区的文件，如果你没有add，那么checkout返回给你的是上一次你commit进分支空间的文件。 如果你在工作空间误操作rm了文件，依然可以git checkout file来实现恢复文件，原理同上。<br><code>git rm file</code>会删除工作空间和分支空间的这个文件，接下来你需要commit一下才最终完成这次delete操作。<br><code>git rm --cached file</code>可以删除暂存区的文件。<br><code>git rm+git commit -am</code>如果本地有很多文件需要删除，同时也要删除分支空间里对应的文件，那么git rm+git commit会比较麻烦，这时可以用git rm+git commit -am的方式，因为git commit -m不会向分支空间提交rm的修改，需要参数-am。 </p>
+<h1 id="推送-amp-拉取"><a href="#推送-amp-拉取" class="headerlink" title="推送 &amp; 拉取"></a>推送 &amp; 拉取</h1><p>拉取：<code>git pull 远程仓库名 远程分支名：本地分支名</code><br>例子：<code>git pull origin master:master</code><br>推送：<code>git push 远程仓库名 本地分支名：远程分支名</code> </p>
+<h1 id="gitignore"><a href="#gitignore" class="headerlink" title=".gitignore"></a>.gitignore</h1><p>作用是指定本地的一些文件和文件夹不属于git版本控制的范围内</p>
+<h1 id="git常用指令"><a href="#git常用指令" class="headerlink" title="git常用指令"></a>git常用指令</h1><p><code>git status</code>的作用是检查这三个空间的状态。它的逻辑是：工作空间里出现的新文件或者被修改过的文件必须移动到暂存空间，暂存空间的文件必须移动到分支空间。<br><code>git reset --hard HEAD^</code> 的作用是让HEAD指针指向前一个commit id。效果是你最近一次commit对文件所做的修改失效，该文件回退到上上次提交后的状态。<br><code>git log --pretty=oneline</code>的作用是查看所有commit id和commit内容。最上面的一个ID就是最近一次的commit id，也是HEAD指向的ID。注意如果你改变了HEAD指针，例如让HEAD指向前一个commit id，则最新一次的commit就消失了，git log也查不到。<br><code>git reflog</code>的作用是记录每一次HEAD变更所做的操作，即使因为执行<code>git reset --hard ...</code>而被淹没的commit id也能在这里查到。<br><code>git reset --hard commit id</code>的作用是让本地回退到某一次commit提交后的状态。结合reflog可以自由进行版本回退。<br><code>git reset file</code>的作用是你add到暂存空间的文件撤回到工作空间。一般是你对文件做了修改后add，但你不满意还想继续修改于是就取回到工作空间。但前提是还没有commit到分支空间，一旦文件被commit，则文件不会存在于暂存空间。<br><code>git checkout file</code>的作用是对工作空间里的文件做的修改执行撤销，一般是你对文件修改后不满意想重新修改，于是撤销掉以前所有的修改。如果你add了，那么 checkout返回给你的是暂存区的文件，如果你没有add，那么checkout返回给你的是上一次你commit进分支空间的文件。 如果你在工作空间误操作rm了文件，依然可以git checkout file来实现恢复文件，原理同上。<br><code>git rm file</code>会删除工作空间和分支空间的这个文件，接下来你需要commit一下才最终完成这次delete操作。<br><code>git rm --cached file</code>可以删除暂存区的文件。<br><code>git rm+git commit -am</code>如果本地有很多文件需要删除，同时也要删除分支空间里对应的文件，那么git rm+git commit会比较麻烦，这时可以用git rm+git commit -am的方式，因为git commit -m不会向分支空间提交rm的修改，需要参数-am。 </p>
 <h1 id="多分支"><a href="#多分支" class="headerlink" title="多分支"></a>多分支</h1><p>首先，在一个git init的目录下是可以创建多个分支的。默认的是master分支。<br>git checkout -b dcddc创建并切换到了dcddc分支。<br>相当于git branch dcddc + git checkout dcddc<br><code>理解HEAD指针在多分支里的作用</code><br>其实HEAD指针不是指向commit的，HEAD指针指向当前分支，当前分支指向commit。所以你切换到了其他分支后，head分支就指向当前分支， 你的commit操作只发生在当前分支上，当你checkout回另一个分支后，HEAD又指向那个分支，而那个分支指向的commit并不是另一分支指 向的commit，所以你可以在dcddc下写代码并commit进度，等完工后再合并master分支和dcddc分支，这样master分支也就追上了dcddc分支的进度，然后你再push到github就OK了。<br>合并分支的操作：git merge dcddc （在master )<br>删除dcddc分支：git branch -d dcddc</p>
+<h1 id="rebase"><a href="#rebase" class="headerlink" title="rebase"></a>rebase</h1><blockquote>
+<p>使用场景</p>
+</blockquote>
+<p>开发一个新需求，基于master拉出一个新分支a，然后fetch并checkout到本地。<br>开发期间，有些其他的需求陆续上线，因此master有新的merge commit，因此分支a与master<code>分叉</code>了。<br>为了保持分支a与master的同步性，需要不定期将master的新commit合并到分支a，此时rebase就能发挥作用了。<br><code>rebase主要用来跟上游同步</code></p>
+<p>与merge的区别：</p>
+<ul>
+<li>rebase后，自己的commit依然会顶到commit history的顶部（待验证）</li>
+<li>rebase可能会需要多次解conflict，merge只会解一次（因此建议保持每周都rebase的习惯）</li>
+</ul>
+<p>用法：<br><code>git checkout a</code><br><code>git rebase origin master</code></p>
+<p>原理：<br><code>git rebase</code>会把a分支里的每个提交(commit)取消掉，并且把它们临时保存为补丁(patch)(这些补丁放到”.git/rebase”目录中),然后把a分支更新为最新的master分支，最后把保存的这些补丁应用到a分支上。<br>因此，在rebase的过程中，也许会出现冲突(conflict). 在这种情况，Git会停止rebase并会让你去解决 冲突；在解决完冲突后，用”git-add”命令去更新这些内容的索引(index), 然后，你无需执行 git-commit,只要执行:<br><code>git rebase --continue</code><br>这样git会继续应用(apply)余下的补丁。<br>在任何时候，你可以用–abort参数来终止rebase的行动，并且a分支会回到rebase开始前的状态。<br><code>git rebase --abort</code></p>
 
         <blockquote class="blockquote-center">完</blockquote>
       
@@ -534,8 +541,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/03/29/FarBox/Forwarddc/NFV/C10%E6%8E%A5%E5%8F%A3/" rel="prev" title="C10接口">
-                C10接口 <i class="fa fa-chevron-right"></i>
+              <a href="/2017/03/30/FarBox/Forwarddc/%E7%AE%97%E6%B3%95/%E5%BC%82%E6%88%96/" rel="prev" title="异或">
+                异或 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -613,7 +620,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">126</span>
+                  <span class="site-state-item-count">107</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -668,7 +675,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#SSH"><span class="nav-number">1.</span> <span class="nav-text">SSH</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#git全局配置"><span class="nav-number">2.</span> <span class="nav-text">git全局配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#初始化本地仓库"><span class="nav-number">3.</span> <span class="nav-text">初始化本地仓库</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#建立本地仓库与远程仓库的关联"><span class="nav-number">4.</span> <span class="nav-text">建立本地仓库与远程仓库的关联</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#本地仓库的三个空间"><span class="nav-number">5.</span> <span class="nav-text">本地仓库的三个空间</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#commit-id"><span class="nav-number">5.1.</span> <span class="nav-text">commit id</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#远程仓库-lt-gt-本地仓库"><span class="nav-number">6.</span> <span class="nav-text">远程仓库&lt;==&gt;本地仓库</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#gitignore"><span class="nav-number">7.</span> <span class="nav-text">gitignore</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#git常用指令"><span class="nav-number">8.</span> <span class="nav-text">git常用指令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#多分支"><span class="nav-number">9.</span> <span class="nav-text">多分支</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#SSH"><span class="nav-number">1.</span> <span class="nav-text">SSH</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#git全局配置"><span class="nav-number">2.</span> <span class="nav-text">git全局配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#创建本地仓库"><span class="nav-number">3.</span> <span class="nav-text">创建本地仓库</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#本地关联远程仓库"><span class="nav-number">4.</span> <span class="nav-text">本地关联远程仓库</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#本地仓库的三个空间"><span class="nav-number">5.</span> <span class="nav-text">本地仓库的三个空间</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#commit-id"><span class="nav-number">5.1.</span> <span class="nav-text">commit id</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#推送-amp-拉取"><span class="nav-number">6.</span> <span class="nav-text">推送 &amp; 拉取</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#gitignore"><span class="nav-number">7.</span> <span class="nav-text">.gitignore</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#git常用指令"><span class="nav-number">8.</span> <span class="nav-text">git常用指令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#多分支"><span class="nav-number">9.</span> <span class="nav-text">多分支</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#rebase"><span class="nav-number">10.</span> <span class="nav-text">rebase</span></a></li></ol></div>
             
 
           </div>
