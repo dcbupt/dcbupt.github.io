@@ -1,0 +1,1458 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="https://fonts.cat.net/css?family=Microsoft YaHei:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|Microsoft YaHei:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="系统学习领域驱动的开发模式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="系统学习领域驱动的开发模式">
+<meta property="og:url" content="http:&#x2F;&#x2F;dcbupt.github.io&#x2F;2020&#x2F;07&#x2F;31&#x2F;FarBox&#x2F;Forwarddc&#x2F;%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97&#x2F;%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8%E7%9A%84%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F&#x2F;index.html">
+<meta property="og:site_name" content="Forwarddc&#39;s Blog">
+<meta property="og:description" content="系统学习领域驱动的开发模式">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2021-01-09T13:27:01.861Z">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://dcbupt.github.io/2020/07/31/FarBox/Forwarddc/系统学习系列/系统学习领域驱动的开发模式/"/>
+
+
+
+
+
+  <title>系统学习领域驱动的开发模式 | Forwarddc's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Forwarddc's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">西米大人的部落格</p>       
+        <blockquote class="blockquote-center">优秀的人，不是不合群，而是他们合群的人里面没有你</blockquote>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://dcbupt.github.io/2020/07/31/FarBox/Forwarddc/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8%E7%9A%84%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Forwarddc">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Forwarddc's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">系统学习领域驱动的开发模式</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-07-31T12:02:00+08:00">
+                2020-07-31
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2021-01-09T21:27:01+08:00">
+                2021-01-09
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/" itemprop="url" rel="index">
+                    <span itemprop="name">系统学习系列</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2020/07/31/FarBox/Forwarddc/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8%E7%9A%84%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F/" class="leancloud_visitors" data-flag-title="系统学习领域驱动的开发模式">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  3.3k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  11
+                </span>
+              
+            </div>
+          
+
+          
+              <div class="post-description">
+                  <blockquote class="blockquote-center">系统学习领域驱动的开发模式</blockquote>
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>软件开发当前的问题现状：</p>
+<ul>
+<li>交付速度不够快</li>
+<li>测试覆盖度不够，上线后容易出故障，质量难以保证</li>
+</ul>
+<p>原因：<br>随着软件的持续演进，系统复杂度成倍增加，造成技术债务越来越多，阻塞了开发效率也降低了交付质量</p>
+<p>重构能解决吗？<br>重构有边界，边界内的重构无法影响到边界外的代码设计，且重构后的代码也容易被逐渐侵蚀。所以很难。</p>
+<p>微服务、中台化能解决吗？<br>在不良的业务分析、架构设计基础上，推动中台化或微服务，往往会使矛盾凸显</p>
+<p>云原生时代，软件性能、可靠性等已被底层接管。作为业务研发，实现软件高质量、快速交付的关键因素应该是：</p>
+<ul>
+<li>需求分析能力<ul>
+<li>该阶段需要做到：业务引领的领域建模</li>
+</ul>
+</li>
+<li>架构设计和实现能力<ul>
+<li>该阶段需要做到：设计领域驱动的微服务架构 &amp; 契约导向的软件实现</li>
+</ul>
+</li>
+</ul>
+<h1 id="领域模型"><a href="#领域模型" class="headerlink" title="领域模型"></a>领域模型</h1><h2 id="领域模型的重要性"><a href="#领域模型的重要性" class="headerlink" title="领域模型的重要性"></a>领域模型的重要性</h2><p>领域模型是软件开发的核心载体<br>好的领域模型沉淀下来的是领域资产，能快速满足后续业务发展。领域资产越来越多，技术债务就会越来越少<br>领域模型反应的是对行业的<code>认知</code>，是一家企业的根本能力和竞争力。</p>
+<h2 id="领域模型的基本概念"><a href="#领域模型的基本概念" class="headerlink" title="领域模型的基本概念"></a>领域模型的基本概念</h2><p>领域模型是概念模型，描述的是现实世界的实体和他们之间的关系，与软件实现无关，存在于问题空间，在需求分析阶段产生领域模型。<br>领域模型建立后，会贯穿软件开发始终，直接指导架构设计和实现</p>
+<h2 id="领域模型的表示"><a href="#领域模型的表示" class="headerlink" title="领域模型的表示"></a>领域模型的表示</h2><p>类图是一种较好的领域模型表示方法。<br>每个类代表一种概念。<br>普通箭头表示一种可见关系。<br>空心菱形箭头表示一种包含关系，但生命周期不同。<br>实心菱形箭头表示一种包含关系，但生命周期相同。<br>三角箭头表示一种抽象与继承关系。</p>
+<h2 id="领域模型的作用"><a href="#领域模型的作用" class="headerlink" title="领域模型的作用"></a>领域模型的作用</h2><p>好的领域模型应该具备以下三个作用。</p>
+<ul>
+<li>建立共识 <ul>
+<li>建立与业务人员对于需求、产品的共识。避免需求失焦而产生返工，甚至做错。</li>
+<li>建立共识需要拉齐业务与开发，在协作空间（白板）里产生共识。</li>
+<li>建立共识的目的就是统一语言。</li>
+<li>建立共识衡量的方法：任何在需求中出现的概念，都必须出现在领域模型中。</li>
+</ul>
+</li>
+<li>产生洞察<ul>
+<li>产生洞察要相信业务人员的直觉</li>
+<li>产生洞察要有分解和抽象的能力</li>
+<li>产生洞察的领域模型才是企业真正的领域资产</li>
+</ul>
+</li>
+<li>持续演进<ul>
+<li>没有绝对正确的领域模型。随着认知的深入，领域模型需要持续演进</li>
+<li>持续演进对领域模型的修改，也要相应修改代码和架构</li>
+</ul>
+</li>
+</ul>
+<h2 id="从需求分析到领域建模"><a href="#从需求分析到领域建模" class="headerlink" title="从需求分析到领域建模"></a>从需求分析到领域建模</h2><p>任何业务需求都可以拆分为三个组成部分，逐层展开分别是目标、操作流程、规则。<br>需求分析有很多方法论。</p>
+<ul>
+<li>用例分析：结构化的分析繁杂的业务场景。用例组成元素有执行者、交互、边界、前置后置条件、例外等。 </li>
+<li>事件风暴：事件+风暴。以领域事件（业务视角的重要事件）为主体构建业务场景的流程，用头脑风暴探索和发现可能的异常情况而衍生出的其他场景。</li>
+</ul>
+<p>事件风暴是一种很适合用来分析需求的方法论。<br>事件风暴中，需要我们先划分业务场景，然后针对一次完整的业务场景去定义其中产生的所有领域事件。<br>领域事件是由执行者执行了一些命令而产生的。因此一个领域事件必然会携带执行者和命令。</p>
+<p>事件风暴的过程中，领域模型同步产出。<br>验证领域模型的方法：</p>
+<ul>
+<li>用例场景中的任何实体都应该出现在领域模型中</li>
+<li>任何领域模型都应该有对应的用例场景</li>
+</ul>
+<h1 id="从领域模型到代码实现"><a href="#从领域模型到代码实现" class="headerlink" title="从领域模型到代码实现"></a>从领域模型到代码实现</h1><p>好的代码设计应该具备以下三点：</p>
+<ul>
+<li>易于理解</li>
+<li>易于演进</li>
+<li>低开发成本</li>
+</ul>
+<h2 id="实现域的核心概念"><a href="#实现域的核心概念" class="headerlink" title="实现域的核心概念"></a>实现域的核心概念</h2><h3 id="实体"><a href="#实体" class="headerlink" title="实体"></a>实体</h3><p>领域模型构建之后，首先要找出其中最重要的概念模型。一般来说，重要的概念模型有两个特定：</p>
+<ul>
+<li>与其他模型建立的关系更多</li>
+<li>随着业务进展，概念模型的状态和属性也会改变</li>
+</ul>
+<p>对于这种最重要的概念模型，在解空间（实现域）我们称它为<code>实体</code>，用唯一id来标识。</p>
+<h3 id="值对象"><a href="#值对象" class="headerlink" title="值对象"></a>值对象</h3><p>领域模型中那些用来描述实体模型的概念，称为值对象。<br>值对象用来描述实体的特征，我们只关心值对象的属性，不关心它有没有唯一标识符。值对象的值相同，就认为相同，值不同，就认为不同。<br>引入值对象的原因是，在解空间需要将其和实体区分开，减少系统的复杂度</p>
+<p>某些特殊值对象需要保存id而不是业务数据，例如用户id</p>
+<h3 id="领域服务"><a href="#领域服务" class="headerlink" title="领域服务"></a>领域服务</h3><p>领域模型中不包含任何数据的概念模型，例如一些业务计算逻辑和业务策略。这类概念模型称为领域服务。</p>
+<h3 id="领域事件"><a href="#领域事件" class="headerlink" title="领域事件"></a>领域事件</h3><p>通过事件风暴进行需求分析，可以很容易得到领域事件。<br>领域事件表达了<code>系统中发生了什么</code>，它们源自于业务活动的结果<br>引入领域事件可以解耦业务间的复杂关系<br>领域事件里需要记录事件上下文，例如一些实体id等 </p>
+<h2 id="聚合"><a href="#聚合" class="headerlink" title="聚合"></a>聚合</h2><p>为了保证业务逻辑的完整性，减少出错的概率，需要引入聚合的概念：</p>
+<ul>
+<li>将实体对象和值对象划分为聚合，并围绕聚合定义边界</li>
+<li>每个聚合需要有一个对应的实体来描述，称为聚合根<ul>
+<li>聚合根往往就是实体，围绕实体划分边界，保障对实体操作的业务完整性</li>
+</ul>
+</li>
+<li>聚合根使用充血模式，执行边界内的业务行为，保障边界内的业务逻辑完整性</li>
+<li>任何对边界内业务行为的操作，只能通过聚合根的引用来进行，不能越过聚合根，直接持有聚合根内部的属性</li>
+</ul>
+<h3 id="划分聚合的原则"><a href="#划分聚合的原则" class="headerlink" title="划分聚合的原则"></a>划分聚合的原则</h3><p>生命周期一致性原则：</p>
+<ul>
+<li>聚合边界内的对象，和聚合根之间存在人身依附关系。即，聚合根消失，聚合根内的元素应该同时消失</li>
+</ul>
+<p>小聚合原则：</p>
+<ul>
+<li>在不破坏业务逻辑完整性的基础上，小聚合带来更大的灵活性</li>
+</ul>
+<h2 id="工厂"><a href="#工厂" class="headerlink" title="工厂"></a>工厂</h2><p>使用工厂模式来构建聚合根，保障聚合根构造的业务完整性。也可以使用Builder模式</p>
+<h2 id="资源库"><a href="#资源库" class="headerlink" title="资源库"></a>资源库</h2><p>资源库是聚合根的仓储机制，外界只能通过资源库完成对聚合根的访问，也只有聚合根需要提供资源库访问方式。</p>
+<h2 id="代码结构"><a href="#代码结构" class="headerlink" title="代码结构"></a>代码结构</h2><p>使用聚合根名称作为包名。包下是围绕这个聚合定义的所有JAVA类</p>
+<h2 id="分层架构"><a href="#分层架构" class="headerlink" title="分层架构"></a>分层架构</h2><p>基于领域驱动的软件开发，系统架构一般由上到下分为这几层：接口层、应用层、领域层、基础设施层。<br>接口层：</p>
+<ul>
+<li>基于特性通信协议封装对外提供的接口服务。通信协议例如Dubbo\HSF\Restful<br>应用层：</li>
+<li>实现满足应用场景的外层服务，这部分的业务逻辑是经常变动的<br>领域层：</li>
+<li>基于领域模型得到的实例、值对象、领域服务、领域事件集合。负责处理稳定的业务相关逻辑，应用层的接口需要依赖领域层的能力<br>基础设施层：</li>
+<li>数据库、消息等底层功能</li>
+</ul>
+<p>建立高效的软件开发，应该以领域层为核心进行开发。领域层和其他层之间通过接口建立联系。因为领域层是最稳定也是最核心的业务抽象和实现。</p>
+<h2 id="意图导向编程"><a href="#意图导向编程" class="headerlink" title="意图导向编程"></a>意图导向编程</h2><p>在开发阶段，编程的顺序应该是由外而内，即意图导向的编程。理由是：</p>
+<ul>
+<li>外层功能比底层实现方案具有更高的确定性</li>
+<li>延迟决策到最后时刻，关键信息经常会自然显现</li>
+<li>由外而内编程允许暂时忽略不重要的细节</li>
+</ul>
+<p>结合上面介绍的分层架构，我们在编码阶段应该先从应用层入口，围绕应用场景定义接口职责。然后再将职责分配到领域层相关的实体、领域服务、领域事件等。</p>
+<h2 id="测试先行"><a href="#测试先行" class="headerlink" title="测试先行"></a>测试先行</h2><p>后置的自动化单元测试的弊端：</p>
+<ul>
+<li>上下文丢失<ul>
+<li>编码后再写测试，很难回忆起编码时考虑到的所有case，丢失上下文也就很难写出完备的测试用例</li>
+</ul>
+</li>
+<li>情绪和动机<ul>
+<li>编码完成后再补测试，情绪和动机上都会受影响</li>
+</ul>
+</li>
+</ul>
+<p>自动化测试Case应该是表达业务意图，在定义好满足业务需求的应用层接口后，在实现内部逻辑前就应该补上测试Case，来检验接口的业务功能是否满足。</p>
+<p>测试用例的本质不是对被测代码的白盒化测试，而是对接口职责的测试。这样能保证在重构后，测试用例依旧可用。<br>测试用例其实描述的是软件开发中的契约（接口的入参格式、出参格式、出参值）。测试先行，就是为了在实现具体的功能细节（与接口职责无关）前，定义契约。</p>
+<p>因此，测试先行的收益包括：</p>
+<ul>
+<li>聚焦于接口职责，从测试用例就能读懂接口意图</li>
+<li>在接口的内部功能实现前，就可以产出接口测试用例，避免丢失上下文</li>
+<li>支持重构</li>
+<li>持续建立对接口的信心</li>
+</ul>
+<h1 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h1><h2 id="子域和限界上下文"><a href="#子域和限界上下文" class="headerlink" title="子域和限界上下文"></a>子域和限界上下文</h2><p>复杂的东西分而治之，各个击破，独立进化，易于复用。</p>
+<p>领域划分需要围绕业务进行，而非技术实现！</p>
+<p>核心域：提炼最有价值和最专业的概念到核心域，把核心变小，发现深层模型，打造核心竞争力<br>核心域需要能提炼出一句话来描述其职能，要足够内聚。</p>
+<p>通用子域：简单理解为非核心域</p>
+<p>拆分领域的方法论</p>
+<ul>
+<li>在业务流程中识别领域</li>
+<li>在领域模型中识别领域</li>
+</ul>
+<p>限界上下文<br>比方：细胞膜隔离了细胞内的物质和细胞外的物质<br>限界上下文的边界和子域定义保持一致。在编码阶段维护住限界上下文是很有挑战的。最好的做法是用领域模型来守护限界上下文</p>
+<p>如何识别限界上下文被破坏了？<br>一个子域的实现代码里，引入了其他域的领域服务。或者，一个领域模型里，引入了其他领域的概念模型</p>
+<p>微服务很适合于保障限界上下文。即，通过进程来隔离，而非通过包来隔离（很容易被破坏）</p>
+<p>划分领域需要保守一些，后续持续演进中可以再拆开细化。如果一开始就拆的太细，后续合并会很痛苦。</p>
+<h1 id="领域资产"><a href="#领域资产" class="headerlink" title="领域资产"></a>领域资产</h1><p>好的领域资产一定是可以<code>被集成、被扩展、被信赖</code>的<br>如何才能做出好的领域资产呢？必须满足以下三点：</p>
+<ul>
+<li>合理划分子域</li>
+<li>良好的契约描述资产能力和约束</li>
+<li>持续演进</li>
+</ul>
+<h2 id="处理遗留资产"><a href="#处理遗留资产" class="headerlink" title="处理遗留资产"></a>处理遗留资产</h2><p>对于遗留资产（前人写的并不符合领域驱动设计的代码），首先还是要把它当做资产看待，因为它还提供正常的功能。对待遗留资产，有这些方法：</p>
+<ul>
+<li>防腐层<ul>
+<li>不直接调用遗留资产的方法，依然调用新的领域模型中定义的方法，在方法内部调用遗留资产的方法，增加防腐层（适配器）来适配遗留资产</li>
+</ul>
+</li>
+<li>在遗留资产上包装并暴露api<ul>
+<li>从遗留资产出发，进行领域分析，提炼出领域方法，内部适配遗留资产的方法，对外只暴露领域方法，并做好自动化测试</li>
+<li>在这个基础上逐步重写遗留资产的方法，称为<code>绞杀者模式</code></li>
+</ul>
+</li>
+</ul>
+
+        <blockquote class="blockquote-center">完</blockquote>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/07/13/FarBox/Forwarddc/%E6%B5%85%E5%B0%9D%E7%B3%BB%E5%88%97/UML/" rel="next" title="UML">
+                <i class="fa fa-chevron-left"></i> UML
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/08/28/FarBox/Forwarddc/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0MySQL/" rel="prev" title="系统学习MySQL">
+                系统学习MySQL <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Forwarddc</p>
+              <p class="site-description motion-element" itemprop="description">description here</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">128</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#领域模型"><span class="nav-number">2.</span> <span class="nav-text">领域模型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#领域模型的重要性"><span class="nav-number">2.1.</span> <span class="nav-text">领域模型的重要性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#领域模型的基本概念"><span class="nav-number">2.2.</span> <span class="nav-text">领域模型的基本概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#领域模型的表示"><span class="nav-number">2.3.</span> <span class="nav-text">领域模型的表示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#领域模型的作用"><span class="nav-number">2.4.</span> <span class="nav-text">领域模型的作用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#从需求分析到领域建模"><span class="nav-number">2.5.</span> <span class="nav-text">从需求分析到领域建模</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#从领域模型到代码实现"><span class="nav-number">3.</span> <span class="nav-text">从领域模型到代码实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#实现域的核心概念"><span class="nav-number">3.1.</span> <span class="nav-text">实现域的核心概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#实体"><span class="nav-number">3.1.1.</span> <span class="nav-text">实体</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#值对象"><span class="nav-number">3.1.2.</span> <span class="nav-text">值对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#领域服务"><span class="nav-number">3.1.3.</span> <span class="nav-text">领域服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#领域事件"><span class="nav-number">3.1.4.</span> <span class="nav-text">领域事件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#聚合"><span class="nav-number">3.2.</span> <span class="nav-text">聚合</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#划分聚合的原则"><span class="nav-number">3.2.1.</span> <span class="nav-text">划分聚合的原则</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#工厂"><span class="nav-number">3.3.</span> <span class="nav-text">工厂</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#资源库"><span class="nav-number">3.4.</span> <span class="nav-text">资源库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码结构"><span class="nav-number">3.5.</span> <span class="nav-text">代码结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分层架构"><span class="nav-number">3.6.</span> <span class="nav-text">分层架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#意图导向编程"><span class="nav-number">3.7.</span> <span class="nav-text">意图导向编程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试先行"><span class="nav-number">3.8.</span> <span class="nav-text">测试先行</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#架构"><span class="nav-number">4.</span> <span class="nav-text">架构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#子域和限界上下文"><span class="nav-number">4.1.</span> <span class="nav-text">子域和限界上下文</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#领域资产"><span class="nav-number">5.</span> <span class="nav-text">领域资产</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#处理遗留资产"><span class="nav-number">5.1.</span> <span class="nav-text">处理遗留资产</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Forwarddc</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("OBdFsOOtfIDcNnWdzkGbICmj-gzGzoHsz", "89LmL4tP7hkyChAmEleq2MdO");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/love.js"></script> 
+
+<!-- 爆炸特效 -->
+<!--
+
+   <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+   <script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+   <script type="text/javascript" src="/js/src/fireworks.js"></script>
+
+-->
+
+
+<!-- 背景动画 -->
+<script type="text/javascript" src="/js/src/particle.js"></script>
+
+</body>
+</html>

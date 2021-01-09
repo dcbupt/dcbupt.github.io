@@ -1,0 +1,1397 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="https://fonts.cat.net/css?family=Microsoft YaHei:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|Microsoft YaHei:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="唯一随机数映射算法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="唯一随机数映射算法">
+<meta property="og:url" content="http:&#x2F;&#x2F;dcbupt.github.io&#x2F;2021&#x2F;01&#x2F;09&#x2F;FarBox&#x2F;Forwarddc&#x2F;%E6%B7%B1%E5%BA%A6%E7%B3%BB%E5%88%97&#x2F;%E5%94%AF%E4%B8%80%E9%9A%8F%E6%9C%BA%E6%95%B0%E6%98%A0%E5%B0%84%E7%AE%97%E6%B3%95&#x2F;index.html">
+<meta property="og:site_name" content="Forwarddc&#39;s Blog">
+<meta property="og:description" content="唯一随机数映射算法">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http:&#x2F;&#x2F;dcbupt.github.io&#x2F;2021&#x2F;01&#x2F;09&#x2F;FarBox&#x2F;Forwarddc&#x2F;%E6%B7%B1%E5%BA%A6%E7%B3%BB%E5%88%97&#x2F;%E5%94%AF%E4%B8%80%E9%9A%8F%E6%9C%BA%E6%95%B0%E6%98%A0%E5%B0%84%E7%AE%97%E6%B3%95&#x2F;resource&#x2F;%E5%85%AD%E4%BD%8D%E5%94%AF%E4%B8%80%E9%9A%8F%E6%9C%BA%E6%95%B0%E7%94%9F%E6%88%90%E7%AE%97%E6%B3%95.png">
+<meta property="og:updated_time" content="2021-01-09T13:27:01.802Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;dcbupt.github.io&#x2F;2021&#x2F;01&#x2F;09&#x2F;FarBox&#x2F;Forwarddc&#x2F;%E6%B7%B1%E5%BA%A6%E7%B3%BB%E5%88%97&#x2F;%E5%94%AF%E4%B8%80%E9%9A%8F%E6%9C%BA%E6%95%B0%E6%98%A0%E5%B0%84%E7%AE%97%E6%B3%95&#x2F;resource&#x2F;%E5%85%AD%E4%BD%8D%E5%94%AF%E4%B8%80%E9%9A%8F%E6%9C%BA%E6%95%B0%E7%94%9F%E6%88%90%E7%AE%97%E6%B3%95.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://dcbupt.github.io/2021/01/09/FarBox/Forwarddc/深度系列/唯一随机数映射算法/"/>
+
+
+
+
+
+  <title>唯一随机数映射算法 | Forwarddc's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Forwarddc's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">西米大人的部落格</p>       
+        <blockquote class="blockquote-center">优秀的人，不是不合群，而是他们合群的人里面没有你</blockquote>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://dcbupt.github.io/2021/01/09/FarBox/Forwarddc/%E6%B7%B1%E5%BA%A6%E7%B3%BB%E5%88%97/%E5%94%AF%E4%B8%80%E9%9A%8F%E6%9C%BA%E6%95%B0%E6%98%A0%E5%B0%84%E7%AE%97%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Forwarddc">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Forwarddc's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">唯一随机数映射算法</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-01-09T21:27:01+08:00">
+                2021-01-09
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2021-01-09T21:27:01+08:00">
+                2021-01-09
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E7%B3%BB%E5%88%97/" itemprop="url" rel="index">
+                    <span itemprop="name">深度系列</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2021/01/09/FarBox/Forwarddc/%E6%B7%B1%E5%BA%A6%E7%B3%BB%E5%88%97/%E5%94%AF%E4%B8%80%E9%9A%8F%E6%9C%BA%E6%95%B0%E6%98%A0%E5%B0%84%E7%AE%97%E6%B3%95/" class="leancloud_visitors" data-flag-title="唯一随机数映射算法">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  3.4k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  14
+                </span>
+              
+            </div>
+          
+
+          
+              <div class="post-description">
+                  <blockquote class="blockquote-center">唯一随机数映射算法</blockquote>
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="需求背景"><a href="#需求背景" class="headerlink" title="需求背景"></a>需求背景</h1><p>业务数据表中，主键id往往被设置为自增，且在一些接口中会对外透出，因此外部可以直接拿到代表业务量的主键id，从中估计出业务规模。例如在医疗领域，可直接通过主键id获取医生规模、处方量、病例量、问诊量等商业数据</p>
+<p>因此需要设计一套随机数生成算法，将主键id映射为随机数，使得外部无法从中窥探出业务规模</p>
+<p>随机数生成算法需要具备如下特性：</p>
+<ul>
+<li>唯一性。原数可映射成唯一的随机数，不能存在碰撞<ul>
+<li>原数往往对应一个医生主键id、问诊单号、处方单号、病历单号等，都是有实际的业务含义且独立的，因此映射后的随机数不能存在碰撞</li>
+</ul>
+</li>
+<li>随机性。映射后的随机数不能轻易看出生成规则</li>
+<li>高效性。算法不能过于复杂，消耗过多系统资源</li>
+<li>可逆性。算法最好可逆，通过随机数反推回原数</li>
+</ul>
+<p>结合xx号这个具体需求背景：</p>
+<ul>
+<li>需要将自增主键id映射成一个随机数作为xx号使用</li>
+<li>当前业务规模在5W+，预估后续规模在百万内，因此6位数的xx号可以覆盖所有医生</li>
+</ul>
+<p>因此业务需求可以转化为一个具体的技术需求：</p>
+<blockquote>
+<p>设计一套6位唯一随机数生成算法，将主键id映射为xx号</p>
+</blockquote>
+<h1 id="方案"><a href="#方案" class="headerlink" title="方案"></a>方案</h1><h2 id="确定映射后的六位数范围"><a href="#确定映射后的六位数范围" class="headerlink" title="确定映射后的六位数范围"></a>确定映射后的六位数范围</h2><p>999999的二进制：            1111 0100 0010 0011 1111<br>so映射后的二进制一定要比      1111 0100 0010 0100 0000小，否则就映射到7位数了</p>
+<h2 id="唯一随机数生成方案"><a href="#唯一随机数生成方案" class="headerlink" title="唯一随机数生成方案"></a>唯一随机数生成方案</h2><blockquote>
+<p>种子异或+二进制的乱序移位</p>
+</blockquote>
+<p>异或的优点</p>
+<ul>
+<li>异或可将原数唯一映射成另一个数。唯一性是指，不同时存在a和a’，满足a^b=c，a’^b=c</li>
+<li>异或是可逆的。即，a^b=c，知道b和异或结果c，可以反推出a=b^c。利用这一点可以实现算法可逆，通过随机数反推回原数</li>
+</ul>
+<p>异或的缺点</p>
+<ul>
+<li>种子相同，异或后的结果相同，因此只做异或运算还是容易被逆的，随机性不够</li>
+<li>种子选取不慎，异或后的结果可能远大于原数<ul>
+<li>在这个需求中，可能一个6位数异或得到一个7位数甚至更大，是完全有可能的。7位数截取6位，很容易造成随机数碰撞</li>
+</ul>
+</li>
+</ul>
+<p>对于缺点1，增加异或随机性的解法是；</p>
+<ul>
+<li>多次异或，每次异或使用的种子不同   </li>
+<li>异或前，对原数的二进制做乱序移位，增加原数随机性<ul>
+<li>需要保证乱序移位后，不超过一个预设的极大值。对于要生成随机6位数，就要保证异或后的随机数不超过999999</li>
+</ul>
+</li>
+</ul>
+<p>对于缺点2，需要通过分析推理出适合的种子集合，使得集合中的每个种子都能保证原数异或后在一个极大值范围内，对于要生成随机6位数，就要保证异或后的随机数不超过999999</p>
+<h2 id="确定异或种子和可乱序移位的位置"><a href="#确定异或种子和可乱序移位的位置" class="headerlink" title="确定异或种子和可乱序移位的位置"></a>确定异或种子和可乱序移位的位置</h2><p>这里就要具体问题具体分析了</p>
+<p>因为我们要生成6位随机数，所以999999是映射后的极大值，对它的二进制<code>1111 0100 0010 0011 1111</code>（共二十位）做如下推算</p>
+<ul>
+<li>高四位全1，所以对高四位做移位操作不会改变原数范围</li>
+<li>高四位全1，所以在高四位不全是1时，低十六位的范围必然是完整的全集。如果种子异或后高四位改变，必然存在原数高四位非全1，映射后全1的场景，而原数低16位是全集，种子异或后必然比999999的低16位<code>0100 0010 0011 1111</code>大，所以推得种子高四位不能改变原数高四位，因此种子高四位只能全0</li>
+<li>因为种子高四位全0，不改变原数高四位，所以在原数高四位是<code>1111</code>时，原数的高5<del>14位与种子的高5</del>14位异或后不能超过999999的高5<del>14位<code>0100 0010 00</code>。换句话说，<code>0000 0000 00</code></del><code>0100 0010 00</code>与种子的高5<del>14位<code>xxxx xxxx xx</code>异或后，最大只能为<code>0100 0010 00</code>。由此推得，种子的5</del>14位只能是全0。推送过程可以从高位到低位用反证法，过程不详述</li>
+<li>低6位全1，所以对低6位做移位操作不会改变原数范围</li>
+<li>低6位全1，所以种子的低6位对原数低6位异或运算后，不会导致生成的随机数超过999999，因此种子的低6位可任意</li>
+</ul>
+<p>结论：</p>
+<ul>
+<li>原数高4位和低6位可做乱序移位操作，共（4<em>3</em>2<em>1）</em>（6<em>5</em>4<em>3</em>2*1）= 17280种选择</li>
+<li>种子低6位可取任意的0或1，高14位全0，因此种子的个数为2<em>2</em>2<em>2</em>2*2=64种选择</li>
+</ul>
+<p>因此，基于不同的移位操作和不同的种子，一共可衍生出<code>17280*64=1105920</code>种唯一6位随机数映射结果集。如果对生成的随机数再使用该算法递归一次，就会生成1105920的二次方种随机数映射结果集，因此该算法可以实现完全无碰撞的六位唯一随机数，且每种随机数生成方式有三个可选变量来定制属于自己的一套随机化方案：</p>
+<ul>
+<li>选择不同的种子</li>
+<li>不同的乱序移位方式</li>
+<li>不同的递归次数</li>
+</ul>
+<h2 id="通用性"><a href="#通用性" class="headerlink" title="通用性"></a>通用性</h2><p>如果我想实现7位、8位甚至更高的唯一随机数，这套算法通用吗？答案是肯定的，因为算法的核心就是要确定两点：</p>
+<ul>
+<li>种子集，需要保证异或后的结果不超过位数的极大值（6位是999999，七位是9999999，以此类推…）</li>
+<li>原数的二进制中，哪些位置可做乱序移位操作</li>
+</ul>
+<p>这两点，可以借鉴我上述对于6位随机数的推演过程，不难得到其他位的随机数生成算法，这里我给出一般规律：</p>
+<ul>
+<li>如果想异或后不超过极大值a，种子可任意0或1的位数需要与a的低位连续为1的位数严格对应，其余位必须全为0</li>
+<li>a的高位和低位连续1的位数，可做乱序移位操作来增加原数随机性，因为这不会改变原数的范围</li>
+</ul>
+<h2 id="算法流程图"><a href="#算法流程图" class="headerlink" title="算法流程图"></a>算法流程图</h2><p><img src="resource/%E5%85%AD%E4%BD%8D%E5%94%AF%E4%B8%80%E9%9A%8F%E6%9C%BA%E6%95%B0%E7%94%9F%E6%88%90%E7%AE%97%E6%B3%95.png" alt=""></p>
+<h1 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br></pre></td><td class="code"><pre><span class="line">public class NumberUtilsUsage &#123;</span><br><span class="line"></span><br><span class="line">    private static final Map&lt;Integer, Integer&gt; binarySize = new HashMap&lt;&gt;();</span><br><span class="line">    private static final Map&lt;Integer, Long&gt; maxNumber = new HashMap&lt;&gt;();</span><br><span class="line">    private static final Map&lt;Integer, List&lt;Integer&gt;&gt; seeds = new HashMap&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    private static final Integer ROTATE_LEFT = 1;</span><br><span class="line">    private static final Integer ROTATE_RIGHT = 2;</span><br><span class="line"></span><br><span class="line">    private static volatile ThreadLocal&lt;Integer&gt; seed = new ThreadLocal&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    static &#123;</span><br><span class="line">        binarySize.put(6, Integer.toBinaryString(999999).length());</span><br><span class="line">        binarySize.put(7, Integer.toBinaryString(9999999).length());</span><br><span class="line">        binarySize.put(8, Integer.toBinaryString(99999999).length());</span><br><span class="line"></span><br><span class="line">        maxNumber.put(6,999999L);</span><br><span class="line">        maxNumber.put(7,9999999L);</span><br><span class="line">        maxNumber.put(8,99999999L);</span><br><span class="line">        // 六位数的随机种子，范围从0x0000到0x003f</span><br><span class="line">        List&lt;Integer&gt; seedsForSixLen = Arrays.asList(0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f,</span><br><span class="line">                                                     0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f,</span><br><span class="line">                                                     0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28, 0x29, 0x2a, 0x2b, 0x2c, 0x2d, 0x2e, 0x2f,</span><br><span class="line">                                                     0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x3a, 0x3b, 0x3c, 0x3d, 0x3e, 0x3f);</span><br><span class="line">        seeds.put(6, seedsForSixLen);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        demoGen();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     *</span><br><span class="line">     * @param numSize 位数</span><br><span class="line">     * @param srcNum 原数</span><br><span class="line">     * @return</span><br><span class="line">     */</span><br><span class="line">    public static String gen(int srcNum, int numSize) &#123;</span><br><span class="line">        // 原数校验</span><br><span class="line">        if (biggerThanMax(numSize, srcNum)) &#123;</span><br><span class="line">            throw new IllegalArgumentException(&quot;原数超过最大值:&quot;+srcNum);</span><br><span class="line">        &#125;</span><br><span class="line">        // 随机选取种子</span><br><span class="line">        if (seed.get() == null) &#123;</span><br><span class="line">            Random ran = new Random();</span><br><span class="line">            int idx = ran.nextInt(seeds.get(numSize).size());</span><br><span class="line">            seed.set(seeds.get(numSize).get(idx));</span><br><span class="line">        &#125;</span><br><span class="line">        // 生成唯一随机数</span><br><span class="line">        return myGenRandom(srcNum, numSize);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private static boolean biggerThanMax(int numSize, int srcNum) &#123;</span><br><span class="line">        Long max = maxNumber.get(numSize);</span><br><span class="line">        if (max == null) &#123;</span><br><span class="line">            return true;</span><br><span class="line">        &#125;</span><br><span class="line">        return srcNum &gt; max;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     *</span><br><span class="line">     * @param srcNum 原数</span><br><span class="line">     * @param numSize 位数</span><br><span class="line">     * @return</span><br><span class="line">     */</span><br><span class="line">    private static String myGenRandom(int srcNum, int numSize) &#123;</span><br><span class="line"></span><br><span class="line">        int seedToUse = seed.get();</span><br><span class="line">        int movedNum = binaryMove(srcNum, numSize);</span><br><span class="line">        movedNum ^= seedToUse;</span><br><span class="line">        return decimalMove(movedNum, numSize);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 对十进制数做移位操作，增加随机性，返回移位操作后的十进制数</span><br><span class="line">     * @param decimalNum 十进制数</span><br><span class="line">     * @param numSize 位数</span><br><span class="line">     * @return</span><br><span class="line">     */</span><br><span class="line">    private static String decimalMove(int decimalNum, int numSize) &#123;</span><br><span class="line">        if (numSize == 6) &#123;</span><br><span class="line">            String convertStr = StringUtils.leftPad(String.valueOf(decimalNum), numSize, &apos;0&apos;);</span><br><span class="line">            String firstExg = exchange(convertStr, 0, 5);</span><br><span class="line">            String secondExg = exchange(firstExg, 3, 1);</span><br><span class="line">            String thirdExg = exchange(secondExg, 4, 5);</span><br><span class="line">            String forthExg = exchange(thirdExg, 2, 4);</span><br><span class="line">            return forthExg;</span><br><span class="line">        &#125; else if (numSize == 7) &#123;</span><br><span class="line">            String convertStr = StringUtils.leftPad(String.valueOf(decimalNum), numSize, &apos;0&apos;);</span><br><span class="line">            String firstExg = exchange(convertStr, 0, 6);</span><br><span class="line">            String secondExg = exchange(firstExg, 4, 2);</span><br><span class="line">            String thirdExg = exchange(secondExg, 5, 6);</span><br><span class="line">            String forthExg = exchange(thirdExg, 3, 5);</span><br><span class="line">            return forthExg;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            throw new IllegalArgumentException(&quot;位数不支持&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * @apiNote 原数转换为二进制，做移位操作，增加原数随机性，返回移位操作后的十进制数</span><br><span class="line">     * @param srcNum 原数</span><br><span class="line">     * @param numSize 位数</span><br><span class="line">     */</span><br><span class="line">    private static Integer binaryMove(int srcNum, int numSize) &#123;</span><br><span class="line">        if (numSize == 6) &#123;</span><br><span class="line">            int convert = reverseRightPart(srcNum, binarySize.get(numSize), 14);</span><br><span class="line">            return reverseLeftPart(convert, binarySize.get(numSize), 4);</span><br><span class="line">        &#125; else if (numSize == 7) &#123;</span><br><span class="line">            return reverseRightPart(srcNum, binarySize.get(numSize), 17);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            throw new IllegalArgumentException(&quot;位数不支持&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private static Integer reverseRightPart(int srcNum, int totalLen, int subLen) &#123;</span><br><span class="line">        return Integer.valueOf(rotate(Integer.toBinaryString(srcNum), totalLen, subLen, ROTATE_RIGHT), 2);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private static Integer reverseLeftPart(int srcNum, int totalLen, int subLen) &#123;</span><br><span class="line">        return Integer.valueOf(rotate(Integer.toBinaryString(srcNum), totalLen, subLen, ROTATE_LEFT), 2);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private static String exchange(String ran, int origIndex, int descIndex) &#123;</span><br><span class="line">        char[] chars = ran.toCharArray();</span><br><span class="line">        char origChar = ran.charAt(origIndex);</span><br><span class="line">        char descChar = ran.charAt(descIndex);</span><br><span class="line">        chars[origIndex] = descChar;</span><br><span class="line">        chars[descIndex] = origChar;</span><br><span class="line">        return String.valueOf(chars);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private static String rotate(String bin, int binLen, int subLen, int rotateDirection) &#123;</span><br><span class="line">        String stdBin = StringUtils.leftPad(bin, binLen, &apos;0&apos;);</span><br><span class="line">        String leftStr = stdBin.substring(0, subLen);</span><br><span class="line">        String rightStr = stdBin.substring(subLen);</span><br><span class="line">        if (ROTATE_LEFT == rotateDirection) &#123;</span><br><span class="line">            String reverse = StringUtils.reverse(leftStr);</span><br><span class="line">            return reverse.concat(rightStr);</span><br><span class="line">        &#125; else if (ROTATE_RIGHT == rotateDirection)&#123;</span><br><span class="line">            String reverse = StringUtils.reverse(rightStr);</span><br><span class="line">            return leftStr.concat(reverse);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            return stdBin;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    public static void demoGen() &#123;</span><br><span class="line">        Map&lt;Integer, String&gt; mapI = new LinkedHashMap&lt;&gt;();</span><br><span class="line">        Map&lt;Integer, String&gt; map = new LinkedHashMap&lt;&gt;();</span><br><span class="line">        Set&lt;Integer&gt; set = new LinkedHashSet&lt;&gt;();</span><br><span class="line">        Set&lt;Integer&gt; set1 = new LinkedHashSet&lt;&gt;();</span><br><span class="line">        Long cur = System.currentTimeMillis();</span><br><span class="line"></span><br><span class="line">        for (int i = 1; i &lt;= 999999; i++) &#123;</span><br><span class="line">            String s = gen(i, 6);</span><br><span class="line">            s = gen(Integer.valueOf(s), 6);</span><br><span class="line">            //生成超6位数，打印</span><br><span class="line">            if (s.length() != 6) &#123;</span><br><span class="line">                System.out.println(&quot;i:&quot;+i+&quot;s:&quot;+s);</span><br><span class="line">            &#125;</span><br><span class="line">            if (s.length() != 6 ||s.substring(0, 1).equals(&quot;0&quot;)) &#123;</span><br><span class="line">                mapI.put(i, s);</span><br><span class="line">                set1.add(Integer.valueOf(s));</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                map.put(i, s);</span><br><span class="line">                set.add(Integer.valueOf(s));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        Long cur1 = System.currentTimeMillis();</span><br><span class="line">        System.out.println(&quot;耗时：&quot;+(cur1-cur)/1000+&quot;秒&quot;);</span><br><span class="line">        System.out.println(&quot;有&quot;+mapI.size()+&quot;个数变换后不能使用,共有&quot;+set1.size()+&quot;个数不重复&quot;);</span><br><span class="line">        System.out.println(&quot;有&quot;+map.size()+&quot;个数变换后可以使用,共有&quot;+set.size()+&quot;个数不重复&quot;);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="基于唯一随机数的扩展能力"><a href="#基于唯一随机数的扩展能力" class="headerlink" title="基于唯一随机数的扩展能力"></a>基于唯一随机数的扩展能力</h1><h2 id="唯一随机码"><a href="#唯一随机码" class="headerlink" title="唯一随机码"></a>唯一随机码</h2><p>如果能设计一套算法，保证六位唯一随机数可以唯一映射到一个固定位数的唯一随机码，既然我们已经实现了唯一随机数算法，那么就自然可以组合成唯一随机码的生成算法</p>
+<p>数字转字符最常见的就是Base64算法，将二进制转成长串字符串，核心是维护一个字符集数组，将分隔后的每个二进制转为十进制，作为数组下标，得到映射的字符</p>
+<p>因此，我们的随机数映射随机码可以借鉴Base64算法的思路，维护一个字符集数组，包含所有随机码的字符。问题的关键是如何处理六位数才能得到一组唯一映射的数组下标</p>
+<p>假设字符集数组的长度为n，可以用六位数对n<code>不断做取模运算</code>：先取模，再做除运算去除小数，不断重复，直到六位数除尽。这么做的效果等同于将六位数<code>转换成一个n进制数</code>。对于两个不同的数，转换成的n进制数一定不同，且n进制数的每一位，必然在字符集数组的下标范围内（0~n-1）。因此，不同的数，一定能映射成不同的字符串</p>
+<p>但这也带来一个问题，转换后的n进制数位数不同造成字符串长度不同。以32进制为例，像0~31，转为32进制的数与十进制相同，因此只能映射一个字符，如果是最大的六位数999999，可以映射四个字符</p>
+<p>所以，当映射后字符串长度小于随机码的位数时，需要在映射后的字符串后面继续补充字符。补全需要的字符可以从字符集数组中随机取，因为不同的数映射的字符串已经不会相同了，所以补全需要的字符随机取是不会产生碰撞的</p>
+<p>当然，这种数字映射唯一字符串的算法如果是可逆的，就可以反推出原数，适配更多的业务场景。不难发现，上述这种进制转换算法本身就是可逆的，不过如果存在随机补全的字符，就不可逆了。因此可以用一种取巧的办法，设置一个不在字符集里的<code>哨兵字符</code>，如果需要补位，先补哨兵字符。</p>
+<blockquote>
+<p>以哨兵字符作为分界，左边的字符串就是类Base64算法映射的结果，转换为n进制数后，做逆运算（n进制数转为十进制数）即可反推出原数</p>
+</blockquote>
+<p>因此，随机码生成策略可以总结为</p>
+<blockquote>
+<p>将原数转为字符集长度n对应的n进制数，将它的每一位作为下标映射到字符集数组，得到映射后的字符串。如果长度不够，先补哨兵，再从字符集中随机取字符来补充到指定长度</p>
+</blockquote>
+
+        <blockquote class="blockquote-center">完</blockquote>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/01/09/FarBox/Forwarddc/%E6%B7%B1%E5%BA%A6%E7%B3%BB%E5%88%97/springboot%E8%87%AA%E5%AE%9A%E4%B9%89starter%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/" rel="next" title="springboot自定义starter实现原理">
+                <i class="fa fa-chevron-left"></i> springboot自定义starter实现原理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/01/09/FarBox/Forwarddc/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/reactive%E5%88%9D%E6%8E%A2/" rel="prev" title="reactive初探">
+                reactive初探 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Forwarddc</p>
+              <p class="site-description motion-element" itemprop="description">description here</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">128</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#需求背景"><span class="nav-number">1.</span> <span class="nav-text">需求背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#方案"><span class="nav-number">2.</span> <span class="nav-text">方案</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#确定映射后的六位数范围"><span class="nav-number">2.1.</span> <span class="nav-text">确定映射后的六位数范围</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#唯一随机数生成方案"><span class="nav-number">2.2.</span> <span class="nav-text">唯一随机数生成方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#确定异或种子和可乱序移位的位置"><span class="nav-number">2.3.</span> <span class="nav-text">确定异或种子和可乱序移位的位置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通用性"><span class="nav-number">2.4.</span> <span class="nav-text">通用性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#算法流程图"><span class="nav-number">2.5.</span> <span class="nav-text">算法流程图</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实现"><span class="nav-number">3.</span> <span class="nav-text">实现</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#基于唯一随机数的扩展能力"><span class="nav-number">4.</span> <span class="nav-text">基于唯一随机数的扩展能力</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#唯一随机码"><span class="nav-number">4.1.</span> <span class="nav-text">唯一随机码</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Forwarddc</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("OBdFsOOtfIDcNnWdzkGbICmj-gzGzoHsz", "89LmL4tP7hkyChAmEleq2MdO");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/love.js"></script> 
+
+<!-- 爆炸特效 -->
+<!--
+
+   <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+   <script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+   <script type="text/javascript" src="/js/src/fireworks.js"></script>
+
+-->
+
+
+<!-- 背景动画 -->
+<script type="text/javascript" src="/js/src/particle.js"></script>
+
+</body>
+</html>

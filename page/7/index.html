@@ -335,7 +335,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://dcbupt.github.io/2017/04/20/FarBox/Forwarddc/%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E7%9A%84%E6%8E%A5%E5%8F%A3%E5%92%8C%E6%8A%BD%E8%B1%A1%E7%B1%BB/">
+    <link itemprop="mainEntityOfPage" href="http://dcbupt.github.io/2017/05/23/FarBox/Forwarddc/README/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Forwarddc">
@@ -354,7 +354,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2017/04/20/FarBox/Forwarddc/%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E7%9A%84%E6%8E%A5%E5%8F%A3%E5%92%8C%E6%8A%BD%E8%B1%A1%E7%B1%BB/" itemprop="url">深入理解Java的接口和抽象类</a></h1>
+                <a class="post-title-link" href="/2017/05/23/FarBox/Forwarddc/README/" itemprop="url">博客文章</a></h1>
         
 
         <div class="post-meta">
@@ -366,8 +366,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-20T18:18:00+08:00">
-                2017-04-20
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-23T17:05:00+08:00">
+                2017-05-23
               </time>
             
 
@@ -382,8 +382,239 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2017-04-20T18:35:38+08:00">
-                2017-04-20
+              <time title="更新于" itemprop="dateModified" datetime="2017-05-23T23:17:42+08:00">
+                2017-05-23
+              </time>
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/05/23/FarBox/Forwarddc/README/" class="leancloud_visitors" data-flag-title="博客文章">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1.4k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  6
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="G-VNFM功能概述"><a href="#G-VNFM功能概述" class="headerlink" title="G-VNFM功能概述"></a>G-VNFM功能概述</h1><p>G-VNFM的功能实现主要划分为两大部分：<br>1）北向C6接口与NFVO的交互。这部分接口主要用于虚拟网元VNF生命周期管理流程中的资源获取（VNFD）、VNF生命周期管理事件状态的通报等。<br>2）南向C10接口与VNF的交互。这部分接口主要用于VNF配置参数的下发，生命周期事件状态、VNF运行状态参数的获取</p>
+<p>G-VNFM扮演NFVO和VNFs中间的组件，特别是为了与装了VNF软件的虚机之间的交互。 为了完成VNF的生命周期管理，其与EMS交互，EMS扮演了虚机代理的角色，执行VNF包中的脚本或者执行通过VNFD指定链接的脚本。 可以认为，M对VNFs的生命周期管理，在VNF层面是通过运行在VM的EMS执行脚本完成的。 O-M、M-EMS之间的通信是基于RABBITMQ AMQP协议。</p>
+<p><img src="http://openbaton.github.io/documentation/images/generic-vnfm-vnfm-or-communication.png" alt=""></p>
+<p><img src="http://openbaton.github.io/documentation/images/generic-vnfm-vnfm-ems-communication.png" alt=""></p>
+<p>G-VNFM在VNF生命周期管理中与NFVO和VNF的流程时序图：<br>可以看到，G-VNFM发送脚本到EMS，该脚本会由EMS使用root身份在VNFC中执行。<br><img src="http://openbaton.github.io/documentation/images/generic-vnfm-or-vnfm-seq-dg.png" alt=""></p>
+<p>对于任意类型的VNF，G-VNFM都会执行以下的步骤：</p>
+<ul>
+<li>虚机的部署</li>
+<li>脚本执行</li>
+<li>虚机的终止</li>
+</ul>
+<h2 id="虚机部署"><a href="#虚机部署" class="headerlink" title="虚机部署"></a>虚机部署</h2><p>G-VNFM在VNF实例化流程中，对于虚拟资源创建部分，是交由NFVO与VIM的C7接口完成，因此会给NFVO发送两条消息：</p>
+<ul>
+<li>授权操作消息<br>检测资源是否在其选择的入网点PoP上可得。如果授权操作消息返回了，说明有充分的资源可以使用，否则会收到一个错误消息。如果授权操作请求成功，就可以发送分配资源消息。</li>
+<li>分配资源消息<br>这条消息要求NFVO去创建所有的资源，如果没错误发生，分配资源消息会返回。</li>
+</ul>
+<p>执行完毕后，虚机就被创建了，VNFR也被value填充了，例如ips，可以直接通过VNFR-VDU-VNFC查到</p>
+<h2 id="脚本执行"><a href="#脚本执行" class="headerlink" title="脚本执行"></a>脚本执行</h2><p>在VNF生命周期管理流程中，G-VNFM会发脚本给EMS，EMS会在虚机中执行脚本。<br>注：脚本来自VNF包</p>
+<p>脚本的顺序被写入了VNFD-Lifecycle_event</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">&#123;// VNFD</span><br><span class="line">    ...</span><br><span class="line">    &quot;lifecycle_event&quot;:[</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;event&quot;:&quot;INSTANTIATE&quot;,</span><br><span class="line">            &quot;lifecycle_events&quot;:[</span><br><span class="line">                &quot;pre-install.sh&quot;,</span><br><span class="line">                &quot;install.sh&quot;</span><br><span class="line">            ]</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;event&quot;:&quot;CONFIGURE&quot;,</span><br><span class="line">            &quot;lifecycle_events&quot;:[</span><br><span class="line">                &quot;server_configure.sh&quot;</span><br><span class="line">            ]</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;event&quot;:&quot;START&quot;,</span><br><span class="line">            &quot;lifecycle_events&quot;:[</span><br><span class="line">                 &quot;start.sh&quot;</span><br><span class="line">            ]</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;event&quot;:&quot;STOP&quot;,</span><br><span class="line">            &quot;lifecycle_events&quot;:[</span><br><span class="line">                 &quot;stop.sh&quot;</span><br><span class="line">            ]</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;event&quot;:&quot;TERMINATE&quot;,</span><br><span class="line">            &quot;lifecycle_events&quot;:[</span><br><span class="line">                 &quot;terminate.sh&quot;</span><br><span class="line">            ]</span><br><span class="line">        &#125;</span><br><span class="line">    ],</span><br><span class="line">    ...</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>在每个生命周期事件中，脚本执行的时间是不同的，对于不同的生命周期事件：</p>
+<ul>
+<li>实例化INSTANTIATE<br>在安装VNF的过程中执行脚本</li>
+<li>配置CONFIGURE<br>在安装完成后，如果此VNF需要依赖其他的VNFs，需要执行脚本（例如获取其他VNFs的IP，然后设为环境变量）</li>
+<li>开始START<br>在实例化和配置（如果需要）事件后执行</li>
+<li>关闭STOP<br>在关闭VNF的过程中执行脚本</li>
+<li>终止TERMINATE<br>在终止VNF的过程中</li>
+<li>SCALE_IN<br>如果VNFC需要扩展到一个指定的规格</li>
+</ul>
+<p>VNFD中定义了两类参数用于脚本执行：</p>
+<ul>
+<li>特定脚本需要的参数</li>
+<li>自动加到脚本中去的参数</li>
+</ul>
+<p>在INSTANTIATE实例化中执行的脚本，VNFD定义的参数会作为脚本执行的环境变量</p>
+<h2 id="虚机终止"><a href="#虚机终止" class="headerlink" title="虚机终止"></a>虚机终止</h2><p>STOP终止生命周期事件仅仅意味着暂停VNF服务，之后还会重启服务。<br>而终止生命周期事件会从入网点删除部署的虚拟资源（虚机）。而终止脚本会在执行终止操作之前运行，并将VNF设置为终止前状态。</p>
+<h1 id="脚本和依赖的例子"><a href="#脚本和依赖的例子" class="headerlink" title="脚本和依赖的例子"></a>脚本和依赖的例子</h1><p>看一个关于两个VNF的简单例子：VNF-SERVER和VNF-DATABASE<br>VNF-SERVER需要VNF-DATABASE的ip来连接它。这样的VNFs在称为’vnet’的同一个虚拟网络中连接</p>
+<h2 id="实例化INSTANTIATE脚本"><a href="#实例化INSTANTIATE脚本" class="headerlink" title="实例化INSTANTIATE脚本"></a>实例化INSTANTIATE脚本</h2><p>为了启动VNFs，我们需要两个脚本：instantiate-vnf-server.sh和instantiate-vnf-database.sh，以VNF-SERVER的INSTANTIATE脚本为例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/bash</span><br><span class="line"></span><br><span class="line">echo &quot;INSTANTIATIATION of the VNF server&quot;</span><br><span class="line">echo &quot;The following parameters are available:&quot;</span><br><span class="line"></span><br><span class="line">echo &quot;Out-of-the-box parameters:&quot;</span><br><span class="line">echo &quot;Hostname: $&#123;hostname&#125;&quot;</span><br><span class="line">echo &quot;Private IP: $&#123;vnet&#125;&quot;</span><br><span class="line">echo &quot;Floating IP (if requested otherwise it does not exist): $&#123;vnet_floatingIp&#125;&quot;</span><br><span class="line"></span><br><span class="line">echo &quot;Configuration parameters:&quot;</span><br><span class="line">echo &quot;The answer to everything is.. $&#123;ANSWER_TO_EVERYTHING&#125;&quot;</span><br><span class="line"></span><br><span class="line"># ... Add the code to start the vnf_server ...</span><br></pre></td></tr></table></figure>
+
+<h2 id="配置脚本"><a href="#配置脚本" class="headerlink" title="配置脚本"></a>配置脚本</h2><p>实例化INSTANTIATE脚本执行完毕后，VNF-SERVER会执行如下的配置脚本：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/bash</span><br><span class="line"></span><br><span class="line">echo &quot;This is the ip of the vnf-database: $&#123;database_vnet&#125;&quot;</span><br><span class="line">echo &quot;This is the floating ip of the vnf-database: $&#123;database_vnet_floatingIp&#125;&quot;</span><br><span class="line">echo &quot;This is the hostname of the vnf-database: $&#123;database_hostname&#125;&quot;</span><br><span class="line"></span><br><span class="line"># ... Add the code to connect to the vnf-database with the ip: $&#123;database_vnet&#125; ...</span><br></pre></td></tr></table></figure>
+
+<p>为了部署VNFs，我们需要创建两个VNFD：VNF-DATABASE-DESCRIPTOR.JSON和VNF-SERVER-DESCRIPTOR.JSON<br>VNF-DATABASE-DESCRIPTOR.JSON</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;name&quot;:&quot;vnf-database&quot;,</span><br><span class="line">    &quot;type&quot;:&quot;database&quot;,</span><br><span class="line">    &quot;endpoint&quot;:&quot;generic&quot;,</span><br><span class="line">    ...</span><br><span class="line">    &quot;lifecycle_event&quot;:[</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;event&quot;:&quot;INSTANTIATE&quot;,</span><br><span class="line">            &quot;lifecycle_events&quot;:[</span><br><span class="line">                &quot;instantiate-vnf-database.sh&quot;</span><br><span class="line">            ]</span><br><span class="line">        &#125;</span><br><span class="line">    ],</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>VNF-SERVER-DESCRIPTOR.JSON</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;name&quot;:&quot;vnf-server&quot;,</span><br><span class="line">    &quot;type&quot;:&quot;server&quot;,</span><br><span class="line">    &quot;endpoint&quot;:&quot;generic&quot;,</span><br><span class="line">    ...</span><br><span class="line">    &quot;configurations&quot;:&#123;</span><br><span class="line">            &quot;name&quot;:&quot;config_name&quot;,</span><br><span class="line">            &quot;configurationParameters&quot;:[</span><br><span class="line">            &#123;</span><br><span class="line">                &quot;confKey&quot;:&quot;ANSWER_TO_EVERYTHING&quot;,</span><br><span class="line">                &quot;value&quot;:&quot;42&quot;</span><br><span class="line">            &#125;</span><br><span class="line">            ]</span><br><span class="line">    &#125;,</span><br><span class="line">    ...</span><br><span class="line">    &quot;lifecycle_event&quot;:[</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;event&quot;:&quot;INSTANTIATE&quot;,</span><br><span class="line">            &quot;lifecycle_events&quot;:[</span><br><span class="line">                &quot;instantiate-vnf-server.sh&quot;</span><br><span class="line">            ]</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;event&quot;:&quot;CONFIGURE&quot;,</span><br><span class="line">            &quot;lifecycle_events&quot;:[</span><br><span class="line">                &quot;database_connectToDb.sh&quot;</span><br><span class="line">            ]</span><br><span class="line">        &#125;</span><br><span class="line">    ],</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>NSD需要包含这两个VNFD，并且定义依赖</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;name&quot;:&quot;simple-nsd&quot;,</span><br><span class="line">    &quot;vnfd&quot;:[</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;id&quot;:&quot;29d918b9-6245-4dc4-abc6-b7dd6e84f2c1&quot;</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;id&quot;:&quot;87820607-4048-4fad-b02b-dbcab8bb5c1c&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    ],</span><br><span class="line">    &quot;vld&quot;:[</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;name&quot;:&quot;vnet&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    ],</span><br><span class="line">    &quot;vnf_dependency&quot;:[</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;source&quot; : &#123;</span><br><span class="line">                &quot;name&quot;: &quot;vnf-database&quot;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;target&quot;:&#123;</span><br><span class="line">                &quot;name&quot;: &quot;vnf-server&quot;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;parameters&quot;:[</span><br><span class="line">                &quot;vnet&quot;</span><br><span class="line">            ]</span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://dcbupt.github.io/2017/05/22/FarBox/Forwarddc/%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD/Kafka/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Forwarddc">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Forwarddc's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/05/22/FarBox/Forwarddc/%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD/Kafka/" itemprop="url">Kafka</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-22T10:55:00+08:00">
+                2017-05-22
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2017-11-27T16:19:05+08:00">
+                2017-11-27
               </time>
             
           </span>
@@ -418,7 +649,7 @@
 
           
           
-             <span id="/2017/04/20/FarBox/Forwarddc/%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E7%9A%84%E6%8E%A5%E5%8F%A3%E5%92%8C%E6%8A%BD%E8%B1%A1%E7%B1%BB/" class="leancloud_visitors" data-flag-title="深入理解Java的接口和抽象类">
+             <span id="/2017/05/22/FarBox/Forwarddc/%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD/Kafka/" class="leancloud_visitors" data-flag-title="Kafka">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -443,7 +674,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  2.1k
+                  5.3k
                 </span>
               
 
@@ -459,7 +690,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  7
+                  24
                 </span>
               
             </div>
@@ -481,10 +712,10 @@
 
       
         
-          <blockquote class="blockquote-center">摘自ImportNew</blockquote>
+          <blockquote class="blockquote-center">Kafka知识</blockquote>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2017/04/20/FarBox/Forwarddc/%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E7%9A%84%E6%8E%A5%E5%8F%A3%E5%92%8C%E6%8A%BD%E8%B1%A1%E7%B1%BB/">
+            <a class="btn" href="/2017/05/22/FarBox/Forwarddc/%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD/Kafka/">
               阅读全文 &raquo;
             </a>
           </div>
@@ -535,7 +766,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://dcbupt.github.io/2017/04/19/FarBox/Forwarddc/%E7%AE%97%E6%B3%95/%E6%9C%80%E9%95%BF%E9%9D%9E%E9%99%8D%E5%BA%8F%E5%AD%90%E6%95%B0%E7%BB%84/">
+    <link itemprop="mainEntityOfPage" href="http://dcbupt.github.io/2017/05/21/FarBox/Forwarddc/%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD/SSL%E5%8D%8F%E8%AE%AE%E8%BF%90%E8%A1%8C%E6%9C%BA%E5%88%B6%E6%A6%82%E8%BF%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Forwarddc">
@@ -554,7 +785,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2017/04/19/FarBox/Forwarddc/%E7%AE%97%E6%B3%95/%E6%9C%80%E9%95%BF%E9%9D%9E%E9%99%8D%E5%BA%8F%E5%AD%90%E6%95%B0%E7%BB%84/" itemprop="url">最长非降序子数组</a></h1>
+                <a class="post-title-link" href="/2017/05/21/FarBox/Forwarddc/%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD/SSL%E5%8D%8F%E8%AE%AE%E8%BF%90%E8%A1%8C%E6%9C%BA%E5%88%B6%E6%A6%82%E8%BF%B0/" itemprop="url">SSL协议运行机制概述</a></h1>
         
 
         <div class="post-meta">
@@ -566,8 +797,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-19T22:02:00+08:00">
-                2017-04-19
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-21T22:28:00+08:00">
+                2017-05-21
               </time>
             
 
@@ -582,408 +813,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2017-04-19T22:17:35+08:00">
-                2017-04-19
-              </time>
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%AE%97%E6%B3%95/" itemprop="url" rel="index">
-                    <span itemprop="name">算法</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2017/04/19/FarBox/Forwarddc/%E7%AE%97%E6%B3%95/%E6%9C%80%E9%95%BF%E9%9D%9E%E9%99%8D%E5%BA%8F%E5%AD%90%E6%95%B0%E7%BB%84/" class="leancloud_visitors" data-flag-title="最长非降序子数组">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  228
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  1
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <blockquote class="blockquote-center">lintcode题目</blockquote>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/04/19/FarBox/Forwarddc/%E7%AE%97%E6%B3%95/%E6%9C%80%E9%95%BF%E9%9D%9E%E9%99%8D%E5%BA%8F%E5%AD%90%E6%95%B0%E7%BB%84/">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://dcbupt.github.io/2017/04/19/FarBox/Forwarddc/%E7%AE%97%E6%B3%95/%E5%85%AC%E5%85%B1%E5%AD%90%E5%AD%97%E7%AC%A6%E4%B8%B2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Forwarddc">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Forwarddc's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/04/19/FarBox/Forwarddc/%E7%AE%97%E6%B3%95/%E5%85%AC%E5%85%B1%E5%AD%90%E5%AD%97%E7%AC%A6%E4%B8%B2/" itemprop="url">公共子字符串</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-19T21:37:00+08:00">
-                2017-04-19
-              </time>
-            
-
-            
-              <span class="post-meta-divider">|</span>
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-check-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">更新于&#58;</span>
-              
-              <time title="更新于" itemprop="dateModified" datetime="2017-04-19T22:18:43+08:00">
-                2017-04-19
-              </time>
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%AE%97%E6%B3%95/" itemprop="url" rel="index">
-                    <span itemprop="name">算法</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2017/04/19/FarBox/Forwarddc/%E7%AE%97%E6%B3%95/%E5%85%AC%E5%85%B1%E5%AD%90%E5%AD%97%E7%AC%A6%E4%B8%B2/" class="leancloud_visitors" data-flag-title="公共子字符串">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  346
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  1
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <blockquote class="blockquote-center">阿里面试题</blockquote>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/04/19/FarBox/Forwarddc/%E7%AE%97%E6%B3%95/%E5%85%AC%E5%85%B1%E5%AD%90%E5%AD%97%E7%AC%A6%E4%B8%B2/">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://dcbupt.github.io/2017/04/18/FarBox/Forwarddc/%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD/%E6%B7%B1%E5%85%A5%E5%88%86%E6%9E%90Synchronised%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Forwarddc">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Forwarddc's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/04/18/FarBox/Forwarddc/%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD/%E6%B7%B1%E5%85%A5%E5%88%86%E6%9E%90Synchronised%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/" itemprop="url">深入分析Synchronised实现原理</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-18T23:46:00+08:00">
-                2017-04-18
-              </time>
-            
-
-            
-              <span class="post-meta-divider">|</span>
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-check-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">更新于&#58;</span>
-              
-              <time title="更新于" itemprop="dateModified" datetime="2017-04-19T14:58:28+08:00">
-                2017-04-19
+              <time title="更新于" itemprop="dateModified" datetime="2017-05-21T23:38:19+08:00">
+                2017-05-21
               </time>
             
           </span>
@@ -1018,7 +849,7 @@
 
           
           
-             <span id="/2017/04/18/FarBox/Forwarddc/%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD/%E6%B7%B1%E5%85%A5%E5%88%86%E6%9E%90Synchronised%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/" class="leancloud_visitors" data-flag-title="深入分析Synchronised实现原理">
+             <span id="/2017/05/21/FarBox/Forwarddc/%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD/SSL%E5%8D%8F%E8%AE%AE%E8%BF%90%E8%A1%8C%E6%9C%BA%E5%88%B6%E6%A6%82%E8%BF%B0/" class="leancloud_visitors" data-flag-title="SSL协议运行机制概述">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -1043,7 +874,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  2.5k
+                  1.9k
                 </span>
               
 
@@ -1059,7 +890,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  8
+                  6
                 </span>
               
             </div>
@@ -1081,10 +912,10 @@
 
       
         
-          <blockquote class="blockquote-center">Synchronised实现原理</blockquote>
+          <blockquote class="blockquote-center"> SSL协议是一种HTTP加密协议<BR> SSL协议初衷是使用公钥加密法，但公钥加密计算量太大，于是对于每次与客户端的会话，又采取对称加密算法<BR> 在会话开始前，通过客户端与服务器端的四次握手，双方根据交互的三个随机数生成对称秘钥，之后的HTTP消息都是加密的 </blockquote>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2017/04/18/FarBox/Forwarddc/%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD/%E6%B7%B1%E5%85%A5%E5%88%86%E6%9E%90Synchronised%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/">
+            <a class="btn" href="/2017/05/21/FarBox/Forwarddc/%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD/SSL%E5%8D%8F%E8%AE%AE%E8%BF%90%E8%A1%8C%E6%9C%BA%E5%88%B6%E6%A6%82%E8%BF%B0/">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1135,7 +966,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://dcbupt.github.io/2017/04/18/FarBox/Forwarddc/Linux/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/">
+    <link itemprop="mainEntityOfPage" href="http://dcbupt.github.io/2017/05/14/FarBox/Forwarddc/%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD/ssh%E5%8E%9F%E7%90%86%E4%B8%8E%E8%BF%90%E7%94%A8/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Forwarddc">
@@ -1154,7 +985,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2017/04/18/FarBox/Forwarddc/Linux/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" itemprop="url">正则表达式</a></h1>
+                <a class="post-title-link" href="/2017/05/14/FarBox/Forwarddc/%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD/ssh%E5%8E%9F%E7%90%86%E4%B8%8E%E8%BF%90%E7%94%A8/" itemprop="url">ssh原理与运用</a></h1>
         
 
         <div class="post-meta">
@@ -1166,8 +997,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-18T01:03:00+08:00">
-                2017-04-18
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-14T18:34:00+08:00">
+                2017-05-14
               </time>
             
 
@@ -1182,8 +1013,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2019-12-04T23:19:57+08:00">
-                2019-12-04
+              <time title="更新于" itemprop="dateModified" datetime="2017-05-14T21:50:07+08:00">
+                2017-05-14
               </time>
             
           </span>
@@ -1201,8 +1032,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index">
-                    <span itemprop="name">Linux</span>
+                  <a href="/categories/%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD/" itemprop="url" rel="index">
+                    <span itemprop="name">好文转载</span>
                   </a>
                 </span>
 
@@ -1218,7 +1049,7 @@
 
           
           
-             <span id="/2017/04/18/FarBox/Forwarddc/Linux/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" class="leancloud_visitors" data-flag-title="正则表达式">
+             <span id="/2017/05/14/FarBox/Forwarddc/%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD/ssh%E5%8E%9F%E7%90%86%E4%B8%8E%E8%BF%90%E7%94%A8/" class="leancloud_visitors" data-flag-title="ssh原理与运用">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -1243,7 +1074,207 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  703
+                  2.6k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  9
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <blockquote class="blockquote-center">ssh登陆的方式即简单的客户端用公钥对密码加密后服务器用私钥解密验证密码的方式 <BR><BR> 本地的known_hosts保存ssh服务器颁发的公钥 <BR><BR> 公钥登陆是客户端产生公钥和私钥，并将公钥保存到服务器端的authorized_keys文件，客户端对服务器发送的随机字符串用私钥加密后服务器用公钥解密并验证，这样做避免了客户端输入密码的步骤 </blockquote>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/05/14/FarBox/Forwarddc/%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD/ssh%E5%8E%9F%E7%90%86%E4%B8%8E%E8%BF%90%E7%94%A8/">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://dcbupt.github.io/2017/05/14/FarBox/Forwarddc/%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD/%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Forwarddc">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Forwarddc's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/05/14/FarBox/Forwarddc/%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD/%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6/" itemprop="url">数字签名数字证书</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-14T15:16:00+08:00">
+                2017-05-14
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2019-10-22T02:19:25+08:00">
+                2019-10-22
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD/" itemprop="url" rel="index">
+                    <span itemprop="name">好文转载</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/05/14/FarBox/Forwarddc/%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD/%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6/" class="leancloud_visitors" data-flag-title="数字签名数字证书">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  864
                 </span>
               
 
@@ -1281,10 +1312,10 @@
 
       
         
-          <blockquote class="blockquote-center">《鸟哥的Linux私房菜》中的正则表达式章节</blockquote>
+          <blockquote class="blockquote-center"> 通常来说，服务器可以接受任何客户端的请求而无需在意客户端是谁，而客户端则需要知道自己访问的服务器是谁。<br> 因为二者之间的立场不同，在加密时就区分了公钥和私钥。<BR> 公钥和私钥都由服务器颁发，私钥由服务器自己保留，公钥颁发给要访问自己的客户端。<BR> 公钥的作用是加密客户端传给服务器的数据，服务器端用私钥解密。<BR> 服务器端用私钥给自己的数据加密，生成数字签名附带在数据后面，一起发给客户端。客户端根据公钥解密数字签名后，将解密的数据与收到数据对比，防止数据被修改。 <BR> 更安全的做法是:服务器端申请第三方CA机构用它们的私钥加密服务器颁发给客户端的公钥生成数字证书，附带在数字签名后面发给客户端。客户端用CA的公钥解密数字证书得到公钥，再用该公钥去解密数字签名。</blockquote>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2017/04/18/FarBox/Forwarddc/Linux/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/">
+            <a class="btn" href="/2017/05/14/FarBox/Forwarddc/%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD/%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6/">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1326,7 +1357,7 @@
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/6/">&lt;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/22/">22</a><a class="extend next" rel="next" href="/page/8/">&gt;</a>
+    <a class="extend prev" rel="prev" href="/page/6/">&lt;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/26/">26</a><a class="extend next" rel="next" href="/page/8/">&gt;</a>
   </nav>
   
 
@@ -1373,7 +1404,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">109</span>
+                  <span class="site-state-item-count">128</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1432,7 +1463,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
