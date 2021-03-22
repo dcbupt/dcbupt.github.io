@@ -136,7 +136,7 @@
 <meta property="og:site_name" content="Forwarddc&#39;s Blog">
 <meta property="og:description" content="SQL基础知识">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2021-01-09T13:27:02.099Z">
+<meta property="og:updated_time" content="2021-03-07T06:36:17.374Z">
 <meta name="twitter:card" content="summary">
 
 
@@ -380,8 +380,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2021-01-09T21:27:02+08:00">
-                2021-01-09
+              <time title="更新于" itemprop="dateModified" datetime="2021-03-07T14:36:17+08:00">
+                2021-03-07
               </time>
             
           </span>
@@ -441,7 +441,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  6.2k
+                  4.9k
                 </span>
               
 
@@ -457,7 +457,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  22
+                  17
                 </span>
               
             </div>
@@ -508,25 +508,9 @@
 <p>1、<code>insert into talbeName(colName) values()</code><br>2、<code>update tableName set colName = value where conditionExpression</code><br>3、<code>delete from tableName where conditionExpression</code></p>
 <h1 id="查询"><a href="#查询" class="headerlink" title="查询"></a>查询</h1><p>基本用法：select … from (tableName or viewName) where conditionExpression</p>
 <p>奇技淫巧：<br>1、列可以当作一个变量，算术表达式作用于列中的每条记录值。例子：<code>select colname + 5 from tableName where colname * 2 &gt; 3</code><br>2、字符串拼接使用concat(colName1, colName2)<br>3、去除查询结果的重复记录 <code>select distinct ...</code><br>4、条件表达式的技巧：<br>i、SQL判断相等是用<code>=</code>，判断不等用<code>&lt;&gt;</code>，赋值用<code>:=</code><br>ii、指定区间：1、<code>between left and right</code>  必须在leftNum和Right的范围内  2、<code>in(a,b)</code>必须是a\b中的一个。<code>in</code>可以用<code>=any</code>代替     3、all(…)表示全集<br>iii、模糊匹配：like关键字后面的表达式为模糊匹配表达式，<code>%</code>表示任意多个字符，<code>_</code>表示任意一个字符，<code>escape</code>关键字指定转义字符<br>iv、判断是否为null用<code>is null</code><br>v、逻辑运算符用 <code>and</code> <code>or</code> <code>not</code><br>vi、对查询结果排序：<code>order by colName</code>，默认用升序排序，如果用降序添加<code>desc</code>关键字</p>
-<h2 id="多表查询"><a href="#多表查询" class="headerlink" title="多表查询"></a>多表查询</h2><p>1、广义笛卡儿积：查询多个表，在没有where条件的情况下，如果表A有m条记录，表B有n条记录，则总的查询结果有m<em>n条记录<br>2、左外连接和右外连接：外连接就是在外连接符(+或</em>)所在的表中增加一个”万能行”，这行记录的所有数据都是null，但其可以与另一个行中所有不满足条件的记录匹配，因此左连接可以把右边的表中所有记录都选出来<br><code>select s.*, teacher_name from student_table s, teacher_table t where s.java_teacher = t.teacher_id(+);</code><br>3、自连接：将同一个表的两个列作为查询条件，即将一张表看作两张。例如表里的外键参照的是自己的主键，选出主键和外键相等的记录。例如一个员工表中，将经理也当作员工，为了表示经理和员工的一对多关系，将经理id作为外键，参照主键员工id。如果需要选出经理，就需要自连接（经理的那条记录的员工id和外键经理id相等）。</p>
-<p>以上是SQL92连接查询，SQL99连接查询如下：<br>1、交叉连接：在单表查询语句后增加<code>cross join tableName</code>，即广义笛卡儿积<br>2、自然连接：在单表查询语句后增加<code>natural join tableName</code>会自动将两个表的（多个）列名相等的列作为查询条件<br>3、using子句连接：在单表查询语句后增加<code>join tableName using(colName ...)</code>会将using指定的col公共列作为查询条件<br>4、on子句连接：在单表查询语句后增加例如<code>join tableName t on s.java_teacher = t.teacher_id</code>，直接指定连接条件<br>5、左/右外连接：在单表查询语句后增加例如<code>left join tableName t on ...</code><br>注意，这种方式左连接会把左边的表的记录全部列出，右链接会把右表记录全部列出，与SQL92刚好相反。<br>SQL99增加了全链接：<code>full join tableName t on ...</code>，会把不满足条件的记录全部列出</p>
+<h2 id="多表查询"><a href="#多表查询" class="headerlink" title="多表查询"></a>多表查询</h2><p>1、广义笛卡儿积：查询多个表，在没有where条件的情况下，如果表A有m条记录，表B有n条记录，则总的查询结果有m*n条记录<br>2、左(外)连接，左表(a_table)的记录将会全部表示出来，而右表(b_table)只会显示符合搜索条件的记录。右表记录不足的地方均为NULL。<br><code>select * from a_table a left join b_table b on a.a_id = b.b_id;</code><br>3、内连接：组合两个表中的记录，返回两个表的交集部分<br><code>select * from a_table a inner join b_table b on a.a_id = b.b_id;</code></p>
 <h2 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h2><p>函数多用于select后面或者where后面，函数的返回值用来替代查询的记录值<br>1、select ifnull(student_name, “没有名字”) from …：如果student_name为null，将值设为”没有名字”<br>2、select nullif(student_name，”张三”) from …：如果student_name等于张三，返回null<br>3、select if(isnull(student_name)，”没有名字”,”有名字”) from …：三目运算</p>
-<p>组函数：<br>avg\max\min\sum\count，将查询得到的所有记录作为一组处理的函数<br><code>默认情况下会将所有查询的记录当作一组</code>，如果需要对查询的记录细分组，使用<code>group by colname</code>，colname的值相等的记录会被当作一组<br>组函数只能用于select后，这时查询语句输出组函数的结果。如果想作为conditionExpression，只能使用<code>having 组函数表达式</code>，不能跟在where后！<code>group by</code>也不能用在where后，只能用在having后。</p>
-<h2 id="集合运算"><a href="#集合运算" class="headerlink" title="集合运算"></a>集合运算</h2><blockquote>
-<p>集合运算将两个查询结果看作两个集合，运用union\minus\intersect进行集合运算</p>
-</blockquote>
-<p>1、union取并集：<code>select ... union select ...</code>，需要保证两个结果集的列完全对应<br>2、minus：<code>select ... minus select ...</code>，保证列类型对应<br>3、intersect取交集：<code>select ... intersect select ...</code>，保证列类型对应</p>
-<h1 id="读现象"><a href="#读现象" class="headerlink" title="读现象"></a>读现象</h1><blockquote>
-<p>要想解决脏读、不可重复读、幻读等读现象，那么就需要提高事务的<code>隔离级别</code>。但与此同时，事务的隔离级别越高，并发能力也就越低。所以，还需要读者根据业务需要进行权衡。</p>
-</blockquote>
-<h2 id="脏读"><a href="#脏读" class="headerlink" title="脏读"></a>脏读</h2><p>脏读又称无效数据的读出，是指在数据库访问中，事务T1将某一值修改，然后事务T2读取该值，此后T1因为某种原因撤销对该值的修改，这就导致了T2所读取到的数据是无效的。</p>
-<p>脏读就是指当一个事务正在访问数据，并且对数据进行了修改，而这种修改还没有提交(commit)到数据库中，这时，另外一个事务也访问这个数据，然后使用了这个数据。因为这个数据是还没有提交的数据，那么另外一个事务读到的这个数据是脏数据，依据脏数据所做的操作可能是不正确的。</p>
-<h2 id="不可重复读"><a href="#不可重复读" class="headerlink" title="不可重复读"></a>不可重复读</h2><p>不可重复读，是指在数据库访问中，一个事务范围内两个相同的查询却返回了不同数据。这是由于查询时系统中其他事务修改的提交而引起的。比如事务T1读取某一数据，事务T2读取并修改了该数据，T1为了对读取值进行检验而再次读取该数据，便得到了不同的结果。</p>
-<p>一种更易理解的说法是：在一个事务内，多次读同一个数据。在这个事务还没有结束时，另一个事务也访问该同一数据。那么，在第一个事务的两次读数据之间。由于第二个事务的修改，那么第一个事务读到的数据可能不一样，这样就发生了在一个事务内两次读到的数据是不一样的，因此称为不可重复读，即原始读取不可重复。</p>
-<h2 id="幻读"><a href="#幻读" class="headerlink" title="幻读"></a>幻读</h2><p>幻读是指当事务不是独立执行时发生的一种现象，例如第一个事务对一个表中的数据进行了修改，比如这种修改涉及到表中的“全部数据行”。同时，第二个事务也修改这个表中的数据，这种修改是向表中插入“一行新数据”。那么，以后就会发生操作第一个事务的用户发现表中还有没有修改的数据行，就好象发生了幻觉一样.一般解决幻读的方法是增加范围锁RangeS，锁定检锁范围为只读，这样就避免了幻读。　　</p>
-<blockquote>
-<p>幻读(phantom read)”是不可重复读(Non-repeatable reads)的一种特殊场景：当事务没有获取范围锁的情况下执行SELECT … WHERE操作可能会发生“幻影读(phantom read)”。</p>
-</blockquote>
+<p>组函数：<br>avg\max\min\sum\count，将查询得到的所有记录作为一组处理的函数<br><code>默认情况下会将所有查询的记录当作一组</code>，如果需要对查询的记录细分组，使用<code>group by colname</code>，colname的值相等的记录会被当作一组<br>组函数只能用于select后，这时查询语句输出组函数的结果。如果想作为conditionExpression，只能使用<code>having 组函数表达式</code>，不能跟在where后！</p>
 <h1 id="数据库的锁机制"><a href="#数据库的锁机制" class="headerlink" title="数据库的锁机制"></a>数据库的锁机制</h1><blockquote>
 <p>在并发访问情况下，可能会出现脏读、不可重复读和幻读等读现象，为了应对这些问题，主流数据库都提供了锁机制，并引入了事务隔离级别的概念</p>
 </blockquote>
@@ -592,7 +576,6 @@
 <h3 id="使用版本号实现乐观锁"><a href="#使用版本号实现乐观锁" class="headerlink" title="使用版本号实现乐观锁"></a>使用版本号实现乐观锁</h3><p>使用版本号时，可以在数据初始化时指定一个版本号，每次对数据的更新操作都对版本号执行+1操作。并判断当前版本号是不是该数据的最新的版本号。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">1.查询出商品信息</span><br><span class="line">select (status,status,version) from t_goods where id=#&#123;id&#125;</span><br><span class="line">2.根据商品信息生成订单</span><br><span class="line">3.修改商品status为2</span><br><span class="line">update t_goods </span><br><span class="line">set status=2,version=version+1</span><br><span class="line">where id=#&#123;id&#125; and version=#&#123;version&#125;;</span><br></pre></td></tr></table></figure>
 
-<h3 id="优点与不足-1"><a href="#优点与不足-1" class="headerlink" title="优点与不足"></a>优点与不足</h3><p>乐观并发控制相信事务之间的数据竞争(data race)的概率是比较小的，因此尽可能直接做下去，直到提交的时候才去锁定，所以不会产生任何锁和死锁。但如果直接简单这么做，还是有可能会遇到不可预期的结果，例如两个事务都读取了数据库的某一行，经过修改以后写回数据库，这时就遇到了问题。</p>
 <h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>1、InnoDB会给带索引的数据库操作使用行锁，因为行锁对MYSQL来说本身就是加给索引的。<br>2、MYSQL的InnoDB加行锁会产生死锁，原因是加行锁是逐个给索引加锁，导致两个事物需要的索引被对方占用<br>3、锁又可以分为共享锁和排它锁两类，至于选哪类，可以在SQL语句里指定。注意涉及到记录更新的操作默认加了写锁。</p>
 
         <blockquote class="blockquote-center">完</blockquote>
@@ -708,7 +691,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">128</span>
+                  <span class="site-state-item-count">137</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -719,7 +702,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">12</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -763,7 +746,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#SQL语句分类"><span class="nav-number">1.</span> <span class="nav-text">SQL语句分类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数据库对象"><span class="nav-number">2.</span> <span class="nav-text">数据库对象</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DDL"><span class="nav-number">3.</span> <span class="nav-text">DDL</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#约束"><span class="nav-number">3.1.</span> <span class="nav-text">约束</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#索引"><span class="nav-number">3.2.</span> <span class="nav-text">索引</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#视图"><span class="nav-number">3.3.</span> <span class="nav-text">视图</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DML"><span class="nav-number">4.</span> <span class="nav-text">DML</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#查询"><span class="nav-number">5.</span> <span class="nav-text">查询</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#多表查询"><span class="nav-number">5.1.</span> <span class="nav-text">多表查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#函数"><span class="nav-number">5.2.</span> <span class="nav-text">函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#集合运算"><span class="nav-number">5.3.</span> <span class="nav-text">集合运算</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#读现象"><span class="nav-number">6.</span> <span class="nav-text">读现象</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#脏读"><span class="nav-number">6.1.</span> <span class="nav-text">脏读</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#不可重复读"><span class="nav-number">6.2.</span> <span class="nav-text">不可重复读</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#幻读"><span class="nav-number">6.3.</span> <span class="nav-text">幻读</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数据库的锁机制"><span class="nav-number">7.</span> <span class="nav-text">数据库的锁机制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#行级锁"><span class="nav-number">7.1.</span> <span class="nav-text">行级锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#表级锁"><span class="nav-number">7.2.</span> <span class="nav-text">表级锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#页级锁"><span class="nav-number">7.3.</span> <span class="nav-text">页级锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MySQL常用存储引擎的锁机制"><span class="nav-number">7.4.</span> <span class="nav-text">MySQL常用存储引擎的锁机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Innodb中的行锁与表锁"><span class="nav-number">7.5.</span> <span class="nav-text">Innodb中的行锁与表锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#行级锁与死锁"><span class="nav-number">7.6.</span> <span class="nav-text">行级锁与死锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#共享锁-Share-Lock"><span class="nav-number">7.7.</span> <span class="nav-text">共享锁(Share Lock)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#排他锁（eXclusive-Lock）"><span class="nav-number">7.8.</span> <span class="nav-text">排他锁（eXclusive Lock）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#悲观锁"><span class="nav-number">7.9.</span> <span class="nav-text">悲观锁</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#悲观锁的流程"><span class="nav-number">7.9.1.</span> <span class="nav-text">悲观锁的流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MySQL-InnoDB中使用悲观锁"><span class="nav-number">7.9.2.</span> <span class="nav-text">MySQL InnoDB中使用悲观锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#优点与不足"><span class="nav-number">7.9.3.</span> <span class="nav-text">优点与不足</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#乐观锁"><span class="nav-number">7.10.</span> <span class="nav-text">乐观锁</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用版本号实现乐观锁"><span class="nav-number">7.10.1.</span> <span class="nav-text">使用版本号实现乐观锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#优点与不足-1"><span class="nav-number">7.10.2.</span> <span class="nav-text">优点与不足</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#小结"><span class="nav-number">7.11.</span> <span class="nav-text">小结</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#SQL语句分类"><span class="nav-number">1.</span> <span class="nav-text">SQL语句分类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数据库对象"><span class="nav-number">2.</span> <span class="nav-text">数据库对象</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DDL"><span class="nav-number">3.</span> <span class="nav-text">DDL</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#约束"><span class="nav-number">3.1.</span> <span class="nav-text">约束</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#索引"><span class="nav-number">3.2.</span> <span class="nav-text">索引</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#视图"><span class="nav-number">3.3.</span> <span class="nav-text">视图</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DML"><span class="nav-number">4.</span> <span class="nav-text">DML</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#查询"><span class="nav-number">5.</span> <span class="nav-text">查询</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#多表查询"><span class="nav-number">5.1.</span> <span class="nav-text">多表查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#函数"><span class="nav-number">5.2.</span> <span class="nav-text">函数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数据库的锁机制"><span class="nav-number">6.</span> <span class="nav-text">数据库的锁机制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#行级锁"><span class="nav-number">6.1.</span> <span class="nav-text">行级锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#表级锁"><span class="nav-number">6.2.</span> <span class="nav-text">表级锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#页级锁"><span class="nav-number">6.3.</span> <span class="nav-text">页级锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MySQL常用存储引擎的锁机制"><span class="nav-number">6.4.</span> <span class="nav-text">MySQL常用存储引擎的锁机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Innodb中的行锁与表锁"><span class="nav-number">6.5.</span> <span class="nav-text">Innodb中的行锁与表锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#行级锁与死锁"><span class="nav-number">6.6.</span> <span class="nav-text">行级锁与死锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#共享锁-Share-Lock"><span class="nav-number">6.7.</span> <span class="nav-text">共享锁(Share Lock)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#排他锁（eXclusive-Lock）"><span class="nav-number">6.8.</span> <span class="nav-text">排他锁（eXclusive Lock）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#悲观锁"><span class="nav-number">6.9.</span> <span class="nav-text">悲观锁</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#悲观锁的流程"><span class="nav-number">6.9.1.</span> <span class="nav-text">悲观锁的流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MySQL-InnoDB中使用悲观锁"><span class="nav-number">6.9.2.</span> <span class="nav-text">MySQL InnoDB中使用悲观锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#优点与不足"><span class="nav-number">6.9.3.</span> <span class="nav-text">优点与不足</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#乐观锁"><span class="nav-number">6.10.</span> <span class="nav-text">乐观锁</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用版本号实现乐观锁"><span class="nav-number">6.10.1.</span> <span class="nav-text">使用版本号实现乐观锁</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#小结"><span class="nav-number">6.11.</span> <span class="nav-text">小结</span></a></li></ol></li></ol></div>
             
 
           </div>

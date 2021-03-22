@@ -462,9 +462,9 @@
       
         <h1 id="G-VNFM功能概述"><a href="#G-VNFM功能概述" class="headerlink" title="G-VNFM功能概述"></a>G-VNFM功能概述</h1><p>G-VNFM的功能实现主要划分为两大部分：<br>1）北向C6接口与NFVO的交互。这部分接口主要用于虚拟网元VNF生命周期管理流程中的资源获取（VNFD）、VNF生命周期管理事件状态的通报等。<br>2）南向C10接口与VNF的交互。这部分接口主要用于VNF配置参数的下发，生命周期事件状态、VNF运行状态参数的获取</p>
 <p>G-VNFM扮演NFVO和VNFs中间的组件，特别是为了与装了VNF软件的虚机之间的交互。 为了完成VNF的生命周期管理，其与EMS交互，EMS扮演了虚机代理的角色，执行VNF包中的脚本或者执行通过VNFD指定链接的脚本。 可以认为，M对VNFs的生命周期管理，在VNF层面是通过运行在VM的EMS执行脚本完成的。 O-M、M-EMS之间的通信是基于RABBITMQ AMQP协议。</p>
-<p><img src="http://openbaton.github.io/documentation/images/generic-vnfm-vnfm-or-communication.png" alt=""></p>
-<p><img src="http://openbaton.github.io/documentation/images/generic-vnfm-vnfm-ems-communication.png" alt=""></p>
-<p>G-VNFM在VNF生命周期管理中与NFVO和VNF的流程时序图：<br>可以看到，G-VNFM发送脚本到EMS，该脚本会由EMS使用root身份在VNFC中执行。<br><img src="http://openbaton.github.io/documentation/images/generic-vnfm-or-vnfm-seq-dg.png" alt=""></p>
+<p><img src="http://openbaton.github.io/documentation/images/generic-vnfm-vnfm-or-communication.png" alt></p>
+<p><img src="http://openbaton.github.io/documentation/images/generic-vnfm-vnfm-ems-communication.png" alt></p>
+<p>G-VNFM在VNF生命周期管理中与NFVO和VNF的流程时序图：<br>可以看到，G-VNFM发送脚本到EMS，该脚本会由EMS使用root身份在VNFC中执行。<br><img src="http://openbaton.github.io/documentation/images/generic-vnfm-or-vnfm-seq-dg.png" alt></p>
 <p>对于任意类型的VNF，G-VNFM都会执行以下的步骤：</p>
 <ul>
 <li>虚机的部署</li>
@@ -632,7 +632,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">128</span>
+                  <span class="site-state-item-count">137</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -643,7 +643,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">12</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>

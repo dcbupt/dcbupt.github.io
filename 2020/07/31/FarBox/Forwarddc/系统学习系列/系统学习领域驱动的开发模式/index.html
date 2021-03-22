@@ -136,7 +136,7 @@
 <meta property="og:site_name" content="Forwarddc&#39;s Blog">
 <meta property="og:description" content="系统学习领域驱动的开发模式">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2021-01-09T13:27:01.861Z">
+<meta property="og:updated_time" content="2021-03-22T14:26:02.877Z">
 <meta name="twitter:card" content="summary">
 
 
@@ -380,8 +380,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2021-01-09T21:27:01+08:00">
-                2021-01-09
+              <time title="更新于" itemprop="dateModified" datetime="2021-03-22T22:26:02+08:00">
+                2021-03-22
               </time>
             
           </span>
@@ -441,7 +441,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  3.3k
+                  3.8k
                 </span>
               
 
@@ -457,7 +457,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  11
+                  12
                 </span>
               
             </div>
@@ -510,7 +510,7 @@
 <li>建立与业务人员对于需求、产品的共识。避免需求失焦而产生返工，甚至做错。</li>
 <li>建立共识需要拉齐业务与开发，在协作空间（白板）里产生共识。</li>
 <li>建立共识的目的就是统一语言。</li>
-<li>建立共识衡量的方法：任何在需求中出现的概念，都必须出现在领域模型中。</li>
+<li>建立共识衡量的方法：<code>任何在需求中出现的概念，都必须出现在领域模型中</code></li>
 </ul>
 </li>
 <li>产生洞察<ul>
@@ -545,34 +545,45 @@
 <h2 id="实现域的核心概念"><a href="#实现域的核心概念" class="headerlink" title="实现域的核心概念"></a>实现域的核心概念</h2><h3 id="实体"><a href="#实体" class="headerlink" title="实体"></a>实体</h3><p>领域模型构建之后，首先要找出其中最重要的概念模型。一般来说，重要的概念模型有两个特定：</p>
 <ul>
 <li>与其他模型建立的关系更多</li>
+<li>需要使用唯一标识符进行跟踪</li>
 <li>随着业务进展，概念模型的状态和属性也会改变</li>
 </ul>
 <p>对于这种最重要的概念模型，在解空间（实现域）我们称它为<code>实体</code>，用唯一id来标识。</p>
 <h3 id="值对象"><a href="#值对象" class="headerlink" title="值对象"></a>值对象</h3><p>领域模型中那些用来描述实体模型的概念，称为值对象。<br>值对象用来描述实体的特征，我们只关心值对象的属性，不关心它有没有唯一标识符。值对象的值相同，就认为相同，值不同，就认为不同。<br>引入值对象的原因是，在解空间需要将其和实体区分开，减少系统的复杂度</p>
-<p>某些特殊值对象需要保存id而不是业务数据，例如用户id</p>
-<h3 id="领域服务"><a href="#领域服务" class="headerlink" title="领域服务"></a>领域服务</h3><p>领域模型中不包含任何数据的概念模型，例如一些业务计算逻辑和业务策略。这类概念模型称为领域服务。</p>
+<p>有时可以使用id作为一种特殊的值对象，代替实体的全部信息，例如用户id。需要的时候再通过id查出实体信息</p>
+<h3 id="领域服务"><a href="#领域服务" class="headerlink" title="领域服务"></a>领域服务</h3><p>领域模型中不包含任何数据的无状态的概念模型，例如一些业务处理过程和业务策略。这类概念模型称为领域服务。</p>
 <h3 id="领域事件"><a href="#领域事件" class="headerlink" title="领域事件"></a>领域事件</h3><p>通过事件风暴进行需求分析，可以很容易得到领域事件。<br>领域事件表达了<code>系统中发生了什么</code>，它们源自于业务活动的结果<br>引入领域事件可以解耦业务间的复杂关系<br>领域事件里需要记录事件上下文，例如一些实体id等 </p>
-<h2 id="聚合"><a href="#聚合" class="headerlink" title="聚合"></a>聚合</h2><p>为了保证业务逻辑的完整性，减少出错的概率，需要引入聚合的概念：</p>
+<h2 id="聚合"><a href="#聚合" class="headerlink" title="聚合"></a>聚合</h2><p>引入聚合有两个好处</p>
 <ul>
-<li>将实体对象和值对象划分为聚合，并围绕聚合定义边界</li>
-<li>每个聚合需要有一个对应的实体来描述，称为聚合根<ul>
-<li>聚合根往往就是实体，围绕实体划分边界，保障对实体操作的业务完整性</li>
+<li>保证业务逻辑的完整性，减少出错的概率</li>
+<li>明确划分业务边界</li>
+</ul>
+<p>聚合的概念：</p>
+<ul>
+<li>将实体对象和值对象划分为聚合，形成聚合根，并围绕聚合根定义边界</li>
+<li>每个聚合根需要用实体来描述<ul>
+<li>聚合根往往就是领域模型里的实体，围绕实体划分边界，保障对实体操作的业务完整性</li>
 </ul>
 </li>
 <li>聚合根使用充血模式，执行边界内的业务行为，保障边界内的业务逻辑完整性</li>
-<li>任何对边界内业务行为的操作，只能通过聚合根的引用来进行，不能越过聚合根，直接持有聚合根内部的属性</li>
+<li>外部只能通过持有对聚合根的引用来执行聚合根边界内的业务行为，不能越过聚合根，直接持有聚合根内部的属性</li>
 </ul>
 <h3 id="划分聚合的原则"><a href="#划分聚合的原则" class="headerlink" title="划分聚合的原则"></a>划分聚合的原则</h3><p>生命周期一致性原则：</p>
 <ul>
 <li>聚合边界内的对象，和聚合根之间存在人身依附关系。即，聚合根消失，聚合根内的元素应该同时消失</li>
+<li>如果聚合根需要依赖其他的实体对象，引用实体id作为值对象，不要直接依赖实体对象，因为实体对象间的生命周期是不同的<ul>
+<li>聚合根只持有其他聚合根（实体）的id，这样聚合根只能在充血模式下操作和自己生命周期一致的值对象保证业务完整性，无法操作其他聚合根。保证了业务边界清晰，也符合高内聚低耦合的设计原则</li>
+</ul>
+</li>
 </ul>
 <p>小聚合原则：</p>
 <ul>
 <li>在不破坏业务逻辑完整性的基础上，小聚合带来更大的灵活性</li>
+<li>小聚合的聚合根可能并不是实体的概念，但也包含了一套完整的业务逻辑。将小聚合根作为值对象提供给更大边界的实体，相比于直接在实体里保证小聚合根内部的业务逻辑完整性更加灵活</li>
 </ul>
 <h2 id="工厂"><a href="#工厂" class="headerlink" title="工厂"></a>工厂</h2><p>使用工厂模式来构建聚合根，保障聚合根构造的业务完整性。也可以使用Builder模式</p>
 <h2 id="资源库"><a href="#资源库" class="headerlink" title="资源库"></a>资源库</h2><p>资源库是聚合根的仓储机制，外界只能通过资源库完成对聚合根的访问，也只有聚合根需要提供资源库访问方式。</p>
-<h2 id="代码结构"><a href="#代码结构" class="headerlink" title="代码结构"></a>代码结构</h2><p>使用聚合根名称作为包名。包下是围绕这个聚合定义的所有JAVA类</p>
+<h2 id="代码结构"><a href="#代码结构" class="headerlink" title="代码结构"></a>代码结构</h2><p>使用聚合根名称作为包名。包下是围绕这个聚合定义的所有JAVA类，例如一些描述值对象的类</p>
 <h2 id="分层架构"><a href="#分层架构" class="headerlink" title="分层架构"></a>分层架构</h2><p>基于领域驱动的软件开发，系统架构一般由上到下分为这几层：接口层、应用层、领域层、基础设施层。<br>接口层：</p>
 <ul>
 <li>基于特性通信协议封装对外提供的接口服务。通信协议例如Dubbo\HSF\Restful<br>应用层：</li>
@@ -638,6 +649,16 @@
 <li>在这个基础上逐步重写遗留资产的方法，称为<code>绞杀者模式</code></li>
 </ul>
 </li>
+</ul>
+<h3 id="防腐层的设计"><a href="#防腐层的设计" class="headerlink" title="防腐层的设计"></a>防腐层的设计</h3><p>防腐层主要作用：</p>
+<ul>
+<li>在新的领域模型里兼容老的历史代码（遗留资产）</li>
+<li>封装其他领域提供的接口</li>
+</ul>
+<p>1、使用门面模式，按新的领域模型需要，定义门面接口，实现上可能会调用多个遗留代码的接口来实现逻辑。</p>
+<p>2、使用适配器模式，，提供适配器类，聚合门面类。它的作用是，对于调用门面类接口时，需要传入的一些遗留代码定义的参数，做一层新老模型的转义（适配）。新的领域模型里直接使用适配器类</p>
+<ul>
+<li>其实也可以直接把新老模型的转义适配放到门面类里，这样就只用一层门面类就能达到防腐层的作用</li>
 </ul>
 
         <blockquote class="blockquote-center">完</blockquote>
@@ -753,7 +774,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">128</span>
+                  <span class="site-state-item-count">137</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -764,7 +785,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">12</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -808,7 +829,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#领域模型"><span class="nav-number">2.</span> <span class="nav-text">领域模型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#领域模型的重要性"><span class="nav-number">2.1.</span> <span class="nav-text">领域模型的重要性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#领域模型的基本概念"><span class="nav-number">2.2.</span> <span class="nav-text">领域模型的基本概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#领域模型的表示"><span class="nav-number">2.3.</span> <span class="nav-text">领域模型的表示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#领域模型的作用"><span class="nav-number">2.4.</span> <span class="nav-text">领域模型的作用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#从需求分析到领域建模"><span class="nav-number">2.5.</span> <span class="nav-text">从需求分析到领域建模</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#从领域模型到代码实现"><span class="nav-number">3.</span> <span class="nav-text">从领域模型到代码实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#实现域的核心概念"><span class="nav-number">3.1.</span> <span class="nav-text">实现域的核心概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#实体"><span class="nav-number">3.1.1.</span> <span class="nav-text">实体</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#值对象"><span class="nav-number">3.1.2.</span> <span class="nav-text">值对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#领域服务"><span class="nav-number">3.1.3.</span> <span class="nav-text">领域服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#领域事件"><span class="nav-number">3.1.4.</span> <span class="nav-text">领域事件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#聚合"><span class="nav-number">3.2.</span> <span class="nav-text">聚合</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#划分聚合的原则"><span class="nav-number">3.2.1.</span> <span class="nav-text">划分聚合的原则</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#工厂"><span class="nav-number">3.3.</span> <span class="nav-text">工厂</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#资源库"><span class="nav-number">3.4.</span> <span class="nav-text">资源库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码结构"><span class="nav-number">3.5.</span> <span class="nav-text">代码结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分层架构"><span class="nav-number">3.6.</span> <span class="nav-text">分层架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#意图导向编程"><span class="nav-number">3.7.</span> <span class="nav-text">意图导向编程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试先行"><span class="nav-number">3.8.</span> <span class="nav-text">测试先行</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#架构"><span class="nav-number">4.</span> <span class="nav-text">架构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#子域和限界上下文"><span class="nav-number">4.1.</span> <span class="nav-text">子域和限界上下文</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#领域资产"><span class="nav-number">5.</span> <span class="nav-text">领域资产</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#处理遗留资产"><span class="nav-number">5.1.</span> <span class="nav-text">处理遗留资产</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#领域模型"><span class="nav-number">2.</span> <span class="nav-text">领域模型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#领域模型的重要性"><span class="nav-number">2.1.</span> <span class="nav-text">领域模型的重要性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#领域模型的基本概念"><span class="nav-number">2.2.</span> <span class="nav-text">领域模型的基本概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#领域模型的表示"><span class="nav-number">2.3.</span> <span class="nav-text">领域模型的表示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#领域模型的作用"><span class="nav-number">2.4.</span> <span class="nav-text">领域模型的作用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#从需求分析到领域建模"><span class="nav-number">2.5.</span> <span class="nav-text">从需求分析到领域建模</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#从领域模型到代码实现"><span class="nav-number">3.</span> <span class="nav-text">从领域模型到代码实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#实现域的核心概念"><span class="nav-number">3.1.</span> <span class="nav-text">实现域的核心概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#实体"><span class="nav-number">3.1.1.</span> <span class="nav-text">实体</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#值对象"><span class="nav-number">3.1.2.</span> <span class="nav-text">值对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#领域服务"><span class="nav-number">3.1.3.</span> <span class="nav-text">领域服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#领域事件"><span class="nav-number">3.1.4.</span> <span class="nav-text">领域事件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#聚合"><span class="nav-number">3.2.</span> <span class="nav-text">聚合</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#划分聚合的原则"><span class="nav-number">3.2.1.</span> <span class="nav-text">划分聚合的原则</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#工厂"><span class="nav-number">3.3.</span> <span class="nav-text">工厂</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#资源库"><span class="nav-number">3.4.</span> <span class="nav-text">资源库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码结构"><span class="nav-number">3.5.</span> <span class="nav-text">代码结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分层架构"><span class="nav-number">3.6.</span> <span class="nav-text">分层架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#意图导向编程"><span class="nav-number">3.7.</span> <span class="nav-text">意图导向编程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试先行"><span class="nav-number">3.8.</span> <span class="nav-text">测试先行</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#架构"><span class="nav-number">4.</span> <span class="nav-text">架构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#子域和限界上下文"><span class="nav-number">4.1.</span> <span class="nav-text">子域和限界上下文</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#领域资产"><span class="nav-number">5.</span> <span class="nav-text">领域资产</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#处理遗留资产"><span class="nav-number">5.1.</span> <span class="nav-text">处理遗留资产</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#防腐层的设计"><span class="nav-number">5.1.1.</span> <span class="nav-text">防腐层的设计</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>

@@ -136,7 +136,7 @@
 <meta property="og:site_name" content="Forwarddc&#39;s Blog">
 <meta property="og:description" content="系统学习HashMap">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2021-01-09T13:27:01.853Z">
+<meta property="og:updated_time" content="2021-03-07T06:36:17.438Z">
 <meta name="twitter:card" content="summary">
 
 
@@ -380,8 +380,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2021-01-09T21:27:01+08:00">
-                2021-01-09
+              <time title="更新于" itemprop="dateModified" datetime="2021-03-07T14:36:17+08:00">
+                2021-03-07
               </time>
             
           </span>
@@ -441,7 +441,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  789
+                  818
                 </span>
               
 
@@ -498,7 +498,10 @@
 <li><code>(h = key.hashCode()) ^ (h &gt;&gt;&gt; 16)</code></li>
 </ul>
 </li>
-<li>HashMap计算key对应数组下标的算法：哈希值对(数组长度-1)做与运算</li>
+<li>HashMap计算key对应数组下标的算法：哈希值对(数组长度-1)做与运算<ul>
+<li>因为数组长度是二次幂，所以”对(数组长度-1)做与运算 === 对数组长度取模”</li>
+</ul>
+</li>
 <li>put时，如果发生哈希冲突，且key的equals方法也为true或对象严格等，则认为是同一个对象，会updateValue，并返回oldValue。否则认为是两个不同key对象，用链地址法将新Entry加到链表尾部</li>
 <li>get时，先通过计算哈希值并对数组长度取余得到下标，取出entry链表并遍历，当哈希值相同且对象严格等或equals为true，则取出entry.value，否则返回null</li>
 <li>当map里元素数目超过阈值（默认16*0.75）时进行扩容<ul>
@@ -622,7 +625,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">128</span>
+                  <span class="site-state-item-count">137</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -633,7 +636,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">12</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>

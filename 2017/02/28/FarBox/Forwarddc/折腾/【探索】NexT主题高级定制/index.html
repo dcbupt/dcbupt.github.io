@@ -137,7 +137,7 @@
 <meta property="og:site_name" content="Forwarddc&#39;s Blog">
 <meta property="og:description" content="NexT主题浅析与个性化定制">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-11-02T10:25:17.728Z">
+<meta property="og:updated_time" content="2021-03-22T15:28:44.929Z">
 <meta name="twitter:card" content="summary">
 
 
@@ -381,8 +381,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2019-11-02T18:25:17+08:00">
-                2019-11-02
+              <time title="更新于" itemprop="dateModified" datetime="2021-03-22T23:28:44+08:00">
+                2021-03-22
               </time>
             
           </span>
@@ -442,7 +442,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  2.4k
+                  2.5k
                 </span>
               
 
@@ -646,6 +646,8 @@
 <h1 id="css"><a href="#css" class="headerlink" title="css"></a>css</h1><p>打开<code>themes/next/source/css/_custom/</code>下的<code>custom.styl</code>,向里面加代码</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">// 文章边框</span><br><span class="line">.post &#123;</span><br><span class="line">  // height: 300px;</span><br><span class="line">  margin-top: 0px;</span><br><span class="line">  margin-bottom: 60px;</span><br><span class="line">  padding: 20px 40px;</span><br><span class="line">  box-shadow: 0 0 25px rgba(202, 203, 203, .5);</span><br><span class="line">  -webkit-box-shadow: 0 0 5px rgba(202, 203, 203, .5);</span><br><span class="line">  -moz-box-shadow: 0 0 5px rgba(202, 203, 204, .5);</span><br><span class="line">  background-color: #f9f9f9;</span><br><span class="line">  //background-color: #f3f9f1;</span><br><span class="line">  //background-color: #edd1d8;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 文章末尾分割线</span><br><span class="line">.posts-expand .post-eof &#123;</span><br><span class="line">  display: block;</span><br><span class="line">  margin: 80px auto 60px;</span><br><span class="line">  width: 0px;</span><br><span class="line">  height: 0px;</span><br><span class="line">  background: #555;</span><br><span class="line">  text-align: center;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 阅读全文按钮</span><br><span class="line">.post-button &#123;</span><br><span class="line">  margin-top: 90px;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 代码边框</span><br><span class="line">code &#123;</span><br><span class="line">    color: #ff7600;</span><br><span class="line">    background: #fbf7f8;</span><br><span class="line">    margin: 2px;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line">.highlight, pre &#123;</span><br><span class="line">    margin: 5px 0 30px 0;</span><br><span class="line">    padding: 1px;</span><br><span class="line">    border-radius: 3px;</span><br><span class="line">&#125;</span><br><span class="line">.highlight, code, pre &#123;</span><br><span class="line">    border: 1px solid #d6d6d6;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 段落边距</span><br><span class="line">p &#123;</span><br><span class="line">  margin: 0 0 10px 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
+<p>调整文章的行宽，修改：<code>themes/next/source/css/_variables/base.styl</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$content-desktop-large          = 1150px</span><br></pre></td></tr></table></figure>
 <hr>
 <h1 id="相关推荐"><a href="#相关推荐" class="headerlink" title="相关推荐"></a>相关推荐</h1><p>NexT主题优化：<br><a href="https://www.jianshu.com/p/3ff20be8574c" target="_blank" rel="noopener">https://www.jianshu.com/p/3ff20be8574c</a></p>
 
@@ -770,7 +772,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">128</span>
+                  <span class="site-state-item-count">137</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -781,7 +783,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">12</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>

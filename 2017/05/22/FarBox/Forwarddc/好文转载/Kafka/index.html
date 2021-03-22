@@ -504,30 +504,30 @@
 <li>The Producer API allows an application to publish a stream of records to one or more Kafka topics.</li>
 <li>The Consumer API allows an application to subscribe to one or more topics and process the stream of records produced to them.</li>
 <li>The Streams API allows an application to act as a stream processor, consuming an input stream from one or more topics and producing an output stream to one or more output topics, effectively transforming the input streams to output streams.</li>
-<li>The Connector API allows building and running reusable producers or consumers that connect Kafka topics to existing applications or data systems. For example, a connector to a relational database might capture every change to a table.<br><img src="http://kafka.apache.org/0102/images/kafka-apis.png" alt=""></li>
+<li>The Connector API allows building and running reusable producers or consumers that connect Kafka topics to existing applications or data systems. For example, a connector to a relational database might capture every change to a table.<br><img src="http://kafka.apache.org/0102/images/kafka-apis.png" alt></li>
 </ul>
 <p><code>Kafka消息流程</code><br>Assigning the partitions in the topic to the consumers in the consumer group so that each partition is consumed by exactly one consumer in the group. </p>
 <p>By doing this we ensure that the consumer is the only reader of that partition and consumes the data in order. Since there are many partitions this still balances the load over many consumer instances. Note however that there cannot be more consumer instances in a consumer group than partitions.</p>
 <blockquote>
 <p>这种消息分发方式，保证了并行高效率消费消息的同时，每个Consumer仍然能按序消费消息</p>
 </blockquote>
-<p><img src="http://img.blog.csdn.net/20160618151524374?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt=""></p>
+<p><img src="http://img.blog.csdn.net/20160618151524374?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt></p>
 <p>（1）消息生产者Producer将消息发送到kafka broker 的Topic中（每个topic中有多个消息）<br>（2）每个topic中消息增多，topic中的消息进行分区，使得consumer可快速定位消费消息，也可同时消费多个分区中的数据，提高了传输速率。<br>（3）Consumer Group：消费者组里有多个消费者，每个消费者对应着不同partition分区中的数据处理。例如partition1的数据给Consumer 1，2给2，使得多个分区组成的topic由group中的多个consumer消费，也就是数据内部对相同message的并发处理。</p>
 <h2 id="topic-amp-partition"><a href="#topic-amp-partition" class="headerlink" title="topic &amp; partition"></a>topic &amp; partition</h2><p><code>topic及分区</code><br>一个topic是对一组消息的归纳。对每个topic，Kafka 对它的日志进行了分区。每个分区都由一系列有序的、不可变的消息组成，这些消息被连续的追加到分区中。<br>分区的意义：consumer可快速定位消费消息，也可同时消费多个分区中的数据，提高了传输速率</p>
 <p><code>Partition</code><br>分区的目的：<br>（1）减缓日志文件占用磁盘空间<br>大量消息，broker都要持久化到文件中，硬盘占用空间增大。分区将消息颗粒细分，<code>每个partition可以存放在不同的硬盘空间中</code>，避免单个broker中的topic文件侵占内存空间<br>（2）不同的consumer同时处理partition中的数据<br><code>Kafka中consumer与partition为 1：n的关系，即1个分区仅由1个消费者消费；1个消费者可以同时消费多个不同分区</code>。分区细化消息粒度，消费者同时处理多个分区的越多，达到高效的消息并发处理。</p>
 <p><code>topics &amp; partitioned log</code><br>A topic is a category or feed name to which records are published. Topics in Kafka are always multi-subscriber; that is, a topic can have zero, one, or many consumers that subscribe to the data written to it.</p>
-<p>For each topic, the Kafka cluster maintains a partitioned log that looks like this:<br><img src="http://kafka.apache.org/0102/images/log_anatomy.png" alt=""></p>
+<p>For each topic, the Kafka cluster maintains a partitioned log that looks like this:<br><img src="http://kafka.apache.org/0102/images/log_anatomy.png" alt></p>
 <blockquote>
 <p>partitioned log维护topic的所有partition的offset信息</p>
 </blockquote>
 <p><code>Partition的物理存储——文件夹</code><br>为了使得Kafka的吞吐率可以线性提高，物理上把Topic分成一个或多个Partition，<code>每个Partition在物理上对应一个文件夹，该文件夹下存储这个Partition的所有消息和索引文件。</code></p>
-<p>若创建topic1和topic2两个topic，且分别有13个和19个分区，则整个集群上会相应会生成共32个文件夹（本文所用集群共8个节点，此处topic1和topic2 replication-factor均为1），如下图所示。<br><img src="http://cdn1.infoqstatic.com/statics_s1_20170516-0317u5/resource/articles/kafka-analysis-part-1/zh/resources/0310021.png" alt=""></p>
+<p>若创建topic1和topic2两个topic，且分别有13个和19个分区，则整个集群上会相应会生成共32个文件夹（本文所用集群共8个节点，此处topic1和topic2 replication-factor均为1），如下图所示。<br><img src="http://cdn1.infoqstatic.com/statics_s1_20170516-0317u5/resource/articles/kafka-analysis-part-1/zh/resources/0310021.png" alt></p>
 <p><code>offset</code><br>分区中的每个消息都有一个连续的序列号叫做offset,用来在分区中唯一的标识这个消息。</p>
 <p>The records in the partitions are each assigned a sequential id number called the offset that uniquely identifies each record within the partition</p>
 <p><code>record的物理存储 &amp; segment list &amp; segment &amp; log entrie</code><br>一个partition文件夹下有多个日志文件（segment），每个日志文件都是一个log entrie序列，每个log entrie包含一个4字节整型数值（值为N+5），1个字节的”magic value”，4个字节的CRC校验码，其后跟N个字节的消息体。<br>每条消息都有一个当前Partition下唯一的64字节的offset，它指明了这条消息的起始位置。磁盘上存储的消息格式如下：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">message length ： 4 bytes (value: 1+4+n)</span><br><span class="line">&quot;magic&quot; value ： 1 byte </span><br><span class="line">crc ： 4 bytes </span><br><span class="line">payload ： n bytes</span><br></pre></td></tr></table></figure>
 
-<p>这个log entries并非由一个文件构成，而是分成多个segment，每个segment以该segment第一条消息的offset命名并以“.kafka”为后缀。另外会有一个索引文件，它标明了每个segment下包含的log entry的offset范围，如下图所示。<br><img src="http://cdn1.infoqstatic.com/statics_s1_20170516-0317u5/resource/articles/kafka-analysis-part-1/zh/resources/0310022.png" alt=""></p>
+<p>这个log entries并非由一个文件构成，而是分成多个segment，每个segment以该segment第一条消息的offset命名并以“.kafka”为后缀。另外会有一个索引文件，它标明了每个segment下包含的log entry的offset范围，如下图所示。<br><img src="http://cdn1.infoqstatic.com/statics_s1_20170516-0317u5/resource/articles/kafka-analysis-part-1/zh/resources/0310022.png" alt></p>
 <p>因为每条消息都被append到该Partition中，属于顺序写磁盘，因此效率非常高（经验证，顺序写磁盘效率比随机写内存还要高，这是Kafka高吞吐率的一个很重要的保证）。</p>
 <h2 id="producer"><a href="#producer" class="headerlink" title="producer"></a>producer</h2><p><code>Producers</code><br>Producers publish data to the topics of their choice. The producer is responsible for choosing which record to assign to which partition within the topic. </p>
 <blockquote>
@@ -544,15 +544,15 @@
 <p>如果将上例中的类作为partition.class，并通过如下代码发送20条消息（key分别为0，1，2，3）至topic3（包含4个Partition）。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">public void sendMessage() throws InterruptedException&#123;</span><br><span class="line">　　for(int i = 1; i &lt;= 5; i++)&#123;</span><br><span class="line">　　      List messageList = new ArrayList&lt;KeyedMessage&lt;String, String&gt;&gt;();</span><br><span class="line">　　      for(int j = 0; j &lt; 4; j++）&#123;</span><br><span class="line">　　          messageList.add(new KeyedMessage&lt;String, String&gt;(&quot;topic2&quot;, j+&quot;&quot;, &quot;The &quot; + i + &quot; message for key &quot; + j));</span><br><span class="line">　　      &#125;</span><br><span class="line">　　      producer.send(messageList);</span><br><span class="line">    &#125;</span><br><span class="line">　　producer.close();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>则key相同的消息会被发送并存储到同一个partition里，而且key的序号正好和Partition序号相同。（Partition序号从0开始，本例中的key也从0开始）。下图所示是通过Java程序调用Consumer后打印出的消息列表<br><img src="http://cdn1.infoqstatic.com/statics_s2_20170530-0600u1/resource/articles/kafka-analysis-part-1/zh/resources/0310024.png" alt=""></p>
+<p>则key相同的消息会被发送并存储到同一个partition里，而且key的序号正好和Partition序号相同。（Partition序号从0开始，本例中的key也从0开始）。下图所示是通过Java程序调用Consumer后打印出的消息列表<br><img src="http://cdn1.infoqstatic.com/statics_s2_20170530-0600u1/resource/articles/kafka-analysis-part-1/zh/resources/0310024.png" alt></p>
 <p><code>发布消息模式</code><br>发布消息通常有两种模式：队列模式（queuing）和发布-订阅模式(publish-subscribe)。队列模式中，consumers可以同时从服务端读取消息，每个消息只被其中一个consumer读到；发布-订阅模式中消息被广播到所有的consumer中。</p>
-<h2 id="consumer"><a href="#consumer" class="headerlink" title="consumer"></a>consumer</h2><p><code>Consumers</code><br>Consumers label themselves with a consumer group name, and each record published to a topic is delivered to one consumer instance within each subscribing consumer group. Consumer instances can be in separate processes or on separate machines.<br><img src="http://kafka.apache.org/0102/images/consumer-groups.png" alt=""></p>
+<h2 id="consumer"><a href="#consumer" class="headerlink" title="consumer"></a>consumer</h2><p><code>Consumers</code><br>Consumers label themselves with a consumer group name, and each record published to a topic is delivered to one consumer instance within each subscribing consumer group. Consumer instances can be in separate processes or on separate machines.<br><img src="http://kafka.apache.org/0102/images/consumer-groups.png" alt></p>
 <p>如上图，两台服务器集群包含四个partition，服务于2个ConsumerGroup</p>
 <p><code>Consumer Group</code><br>Consumers可以加入一个consumer组，共同竞争一个topic，topic中的消息将被分发到组中的一个成员中。同一组中的consumer可以在不同的程序中，也可以在不同的机器上。<br>每个topic都有若干数量的consumer组，每个组都是一个逻辑上的“订阅者”，为了容错和更好的稳定性，每个组由若干consumer组成。这其实就是一个发布-订阅模式，只不过订阅者是个组而不是单个consumer。</p>
-<p><code>Consumer Group</code>：<br>使用Consumer high level API时，同一Topic的一条消息只能被同一个Consumer Group内的一个Consumer消费，但多个Consumer Group可同时消费这一消息。<br><img src="http://cdn1.infoqstatic.com/statics_s1_20170516-0317u5/resource/articles/kafka-analysis-part-1/zh/resources/0310025.png" alt=""></p>
+<p><code>Consumer Group</code>：<br>使用Consumer high level API时，同一Topic的一条消息只能被同一个Consumer Group内的一个Consumer消费，但多个Consumer Group可同时消费这一消息。<br><img src="http://cdn1.infoqstatic.com/statics_s1_20170516-0317u5/resource/articles/kafka-analysis-part-1/zh/resources/0310025.png" alt></p>
 <p>这是Kafka用来实现一个Topic消息的广播（发给所有的Consumer）和单播（发给某一个Consumer）的手段。</p>
 <p>一个Topic可以对应多个Consumer Group。如果需要实现广播，只要每个Consumer有一个独立的Group就可以了。要实现单播只要所有的Consumer在同一个Group里。用Consumer Group还可以将Consumer进行自由的分组而不需要多次发送消息到不同的Topic。</p>
-<p><code>不同类型消息处理系统划分为不同Consumer Group</code><br>实际上，Kafka的设计理念之一就是同时提供离线处理和实时处理。根据这一特性，可以使用Storm这种实时流处理系统对消息进行实时在线处理，同时使用Hadoop这种批处理系统进行离线处理，还可以同时将数据实时备份到另一个数据中心，只需要保证这三个操作所使用的Consumer属于不同的Consumer Group即可。下图是Kafka在Linkedin的一种简化部署示意图。<br><img src="http://cdn1.infoqstatic.com/statics_s1_20170516-0317u5/resource/articles/kafka-analysis-part-1/zh/resources/0310026.png" alt=""></p>
+<p><code>不同类型消息处理系统划分为不同Consumer Group</code><br>实际上，Kafka的设计理念之一就是同时提供离线处理和实时处理。根据这一特性，可以使用Storm这种实时流处理系统对消息进行实时在线处理，同时使用Hadoop这种批处理系统进行离线处理，还可以同时将数据实时备份到另一个数据中心，只需要保证这三个操作所使用的Consumer属于不同的Consumer Group即可。下图是Kafka在Linkedin的一种简化部署示意图。<br><img src="http://cdn1.infoqstatic.com/statics_s1_20170516-0317u5/resource/articles/kafka-analysis-part-1/zh/resources/0310026.png" alt></p>
 <h2 id="retention-amp-reconsume"><a href="#retention-amp-reconsume" class="headerlink" title="retention &amp; reconsume"></a>retention &amp; reconsume</h2><p><code>ReConsume</code>：<br>The Kafka cluster retains all published records—whether or not they have been consumed—using a configurable retention period. For example, if the retention policy is set to two days, then for the two days after a record is published, it is available for consumption, after which it will be discarded to free up space. </p>
 <p><code>retention</code><br>对于传统的message queue而言，一般会删除已经被消费的消息，而Kafka集群会保留所有的消息，无论其被消费与否。</p>
 <p>当然，因为磁盘限制，不可能永久保留所有数据（实际上也没必要），因此Kafka提供两种策略删除旧数据。一是基于时间，二是基于Partition文件大小。</p>
@@ -787,7 +787,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">128</span>
+                  <span class="site-state-item-count">137</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -798,7 +798,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">12</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>

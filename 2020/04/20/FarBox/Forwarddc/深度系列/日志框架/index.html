@@ -136,10 +136,10 @@
 <meta property="og:site_name" content="Forwarddc&#39;s Blog">
 <meta property="og:description" content="日志框架">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http:&#x2F;&#x2F;dcbupt.github.io&#x2F;2020&#x2F;04&#x2F;20&#x2F;FarBox&#x2F;Forwarddc&#x2F;%E6%B7%B1%E5%BA%A6%E7%B3%BB%E5%88%97&#x2F;%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6&#x2F;resource&#x2F;LogFrame.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;dcbupt.github.io&#x2F;resource&#x2F;LogFrame.jpg">
 <meta property="og:updated_time" content="2021-01-09T13:27:01.803Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http:&#x2F;&#x2F;dcbupt.github.io&#x2F;2020&#x2F;04&#x2F;20&#x2F;FarBox&#x2F;Forwarddc&#x2F;%E6%B7%B1%E5%BA%A6%E7%B3%BB%E5%88%97&#x2F;%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6&#x2F;resource&#x2F;LogFrame.jpg">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;dcbupt.github.io&#x2F;resource&#x2F;LogFrame.jpg">
 
 
 
@@ -490,7 +490,7 @@
 </blockquote>
 <p>@EnableCommonLog参照Spring的@EnableCaching、@EnableTransactionManagement注解，本质是基于ImportSelector和运行时获取配置类注解参数的方式，动态向beanFactory注册bean</p>
 <h1 id="核心组件"><a href="#核心组件" class="headerlink" title="核心组件"></a>核心组件</h1><p>日志框架本质是通过Spring-aop提供统一的日志切面能力</p>
-<p>框架整体uml类图如下：<br><img src="resource/LogFrame.jpg" alt=""></p>
+<p>框架整体uml类图如下：<br><img src="/resource/LogFrame.jpg" alt></p>
 <p>首先从配置类ApplicationConfig说起。ApplicationConfig指代业务方应用的配置类（如果是SpringBoot应用，一般为启动类），在该类上使用框架提供的@EnableCommonLog注解，该注解主要的作用就是引入注解<code>@Import(CommonLogConfigurationSelector.class)</code></p>
 <p>Spring容器（org.springframework.context.support.AbstractApplicationContext）会在初始化beanFactory后，执行所有bfpp后置处理。org.springframework.context.annotation.ConfigurationClassPostProcessor作为Spring自带的一个bfpp，在后置处理过程中，会递归得到配置类的所有@Import注解，然后回调CommonLogConfigurationSelector这个ImportSelector的方法，解析得到需要注册的bean并注册到beanFactory，这部分更深入的分析参考我的另一篇文章：<code>springboot自定义starter实现原理</code></p>
 <p>CommonLogConfigurationSelector和@EnableCaching、@EnableTransactionManagement注解使用的ImportSelector都有相同的父类AdviceModeImportSelector</p>
@@ -659,7 +659,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">128</span>
+                  <span class="site-state-item-count">137</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -670,7 +670,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">12</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>

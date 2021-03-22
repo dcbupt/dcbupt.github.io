@@ -486,7 +486,7 @@
       
 
       
-        <h1 id="HDFS集群"><a href="#HDFS集群" class="headerlink" title="HDFS集群"></a>HDFS集群</h1><p><img src="http://images.cnitblog.com/blog/352072/201311/26104230-8109ac513de14fe1b115b775581751f2.jpg" alt=""></p>
+        <h1 id="HDFS集群"><a href="#HDFS集群" class="headerlink" title="HDFS集群"></a>HDFS集群</h1><p><img src="http://images.cnitblog.com/blog/352072/201311/26104230-8109ac513de14fe1b115b775581751f2.jpg" alt></p>
 <p>如上图所示，HDFS也是按照Master和Slave的结构。分NameNode、SecondaryNameNode、DataNode这几个角色。</p>
 <p>NameNode：是Master节点，是大领导。管理数据块映射；处理客户端的读写请求；配置副本策略；管理HDFS的名称空间；</p>
 <p>SecondaryNameNode：是一个小弟，分担大哥namenode的工作量；是NameNode的冷备份；合并fsimage和fsedits然后再发给namenode。</p>
@@ -497,7 +497,7 @@
 <p>edits：元数据的操作日志（针对文件系统做的修改操作记录）</p>
 <p>namenode内存中存储的是=fsimage+edits。</p>
 <p>SecondaryNameNode负责定时默认1小时，从namenode上，获取fsimage和edits来进行合并，然后再发送给namenode。减少namenode的工作量。</p>
-<h1 id="工作原理"><a href="#工作原理" class="headerlink" title="工作原理"></a>工作原理</h1><p>写操作：<br><img src="http://images.cnitblog.com/blog/352072/201311/26162921-2de9d28df9b54fe6a97a6fd88f1cb03f.jpg" alt=""></p>
+<h1 id="工作原理"><a href="#工作原理" class="headerlink" title="工作原理"></a>工作原理</h1><p>写操作：<br><img src="http://images.cnitblog.com/blog/352072/201311/26162921-2de9d28df9b54fe6a97a6fd88f1cb03f.jpg" alt></p>
 <p>有一个文件FileA，100M大小。Client将FileA写入到HDFS上。</p>
 <p>HDFS按默认配置。</p>
 <p>HDFS分布在三个机架上Rack1，Rack2，Rack3。</p>
@@ -522,7 +522,7 @@
 <p>分析，通过写过程，我们可以了解到：<br>①写1T文件，我们需要3T的存储，3T的网络流量贷款。</p>
 <p>②在执行读或写的过程中，NameNode和DataNode通过HeartBeat进行保存通信，确定DataNode活着。如果发现DataNode死掉了，就将死掉的DataNode上的数据，放到其他节点去。读取时，要读其他节点去。</p>
 <p>③挂掉一个节点，没关系，还有其他节点可以备份；甚至，挂掉某一个机架，也没关系；其他机架上，也有备份。</p>
-<p>读操作：<br><img src="http://images.cnitblog.com/blog/352072/201311/26163017-fc613879835c402886b75e0593ca52ed.jpg" alt=""></p>
+<p>读操作：<br><img src="http://images.cnitblog.com/blog/352072/201311/26163017-fc613879835c402886b75e0593ca52ed.jpg" alt></p>
 <p>读操作就简单一些了，如图所示，client要从datanode上，读取FileA。而FileA由block1和block2组成。<br>a. client向namenode发送读请求。</p>
 <p>b. namenode查看Metadata信息，返回fileA的block的位置。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">block1:host2,host1,host3</span><br><span class="line">block2:host7,host8,host4</span><br></pre></td></tr></table></figure>
@@ -643,7 +643,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">128</span>
+                  <span class="site-state-item-count">137</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -654,7 +654,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">12</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>

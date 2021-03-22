@@ -137,7 +137,7 @@
 <meta property="og:site_name" content="Forwarddc&#39;s Blog">
 <meta property="og:description" content="分布式事务">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2021-01-09T13:27:01.786Z">
+<meta property="og:updated_time" content="2021-03-07T06:36:17.405Z">
 <meta name="twitter:card" content="summary">
 
 
@@ -381,8 +381,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2021-01-09T21:27:01+08:00">
-                2021-01-09
+              <time title="更新于" itemprop="dateModified" datetime="2021-03-07T14:36:17+08:00">
+                2021-03-07
               </time>
             
           </span>
@@ -442,7 +442,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  3k
+                  3.6k
                 </span>
               
 
@@ -458,7 +458,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  10
+                  12
                 </span>
               
             </div>
@@ -483,7 +483,46 @@
       
 
       
-        <h1 id="CAP"><a href="#CAP" class="headerlink" title="CAP"></a>CAP</h1><p>分布式系统中，数据可能分布在多个缓存服务器、数据库中。这些服务器、数据库往往都部署在多个网络分组中，所以可以说：<code>分布式系统中，数据是多网络环境多物理空间存储的</code></p>
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>通过这篇文章，你需要掌握：</p>
+<ul>
+<li>CAP的含义<ul>
+<li>一致性、可用性、分区容错性</li>
+</ul>
+</li>
+<li>刚性分布式事务和柔性分布式事务的区别<ul>
+<li>CP型和AP型</li>
+</ul>
+</li>
+<li>分布式事务的实现原理：二阶段提交协议2PC<ul>
+<li>事务执行分为确认阶段和执行阶段。确认阶段进行逻辑校验和资源预留，执行阶段由事务管理器负责，不断重试保证分布式事务执行后的数据一致性</li>
+</ul>
+</li>
+<li>2PC协议的实现：TCC模型<ul>
+<li>主业务调用每个分布式事务的try方法执行确认，如果出现确认失败，交给事务管理器执行每个分布式事务的cancel方法回滚，否则交给事务管理器执行每个分布式事务的commit方法</li>
+</ul>
+</li>
+<li>分布式事务的实际使用案例<ul>
+<li>rocketmq的事务消息<ul>
+<li>2PC的确认阶段：prepare消息+本地事务+commit消息。2PC的执行阶段：mqBroker保证事务消息一定可被投递到消费端执行分布式事务。回滚阶段：本地事务执行失败，发rollback消息，删除prepare消息不下发</li>
+</ul>
+</li>
+<li>本地事务消息表<ul>
+<li>分布式事务消息落库，和本地事务做在一起。定时扫表发送分布式事务消息，成功后从本地表删除。不推荐，不如直接用mq的事务消息</li>
+</ul>
+</li>
+<li>补偿型分布式事务<ul>
+<li>适合于每个分布式事务一定可被执行。通过注解+aop方式，对执行分布式事务的方法做增强，如果执行失败，写补偿表，定时扫补偿表重试该方法，需要每个分布式事务做幂等。但这种方式完全放弃了一致性</li>
+</ul>
+</li>
+<li>TXC <ul>
+<li>集团内部的分布式事务中间件。需要每个涉及到分布式事务的数据库建一张回滚表。相对于TCC模型，事务提交和回滚都由中间件负责，不需要每个分布式事务自己实现commit和cancel接口</li>
+<li>业务应用在2PC的确认阶段创建全局事务，然后像执行本地事务一样执行每个分布式事务方法，此时回滚表会记录之前的数据。基于每个事务的执行结果，业务应用告诉TXC服务端，执行全局事务提交或回滚。回滚操作基于回滚表，回滚到之前的记录</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="CAP"><a href="#CAP" class="headerlink" title="CAP"></a>CAP</h1><p>分布式系统中，数据可能分布在多个缓存服务器、数据库中，且这些服务器、数据库往往都部署在多个网络分组中，所以可以说：<code>分布式系统中，数据是多网络环境多物理空间存储的</code></p>
 <p>多网络分组、多物理空间存储的数据，核心问题就是要解决数据读取一致性。因此，就有了CAP理论来描述这种问题</p>
 <p>CAP即Consistency、Avaliability、PartitionTolerence，一般分布式系统只能保证CP或AP，无法同时满足CAP</p>
 <p>Consistency即一致性，需要保证任何时刻分布式系统中数据存储的结果是一致的。因此数据写入时，需要对写入的所有分布式空间加读写锁，这期间数据是无法被外部访问的，因此不满足Avaliability，即可用性。所以分布式系统中一致性和可用性是相互矛盾的，无法同时满足</p>
@@ -528,7 +567,7 @@
 </li>
 </ul>
 <p>你可能会问，我何不把发mq消息也放到本地事务里，一旦发mq消息失败，本地事务就回滚，不也能实现分布式事务么？实际上这是有问题的，事务消息能保证本地事务和消息投递的强一致性，只要本地事务执行成功，一定能由mq服务端保证分布式事务执行成功。但如果把发mq放到本地事务，可能本地事务成功了，mq发送失败，但这却要回滚本地事务，当然做不到本地事务和消息投递强一致性，造成没必要的回滚</p>
-<h2 id="本地事务消息表"><a href="#本地事务消息表" class="headerlink" title="本地事务消息表"></a>本地事务消息表</h2><p>事务消息依赖mq自身的机制保证本地事务执行和消息投递的强一致性，本地事务消息表则由业务方保证，进而保证分布式事务的一致性</p>
+<h2 id="本地事务消息表"><a href="#本地事务消息表" class="headerlink" title="本地事务消息表"></a>本地事务消息表</h2><p>事务消息依赖mq自身的机制保证本地事务和消息投递的强一致性，本地事务消息表则由业务方保证，进而保证分布式事务的一致性</p>
 <ul>
 <li>创建本地事务消息表</li>
 <li>执行本地事务和消息数据写入本地事务表放在一个事务里，保证本地事务执行和消息投递的强一致性</li>
@@ -678,7 +717,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">128</span>
+                  <span class="site-state-item-count">137</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -689,7 +728,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">12</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -733,7 +772,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#CAP"><span class="nav-number">1.</span> <span class="nav-text">CAP</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#分布式事务的实现方案"><span class="nav-number">2.</span> <span class="nav-text">分布式事务的实现方案</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#二阶段提交协议"><span class="nav-number">2.1.</span> <span class="nav-text">二阶段提交协议</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CP型分布式事务的实现方案"><span class="nav-number">2.2.</span> <span class="nav-text">CP型分布式事务的实现方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#二阶段提交-XA版本"><span class="nav-number">2.2.1.</span> <span class="nav-text">二阶段提交-XA版本</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AP型分布式事务的实现方案"><span class="nav-number">2.3.</span> <span class="nav-text">AP型分布式事务的实现方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#二阶段提交-TCC版本-✨"><span class="nav-number">2.3.1.</span> <span class="nav-text">二阶段提交-TCC版本 ✨</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Saga模型"><span class="nav-number">2.3.2.</span> <span class="nav-text">Saga模型</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#分布式事务的实际解决方案"><span class="nav-number">3.</span> <span class="nav-text">分布式事务的实际解决方案</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#事务消息"><span class="nav-number">3.1.</span> <span class="nav-text">事务消息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#本地事务消息表"><span class="nav-number">3.2.</span> <span class="nav-text">本地事务消息表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#补偿型分布式事务"><span class="nav-number">3.3.</span> <span class="nav-text">补偿型分布式事务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TXC"><span class="nav-number">3.4.</span> <span class="nav-text">TXC</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CAP"><span class="nav-number">2.</span> <span class="nav-text">CAP</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#分布式事务的实现方案"><span class="nav-number">3.</span> <span class="nav-text">分布式事务的实现方案</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#二阶段提交协议"><span class="nav-number">3.1.</span> <span class="nav-text">二阶段提交协议</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CP型分布式事务的实现方案"><span class="nav-number">3.2.</span> <span class="nav-text">CP型分布式事务的实现方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#二阶段提交-XA版本"><span class="nav-number">3.2.1.</span> <span class="nav-text">二阶段提交-XA版本</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AP型分布式事务的实现方案"><span class="nav-number">3.3.</span> <span class="nav-text">AP型分布式事务的实现方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#二阶段提交-TCC版本-✨"><span class="nav-number">3.3.1.</span> <span class="nav-text">二阶段提交-TCC版本 ✨</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Saga模型"><span class="nav-number">3.3.2.</span> <span class="nav-text">Saga模型</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#分布式事务的实际解决方案"><span class="nav-number">4.</span> <span class="nav-text">分布式事务的实际解决方案</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#事务消息"><span class="nav-number">4.1.</span> <span class="nav-text">事务消息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#本地事务消息表"><span class="nav-number">4.2.</span> <span class="nav-text">本地事务消息表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#补偿型分布式事务"><span class="nav-number">4.3.</span> <span class="nav-text">补偿型分布式事务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TXC"><span class="nav-number">4.4.</span> <span class="nav-text">TXC</span></a></li></ol></li></ol></div>
             
 
           </div>

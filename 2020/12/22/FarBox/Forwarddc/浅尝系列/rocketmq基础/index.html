@@ -136,7 +136,7 @@
 <meta property="og:site_name" content="Forwarddc&#39;s Blog">
 <meta property="og:description" content="rocketmq">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2021-01-09T15:13:11.629Z">
+<meta property="og:updated_time" content="2021-03-07T06:36:17.385Z">
 <meta name="twitter:card" content="summary">
 
 
@@ -380,8 +380,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2021-01-09T23:13:11+08:00">
-                2021-01-09
+              <time title="更新于" itemprop="dateModified" datetime="2021-03-07T14:36:17+08:00">
+                2021-03-07
               </time>
             
           </span>
@@ -533,7 +533,7 @@
 <ul>
 <li>为了消费者的<code>负载均衡</code>。每个消费队列只会由一个consumer消费，如果消费队列数目大于consumerGroup的集群数，每个Consumer可能消费多个消费队列，反之，有的Consumer不会消费<ul>
 <li>个人认为，不仅是负载均衡，也是一种<code>并行消费</code>的思想，提高吞吐量</li>
-<li>rocketmq消费模式有<code>集群模式</code>和<code>广播模式</code>。集群模式下每条消息只会被ConsumerGroup中的一个Consumer消费，一般也使用这种模式，上面说的“每个消费队列只会由一个consumer消费”也是针对这种模式。广播模式指的是消息会被集群中的每个Consumer消费，且不具备失败重头能力，一般不用</li>
+<li>rocketmq消费模式有<code>集群模式</code>和<code>广播模式</code>。集群模式下每条消息只会被ConsumerGroup中的一个Consumer消费，一般也使用这种模式，上面说的“每个消费队列只会由一个consumer消费”也是针对这种模式。广播模式指的是消息会被集群中的每个Consumer消费，且不具备失败重投能力，一般不用</li>
 </ul>
 </li>
 <li>实现<code>顺序消费</code><ul>
@@ -551,7 +551,7 @@
 <li>broker列表即topic分片所在的broker集群 </li>
 </ul>
 <p>对于顺序消息，Producer发送消息时会投递到指定的消费队列</p>
-<h1 id="消息消费"><a href="#消息消费" class="headerlink" title="消息消费"></a>消息消费</h1><p>和消息发布类似，consumer从nameserver获取topic的broker集群列表，轮询方式选择一台broker建立连接，然后从topic所在的消费队列中获取消息索引，再到commitLog获取消息体</p>
+<h1 id="消息消费"><a href="#消息消费" class="headerlink" title="消息消费"></a>消息消费</h1><p>consumer从nameserver获取topic的broker集群列表，按均分的负载均衡策略选择一台建立的broker，然后从topic所在的消费队列中获取消息索引，再到commitLog获取消息体</p>
 <ul>
 <li>consumer选择的消费队列不能同时被其他consumer消费</li>
 </ul>
@@ -687,7 +687,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">128</span>
+                  <span class="site-state-item-count">137</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -698,7 +698,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">12</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>

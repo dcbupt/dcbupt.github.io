@@ -136,7 +136,7 @@
 <meta property="og:site_name" content="Forwarddc&#39;s Blog">
 <meta property="og:description" content="系统学习线程池">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2021-01-09T13:27:02.057Z">
+<meta property="og:updated_time" content="2021-03-07T06:36:17.445Z">
 <meta name="twitter:card" content="summary">
 
 
@@ -380,8 +380,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2021-01-09T21:27:02+08:00">
-                2021-01-09
+              <time title="更新于" itemprop="dateModified" datetime="2021-03-07T14:36:17+08:00">
+                2021-03-07
               </time>
             
           </span>
@@ -441,7 +441,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1.5k
+                  2.1k
                 </span>
               
 
@@ -457,7 +457,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  5
+                  7
                 </span>
               
             </div>
@@ -511,18 +511,33 @@
 <blockquote>
 <p>任务的三种排队策略</p>
 </blockquote>
-<p>1、直接提交。<br>工作队列的默认选项是SynchronousQueue，在添加任务后必须等待其他线程取走后才能继续添加。如果不存在可用于立即运行任务的线程，且线程数小于池子最大数，会构造一个新的线程。这一点很重要，核心线程打满时，在同步队列里的任务会立即触发额外线程来处理任务，由此保证提交到线程池的任务顺序执行，避免在处理可能具有内部依赖性的请求集时出现锁。直接提交通常要求无界maximumPoolSizes以避免拒绝新提交的任务。</p>
+<p>1、直接提交。<br>工作队列的默认选项是SynchronousQueue，在添加任务后必须等待其他线程取走后才能继续添加。如果不存在可用于立即运行任务的线程，且线程数小于池子最大数，会构造一个新的线程。这一点很重要，核心线程打满时，在同步队列里的任务会立即触发额外线程来处理任务，由此保证提交到线程池的任务立即顺序执行，避免在处理可能具有内部依赖性的请求集时出现锁。直接提交通常要求无界maximumPoolSizes以避免拒绝新提交的任务。</p>
 <p>2、无界队列。<br>使用无界队列（例如，不具有预定义容量的LinkedBlockingQueue）将导致在所有corePoolSize线程都忙时新任务在队列中等待。这样，创建的线程就不会超过corePoolSize。（因此，maximumPoolSize的值也就无效了。）当每个任务完全独立于其他任务，即任务执行互不影响时，适合于使用无界队列；例如，在Web服务器中。这种排队可用于处理瞬态突发请求。</p>
 <p>3、有界队列。<br>当使用有限的maximumPoolSizes时，有界队列（如ArrayBlockingQueue）有助于防止资源耗尽，但是可能较难调整和控制。队列大小和最大池大小可能需要相互折衷：使用大型队列和小型池可以最大限度地降低CPU使用率、操作系统资源和上下文切换开销，但是可能导致人工降低吞吐量。使用小型队列通常要求较大的池大小，CPU使用率较高，但是可能遇到不可接受的调度开销，这样也会降低吞吐量。  </p>
+<p>4、延时队列。<br>定时线程池使用延时队列DelayedWorkQueue实现定时执行任务。延时队列基于最小堆构造，最近要执行的延时任务放在堆顶，内部有一个leader线程指向等待最近一个要执行任务的线程</p>
+<p>offer方法提交延时任务：</p>
+<ul>
+<li>任务入最小堆，如果任务在堆顶，说明是最近一个要执行的任务，则唤醒一个等待在延时队列的线程，让它作为leader线程，再执行awaitNanos方法等待最近的延时任务</li>
+</ul>
+<p>take方法获取延时任务：</p>
+<ul>
+<li>堆顶无任务，则线程await，等待在延时队列</li>
+<li>leader线程不为空说明有任务在等待最近一次延时任务，则线程await，等待在延时队列</li>
+<li>否则，当前线程作为leader线程，等待堆顶的最近一次延时任务，即执行awaitNanos方法延时等待<ul>
+<li>期间如果有更紧急的延时任务提交，则leader线程会置空，并唤醒一个等待在延时队列的线程，作为新的leader线程等待在最近的延时任务上</li>
+</ul>
+</li>
+<li>获取到延时任务后，leader线程置空，并唤醒一个等待在延时队列的线程，作为leader线程继续等待下一个延时任务</li>
+</ul>
 <h3 id="RejectedExecutionHandler"><a href="#RejectedExecutionHandler" class="headerlink" title="RejectedExecutionHandler"></a>RejectedExecutionHandler</h3><p>jdk提供了四种任务拒绝策略RejectedExecutionHandler的实现</p>
 <blockquote>
 <p>CallerRunsPolicy</p>
 </blockquote>
-<p>线程池未关闭时，在线程池运行的主线程中执行被拒绝任务。<br>这种策略提供了一个简单的反馈控制机制，将降低新任务提交的速度</p>
+<p>线程池未关闭时，在线程池运行的主线程中执行被拒绝任务。<br>这种策略提供了一个简单的反馈控制机制，缺点就是可能会阻塞主线程</p>
 <blockquote>
 <p>AbortPolicy</p>
 </blockquote>
-<p>拒绝任务时会抛出运行时RejectedExecutionException到线程池运行的主线程中</p>
+<p>拒绝任务时会抛出运行时RejectedExecutionException到线程池运行的主线程中<br><code>它是线程池默认的拒绝策略</code></p>
 <blockquote>
 <p>DiscardPolicy</p>
 </blockquote>
@@ -534,28 +549,64 @@
 <h2 id="Executors"><a href="#Executors" class="headerlink" title="Executors"></a>Executors</h2><blockquote>
 <p>创建线程池的一个工厂类</p>
 </blockquote>
-<p>1、newSingleThreadExecutor<br>创建一个单线程的线程池。这个线程池只有一个线程在工作，也就是相当于单线程串行执行所有任务。如果这个唯一的线程因为异常结束，那么会有一个新的线程来替代它。此线程池保证所有任务的执行顺序按照任务的提交顺序执行。</p>
+<p>1.newSingleThreadExecutor<br>创建一个单线程的线程池。这个线程池只有一个线程在工作，也就是相当于单线程串行执行所有任务。如果这个唯一的线程因为异常结束，那么会有一个新的线程来替代它。此线程池保证所有任务的执行顺序按照任务的提交顺序执行。</p>
+<blockquote>
+<p>core=1,max=1,keepAliveTime=0,LinkedBlockingQueue</p>
+</blockquote>
 <p>2.newFixedThreadPool<br>创建固定大小的线程池。每次提交一个任务就创建一个线程，直到达到线程池的最大线程数。一旦达到最大值就会保持不变，如果某个线程因为执行异常而结束，那么线程池会补充一个新线程。</p>
-<p>3、newCachedThreadPool<br>创建一个可缓存的线程池。如果线程池的大小超过了处理任务所需要的线程，那么就会回收部分空闲（60秒不执行任务）的线程，当任务数增加时，此线程池又可以智能的添加新线程来处理任务。此线程池不会对线程池大小做限制，线程池大小完全依赖于操作系统（或者说JVM）能够创建的最大线程大小。</p>
-<p>4.newScheduledThreadPool<br>创建一个大小无限的线程池。此线程池支持定时以及周期性执行任务的需求</p>
-<h1 id="线程池注意事项"><a href="#线程池注意事项" class="headerlink" title="线程池注意事项"></a>线程池注意事项</h1><p>1、并发可能产生的死锁问题<br>2、线程泄漏：当任务执行完毕而线程没能返回池中就会发生线程泄漏现象</p>
-<h1 id="线程池工作模型"><a href="#线程池工作模型" class="headerlink" title="线程池工作模型"></a>线程池工作模型</h1><p>1、需要有一个线程池管理器</p>
+<blockquote>
+<p>core=n,max=n,keepAliveTime=0,LinkedBlockingQueue</p>
+</blockquote>
+<p>3.newCachedThreadPool<br>创建一个可缓存的线程池。如果线程池的大小超过了处理任务所需要的线程，那么就会回收部分空闲（60秒不执行任务）的线程，当任务数增加时，此线程池又可以智能的添加新线程来处理任务。此线程池不会对线程池大小做限制，线程池大小完全依赖于操作系统（或者说JVM）能够创建的最大线程大小。</p>
+<blockquote>
+<p>core=0,max=MAX_VALUE,keepAliveTime=60s,SynchronousQueue</p>
+</blockquote>
+<p>4.newScheduledThreadPool<br>创建一个定时线程池。此线程池支持定时以及周期性执行任务的需求</p>
+<blockquote>
+<p>core=n,max=MAX_VALUE,keepAliveTime=10ms,DelayedWorkQueue</p>
+</blockquote>
+<h1 id="线程池注意事项"><a href="#线程池注意事项" class="headerlink" title="线程池注意事项"></a>线程池注意事项</h1><p>1、并发可能产生的死锁问题<br>2、线程泄漏：使用局部线程池造成线程泄漏</p>
 <ul>
-<li>负责管理工作线程</li>
-<li>负责封装任务请求，提交到请求队列</li>
-<li>负责从结果队列获取执行结果</li>
+<li>简单理解，线程池里的线程执行完任务后并不会stop，而是在while循环里不断轮询阻塞队列（请求队列）拿任务</li>
+<li>ThreadPoolExecutor -&gt; Worker -&gt; Thread，由于存在这样的引用关系，并且Thread作为GC Root，所以无法被回收</li>
 </ul>
-<p>2、需要有一个请求队列</p>
+<h1 id="线程池工作模型"><a href="#线程池工作模型" class="headerlink" title="线程池工作模型"></a>线程池工作模型</h1><p>1、线程池管理器</p>
 <ul>
-<li>保存任务请求</li>
+<li>核心是管理工作线程<ul>
+<li>构造线程池时，初始化一些工作线程，添加到工作线程队列并启动</li>
+<li>接收外部任务，提交到请求队列。请求队列拒绝时，比较工作线程队列的线程数和核心线程数、最大线程数的关系，决定是创建新的工作线程还是拒绝任务</li>
+<li>关闭线程池时，停止所有工作线程</li>
+</ul>
+</li>
+</ul>
+<p>2、请求队列</p>
+<ul>
+<li>核心是服务于工作线程取任务<ul>
+<li>提交到线程池的任务，同步添加到请求队列<ul>
+<li>添加后notify所有等待在请求队列的工作线程取任务</li>
+</ul>
+</li>
+<li>提供接口给工作线程，同步从请求队列取任务<ul>
+<li>请求队列为空时，wait在请求队列</li>
+</ul>
+</li>
+<li>请求队列满时，调用拒绝策略</li>
+</ul>
+</li>
 </ul>
 <p>3、工作线程</p>
 <ul>
-<li>轮询请求队列，获取并执行新任务</li>
+<li>核心是从请求队列里取任务执行<ul>
+<li>轮询请求队列，获取并执行任务</li>
 </ul>
-<p>4、结果队列</p>
+</li>
+</ul>
+<p>4、工作线程队列</p>
 <ul>
-<li>工作线程将任务执行结果放入结果队列</li>
+<li>核心是维护创建的工作线程<ul>
+<li>负责工作线程的入队和出队</li>
+</ul>
+</li>
 </ul>
 
         <blockquote class="blockquote-center">完</blockquote>
@@ -671,7 +722,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">128</span>
+                  <span class="site-state-item-count">137</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -682,7 +733,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">12</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>

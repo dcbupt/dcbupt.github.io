@@ -500,7 +500,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">minifyEnabled false</span><br><span class="line">proguardFiles getDefaultProguardFile(&apos;proguard-android.txt&apos;), &apos;proguard-rules.pro&apos;</span><br></pre></td></tr></table></figure>
 <p>设为true表示进行代码混淆，别人就无法获得你的源码了。<br>proguardFiles文件定义混淆规则<br>app的buildgradle里的dependencies定义了三种依赖：本地、库、远程依赖。<br>本地依赖就是依赖本地路径下的jar包，库依赖表示依赖项目的库模块，远程依赖定义jcenter的开源项目依赖</p>
 <h1 id="Android基础知识"><a href="#Android基础知识" class="headerlink" title="Android基础知识"></a>Android基础知识</h1><p>1、Android应用的启动顺序<br>AndroidManifest声明Activity-&gt;继承自Activity的Class执行onCreate方法<br>2、什么是逻辑和视图分离<br>Activity Class里写的是逻辑代码，而视图文件在layout文件夹里创建，在Activity里引用该文件指定视图，即视图和逻辑代码分开</p>
-<h1 id="Activity"><a href="#Activity" class="headerlink" title="Activity"></a>Activity</h1><h2 id="创建一个活动的三个步骤"><a href="#创建一个活动的三个步骤" class="headerlink" title="创建一个活动的三个步骤"></a>创建一个活动的三个步骤</h2><p>Activity在Android.manifest的<Application>中使用<Activity>进行注册。<br>编写继承自Activity的活动类，重写onCreate方法call setContentView传入布局文件<br>编写layout.xml</p>
+<h1 id="Activity"><a href="#Activity" class="headerlink" title="Activity"></a>Activity</h1><h2 id="创建一个活动的三个步骤"><a href="#创建一个活动的三个步骤" class="headerlink" title="创建一个活动的三个步骤"></a>创建一个活动的三个步骤</h2><p>Activity在Android.manifest的<Application>中使用<Activity>进行注册。<br>编写继承自Activity的活动类，重写onCreate方法call setContentView传入布局文件<br>编写layout.xml</Activity></Application></p>
 <h2 id="获取布局文件中的组件"><a href="#获取布局文件中的组件" class="headerlink" title="获取布局文件中的组件"></a>获取布局文件中的组件</h2><p>call findViewById并传入组件的id</p>
 <h2 id="按钮添加监听"><a href="#按钮添加监听" class="headerlink" title="按钮添加监听"></a>按钮添加监听</h2><p><code>Button button = (Button)findViewById(R.id.button_1);</code></p>
 <h2 id="Toast"><a href="#Toast" class="headerlink" title="Toast"></a>Toast</h2><p>Android提供的一种消息提醒方式，Toast会在屏幕显示一小段时间后消失，用法如下：<br><code>Toast.makeText(FirstActivity.this, &quot;You clicked button_1&quot;, Toast.LENGTH_SHORT);</code></p>
@@ -747,7 +747,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">128</span>
+                  <span class="site-state-item-count">137</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -758,7 +758,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">12</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
