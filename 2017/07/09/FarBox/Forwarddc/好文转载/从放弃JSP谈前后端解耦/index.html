@@ -136,7 +136,7 @@
 <meta property="og:site_name" content="Forwarddc&#39;s Blog">
 <meta property="og:description" content="后端必备知识">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-11-27T08:20:41.105Z">
+<meta property="og:updated_time" content="2021-05-17T14:24:45.765Z">
 <meta name="twitter:card" content="summary">
 
 
@@ -380,8 +380,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2017-11-27T16:20:41+08:00">
-                2017-11-27
+              <time title="更新于" itemprop="dateModified" datetime="2021-05-17T22:24:45+08:00">
+                2021-05-17
               </time>
             
           </span>
@@ -510,7 +510,7 @@
 <h1 id="JSP的痛点"><a href="#JSP的痛点" class="headerlink" title="JSP的痛点"></a>JSP的痛点</h1><p>以前的javaWeb项目大多数使用jsp作为页面层展示数据给用户，因为流量不高，因此也没有那么苛刻的性能要求，但现在是大数据时代，对于互联网项目的性能要求是越来越高，<br>因此原始的前后端耦合在一起的架构模式已经逐渐不能满足我们，因此我们需要需找一种解耦的方式，来大幅度提升我们的负载能力。</p>
 <p>1.动态资源和静态资源全部耦合在一起，服务器压力大，因为服务器会收到各种http请求，例如css的http请求，js的，图片的等等。<br>一旦服务器出现状况，前后台一起玩完，用户体验极差。</p>
 <p>2.UI出好设计图后，前端工程师只负责将设计图切成html，需要由java工程师来将html套成jsp页面，出错率较高（因为页面中经常会出现大量的js代码），<br>修改问题时需要双方协同开发，效率低下。</p>
-<p>3.jsp必须要在支持java的web服务器里运行（例如tomcat，jetty，resin等），无法使用nginx等（nginx据说单实例http并发高达5w，这个优势要用上），<br>性能提不上来。</p>
+<p>3.jsp必须要在支持java的服务器里运行（例如tomcat，jetty，resin等），无法使用nginx等（nginx据说单实例http并发高达5w，这个优势要用上），<br>性能提不上来。</p>
 <p>4.第一次请求jsp，必须要在web服务器中编译成servlet，第一次运行会较慢。</p>
 <p>5.每次请求jsp都是访问servlet再用输出流输出的html页面，效率没有直接使用html高（是每次哟，亲~）。</p>
 <p>6.jsp内有较多标签和表达式，前端工程师在修改页面时会捉襟见肘，遇到很多痛点。</p>
@@ -549,7 +549,7 @@
 <p>9.对于既可以前端做也可以后端做的逻辑，我建议是放到前端，为什么？<br>因为你的逻辑需要计算资源进行计算，如果放到后端去run逻辑，则会消耗带宽&amp;内存&amp;cpu等等计算资源，你要记住一点就是<br>服务端的计算资源是有限的，而如果放到前端，使用的是客户端的计算资源，这样你的服务端负载就会下降（高并发场景）。<br>类似于数据校验这种，前后端都需要做！</p>
 <p>10.前端需要有机制应对后端请求超时以及后端服务宕机的情况，友好的展示给用户。</p>
 <hr>
-<h1 id="扩展阅读"><a href="#扩展阅读" class="headerlink" title="扩展阅读"></a>扩展阅读</h1><p>1.其实对于js，css，图片这类的静态资源可以考虑放到类似于阿里云的oss这类文件服务器上（如果是普通的服务器&amp;操作系统，存储在到达pb级的文件后，或者单个文件夹内的文件数量达到3-5万，<br>io会有很严重的性能问题），<br>再在oss上配cdn（全国子节点加速），这样你页面打开的速度像飞一样， 无论你在全国的哪个地方，并且你的nginx的负载会进一步降低。</p>
+<h1 id="扩展阅读"><a href="#扩展阅读" class="headerlink" title="扩展阅读"></a>扩展阅读</h1><p>1.其实对于js，css，图片这类的静态资源可以考虑放到类似于阿里云的oss这类文件服务器上（如果是普通的服务器&amp;操作系统，存储在到达pb级的文件后，或者单个文件夹内的文件数量达到3-5万，io会有很严重的性能问题），再在oss上配cdn（全国子节点加速），这样你页面打开的速度像飞一样， 无论你在全国的哪个地方，并且你的nginx的负载会进一步降低。</p>
 <p>2.如果你要玩轻量级微服务架构，要使用nodejs做网关，用nodejs的好处还有利于seo优化，因为nginx只是向浏览器返回页面静态资源，而国内的搜索引擎爬虫只会抓取静态数据，不会解析页面中的js，<br>这使得应用得不到良好的搜索引擎支持。同时因为nginx不会进行页面的组装渲染，需要把静态页面返回到浏览器，然后完成渲染工作，这加重了浏览器的渲染负担。<br>浏览器发起的请求经过nginx进行分发，URL请求统一分发到nodejs，在nodejs中进行页面组装渲染；API请求则直接发送到后端服务器，完成响应。</p>
 <p>3.如果遇到跨域问题，spring4的CORS可以完美解决，但一般使用nginx反向代理都不会有跨域问题，除非你把前端服务和后端服务分成两个域名。<br>JSONP的方式也被淘汰掉了。</p>
 <p>4.如果想玩多端应用，注意要去掉tomcat原生的session机制，要使用token机制，使用缓存（因为是分布式系统），做单点，对于token机制的安全性问题，可以搜一下jwt。</p>
@@ -670,7 +670,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">137</span>
+                  <span class="site-state-item-count">142</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
