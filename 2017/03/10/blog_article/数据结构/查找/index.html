@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-mac-osx.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"dcbupt.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="《算法》第三章 查找">
+<meta property="og:type" content="article">
+<meta property="og:title" content="查找">
+<meta property="og:url" content="http://dcbupt.github.io/2017/03/10/blog_article/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%9F%A5%E6%89%BE/index.html">
+<meta property="og:site_name" content="dcddc">
+<meta property="og:description" content="《算法》第三章 查找">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-03-10T03:54:00.000Z">
+<meta property="article:modified_time" content="2022-05-01T06:44:18.755Z">
+<meta property="article:author" content="西米大人">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://dcbupt.github.io/2017/03/10/blog_article/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%9F%A5%E6%89%BE/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+  <title>查找 | dcddc</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">dcddc</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">西米大人的博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dcbupt.github.io/2017/03/10/blog_article/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%9F%A5%E6%89%BE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/me.png">
+      <meta itemprop="name" content="西米大人">
+      <meta itemprop="description" content="<blockquote class="blockquote-center">优秀的人，不是不合群，而是他们合群的人里面没有你</blockquote>">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="dcddc">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          查找
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-03-10 11:54:00" itemprop="dateCreated datePublished" datetime="2017-03-10T11:54:00+08:00">2017-03-10</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-05-01 14:44:18" itemprop="dateModified" datetime="2022-05-01T14:44:18+08:00">2022-05-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">数据结构</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2017/03/10/blog_article/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%9F%A5%E6%89%BE/" class="post-meta-item leancloud_visitors" data-flag-title="查找" title="热度">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">热度:</span>
+              <span class="leancloud-visitors-count"></span>℃
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">评论:</span>
+    
+    <a title="valine" href="/2017/03/10/blog_article/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%9F%A5%E6%89%BE/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2017/03/10/blog_article/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%9F%A5%E6%89%BE/" itemprop="commentCount"></span>℃
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">字数：</span>
+              <span>1.9k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+            <div class="post-description"><blockquote class="blockquote-center">《算法》第三章 查找 </blockquote></div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>JAVA中用Map实现查找，根据key查找value。下面介绍几种Map数据结构的实现</p>
+</blockquote>
+<h1 id="有序数组的二分查找"><a href="#有序数组的二分查找" class="headerlink" title="有序数组的二分查找"></a>有序数组的二分查找</h1><p>用key[]和value[]来保存Key-value，一对key-value的下标也相等<br>该实现的核心是rank(key)方法，该方法通过二分查找，找到key在key[]里的下标，如果不存在，返回key[]中比key小的key的数目。所以，rank方法返回的就是key在key[]中的下标（无论是已经存在了还是将要插入）<br>该实现在put，get，delete方法时，均会调用rank方法。而rank方法的时间复杂度因为用了二分，所以是<code>O(logN)</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br></pre></td><td class="code"><pre><span class="line">public class BinarySearchST&lt;Key extends Comparable&lt;Key&gt;, Value&gt; &#123;</span><br><span class="line">	private Key keys[];</span><br><span class="line">	private Value values[];</span><br><span class="line">	private int N = 0;// 元素数量</span><br><span class="line"></span><br><span class="line">	@SuppressWarnings(&quot;unchecked&quot;)</span><br><span class="line">	public BinarySearchST(int capacity) &#123;</span><br><span class="line">		keys = (Key[]) new Comparable[capacity];</span><br><span class="line">		values = (Value[]) new Object[capacity];</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public int size() &#123;</span><br><span class="line">		return N;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public boolean isEmpty() &#123;</span><br><span class="line">		return N == 0;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * 根据Key返回对应的Value</span><br><span class="line">	 */</span><br><span class="line">	public Value get(Key key) &#123;</span><br><span class="line">		if (key == null) &#123;</span><br><span class="line">			throw new RuntimeException(&quot;key can&#x27;t be null&quot;);</span><br><span class="line">		&#125;</span><br><span class="line">		if (isEmpty()) &#123;</span><br><span class="line">			return null;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		int i = rank(key);</span><br><span class="line">		if (i &lt; N &amp;&amp; keys[i].compareTo(key) == 0) &#123;</span><br><span class="line">			return values[i];</span><br><span class="line">		&#125; else &#123;</span><br><span class="line">			return null;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * 二分查找，如果命中，返回下标，如果未命中，返回小于该值的数目</span><br><span class="line">	 * keys[rank(key)]:大于等于key的最小值</span><br><span class="line">	 * keys[rank(key)-1]:小于等于key的最大值</span><br><span class="line">	 */</span><br><span class="line">	public int rank(Key key) &#123;</span><br><span class="line">		int lo = 0, hi = N - 1;</span><br><span class="line">		while (lo &lt;= hi) &#123;</span><br><span class="line">			int mid = lo + (hi - lo) / 2;</span><br><span class="line">			int t = key.compareTo(keys[mid]);</span><br><span class="line">			if (t &gt; 0) &#123;</span><br><span class="line">				lo = mid + 1;</span><br><span class="line">			&#125; else if (t &lt; 0) &#123;</span><br><span class="line">				hi = mid - 1;</span><br><span class="line">			&#125; else &#123;</span><br><span class="line">				return mid;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		return lo;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * 向符号表中添加键值对</span><br><span class="line">	 */</span><br><span class="line">	public void put(Key key, Value value) &#123;</span><br><span class="line">		if (key == null) &#123;</span><br><span class="line">			throw new RuntimeException(&quot;key can&#x27;t be null&quot;);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		// 命中，i为key的下标</span><br><span class="line">		// 未命中，i为key插入到数组后的下标</span><br><span class="line">		int i = rank(key);</span><br><span class="line">		</span><br><span class="line">		// 命中，已存在，更新</span><br><span class="line">		if (i &lt; N &amp;&amp; keys[i].compareTo(key) == 0) &#123;</span><br><span class="line">			values[i] = value;</span><br><span class="line">			return;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		// 未命中添加,此时是有序添加</span><br><span class="line">		for (int j = N; j &gt; i; j--) &#123;</span><br><span class="line">			keys[j] = keys[j - 1];</span><br><span class="line">			values[j] = values[j - 1];</span><br><span class="line">		&#125;</span><br><span class="line">		keys[i] = key;</span><br><span class="line">		values[i] = value;</span><br><span class="line">		N++;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * 根据key删除键值对 将该键后面的键前移</span><br><span class="line">	 */</span><br><span class="line">	public void delete(Key key) &#123;</span><br><span class="line">		if (key == null) &#123;</span><br><span class="line">			throw new RuntimeException(&quot;key can&#x27;t be null&quot;);</span><br><span class="line">		&#125;</span><br><span class="line">		int i = rank(key);</span><br><span class="line">		// 未命中</span><br><span class="line">		if (i == N || keys[i].compareTo(key) != 0) &#123;</span><br><span class="line">			return;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		// 命中，key后面的元素前移</span><br><span class="line">		for (int j = i; j &lt; N - 1; j++) &#123;</span><br><span class="line">			keys[j] = keys[j + 1];</span><br><span class="line">			values[j] = values[j + 1];</span><br><span class="line">		&#125;</span><br><span class="line">		// 最后一位留空</span><br><span class="line">		keys[N - 1] = null;</span><br><span class="line">		values[N - 1] = null;</span><br><span class="line">		N--;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	// 返回最小键</span><br><span class="line">	public Key min() &#123;</span><br><span class="line">		return keys[0];</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public Key max() &#123;</span><br><span class="line">		return keys[N - 1];</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * 根据下标找key</span><br><span class="line">	 */</span><br><span class="line">	public Key select(int k) &#123;</span><br><span class="line">		return keys[k];</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * 大于等于该键的最小键</span><br><span class="line">	 */</span><br><span class="line">	public Key ceiling(Key key) &#123;</span><br><span class="line">		// key比Keys里的key都大！返回keys[N]应该是null！</span><br><span class="line">		int i = rank(key);</span><br><span class="line">		return keys[i];</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * 小于等于该键的最大键</span><br><span class="line">	 */</span><br><span class="line">	public Key floor(Key key) &#123;</span><br><span class="line">		// 有该键</span><br><span class="line">		if (get(key) != null) &#123;</span><br><span class="line">			return keys[rank(key)];</span><br><span class="line">		&#125; else if (get(key) == null &amp;&amp; rank(key) != 0) &#123;// 不存在该键且rank(key)不再数组最左边</span><br><span class="line">			return keys[rank(key) - 1];</span><br><span class="line">		&#125; else &#123;</span><br><span class="line">			return null;	// key比keys里的key都小</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	/**</span><br><span class="line">	 * 迭代器的实现:返回一个将所有的Key都入队的Queue </span><br><span class="line">	 */</span><br><span class="line">	public Iterable&lt;Key&gt; key()&#123;</span><br><span class="line">		Queue&lt;Key&gt; queue=new Queue&lt;Key&gt;();</span><br><span class="line">		for(int i=0;i&lt;N;i++)&#123;</span><br><span class="line">			queue.enqueue(keys[i]);</span><br><span class="line">		&#125;</span><br><span class="line">		return queue;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line"></span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		BinarySearchST&lt;String, Integer&gt; st = new BinarySearchST&lt;String, Integer&gt;(10);</span><br><span class="line">		st.put(&quot;A&quot;, 3);</span><br><span class="line">		st.put(&quot;C&quot;, 2);</span><br><span class="line">		st.put(&quot;B&quot;, 1);</span><br><span class="line">		System.out.println(st.key());//A B C</span><br><span class="line">		System.out.println(st.get(&quot;B&quot;));</span><br><span class="line">		System.out.println(st.ceiling(&quot;D&quot;));// null</span><br><span class="line">		st.delete(&quot;A&quot;);</span><br><span class="line">		System.out.println(st.get(&quot;A&quot;));// null</span><br><span class="line">		System.out.println(st.floor(&quot;A&quot;));// null</span><br><span class="line">		System.out.println(st.key());// B C</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="二叉查找树"><a href="#二叉查找树" class="headerlink" title="二叉查找树"></a>二叉查找树</h1><p>二叉树的实现都是采用递归，将每个操作的逻辑理顺，之后递归就可以了。<br>注意，有些方法例如put元素、删除元素，会对途经的节点产生影响，注意在递归返回的时候更新节点<br>向上向下取整的方法比较难理解：向上取整一定最后会访问左子树，如果左子树找到结果，返回结果，否则返回父节点<br>删除节点：删除节点的做法是用被删节点的右子树中最小的节点代替被删节点</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br><span class="line">342</span><br><span class="line">343</span><br><span class="line">344</span><br><span class="line">345</span><br><span class="line">346</span><br><span class="line">347</span><br><span class="line">348</span><br><span class="line">349</span><br><span class="line">350</span><br><span class="line">351</span><br><span class="line">352</span><br><span class="line">353</span><br><span class="line">354</span><br><span class="line">355</span><br><span class="line">356</span><br><span class="line">357</span><br><span class="line">358</span><br><span class="line">359</span><br><span class="line">360</span><br><span class="line">361</span><br><span class="line">362</span><br><span class="line">363</span><br><span class="line">364</span><br><span class="line">365</span><br><span class="line">366</span><br><span class="line">367</span><br><span class="line">368</span><br><span class="line">369</span><br></pre></td><td class="code"><pre><span class="line">public class BST&lt;Key extends Comparable&lt;Key&gt;, Value&gt; &#123;</span><br><span class="line"></span><br><span class="line">	private Node root;// 根结点</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * 结点类，用于储存键-值对、左右结点以及结点计数器 size(x)=size(x.left)+size(x.right)+1;</span><br><span class="line">	 * </span><br><span class="line">	 * @author he</span><br><span class="line">	 *</span><br><span class="line">	 */</span><br><span class="line">	private class Node &#123;</span><br><span class="line">		private Key key;// 键</span><br><span class="line">		private Value value;// 值</span><br><span class="line">		private Node left, right;// 指向左右子树的连接</span><br><span class="line">		private int N;// 以该结点为根的子树中的结点数</span><br><span class="line"></span><br><span class="line">		public Node(Key key, Value value, int N) &#123;</span><br><span class="line">			this.key = key;</span><br><span class="line">			this.value = value;</span><br><span class="line">			this.N = N;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public int size() &#123;</span><br><span class="line">		return size(root);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	private int size(Node x) &#123;</span><br><span class="line">		if (x == null) &#123;</span><br><span class="line">			return 0;</span><br><span class="line">		&#125; else &#123;</span><br><span class="line">			return x.N;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	// 根据键返回值</span><br><span class="line">	public Value get(Key key) &#123;</span><br><span class="line">		return get(root, key);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	// 递归遍历二叉查找树</span><br><span class="line">	private Value get(Node x, Key key) &#123;</span><br><span class="line">		if (x == null) &#123;</span><br><span class="line">			return null;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		int cmp = key.compareTo(x.key);</span><br><span class="line">		if (cmp &lt; 0) &#123;</span><br><span class="line">			return get(x.left, key);</span><br><span class="line">		&#125; else if (cmp &gt; 0) &#123;</span><br><span class="line">			return get(x.right, key);</span><br><span class="line">		&#125; else &#123;</span><br><span class="line">			return x.value;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	// 添加键值对</span><br><span class="line">	public void put(Key key, Value value) &#123;</span><br><span class="line">		root = put(root, key, value);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	// 始终返回的是根结点</span><br><span class="line">	private Node put(Node x, Key key, Value value) &#123;</span><br><span class="line">		// 如果key存在则更新，否则添加新结点</span><br><span class="line">		if (x == null) &#123;</span><br><span class="line">			return new Node(key, value, 1);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		int cmp = key.compareTo(x.key);</span><br><span class="line">		if (cmp &lt; 0) &#123;</span><br><span class="line">			x.left = put(x.left, key, value);</span><br><span class="line">		&#125; else if (cmp &gt; 0) &#123;</span><br><span class="line">			x.right = put(x.right, key, value);</span><br><span class="line">		&#125; else &#123;</span><br><span class="line">			x.value = value;</span><br><span class="line">		&#125;</span><br><span class="line">		// 添加新节点后，更新该节点路径上的每个节点的子节点数</span><br><span class="line">		x.N = size(x.left) + size(x.right) + 1;</span><br><span class="line">		return x;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	// 返回最小键</span><br><span class="line">	public Key min() &#123;</span><br><span class="line">		return min(root).key;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	private Node min(Node x) &#123;</span><br><span class="line">		if (x.left == null) &#123;</span><br><span class="line">			return x;</span><br><span class="line">		&#125;</span><br><span class="line">		return min(x.left);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	// 返回最大键</span><br><span class="line">	public Key max() &#123;</span><br><span class="line">		return max(root).key;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	private Node max(Node x) &#123;</span><br><span class="line">		if (x.right == null) &#123;</span><br><span class="line">			return x;</span><br><span class="line">		&#125; else &#123;</span><br><span class="line">			return max(x.right);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	// 向下取整，小于等于key的最大键</span><br><span class="line">	public Key floor(Key key) &#123;</span><br><span class="line">		Node x = floor(root, key);</span><br><span class="line">		if (x == null) &#123;</span><br><span class="line">			return null;</span><br><span class="line">		&#125; else &#123;</span><br><span class="line">			return x.key;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * 如果key小于根节点则向下取整一定左子树中， 如果大于根结点，则可能在右子树中,如果没有右子数，则根结点就是满足条件的key</span><br><span class="line">	 */</span><br><span class="line">	private Node floor(Node x, Key key) &#123;</span><br><span class="line">		if (x == null) &#123;</span><br><span class="line">			return null;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		int cmp = key.compareTo(x.key);</span><br><span class="line">		// 如果root.key &gt; key，root = root.left</span><br><span class="line">		if (cmp &lt; 0) &#123;</span><br><span class="line">			return floor(x.left, key);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		// 如果root.key &lt;= key，root = root.right</span><br><span class="line">		Node t = floor(x.right, key);</span><br><span class="line">		// 如果右子节点为空，返回当前节点，否则递归右子节点的结果就是小于等于key的最大值</span><br><span class="line">		if (t != null) &#123;</span><br><span class="line">			return t;</span><br><span class="line">		&#125; else &#123;</span><br><span class="line">			return x;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	// 向上取整,大于等于key的最小键</span><br><span class="line">	public Key ceiling(Key key) &#123;</span><br><span class="line">		Node x = ceiling(root, key);</span><br><span class="line">		if (x == null) &#123;</span><br><span class="line">			return null;</span><br><span class="line">		&#125; else &#123;</span><br><span class="line">			return x.key;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * 求大于key的最小节点</span><br><span class="line">	 * 如果key4大于根结点3则向上取整一定在右子树中，如果key4小于根结点6，则结果可能在节点6的左子树（假设存在大于key4的子节点）</span><br><span class="line">	 * 所以递归左子树返回时，如果找到了（递归返回非空），则返回结果; 如果没找到返回空，则返回根节点6</span><br><span class="line">	 */</span><br><span class="line">	private Node ceiling(Node x, Key key) &#123;</span><br><span class="line">		if (x == null) &#123;</span><br><span class="line">			return null;</span><br><span class="line">		&#125;</span><br><span class="line">		int cmp = key.compareTo(x.key);</span><br><span class="line">		if (cmp == 0) &#123;</span><br><span class="line">			return x;</span><br><span class="line">		&#125;</span><br><span class="line">		// 结果肯定在右子数中</span><br><span class="line">		if (cmp &gt; 0) &#123;</span><br><span class="line">			return ceiling(x.right, key);</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		// 结果可能在左子树中</span><br><span class="line">		Node t = ceiling(x.left, key);</span><br><span class="line">		// 左子树找到符合条件的结果，返回结果</span><br><span class="line">		if (t != null) &#123;</span><br><span class="line">			return t;</span><br><span class="line">		&#125; else &#123;	// 左子树没找到结果，返回根节点</span><br><span class="line">			return x;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	// 根据索引查找键</span><br><span class="line">	public Key select(int k) &#123;</span><br><span class="line">		if (k &lt; 0 || k &gt;= size())</span><br><span class="line">			throw new IllegalArgumentException();</span><br><span class="line">		return select(root, k).key;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * 如果左子树的结点数t大于k，则递归地在左子树中查找排名为k的键； 如果t等于k，在返回根结点的键；</span><br><span class="line">	 * 如果t小于k，递归地在右子树中查找排名为（k-t-1）的键</span><br><span class="line">	 */</span><br><span class="line">	private Node select(Node x, int k) &#123;</span><br><span class="line">		// 返回排名为k的结点</span><br><span class="line">		if (x == null) &#123;</span><br><span class="line">			return null;</span><br><span class="line">		&#125;</span><br><span class="line">		int t = size(x.left);</span><br><span class="line">		if (t &gt; k) &#123;</span><br><span class="line">			return select(x.left, k);</span><br><span class="line">		&#125; else if (t &lt; k) &#123;</span><br><span class="line">			return select(x.right, k - t - 1);</span><br><span class="line">		&#125; else &#123;</span><br><span class="line">			return x;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	// 根据键返回下下标（排名）</span><br><span class="line">	public int rank(Key key) &#123;</span><br><span class="line">		return rank(root, key);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * 如果给定的键和根结点的键相等，返回根节点左子树的结点总数t</span><br><span class="line">	 * 如果给定的键比根结点的键小,递归左子树计算；</span><br><span class="line">	 * 如果给定的键比根结点的键大，返回根结点左子树结点总数t+1+它在右子树的排名</span><br><span class="line">	 */</span><br><span class="line">	private int rank(Node x, Key key) &#123;</span><br><span class="line">		if (x == null) &#123;</span><br><span class="line">			return 0;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		int cmp = key.compareTo(x.key);</span><br><span class="line">		if (cmp &lt; 0) &#123;</span><br><span class="line">			return rank(x.left, key);</span><br><span class="line">		&#125; else if (cmp &gt; 0) &#123;</span><br><span class="line">			return 1 + size(x.left) + rank(x.right, key);</span><br><span class="line">		&#125; else &#123;</span><br><span class="line">			return size(x.left);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	// 删除最小的结点</span><br><span class="line">	public void deleteMin() &#123;</span><br><span class="line">		root = deleteMin(root);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	private Node deleteMin(Node x) &#123;</span><br><span class="line">		// 找到最小节点，返回其右子节点代替其原来的位置</span><br><span class="line">		if (x.left == null) &#123;</span><br><span class="line">			return x.right;</span><br><span class="line">		&#125;</span><br><span class="line">		// 更新最小节点路径上的节点的左子节点</span><br><span class="line">		x.left = deleteMin(x.left);</span><br><span class="line">		// 更新最小节点路径上的每个节点的子节点数</span><br><span class="line">		x.N = size(x.left) + size(x.right) + 1;</span><br><span class="line">		return x;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	// 删除最大的结点</span><br><span class="line">	public void deleteMax() &#123;</span><br><span class="line">		root = deleteMax(root);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	private Node deleteMax(Node x) &#123;</span><br><span class="line">		if (x.right == null) &#123;</span><br><span class="line">			return x.left;</span><br><span class="line">		&#125;</span><br><span class="line">		x.right = deleteMax(x.right);</span><br><span class="line">		x.N = size(x.left) + size(x.right) + 1;</span><br><span class="line">		return x;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	// 删除指定结点</span><br><span class="line">	public void delete(Key key) &#123;</span><br><span class="line">		root = delete(root, key);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * 递归找到待删节点</span><br><span class="line">	 * 如果待删节点的子节点存在空节点，由非空的节点代替被删节点</span><br><span class="line">	 * 如果待删节点的子节点均不为空，则用大于被删节点的子节点中最小的节点代替被删节点</span><br><span class="line">	 * 更新被删节点路径上的节点</span><br><span class="line">	 */</span><br><span class="line">	private Node delete(Node x, Key key) &#123;</span><br><span class="line">		if (x == null) &#123;</span><br><span class="line">			return null;</span><br><span class="line">		&#125;</span><br><span class="line">		int cmp = key.compareTo(x.key);</span><br><span class="line">		// key &lt; node.key，到左子数中继续查找</span><br><span class="line">		if (cmp &lt; 0) &#123;</span><br><span class="line">			// 更新被查找节点路径上的每个节点</span><br><span class="line">			x.left = delete(x.left, key);</span><br><span class="line">		&#125; else if (cmp &gt; 0) &#123;</span><br><span class="line">			// 更新被查找节点路径上的每个节点</span><br><span class="line">			x.right = delete(x.right, key);</span><br><span class="line">		&#125; else &#123;</span><br><span class="line">			// 如果被删节点只有一个子节点，该子节点代替其原来的位置（返回子节点）</span><br><span class="line">			if (x.right == null)</span><br><span class="line">				return x.left;</span><br><span class="line">			if (x.left == null)</span><br><span class="line">				return x.right;</span><br><span class="line">			</span><br><span class="line">			// 如果被删节点有两个子节点，比被删节点大的节点中的最小的那个节点代替被删节点的位置</span><br><span class="line">			Node t = x;</span><br><span class="line">			x = min(t.right);	// 找到比被删节点大的最小节点</span><br><span class="line">			x.right = deleteMin(t.right);	// 代替被删节点</span><br><span class="line">			x.left = t.left;	// 代替被删节点</span><br><span class="line">		&#125;</span><br><span class="line">		x.N = size(x.left) + size(x.right) + 1;		// 更新被删节点路径上的节点的的子节点数</span><br><span class="line">		return x;	// 返回更新后的节点</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	// 遍历树中所有的键,采用中序遍历--&gt;左-根-右</span><br><span class="line">	public Iterable&lt;Key&gt; keys() &#123;</span><br><span class="line">		return keys(min(), max());</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	// 遍历指定范围内的键</span><br><span class="line">	public Iterable&lt;Key&gt; keys(Key lo, Key hi) &#123;</span><br><span class="line">		Queue&lt;Key&gt; queue = new Queue&lt;Key&gt;();</span><br><span class="line">		keys(root, queue, lo, hi);</span><br><span class="line">		return queue;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	private void keys(Node x, Queue&lt;Key&gt; queue, Key lo, Key hi) &#123;</span><br><span class="line">		if (x == null) &#123;</span><br><span class="line">			return;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		int cmplo = lo.compareTo(x.key);</span><br><span class="line">		int cmphi = hi.compareTo(x.key);</span><br><span class="line">		</span><br><span class="line">		// 如果根节点大于lo，递归左子数组</span><br><span class="line">		if (cmplo &lt; 0) &#123;</span><br><span class="line">			keys(x.left, queue, lo, hi);</span><br><span class="line">		&#125;</span><br><span class="line">		// 左子数组递归完毕，如果根节点在范围内，加入当前节点</span><br><span class="line">		if (cmplo &lt;= 0 &amp;&amp; cmphi &gt;= 0) &#123;</span><br><span class="line">			queue.enqueue(x.key);</span><br><span class="line">		&#125;</span><br><span class="line">		// 如果根节点小于hi，递归右子数组</span><br><span class="line">		if (cmphi &gt; 0) &#123;</span><br><span class="line">			keys(x.right, queue, lo, hi);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		BST&lt;String, Integer&gt; bst = new BST&lt;String, Integer&gt;();</span><br><span class="line">		bst.put(&quot;S&quot;, 0);</span><br><span class="line">		bst.put(&quot;E&quot;, 1);</span><br><span class="line">		bst.put(&quot;A&quot;, 2);</span><br><span class="line">		bst.put(&quot;C&quot;, 3);</span><br><span class="line">		bst.put(&quot;R&quot;, 4);</span><br><span class="line">		bst.put(&quot;X&quot;, 5);</span><br><span class="line">		bst.put(&quot;H&quot;, 6);</span><br><span class="line">		bst.put(&quot;M&quot;, 7);</span><br><span class="line">		System.out.println(bst.get(&quot;E&quot;));</span><br><span class="line">		bst.deleteMin();</span><br><span class="line">		System.out.println(bst.min());</span><br><span class="line">		System.out.println(bst.max());</span><br><span class="line">		System.out.println(bst.floor(&quot;G&quot;));</span><br><span class="line">		System.out.println(&quot;ceiling:&quot; + bst.ceiling(&quot;A&quot;));</span><br><span class="line">		System.out.println(bst.select(1));</span><br><span class="line">		System.out.println(bst.rank(&quot;S&quot;));</span><br><span class="line">		bst.deleteMin();</span><br><span class="line">		System.out.println(bst.select(0));</span><br><span class="line">		bst.deleteMax();</span><br><span class="line">		System.out.println(bst.select(bst.size() - 1));</span><br><span class="line">		bst.delete(&quot;X&quot;);</span><br><span class="line">		System.out.println(bst.get(&quot;X&quot;));</span><br><span class="line">		for (String s : bst.keys()) &#123;</span><br><span class="line">			System.out.print(s + &quot; &quot;);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="2-3查找树"><a href="#2-3查找树" class="headerlink" title="2-3查找树"></a>2-3查找树</h1><p>二叉查找树每个节点都只有一个key，两个子节点<br>2-3查找树，每个节点有1或2个key，2或3个子节点。当有1个key时，有左右子节点；当有2个key时，有左中右三个子节点</p>
+<blockquote>
+<p>二叉查找树在顺序插入的时候，性能最差，因其已经变成了链表<br>但2-3查找树在最差的情况下，依然有较好的查找性能<br>其插入的原则是：保证节点最多有2个key，如果加入造成某个节点有3个key，将中间的节点弹到父节点，递归处理</p>
+</blockquote>
+<h1 id="红黑二叉查找树"><a href="#红黑二叉查找树" class="headerlink" title="红黑二叉查找树"></a>红黑二叉查找树</h1><blockquote>
+<p>红黑树是2-3查找树的二叉版</p>
+</blockquote>
+<p>上面说到，2-3查找树在节点有2个key时，包含3个子节点，这一点不符合二叉树的定义<br>红黑树是二叉树，它是怎么对2-3查找树改造的呢？</p>
+<blockquote>
+<p>对于2-3查找树中存在2个key的节点，用一条红色链接将2个key分成2个节点，这里红色链接是左链接<br>链接指向的节点（较小的节点）定义为红色节点，其余节点为黑色节点</p>
+</blockquote>
+<p>因为2-3查找树是平衡树（叶子节点到根节点的距离相等），而2-3查找树中只有“3节点”的较小的key为红黑树中的红色节点，所以一个“3节点”包含一个红色节点一个黑色节点，又因为2-3查找树是平衡树，所以</p>
+<blockquote>
+<p>红黑树中，每条到叶子节点的路径上包含相同数目的黑色节点（就是红黑树转为2-3查找树后，根节点到叶子节点的节点数）</p>
+</blockquote>
+<p>如何向红黑树中插入元素呢？</p>
+<blockquote>
+<p>向红黑树中插入元素，与向查找二叉树插入元素的逻辑一致，只是因为加入了红黑节点的定义，所以需要分别讨论像”3节点”和”2节点”插入元素时的情况。<br><code>两者的相同点就是，在对红黑树插入元素时，均将节点当作是红节点！</code></p>
+</blockquote>
+<p>虽然红色链接是左链接，但在向红黑树添加元素的过程中，也有可能出现两条红色链接连在一起的情况，或者红色链接是右链接，<code>以下就对向“3节点”插入元素的三种情况，做讨论</code>：</p>
+<ul>
+<li>插入元素小于两个key<br>例如，对“3节点”（6，7），如果插入5，则成为（5，6，7），这时红黑树中的5、6均为红节点，但这不符合2-3查找树的定义，所以红黑树中不可能存在两个红节点连接。<br>对于这种情况，前面提到， 2-3查找树是通过上弹中间元素6来解决的。对于红黑树，对应的操作是对（6，7）这条红链接做<code>右旋</code>操作！<blockquote>
+<p>右旋操作，会将左链接变为右链接，子节点为红节点，父节点的颜色与原来左链接的父节点颜色一致。</p>
+</blockquote>
+</li>
+</ul>
+<p>这会导致：5节点和7节点均为红节点</p>
+<blockquote>
+<p><code>如果一个父节点的子节点均为红节点，则将两个红节点置为黑节点，将父节点设为红色（父节点非根节点时）。原因是，6上弹后，将其左右两个节点变成了&quot;2节点&quot;，而父节点自己变成了&quot;3节点&quot;中的一员</code></p>
+</blockquote>
+<ul>
+<li><p>插入元素大于两个key<br>如果新加入节点8比（6，7）都大呢？，看上去，6、7均是红色节点，但是8加入后，向上弹7构成了一个标准的二叉树，所以：</p>
+<blockquote>
+<p>这时，会产生两个红色子节点，所以将两个子节点均变为黑节点</p>
+</blockquote>
+</li>
+<li><p>插入元素在两个key之间<br>如果新加入的节点是6.5，介于（6，7）之间呢？</p>
+<blockquote>
+<p>对红色链接（6，6.5）做<code>左旋</code>操作，这样红黑树出现了之前说的第一种情况，然后再按照第一种情况处理即可</p>
+</blockquote>
+</li>
+</ul>
+<p><b>可以将上述情况概括为：</b></p>
+<blockquote>
+<ul>
+<li>如果出现两个左红色链接，做右旋（将上面的左链接变为右链接）后，将两个子节点变为黑节点</li>
+</ul>
+</blockquote>
+<ul>
+<li>如果出现一左红链接一右红链接（两个红链接<code>不是对应同一个根节点</code>），做左旋（将右链接变为左链接）后同上</li>
+<li>如果两条红色链接位于同一个根节点，将两个子节点变为黑节点，父节点变为红节点<br><code>无论是左旋还是右旋，目的都是将弹上去的元素作为根节点！</code></li>
+</ul>
+<p><BR><code>对于向&quot;2节点&quot;插入元素，比较简单</code>：</p>
+<ul>
+<li>插入的元素是左子节点，那没毛病，标准的红链接，不用动</li>
+<li>插入的元素是右子节点，做<code>左旋</code>操作即可</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>西米大人
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://dcbupt.github.io/2017/03/10/blog_article/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%9F%A5%E6%89%BE/" title="查找">http://dcbupt.github.io/2017/03/10/blog_article/数据结构/查找/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+
+        
+
+<blockquote class="blockquote-center" style="color: #f0ad4e">完 ♥ 结</blockquote>
+
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/03/08/blog_article/%E7%AE%97%E6%B3%95/%E4%B8%A4%E4%B8%AA%E6%8E%92%E5%BA%8F%E6%95%B0%E7%BB%84%E7%9A%84%E4%B8%AD%E4%BD%8D%E6%95%B0/" rel="prev" title="两个排序数组的中位数">
+      <i class="fa fa-chevron-left"></i> 两个排序数组的中位数
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/03/11/blog_article/%E7%AE%97%E6%B3%95/%E4%B8%BB%E5%85%83%E7%B4%A0/" rel="next" title="主元素">
+      主元素 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%89%E5%BA%8F%E6%95%B0%E7%BB%84%E7%9A%84%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE"><span class="nav-number">1.</span> <span class="nav-text">有序数组的二分查找</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E5%8F%89%E6%9F%A5%E6%89%BE%E6%A0%91"><span class="nav-number">2.</span> <span class="nav-text">二叉查找树</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-3%E6%9F%A5%E6%89%BE%E6%A0%91"><span class="nav-number">3.</span> <span class="nav-text">2-3查找树</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BA%A2%E9%BB%91%E4%BA%8C%E5%8F%89%E6%9F%A5%E6%89%BE%E6%A0%91"><span class="nav-number">4.</span> <span class="nav-text">红黑二叉查找树</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="西米大人"
+      src="/images/me.png">
+  <p class="site-author-name" itemprop="name">西米大人</p>
+  <div class="site-description" itemprop="description"><blockquote class="blockquote-center">优秀的人，不是不合群，而是他们合群的人里面没有你</blockquote></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">151</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dcbupt" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;dcbupt" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:byrddc@hotmail.com" title="E-Mail → mailto:byrddc@hotmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">西米大人</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">388k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">10:47</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.id);
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            let target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    let { app_id, app_key, server_url } = {"enable":true,"app_id":"OBdFsOOtfIDcNnWdzkGbICmj-gzGzoHsz","app_key":"89LmL4tP7hkyChAmEleq2MdO","server_url":null,"security":true};
+    function fetchData(api_server) {
+      var Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    let api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+<script src="/js/love.js"></script>
+
+<script src="/js/particle.js"></script>
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('https://cdn.jsdelivr.net/npm/valine@1.4.18/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'OBdFsOOtfIDcNnWdzkGbICmj-gzGzoHsz',
+      appKey     : '89LmL4tP7hkyChAmEleq2MdO',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

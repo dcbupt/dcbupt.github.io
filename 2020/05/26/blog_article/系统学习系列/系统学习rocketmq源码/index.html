@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-mac-osx.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"dcbupt.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="系统学习rocketmq源码">
+<meta property="og:type" content="article">
+<meta property="og:title" content="系统学习rocketmq源码">
+<meta property="og:url" content="http://dcbupt.github.io/2020/05/26/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0rocketmq%E6%BA%90%E7%A0%81/index.html">
+<meta property="og:site_name" content="dcddc">
+<meta property="og:description" content="系统学习rocketmq源码">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://dcbupt.github.io/mq/rocketmq%E6%9E%B6%E6%9E%84.png">
+<meta property="article:published_time" content="2020-05-26T06:55:00.000Z">
+<meta property="article:modified_time" content="2022-05-01T06:44:18.826Z">
+<meta property="article:author" content="西米大人">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://dcbupt.github.io/mq/rocketmq%E6%9E%B6%E6%9E%84.png">
+
+<link rel="canonical" href="http://dcbupt.github.io/2020/05/26/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0rocketmq%E6%BA%90%E7%A0%81/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+  <title>系统学习rocketmq源码 | dcddc</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">dcddc</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">西米大人的博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dcbupt.github.io/2020/05/26/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0rocketmq%E6%BA%90%E7%A0%81/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/me.png">
+      <meta itemprop="name" content="西米大人">
+      <meta itemprop="description" content="<blockquote class="blockquote-center">优秀的人，不是不合群，而是他们合群的人里面没有你</blockquote>">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="dcddc">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          系统学习rocketmq源码
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-26 14:55:00" itemprop="dateCreated datePublished" datetime="2020-05-26T14:55:00+08:00">2020-05-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-05-01 14:44:18" itemprop="dateModified" datetime="2022-05-01T14:44:18+08:00">2022-05-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/" itemprop="url" rel="index"><span itemprop="name">系统学习系列</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/05/26/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0rocketmq%E6%BA%90%E7%A0%81/" class="post-meta-item leancloud_visitors" data-flag-title="系统学习rocketmq源码" title="热度">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">热度:</span>
+              <span class="leancloud-visitors-count"></span>℃
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">评论:</span>
+    
+    <a title="valine" href="/2020/05/26/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0rocketmq%E6%BA%90%E7%A0%81/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/05/26/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0rocketmq%E6%BA%90%E7%A0%81/" itemprop="commentCount"></span>℃
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">字数：</span>
+              <span>5.6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>9 分钟</span>
+            </span>
+            <div class="post-description"><blockquote class="blockquote-center">系统学习rocketmq源码</blockquote></div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="架构图"><a href="#架构图" class="headerlink" title="架构图"></a>架构图</h1><p><img src="/mq/rocketmq%E6%9E%B6%E6%9E%84.png"></p>
+<h1 id="启动producer实例"><a href="#启动producer实例" class="headerlink" title="启动producer实例"></a>启动producer实例</h1><h2 id="实例化DefaultMQProducer"><a href="#实例化DefaultMQProducer" class="headerlink" title="实例化DefaultMQProducer"></a>实例化DefaultMQProducer</h2><p>启动producer实例的入口类是<code>DefaultMQProducer</code>，它是Producer的基础类，实现了producer实例的start、send、shutdown方法。它还定义了producer的基本配置信息，例如：</p>
+<ul>
+<li>发送消息超时时间（默认3秒）</li>
+<li>需要压缩的消息大小阈值（默认4K）</li>
+<li>发送消息失败后的重试次数（默认2次，不过这可能造成consumer收到重复消息）</li>
+<li>发送消息的最大字节数（默认4M）</li>
+<li>producerGroupName，作为构造参数传入</li>
+</ul>
+<h3 id="实例化DefaultMQProducerImpl"><a href="#实例化DefaultMQProducerImpl" class="headerlink" title="实例化DefaultMQProducerImpl"></a>实例化DefaultMQProducerImpl</h3><p>实例化DefaultMQProducer，构造参数传入producerGroupName指定组名，构造函数里实例化一个具体的producer实例：<code>DefaultMQProducerImpl</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">public DefaultMQProducer(final String namespace, final String producerGroup, RPCHook rpcHook) &#123;</span><br><span class="line">    this.namespace = namespace;</span><br><span class="line">    this.producerGroup = producerGroup;</span><br><span class="line">    defaultMQProducerImpl = new DefaultMQProducerImpl(this, rpcHook);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="启动DefaultMQProducer"><a href="#启动DefaultMQProducer" class="headerlink" title="启动DefaultMQProducer"></a>启动DefaultMQProducer</h2><p>调用<code>DefaultMQProducer</code>的start方法启动DefaultMQProducer，它又会调用<code>DefaultMQProducerImpl</code>的start方法启动producer实例，看下它的启动流程</p>
+<h3 id="实例化MQClientInstance"><a href="#实例化MQClientInstance" class="headerlink" title="实例化MQClientInstance"></a>实例化MQClientInstance</h3><ul>
+<li>生成实例名，取的是Java进程的pid<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">if (this.instanceName.equals(&quot;DEFAULT&quot;)) &#123;</span><br><span class="line">    this.instanceName = String.valueOf(UtilAll.getPid());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>实例化mq客户端实例<code>MQClientInstance</code><ul>
+<li><code>MQClientManager</code>是<code>MQClientInstance</code>的工厂，缓存已创建的mq客户端实例<code>MQClientInstance</code>，Key为clientId（ip@pid），因此<code>MQClientInstance是Java进程维度的</code>。如果JVM进程之前启动过其他producer或consumer，就能从<code>MQClientManager</code>获取缓存的<code>MQClientInstance</code>，即<code>Java进程中所有producer、consumer共用一个mq客户端MQClientInstance</code><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// mQClientFactory的类型就是MQClientInstance</span><br><span class="line">this.mQClientFactory = MQClientManager.getInstance().getOrCreateMQClientInstance(this.defaultMQProducer, rpcHook);</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">public MQClientInstance getOrCreateMQClientInstance(final ClientConfig clientConfig, RPCHook rpcHook) &#123;</span><br><span class="line">    String clientId = clientConfig.buildMQClientId();   // clientId：ip@pid</span><br><span class="line">    MQClientInstance instance = this.factoryTable.get(clientId);</span><br><span class="line">    if (null == instance) &#123;</span><br><span class="line">        instance =</span><br><span class="line">            new MQClientInstance(clientConfig.cloneClientConfig(),</span><br><span class="line">                this.factoryIndexGenerator.getAndIncrement(), clientId, rpcHook);</span><br><span class="line">        MQClientInstance prev = this.factoryTable.putIfAbsent(clientId, instance);</span><br><span class="line">        if (prev != null) &#123;</span><br><span class="line">            instance = prev;</span><br><span class="line">            log.warn(&quot;Returned Previous MQClientInstance for clientId:[&#123;&#125;]&quot;, clientId);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            log.info(&quot;Created new MQClientInstance for clientId:[&#123;&#125;]&quot;, clientId);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return instance;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>producer实例<code>DefaultMQProducerImpl</code>注册到mq客户端<code>MQClientInstance</code><ul>
+<li>mqClient按group维度管理producer、consumer实例，因此一个mqClient不能同时创建两个同group的producer或consumer<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">boolean registerOK = mQClientFactory.registerProducer(this.defaultMQProducer.getProducerGroup(), this);</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public boolean registerProducer(final String group, final DefaultMQProducerImpl producer) &#123;</span><br><span class="line">    ...</span><br><span class="line">    MQProducerInner prev = this.producerTable.putIfAbsent(group, producer);</span><br><span class="line">    ...</span><br><span class="line">    return true;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>注册一个默认的topic路由到producer实例<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// private String createTopicKey = TopicValidator.AUTO_CREATE_TOPIC_KEY_TOPIC;</span><br><span class="line">this.topicPublishInfoTable.put(this.defaultMQProducer.getCreateTopicKey(), new TopicPublishInfo());</span><br></pre></td></tr></table></figure></li>
+<li>调用<code>MQClientInstance</code>的start方法启动mq客户端</li>
+</ul>
+<h2 id="启动MQClientInstance"><a href="#启动MQClientInstance" class="headerlink" title="启动MQClientInstance"></a>启动MQClientInstance</h2><h3 id="更新ns地址"><a href="#更新ns地址" class="headerlink" title="更新ns地址"></a>更新ns地址</h3><ul>
+<li>获取nameserver服务器地址（url+端口号），注册到nettyClient<ul>
+<li>向系统属性配置的ns源服务器地址发起http请求，获取ns服务器地址，rocketmq提供了默认的ns源服务器地址<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">// 获取系统属性配置的ns源服务器地址</span><br><span class="line">public static String getWSAddr() &#123;</span><br><span class="line">    String wsDomainName = System.getProperty(&quot;rocketmq.namesrv.domain&quot;, DEFAULT_NAMESRV_ADDR_LOOKUP);</span><br><span class="line">    String wsDomainSubgroup = System.getProperty(&quot;rocketmq.namesrv.domain.subgroup&quot;, &quot;nsaddr&quot;);</span><br><span class="line">    String wsAddr = &quot;http://&quot; + wsDomainName + &quot;:8080/rocketmq/&quot; + wsDomainSubgroup;</span><br><span class="line">    if (wsDomainName.indexOf(&quot;:&quot;) &gt; 0) &#123;</span><br><span class="line">        wsAddr = &quot;http://&quot; + wsDomainName + &quot;/rocketmq/&quot; + wsDomainSubgroup;</span><br><span class="line">    &#125;</span><br><span class="line">    return wsAddr;</span><br><span class="line">&#125;</span><br><span class="line">... </span><br><span class="line">// 向ns源服务器地址发起http请求，获取ns服务器地址</span><br><span class="line">String url = this.wsAddr;  </span><br><span class="line">HttpTinyClient.HttpResult result = HttpTinyClient.httpGet(url, null, null, &quot;UTF-8&quot;, timeoutMills);</span><br><span class="line">if (200 == result.code) &#123;</span><br><span class="line">    String responseStr = result.content;</span><br><span class="line">    if (responseStr != null) &#123;</span><br><span class="line">        return clearNewLine(responseStr);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">...</span><br><span class="line">// 注册ns服务器地址到nettyClient</span><br><span class="line">String[] addrArray = addrs.split(&quot;;&quot;);</span><br><span class="line">List&lt;String&gt; list = Arrays.asList(addrArray);</span><br><span class="line">this.remotingClient.updateNameServerAddressList(list);</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+<h3 id="启动MQClientAPIImpl"><a href="#启动MQClientAPIImpl" class="headerlink" title="启动MQClientAPIImpl"></a>启动MQClientAPIImpl</h3><ul>
+<li>调用<code>MQClientAPIImpl</code>的start方法<ul>
+<li><code>MQClientAPIImpl</code>封装了通信接口给mqClient使用，它内部使用NettyClient通信</li>
+<li><code>MQClientAPIImpl</code>的启动流程主要是启动内部的nettyClient，这块等吃透NIO再介绍</li>
+</ul>
+</li>
+</ul>
+<h3 id="启动mqClient的定时任务"><a href="#启动mqClient的定时任务" class="headerlink" title="启动mqClient的定时任务"></a>启动mqClient的定时任务</h3><h4 id="定时更新ns地址"><a href="#定时更新ns地址" class="headerlink" title="定时更新ns地址"></a>定时更新ns地址</h4><p>使用SingleSchedule线程池中的单一线程每两分钟定时去源ns服务器获取最新的ns服务器地址，更新nettyClient。2分钟执行一次</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void run() &#123;</span><br><span class="line">        try &#123;</span><br><span class="line">            MQClientInstance.this.mQClientAPIImpl.fetchNameServerAddr();</span><br><span class="line">        &#125; </span><br><span class="line">    &#125;</span><br><span class="line">&#125;, 1000 * 10, 1000 * 60 * 2, TimeUnit.MILLISECONDS);</span><br></pre></td></tr></table></figure>
+
+<h4 id="定时刷新topic消息路由"><a href="#定时刷新topic消息路由" class="headerlink" title="定时刷新topic消息路由"></a>定时刷新topic消息路由</h4><p>定时查询并刷新mq客户端发布和订阅的topic路由信息</p>
+<p>获取所有producer和consumer发布和订阅的topic，到ns查询topic的路由信息，更新<code>MQClientInstance</code>管理的topic路由信息<code>TopicRouteData</code>和broker地址信息<code>brokerAddrTable</code>，更新procuder、负载均衡器<code>RebalanceImpl</code>的topic路由信息。执行频率来自配置，默认30s执行一次</p>
+<ul>
+<li><p><code>RebalanceImpl</code>拿到路由信息用于给consumer做负载均衡</p>
+  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() &#123;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void run() &#123;</span><br><span class="line">        try &#123;</span><br><span class="line">            MQClientInstance.this.updateTopicRouteInfoFromNameServer();</span><br><span class="line">        &#125; catch (Exception e) &#123;</span><br><span class="line">            log.error(&quot;ScheduledTask updateTopicRouteInfoFromNameServer exception&quot;, e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;, 10, this.clientConfig.getPollNameServerInterval(), TimeUnit.MILLISECONDS);</span><br></pre></td></tr></table></figure>
+  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">Iterator&lt;Entry&lt;String, MQConsumerInner&gt;&gt; it = this.consumerTable.entrySet().iterator();</span><br><span class="line">while (it.hasNext()) &#123;</span><br><span class="line">    Entry&lt;String, MQConsumerInner&gt; entry = it.next();</span><br><span class="line">    MQConsumerInner impl = entry.getValue();</span><br><span class="line">    if (impl != null) &#123;</span><br><span class="line">        Set&lt;SubscriptionData&gt; subList = impl.subscriptions();</span><br><span class="line">        if (subList != null) &#123;</span><br><span class="line">            for (SubscriptionData subData : subList) &#123;</span><br><span class="line">                topicList.add(subData.getTopic());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Iterator&lt;Entry&lt;String, MQProducerInner&gt;&gt; it = this.producerTable.entrySet().iterator();</span><br><span class="line">while (it.hasNext()) &#123;</span><br><span class="line">    Entry&lt;String, MQProducerInner&gt; entry = it.next();</span><br><span class="line">    MQProducerInner impl = entry.getValue();</span><br><span class="line">    if (impl != null) &#123;</span><br><span class="line">        Set&lt;String&gt; lst = impl.getPublishTopicList();</span><br><span class="line">        topicList.addAll(lst);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">for (String topic : topicList) &#123;</span><br><span class="line">    this.updateTopicRouteInfoFromNameServer(topic);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">public boolean updateTopicRouteInfoFromNameServer(final String topic) &#123;</span><br><span class="line">    ...</span><br><span class="line">    topicRouteData = this.mQClientAPIImpl.getTopicRouteInfoFromNameServer(topic, 1000 * 3);</span><br><span class="line">    if (topicRouteData != null) &#123;</span><br><span class="line">        TopicRouteData old = this.topicRouteTable.get(topic);</span><br><span class="line">        boolean changed = topicRouteDataIsChange(old, topicRouteData);</span><br><span class="line">        ...</span><br><span class="line">        if (changed) &#123;</span><br><span class="line">            TopicRouteData cloneTopicRouteData = topicRouteData.cloneTopicRouteData();</span><br><span class="line">            // 更新存储topic的broker地址</span><br><span class="line">            for (BrokerData bd : topicRouteData.getBrokerDatas()) &#123;</span><br><span class="line">                this.brokerAddrTable.put(bd.getBrokerName(), bd.getBrokerAddrs());</span><br><span class="line">            &#125;</span><br><span class="line">            // 更新每个producer发布的topic路由信息，主要是topic的broker路由和MessageQueue信息</span><br><span class="line">            &#123;</span><br><span class="line">                TopicPublishInfo publishInfo = topicRouteData2TopicPublishInfo(topic, topicRouteData);</span><br><span class="line">                publishInfo.setHaveTopicRouterInfo(true);</span><br><span class="line">                Iterator&lt;Entry&lt;String, MQProducerInner&gt;&gt; it = this.producerTable.entrySet().iterator();</span><br><span class="line">                while (it.hasNext()) &#123;</span><br><span class="line">                    Entry&lt;String, MQProducerInner&gt; entry = it.next();</span><br><span class="line">                    MQProducerInner impl = entry.getValue();</span><br><span class="line">                    if (impl != null) &#123;</span><br><span class="line">                        impl.updateTopicPublishInfo(topic, publishInfo);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            // 更新每个consumer订阅的topic路由信息，主要是topic的broker路由和MessageQueue信息</span><br><span class="line">            &#123;</span><br><span class="line">                Set&lt;MessageQueue&gt; subscribeInfo = topicRouteData2TopicSubscribeInfo(topic, topicRouteData);</span><br><span class="line">                Iterator&lt;Entry&lt;String, MQConsumerInner&gt;&gt; it = this.consumerTable.entrySet().iterator();</span><br><span class="line">                while (it.hasNext()) &#123;</span><br><span class="line">                    Entry&lt;String, MQConsumerInner&gt; entry = it.next();</span><br><span class="line">                    MQConsumerInner impl = entry.getValue();</span><br><span class="line">                    if (impl != null) &#123;</span><br><span class="line">                        impl.updateTopicSubscribeInfo(topic, subscribeInfo);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            // 更新topic路由信息</span><br><span class="line">            this.topicRouteTable.put(topic, cloneTopicRouteData);</span><br><span class="line">            return true;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="定时向broker发送心跳"><a href="#定时向broker发送心跳" class="headerlink" title="定时向broker发送心跳"></a>定时向broker发送心跳</h4><p>定时清理不能路由到topic的broker，然后向<code>MQClientInstance</code>的所有可以路由到发布和订阅topic的broker发送心跳。执行频率来自配置，默认30s执行一次</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void run() &#123;</span><br><span class="line">        try &#123;</span><br><span class="line">            MQClientInstance.this.cleanOfflineBroker();</span><br><span class="line">            MQClientInstance.this.sendHeartbeatToAllBrokerWithLock();</span><br><span class="line">        &#125; catch (Exception e) &#123;</span><br><span class="line">            log.error(&quot;ScheduledTask sendHeartbeatToAllBroker exception&quot;, e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;, 1000, this.clientConfig.getHeartbeatBrokerInterval(), TimeUnit.MILLISECONDS);</span><br></pre></td></tr></table></figure>
+
+<p><code>MQClientInstance.brokerAddrTable</code>中删除已不能路由到topic的broker机器地址（broker是主从架构），如果主从架构所有的broker机器都路由不到节点，删除broker逻辑节点</p>
+<ul>
+<li>brokerAddrTable维度是broker逻辑节点，key&#x3D;brokerName，value是broker逻辑节点中所有主从架构部署的物理机器地址</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">ConcurrentHashMap&lt;String, HashMap&lt;Long, String&gt;&gt; updatedTable = new ConcurrentHashMap&lt;String, HashMap&lt;Long, String&gt;&gt;();</span><br><span class="line"></span><br><span class="line">Iterator&lt;Entry&lt;String, HashMap&lt;Long, String&gt;&gt;&gt; itBrokerTable = this.brokerAddrTable.entrySet().iterator();</span><br><span class="line">while (itBrokerTable.hasNext()) &#123;</span><br><span class="line">    Entry&lt;String, HashMap&lt;Long, String&gt;&gt; entry = itBrokerTable.next();</span><br><span class="line">    String brokerName = entry.getKey();</span><br><span class="line">    HashMap&lt;Long, String&gt; oneTable = entry.getValue();</span><br><span class="line"></span><br><span class="line">    HashMap&lt;Long, String&gt; cloneAddrTable = new HashMap&lt;Long, String&gt;();</span><br><span class="line">    cloneAddrTable.putAll(oneTable);</span><br><span class="line"></span><br><span class="line">    Iterator&lt;Entry&lt;Long, String&gt;&gt; it = cloneAddrTable.entrySet().iterator();</span><br><span class="line">    while (it.hasNext()) &#123;</span><br><span class="line">        Entry&lt;Long, String&gt; ee = it.next();</span><br><span class="line">        String addr = ee.getValue();</span><br><span class="line">        if (!this.isBrokerAddrExistInTopicRouteTable(addr)) &#123;</span><br><span class="line">            it.remove();</span><br><span class="line">            log.info(&quot;the broker addr[&#123;&#125; &#123;&#125;] is offline, remove it&quot;, brokerName, addr);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    // 如果主从架构所有的broker机器都路由不到节点，删除broker逻辑节点</span><br><span class="line">    if (cloneAddrTable.isEmpty()) &#123;</span><br><span class="line">        itBrokerTable.remove();</span><br><span class="line">        log.info(&quot;the broker[&#123;&#125;] name&#x27;s host is offline, remove it&quot;, brokerName);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        updatedTable.put(brokerName, cloneAddrTable);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">if (!updatedTable.isEmpty()) &#123;</span><br><span class="line">    this.brokerAddrTable.putAll(updatedTable);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">private boolean isBrokerAddrExistInTopicRouteTable(final String addr) &#123;</span><br><span class="line">    Iterator&lt;Entry&lt;String, TopicRouteData&gt;&gt; it = this.topicRouteTable.entrySet().iterator();</span><br><span class="line">    while (it.hasNext()) &#123;</span><br><span class="line">        Entry&lt;String, TopicRouteData&gt; entry = it.next();</span><br><span class="line">        TopicRouteData topicRouteData = entry.getValue();</span><br><span class="line">        List&lt;BrokerData&gt; bds = topicRouteData.getBrokerDatas();</span><br><span class="line">        for (BrokerData bd : bds) &#123;</span><br><span class="line">            if (bd.getBrokerAddrs() != null) &#123;</span><br><span class="line">                boolean exist = bd.getBrokerAddrs().containsValue(addr);</span><br><span class="line">                if (exist)</span><br><span class="line">                    return true;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return false;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>向可路由到的broker物理节点发送心跳</p>
+<ul>
+<li>心跳信息包括mq客户端的clientId、所有producer和consumer的组名、Consumer组订阅信息<ul>
+<li>broker按consumerGroup维度聚合组订阅信息。consumer拉取消息时传入groupName、topic，broker通过groupName拿到组订阅信息，然后获取topic的订阅信息SubscriptionData，取它的tagsHashCode和messageQueue里消息的tagsHashCode做匹配，过滤不匹配的消息，实现基于consumer订阅的tag进一步过滤topic下的消息 ✨</li>
+<li>如果同group中两个consumer订阅信息不同，broker存储的consumerGroup订阅信息会被最新一次心跳数据覆盖，被覆盖订阅信息的consumer在拉取消息时，broker可能会找不到topic的订阅信息而返回失败</li>
+<li>如果<code>MQClientInstance</code>只有producer，只需要向master节点发送心跳</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">// 心跳信息包括mq客户端的clientId、所有producer和consumer信息</span><br><span class="line">final HeartbeatData heartbeatData = this.prepareHeartbeatData();</span><br><span class="line">... </span><br><span class="line">// brokerAddrTable是broker逻辑节点维度，每个逻辑节点包含多个broker物理节点，因为broker是主从架构</span><br><span class="line">Iterator&lt;Entry&lt;String, HashMap&lt;Long, String&gt;&gt;&gt; it = this.brokerAddrTable.entrySet().iterator();</span><br><span class="line">while (it.hasNext()) &#123;</span><br><span class="line">    Entry&lt;String, HashMap&lt;Long, String&gt;&gt; entry = it.next();</span><br><span class="line">    String brokerName = entry.getKey();</span><br><span class="line">    HashMap&lt;Long, String&gt; oneTable = entry.getValue();</span><br><span class="line">    if (oneTable != null) &#123;</span><br><span class="line">        // broker物理节点，key=0说明是master物理节点</span><br><span class="line">        for (Map.Entry&lt;Long, String&gt; entry1 : oneTable.entrySet()) &#123;</span><br><span class="line">            Long id = entry1.getKey();</span><br><span class="line">            String addr = entry1.getValue();</span><br><span class="line">            if (addr != null) &#123;</span><br><span class="line">                // 如果mqClient没有consumer，只需和masterBroker保持心跳</span><br><span class="line">                if (consumerEmpty) &#123;</span><br><span class="line">                    if (id != MixAll.MASTER_ID)</span><br><span class="line">                        continue;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                try &#123;</span><br><span class="line">                    int version = this.mQClientAPIImpl.sendHearbeat(addr, heartbeatData, 3000);</span><br><span class="line">                    ...</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;        </span><br></pre></td></tr></table></figure>
+
+<h4 id="定时发送consumer的消费位点"><a href="#定时发送consumer的消费位点" class="headerlink" title="定时发送consumer的消费位点"></a>定时发送consumer的消费位点</h4><p>定时把consumer在messageQueue的消费位点更新到broker，执行频率来自配置，默认5s执行一次</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void run() &#123;</span><br><span class="line">        try &#123;</span><br><span class="line">            MQClientInstance.this.persistAllConsumerOffset();</span><br><span class="line">        &#125; catch (Exception e) &#123;</span><br><span class="line">            log.error(&quot;ScheduledTask persistAllConsumerOffset exception&quot;, e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;, 1000 * 10, this.clientConfig.getPersistConsumerOffsetInterval(), TimeUnit.MILLISECONDS);</span><br></pre></td></tr></table></figure>
+
+<p>遍历所有Consumer实例，然后从内存里获取consumer在每个messageQueue的当前消费位点</p>
+<ul>
+<li>当messageQueue数目大于ConsumerGroup下的实例数，一个Consumer实例有可能消费多个messageQueue<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Iterator&lt;Entry&lt;String, MQConsumerInner&gt;&gt; it = this.consumerTable.entrySet().iterator();</span><br><span class="line">while (it.hasNext()) &#123;</span><br><span class="line">    Entry&lt;String, MQConsumerInner&gt; entry = it.next();</span><br><span class="line">    MQConsumerInner impl = entry.getValue();</span><br><span class="line">    impl.persistConsumerOffset();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">for (Map.Entry&lt;MessageQueue, AtomicLong&gt; entry : this.offsetTable.entrySet()) &#123;</span><br><span class="line">    MessageQueue mq = entry.getKey();</span><br><span class="line">    AtomicLong offset = entry.getValue();</span><br><span class="line">    if (offset != null) &#123;</span><br><span class="line">        ...</span><br><span class="line">        // 将consumer对messageQueue的最新消费位点更新到broker</span><br><span class="line">        this.updateConsumeOffsetToBroker(mq, offset.get());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>获取messageQueue所在broker的物理节点地址，更新consumerGroup在当前messageQueue的消费位点</p>
+<ul>
+<li>messageQueue在同一个消费组ConsumerGroup下只能有一个消费者Consumer（负载均衡里实现的），所以messageQueue记录消费位点是按消费组ConsumerGroup维度<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">public void updateConsumeOffsetToBroker(MessageQueue mq, long offset, boolean isOneway) throws RemotingException,</span><br><span class="line">MQBrokerException, InterruptedException, MQClientException &#123;</span><br><span class="line">    // 从messageQueue所在broker获取一个物理节点地址</span><br><span class="line">    FindBrokerResult findBrokerResult = this.mQClientFactory.findBrokerAddressInAdmin(mq.getBrokerName());</span><br><span class="line">    if (null == findBrokerResult) &#123;</span><br><span class="line">        // 如果找不到broker，去ns获取topic的最新broker路由信息，并更新到本地</span><br><span class="line">        this.mQClientFactory.updateTopicRouteInfoFromNameServer(mq.getTopic());</span><br><span class="line">        // 再找一次mq所在的broker的物理节点地址</span><br><span class="line">        findBrokerResult = this.mQClientFactory.findBrokerAddressInAdmin(mq.getBrokerName());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    if (findBrokerResult != null) &#123;</span><br><span class="line">        UpdateConsumerOffsetRequestHeader requestHeader = new UpdateConsumerOffsetRequestHeader();</span><br><span class="line">        requestHeader.setTopic(mq.getTopic());</span><br><span class="line">        requestHeader.setConsumerGroup(this.groupName);</span><br><span class="line">        requestHeader.setQueueId(mq.getQueueId());</span><br><span class="line">        requestHeader.setCommitOffset(offset);</span><br><span class="line"></span><br><span class="line">        // 将mqClient对messageQueue的最新消费位点更新到broker</span><br><span class="line">        if (isOneway) &#123;</span><br><span class="line">            this.mQClientFactory.getMQClientAPIImpl().updateConsumerOffsetOneway(</span><br><span class="line">                findBrokerResult.getBrokerAddr(), requestHeader, 1000 * 5);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            this.mQClientFactory.getMQClientAPIImpl().updateConsumerOffset(</span><br><span class="line">                findBrokerResult.getBrokerAddr(), requestHeader, 1000 * 5);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        throw new MQClientException(&quot;The broker[&quot; + mq.getBrokerName() + &quot;] not exist&quot;, null);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="启动消息拉取线程"><a href="#启动消息拉取线程" class="headerlink" title="启动消息拉取线程"></a>启动消息拉取线程</h3><p>启动一个消息拉取线程，从阻塞队列<code>pullRequestQueue</code>拿消息拉取的request，向broker发起异步请求批量拉取消息。提供callback接口异步处理消息，创建批量消息消费任务提交到线程池，并把下一次消息拉取请求放入阻塞队列，发起下一次消息拉取请求</p>
+<ul>
+<li>拉取消费消息通过callback回调做了异步化 ✨</li>
+<li>消费消息通过提交消费任务到线程池后台运行，也可以认为是异步化的，不等消费结果就再次发起下次消息拉取请求</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">public void run() &#123;</span><br><span class="line">    while (!this.isStopped()) &#123;</span><br><span class="line">        try &#123;</span><br><span class="line">            PullRequest pullRequest = this.pullRequestQueue.take();</span><br><span class="line">            this.pullMessage(pullRequest);</span><br><span class="line">        &#125; catch (InterruptedException ignored) &#123;</span><br><span class="line">        &#125; catch (Exception e) &#123;</span><br><span class="line">            log.error(&quot;Pull Message Service Run Method exception&quot;, e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    log.info(this.getServiceName() + &quot; service end&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="发送消息拉取请求"><a href="#发送消息拉取请求" class="headerlink" title="发送消息拉取请求"></a>发送消息拉取请求</h4><p>通过拉取消息请求所属的ConsumerGroup，获取Consumer实例</p>
+<ul>
+<li>这里Consumer直接强转成DefaultMQPushConsumerImpl，说明消息拉取线程使用推模式</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// mQClientFactory是MQClientInstance</span><br><span class="line">final MQConsumerInner consumer = this.mQClientFactory.selectConsumer(pullRequest.getConsumerGroup());</span><br><span class="line">if (consumer != null) &#123;</span><br><span class="line">    DefaultMQPushConsumerImpl impl = (DefaultMQPushConsumerImpl) consumer;</span><br><span class="line">    impl.pullMessage(pullRequest);</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+
+<p>判断是否需要延迟拉取消息。如果需要，往线程池提交一个延时执行任务，将消息拉取请求延时后放入阻塞队列<code>pullRequestQueue</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">public void executePullRequestLater(final PullRequest pullRequest, final long timeDelay) &#123;</span><br><span class="line">    if (!isStopped()) &#123;</span><br><span class="line">        this.scheduledExecutorService.schedule(new Runnable() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public void run() &#123;</span><br><span class="line">                PullMessageService.this.executePullRequestImmediately(pullRequest);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;, timeDelay, TimeUnit.MILLISECONDS);</span><br><span class="line">    &#125; </span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public void executePullRequestImmediately(final PullRequest pullRequest) &#123;</span><br><span class="line">    try &#123;</span><br><span class="line">        this.pullRequestQueue.put(pullRequest);</span><br><span class="line">    &#125; </span><br><span class="line">    ...</span><br><span class="line">&#125;        </span><br></pre></td></tr></table></figure>
+
+<p>缓存队列的消息数目或消息体大小超过阈值，延时拉取消息</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">long cachedMessageCount = processQueue.getMsgCount().get();</span><br><span class="line">long cachedMessageSizeInMiB = processQueue.getMsgSize().get() / (1024 * 1024);</span><br><span class="line">if (cachedMessageCount &gt; this.defaultMQPushConsumer.getPullThresholdForQueue()) &#123;</span><br><span class="line">    this.executePullRequestLater(pullRequest, PULL_TIME_DELAY_MILLS_WHEN_FLOW_CONTROL);</span><br><span class="line">    return;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">if (cachedMessageSizeInMiB &gt; this.defaultMQPushConsumer.getPullThresholdSizeForQueue()) &#123;</span><br><span class="line">    this.executePullRequestLater(pullRequest, PULL_TIME_DELAY_MILLS_WHEN_FLOW_CONTROL);</span><br><span class="line">    return;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>乱序消费 &amp;&amp; 缓存队列的位点范围超过阈值，延时拉取消息。顺序消费时如果队列没加锁，延时拉取消息</p>
+<ul>
+<li>缓存队列的位点范围超过阈值说明消费跟不上生产，所以延时再请求，用于流控<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">if (!this.consumeOrderly) &#123;</span><br><span class="line">    // 缓存队列当前待处理消息的位点范围超过阈值</span><br><span class="line">    if (processQueue.getMaxSpan() &gt; this.defaultMQPushConsumer.getConsumeConcurrentlyMaxSpan()) &#123;</span><br><span class="line">        this.executePullRequestLater(pullRequest, PULL_TIME_DELAY_MILLS_WHEN_FLOW_CONTROL);</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">&#125; else &#123;</span><br><span class="line">    if (processQueue.isLocked()) &#123;</span><br><span class="line">        if (!pullRequest.isLockedFirst()) &#123;</span><br><span class="line">            // 获取consumer当前在messageQueue拉取到的最大位点，作为NextOffset</span><br><span class="line">            final long offset = this.rebalanceImpl.computePullFromWhere(pullRequest.getMessageQueue());</span><br><span class="line">            pullRequest.setLockedFirst(true);</span><br><span class="line">            pullRequest.setNextOffset(offset);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">            this.executePullRequestLater(pullRequest, pullTimeDelayMillsWhenException);</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">public long computePullFromWhere(MessageQueue mq) &#123;</span><br><span class="line">    // 默认CONSUME_FROM_LAST_OFFSET</span><br><span class="line">    ConsumeFromWhere consumeFromWhere = litePullConsumerImpl.getDefaultLitePullConsumer().getConsumeFromWhere();</span><br><span class="line">    long result = -1;</span><br><span class="line">    switch (consumeFromWhere) &#123;</span><br><span class="line">        case CONSUME_FROM_LAST_OFFSET: &#123;</span><br><span class="line">            // 先从内存offsetStore读取consumer在messageQueue的位点。读不到，再请求broker获取ConsumerGroup在messageQueue的位点</span><br><span class="line">            // offsetStore存储的应该是消费者在messageQueue已经拉取到的最新位点，下一次拉取时传入该位点，拉取之后位点的消息</span><br><span class="line">            long lastOffset = litePullConsumerImpl.getOffsetStore().readOffset(mq, ReadOffsetType.MEMORY_FIRST_THEN_STORE);</span><br><span class="line">            if (lastOffset &gt;= 0) &#123;</span><br><span class="line">                result = lastOffset;</span><br><span class="line">            &#125; else if (-1 == lastOffset) &#123;  // ReadOffsetType.MEMORY_FIRST_THEN_STORE，一般lastOffset不会返回-1</span><br><span class="line">                if (mq.getTopic().startsWith(MixAll.RETRY_GROUP_TOPIC_PREFIX)) &#123; // First start, no offset</span><br><span class="line">                    result = 0L;</span><br><span class="line">                &#125; else &#123;</span><br><span class="line">                    try &#123;</span><br><span class="line">                        // 获取messageQueue里当前topic消费到的最大位点（可能有多个ConsumerGroup在messageQueue中消费同一topic）</span><br><span class="line">                        result = this.mQClientFactory.getMQAdminImpl().maxOffset(mq);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                result = -1;</span><br><span class="line">            &#125;</span><br><span class="line">            break;</span><br><span class="line">        &#125;</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>集群模式下，拉取消息时指定commitOffsetValue，告知broker，当前ConsumerGroup已经消费到该位点了，位点前的消息不能再被拉取</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// 订阅模式，集群型表示消息在ConsumerGroup中只能被消费一次，广播型表示消息可以被ConsumerGroup中的每个Consumer消费一次</span><br><span class="line">// 集群订阅模式，拉取消息时传入commitOffsetValue，应该是告知broker，当前ConsumerGroup已经消费到该位点了，位点前的消息不能再被拉取</span><br><span class="line">if (MessageModel.CLUSTERING == this.defaultMQPushConsumer.getMessageModel()) &#123;</span><br><span class="line">    commitOffsetValue = this.offsetStore.readOffset(pullRequest.getMessageQueue(), ReadOffsetType.READ_FROM_MEMORY);</span><br><span class="line">    if (commitOffsetValue &gt; 0) &#123;</span><br><span class="line">        commitOffsetEnable = true;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>获取messageQueue所在的broker地址，发起请求批量拉取消息，传入Consumer的callback接口用于收到消息后回调，消费批量拉取到的消息</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">FindBrokerResult findBrokerResult =</span><br><span class="line">    // 挑选要从messageQueue所在的物理broker拉取消息，可能是master也可能是slave</span><br><span class="line">    this.mQClientFactory.findBrokerAddressInSubscribe(mq.getBrokerName(),</span><br><span class="line">        this.recalculatePullFromWhichNode(mq), false);</span><br><span class="line">if (null == findBrokerResult) &#123;</span><br><span class="line">    // 找不到broker，重新从ns刷一遍路由信息到内存，然后再找一遍</span><br><span class="line">    this.mQClientFactory.updateTopicRouteInfoFromNameServer(mq.getTopic());</span><br><span class="line">    findBrokerResult =</span><br><span class="line">        this.mQClientFactory.findBrokerAddressInSubscribe(mq.getBrokerName(),</span><br><span class="line">            this.recalculatePullFromWhichNode(mq), false);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">if (findBrokerResult != null) &#123;</span><br><span class="line">    ...</span><br><span class="line">    PullMessageRequestHeader requestHeader = new PullMessageRequestHeader();</span><br><span class="line">    requestHeader.setConsumerGroup(this.consumerGroup);</span><br><span class="line">    requestHeader.setTopic(mq.getTopic());</span><br><span class="line">    requestHeader.setQueueId(mq.getQueueId());</span><br><span class="line">    requestHeader.setQueueOffset(offset);   // pullRequest.getNextOffset()，拉取该位点后面的消息</span><br><span class="line">    requestHeader.setMaxMsgNums(maxNums);   // 批量拉取的最大消息数</span><br><span class="line">    requestHeader.setSysFlag(sysFlagInner);</span><br><span class="line">    // 集群订阅模式，拉取消息时传入commitOffsetValue，应该是告知broker，当前ConsumerGroup已经消费到该位点了，位点前的消息不能再被拉取</span><br><span class="line">    requestHeader.setCommitOffset(commitOffset);</span><br><span class="line">    requestHeader.setSuspendTimeoutMillis(brokerSuspendMaxTimeMillis);</span><br><span class="line">    requestHeader.setSubscription(subExpression);</span><br><span class="line">    requestHeader.setSubVersion(subVersion);</span><br><span class="line">    requestHeader.setExpressionType(expressionType);</span><br><span class="line"></span><br><span class="line">    String brokerAddr = findBrokerResult.getBrokerAddr();</span><br><span class="line">    if (PullSysFlag.hasClassFilterFlag(sysFlagInner)) &#123;</span><br><span class="line">        brokerAddr = computePullFromWhichFilterServer(mq.getTopic(), brokerAddr);</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">    // 批量拉取消息，推模式异步拉取消息，提供callback接口，异步future结果返回后，通过注册在future的监听器回调callback方法消费批量拉取的消息</span><br><span class="line">    RemotingCommand request = RemotingCommand.createRequestCommand(RequestCode.PULL_MESSAGE, requestHeader);</span><br><span class="line">    switch (communicationMode) &#123;</span><br><span class="line">        case ONEWAY:</span><br><span class="line">            assert false;</span><br><span class="line">            return null;</span><br><span class="line">        case ASYNC:</span><br><span class="line">            this.pullMessageAsync(addr, request, timeoutMillis, pullCallback);</span><br><span class="line">            return null;</span><br><span class="line">        case SYNC:</span><br><span class="line">            return this.pullMessageSync(addr, request, timeoutMillis);</span><br><span class="line">        default:</span><br><span class="line">            assert false;</span><br><span class="line">            break;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>异步请求拉取消息内层又定义了一个callback，用于将netty的响应结果封装成PullResult，然后回调外层Consumer提供的callback，真正消费批量消息</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">this.remotingClient.invokeAsync(addr, request, timeoutMillis, new InvokeCallback() &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void operationComplete(ResponseFuture responseFuture) &#123;</span><br><span class="line">        RemotingCommand response = responseFuture.getResponseCommand();</span><br><span class="line">        if (response != null) &#123;</span><br><span class="line">            try &#123;</span><br><span class="line">                PullResult pullResult = MQClientAPIImpl.this.processPullResponse(response, addr);</span><br><span class="line">                assert pullResult != null;</span><br><span class="line">                pullCallback.onSuccess(pullResult);</span><br><span class="line">            &#125; catch (Exception e) &#123;</span><br><span class="line">                pullCallback.onException(e);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>底层使用netty请求broker拉取消息</p>
+<ul>
+<li>创建这次请求的<code>ResponseFuture</code>对象，封装这次请求的响应上下文，包括从netty通道获取的响应结果、处理响应结果的内层callback等</li>
+<li>缓存ResponseFuture，key是请求id，生成规则是一个全局自增数。拿到响应后通过请求id拿到<code>ResponseFuture</code>，填充响应结果，然后回调内层callback处理响应结果，最后回调到外层callback消费消息。通过请求id关联上消息拉去请求和响应，是能实现异步回调callback消费消息的关键点 ✨</li>
+<li>netty请求成功后，执行futureListener更新responseFuture.sendRequestOK属性为true</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">// 创建这次请求的`ResponseFuture`对象，封装这次请求的响应上下文，包括从netty通道获取的响应结果、处理响应结果的回调方法等</span><br><span class="line">final ResponseFuture responseFuture = new ResponseFuture(channel, opaque, timeoutMillis - costTime, invokeCallback, once);</span><br><span class="line">// 缓存ResponseFuture，key是请求id，生成规则是一个全局自增数。拿到响应后通过请求id拿到`ResponseFuture`，填充响应结果，然后执行回调方法处理响应结果</span><br><span class="line">this.responseTable.put(opaque, responseFuture);</span><br><span class="line">try &#123;</span><br><span class="line">    channel.writeAndFlush(request).addListener(new ChannelFutureListener() &#123;</span><br><span class="line">        @Override</span><br><span class="line">        public void operationComplete(ChannelFuture f) throws Exception &#123;</span><br><span class="line">            if (f.isSuccess()) &#123;</span><br><span class="line">                responseFuture.setSendRequestOK(true);</span><br><span class="line">                return;</span><br><span class="line">            &#125;</span><br><span class="line">            requestFail(opaque);</span><br><span class="line">            log.warn(&quot;send a request command to channel &lt;&#123;&#125;&gt; failed.&quot;, RemotingHelper.parseChannelRemoteAddr(channel));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">// 拿到响应后通过请求id拿到`ResponseFuture`，填充响应结果</span><br><span class="line">// 回调内层callback处理响应结果，最终回调外层callback消费消息</span><br><span class="line">public void processResponseCommand(ChannelHandlerContext ctx, RemotingCommand cmd) &#123;</span><br><span class="line">    final int opaque = cmd.getOpaque();</span><br><span class="line">    final ResponseFuture responseFuture = responseTable.get(opaque);</span><br><span class="line">    if (responseFuture != null) &#123;</span><br><span class="line">        responseFuture.setResponseCommand(cmd);</span><br><span class="line">        responseTable.remove(opaque);</span><br><span class="line">        if (responseFuture.getInvokeCallback() != null) &#123;</span><br><span class="line">            executeInvokeCallback(responseFuture);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            responseFuture.putResponse(cmd);</span><br><span class="line">            responseFuture.release();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="消费拉取到的消息"><a href="#消费拉取到的消息" class="headerlink" title="消费拉取到的消息"></a>消费拉取到的消息</h4><p>外层callback接口处理拿到的批量消息</p>
+<p>读取messageQueue在消息拉取的响应里返回的位点，作为下次拉取消息的起始位点</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// 读取messageQueue在消息拉取的响应里返回的位点，作为下次拉取消息的起始位点 ✨</span><br><span class="line">long prevRequestOffset = pullRequest.getNextOffset();</span><br><span class="line">pullRequest.setNextOffset(pullResult.getNextBeginOffset());</span><br></pre></td></tr></table></figure>
+
+<p>如果未拉取到新消息，立刻往阻塞队列里放入消息拉取请求，消息拉取线程会立刻发起请求</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 如果未拉取到新消息，立刻往阻塞队列里放入消息拉取请求，消息拉取线程会立刻发起请求</span><br><span class="line">if (pullResult.getMsgFoundList() == null || pullResult.getMsgFoundList().isEmpty()) &#123;</span><br><span class="line">    DefaultMQPushConsumerImpl.this.executePullRequestImmediately(pullRequest);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>拉取到的消息放入缓存队列processQueue</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 消息List放入缓存队列 ✨</span><br><span class="line">boolean dispatchToConsume = processQueue.putMessage(pullResult.getMsgFoundList());</span><br></pre></td></tr></table></figure>
+
+<p>创建消费任务，提交到线程池执行。按消费模式，又分为并发消费和顺序消费</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// 创建消费任务，提交到线程池执行</span><br><span class="line">// 如果是并发消费，消息list按最大批量消费数阈值分片后，提交并发消费任务到线程池 ✨</span><br><span class="line">// 如果是顺序消费，提交顺序消费任务到线程池 ✨</span><br><span class="line">DefaultMQPushConsumerImpl.this.consumeMessageService.submitConsumeRequest(</span><br><span class="line">    pullResult.getMsgFoundList(),</span><br><span class="line">    processQueue,</span><br><span class="line">    pullRequest.getMessageQueue(),</span><br><span class="line">    dispatchToConsume);</span><br></pre></td></tr></table></figure>
+
+<p>提交消费任务后，消息拉取请求放到阻塞队列，由拉取线程轮询阻塞队列再次向broker发起请求</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// 消息拉取请求放到阻塞队列，由拉取线程轮询阻塞队列再次向broker发起请求</span><br><span class="line">if (DefaultMQPushConsumerImpl.this.defaultMQPushConsumer.getPullInterval() &gt; 0) &#123;</span><br><span class="line">    DefaultMQPushConsumerImpl.this.executePullRequestLater(pullRequest,DefaultMQPushConsumerImpl.this.defaultMQPushConsumer.getPullInterval());</span><br><span class="line">&#125; else &#123;</span><br><span class="line">    DefaultMQPushConsumerImpl.this.executePullRequestImmediately(pullRequest);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="乱序消费"><a href="#乱序消费" class="headerlink" title="乱序消费"></a>乱序消费</h5><p>如果是乱序消费，消息list按单次消费消息数阈值分片后，提交多个并发消费任务到线程池</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">final int consumeBatchSize = this.defaultMQPushConsumer.getConsumeMessageBatchMaxSize();</span><br><span class="line">if (msgs.size() &lt;= consumeBatchSize) &#123;</span><br><span class="line">    ConsumeRequest consumeRequest = new ConsumeRequest(msgs, processQueue, messageQueue);</span><br><span class="line">    try &#123;</span><br><span class="line">        this.consumeExecutor.submit(consumeRequest);</span><br><span class="line">    &#125; catch (RejectedExecutionException e) &#123;</span><br><span class="line">        this.submitConsumeRequestLater(consumeRequest);</span><br><span class="line">    &#125;</span><br><span class="line">&#125; else &#123;</span><br><span class="line">    for (int total = 0; total &lt; msgs.size(); ) &#123;</span><br><span class="line">        List&lt;MessageExt&gt; msgThis = new ArrayList&lt;MessageExt&gt;(consumeBatchSize);</span><br><span class="line">        for (int i = 0; i &lt; consumeBatchSize; i++, total++) &#123;</span><br><span class="line">            if (total &lt; msgs.size()) &#123;</span><br><span class="line">                msgThis.add(msgs.get(total));</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                break;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        ConsumeRequest consumeRequest = new ConsumeRequest(msgThis, processQueue, messageQueue);</span><br><span class="line">        try &#123;</span><br><span class="line">            this.consumeExecutor.submit(consumeRequest);</span><br><span class="line">        &#125; catch (RejectedExecutionException e) &#123;</span><br><span class="line">            for (; total &lt; msgs.size(); total++) &#123;</span><br><span class="line">                msgThis.add(msgs.get(total));</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            this.submitConsumeRequestLater(consumeRequest);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>执行并发消费消息任务</p>
+<ul>
+<li>调用前置hook<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">if (ConsumeMessageConcurrentlyService.this.defaultMQPushConsumerImpl.hasHook()) &#123;</span><br><span class="line">    consumeMessageContext = new ConsumeMessageContext();</span><br><span class="line">    consumeMessageContext.setNamespace(defaultMQPushConsumer.getNamespace());</span><br><span class="line">    consumeMessageContext.setConsumerGroup(defaultMQPushConsumer.getConsumerGroup());</span><br><span class="line">    consumeMessageContext.setProps(new HashMap&lt;String, String&gt;());</span><br><span class="line">    consumeMessageContext.setMq(messageQueue);</span><br><span class="line">    consumeMessageContext.setMsgList(msgs);</span><br><span class="line">    consumeMessageContext.setSuccess(false);</span><br><span class="line">    ConsumeMessageConcurrentlyService.this.defaultMQPushConsumerImpl.executeHookBefore(consumeMessageContext);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>批量消息调用业务方listener消费</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">status = listener.consumeMessage(Collections.unmodifiableList(msgs), context);</span><br></pre></td></tr></table></figure>
+
+<p>调用后置hook</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">if (ConsumeMessageConcurrentlyService.this.defaultMQPushConsumerImpl.hasHook()) &#123;</span><br><span class="line">    consumeMessageContext.setStatus(status.toString());</span><br><span class="line">    consumeMessageContext.setSuccess(ConsumeConcurrentlyStatus.CONSUME_SUCCESS == status);</span><br><span class="line">    // 调用后置hook ✨</span><br><span class="line">    ConsumeMessageConcurrentlyService.this.defaultMQPushConsumerImpl.executeHookAfter(consumeMessageContext);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>处理消费结果</p>
+<ul>
+<li>批量消息消费失败，重投递消息到broker的messageQueue，消息重试频率默认由broker控制</li>
+<li>从缓存队列ProcessQueue移除消费完的消息</li>
+<li>更新消费者在messageQueue待处理的最早的一个消息offset（即缓存队列的第一条消息）到内存offsetTable<ul>
+<li><code>offsetTable按messageQueue维度存储位点，位点之前的消息已被consumer消费</code></li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">case RECONSUME_LATER:</span><br><span class="line">    ackIndex = -1;</span><br><span class="line">    ...</span><br><span class="line">case CLUSTERING:</span><br><span class="line">    List&lt;MessageExt&gt; msgBackFailed = new ArrayList&lt;MessageExt&gt;(consumeRequest.getMsgs().size());</span><br><span class="line">    for (int i = ackIndex + 1; i &lt; consumeRequest.getMsgs().size(); i++) &#123;</span><br><span class="line">        MessageExt msg = consumeRequest.getMsgs().get(i);</span><br><span class="line">        // 集群模式，批量消息消费失败，重投递消息到broker的messageQueue，消息重试频率默认由broker控制 ✨</span><br><span class="line">        boolean result = this.sendMessageBack(msg, context);</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">// 消费完的消息，从缓存队列（实际就是一个map，key=offset，value=消息）移除，返回移除后缓存队列第一条消息offset </span><br><span class="line">long offset = consumeRequest.getProcessQueue().removeMessage(consumeRequest.getMsgs());</span><br><span class="line">// 更新从MessageQueue拉取到的最早的一个待消费消息的offset到内存offsetTable </span><br><span class="line">if (offset &gt;= 0 &amp;&amp; !consumeRequest.getProcessQueue().isDropped()) &#123;</span><br><span class="line">    this.defaultMQPushConsumerImpl.getOffsetStore().updateOffset(consumeRequest.getMessageQueue(), offset, true);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="顺序消费"><a href="#顺序消费" class="headerlink" title="顺序消费"></a>顺序消费</h5><p>执行顺序消费消息任务，基本流程和并发消费类似，只说区别</p>
+<p>如果mqClient还没有给messageQueue加锁，或加锁过期了，则加锁后再延迟消费消息</p>
+<ul>
+<li>锁定messageQueue的作用我认为应该是为了通知broker，messageQueue已被consumerGroup中的当前client占据，防止极端情况组内其他client也去messageQueue拉取消息，造成乱序消费</li>
+<li>只有当mqClient关闭时，才会unLock所有messageQueue</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// processQueue的locked状态和messageQueue是一致的，通过本地processQueue的锁定状态和锁定时间判断messageQueue是否锁定或过期，如果过期，需要重新让consumer所在的mqClient锁定messageQueue</span><br><span class="line">// 锁定messageQueue的作用我认为应该是为了通知broker，messageQueue已被consumerGroup中的当前client占据，防止极端情况组内其他client也去messageQueue拉取消息，造成乱序消费</span><br><span class="line">// 只有当mqClient关闭时，才会unLock所有messageQueue</span><br><span class="line">if (MessageModel.BROADCASTING.equals(ConsumeMessageOrderlyService.this.defaultMQPushConsumerImpl.messageModel())</span><br><span class="line">        || (this.processQueue.isLocked() &amp;&amp; !this.processQueue.isLockExpired())) &#123;</span><br><span class="line">    ...</span><br><span class="line">&#125; else &#123;</span><br><span class="line">    ConsumeMessageOrderlyService.this.tryLockLaterAndReconsume(this.messageQueue, this.processQueue, 100);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">public boolean lock(final MessageQueue mq) &#123;</span><br><span class="line">    FindBrokerResult findBrokerResult = this.mQClientFactory.findBrokerAddressInSubscribe(mq.getBrokerName(), MixAll.MASTER_ID, true);</span><br><span class="line">    if (findBrokerResult != null) &#123;</span><br><span class="line">        LockBatchRequestBody requestBody = new LockBatchRequestBody();</span><br><span class="line">        requestBody.setConsumerGroup(this.consumerGroup);</span><br><span class="line">        requestBody.setClientId(this.mQClientFactory.getClientId());</span><br><span class="line">        requestBody.getMqSet().add(mq);</span><br><span class="line"></span><br><span class="line">    try &#123;</span><br><span class="line">        // ConsumerGroup中的当前mqClient锁住它对应broker中的messageQueue</span><br><span class="line">        // 所谓锁住，实际是在broker中标记messageQueue被consumerGroup的哪个mqClient占有</span><br><span class="line">        Set&lt;MessageQueue&gt; lockedMq =</span><br><span class="line">        this.mQClientFactory.getMQClientAPIImpl().lockBatchMQ(findBrokerResult.getBrokerAddr(), requestBody, 1000);</span><br><span class="line">        for (MessageQueue mmqq : lockedMq) &#123;</span><br><span class="line">            ProcessQueue processQueue = this.processQueueTable.get(mmqq);</span><br><span class="line">            if (processQueue != null) &#123;</span><br><span class="line">                // 缓存队列locked，说明它对应的messageQueue已被当前ConsumerGroup的mqClient锁住</span><br><span class="line">                processQueue.setLocked(true);</span><br><span class="line">                processQueue.setLastLockTimestamp(System.currentTimeMillis());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    ...</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">if (lockOK) &#123;</span><br><span class="line">    ConsumeMessageOrderlyService.this.submitConsumeRequestLater(processQueue, mq, 10);</span><br><span class="line">&#125; else &#123;</span><br><span class="line">    ConsumeMessageOrderlyService.this.submitConsumeRequestLater(processQueue, mq, 3000);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>从processQueue按位点顺序取不超过批量消费消息阈值数的消息list并调用业务方listener消费</p>
+<ul>
+<li>并发消费时，直接切分收到的消息list，每个切分后的子消息list创建一个线程消费</li>
+<li>从processQueue取消息 &amp;&amp; 调用业务Listener顺序消费时，都加了互斥锁，通过线程安全的方式访问和消费processQueue的msgs保证顺序消费</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 批量消费消息数阈值</span><br><span class="line">final int consumeBatchSize = ConsumeMessageOrderlyService.this.defaultMQPushConsumer.getConsumeMessageBatchMaxSize();</span><br><span class="line">// 从缓存队列批量顺序取待消费消息，不超过批量消费消息数阈值</span><br><span class="line">List&lt;MessageExt&gt; msgs = this.processQueue.takeMessages(consumeBatchSize);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">try &#123;</span><br><span class="line">    // 调用业务Listener顺序消费时加锁，防止在任务并发执行时，并发调用listener消费消息，产生消费乱序</span><br><span class="line">    this.processQueue.getLockConsume().lock();</span><br><span class="line">    // 批量消费消息</span><br><span class="line">    status = messageListener.consumeMessage(Collections.unmodifiableList(msgs), context);</span><br><span class="line">&#125; catch (Throwable e) &#123;</span><br><span class="line">    ...        </span><br><span class="line">&#125; finally &#123;</span><br><span class="line">    // 解锁</span><br><span class="line">    this.processQueue.getLockConsume().unlock();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>顺序消费失败，如果超过最大重试次数，发送到死信队列，跳过消息。否则，将msgs重新放回processQueue，延迟提交该processQueue上的顺序消费任务到线程池</p>
+<ul>
+<li>并发消费失败的消息，重投递回broker<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">case SUSPEND_CURRENT_QUEUE_A_MOMENT:</span><br><span class="line">    this.getConsumerStatsManager().incConsumeFailedTPS(consumerGroup, consumeRequest.getMessageQueue().getTopic(), msgs.size());</span><br><span class="line">    if (checkReconsumeTimes(msgs)) &#123;</span><br><span class="line">        consumeRequest.getProcessQueue().makeMessageToConsumeAgain(msgs);</span><br><span class="line">        this.submitConsumeRequestLater(</span><br><span class="line">            consumeRequest.getProcessQueue(),</span><br><span class="line">            consumeRequest.getMessageQueue(),</span><br><span class="line">            context.getSuspendCurrentQueueTimeMillis());</span><br><span class="line">        continueConsume = false;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        commitOffset = consumeRequest.getProcessQueue().commit();</span><br><span class="line">    &#125;</span><br><span class="line">    break;  </span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="启动负载均衡线程"><a href="#启动负载均衡线程" class="headerlink" title="启动负载均衡线程"></a>启动负载均衡线程</h3><p>按consumer实例订阅的topic维度执行拉取消息的负载均衡策略</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public void doRebalance() &#123;</span><br><span class="line">    for (Map.Entry&lt;String, MQConsumerInner&gt; entry : this.consumerTable.entrySet()) &#123;</span><br><span class="line">        MQConsumerInner impl = entry.getValue();</span><br><span class="line">        if (impl != null) &#123;</span><br><span class="line">            try &#123;</span><br><span class="line">                impl.doRebalance();</span><br><span class="line">            &#125; catch (Throwable e) &#123;</span><br><span class="line">                log.error(&quot;doRebalance exception&quot;, e);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">public void doRebalance(final boolean isOrder) &#123;</span><br><span class="line">    Map&lt;String, SubscriptionData&gt; subTable = this.getSubscriptionInner();</span><br><span class="line">    if (subTable != null) &#123;</span><br><span class="line">        for (final Map.Entry&lt;String, SubscriptionData&gt; entry : subTable.entrySet()) &#123;</span><br><span class="line">            final String topic = entry.getKey();</span><br><span class="line">            try &#123;</span><br><span class="line">                this.rebalanceByTopic(topic, isOrder);</span><br><span class="line">            &#125; catch (Throwable e) &#123;</span><br><span class="line">                if (!topic.startsWith(MixAll.RETRY_GROUP_TOPIC_PREFIX)) &#123;</span><br><span class="line">                    log.warn(&quot;rebalanceByTopic Exception&quot;, e);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>获取存储topic消息的所有messageQueue</p>
+<ul>
+<li>topic的路由信息是定时请求ns获取到的</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// topicSubscribeInfoTable存储的是定时从ns拿到的topic路由信息，即存储topic消息的所有messageQueue</span><br><span class="line">Set&lt;MessageQueue&gt; mqSet = this.topicSubscribeInfoTable.get(topic);</span><br></pre></td></tr></table></figure>
+
+<p>随机请求存储topic消息的一台broker，获取与当前consumer同Group的所有consumer客户端的clientId</p>
+<ul>
+<li>所有订阅该topic的consumer都会通过心跳消息向所有存储topic消息的broker上报ConsumerGroup信息，因此通过broker能拿到ConsumerGroup中的所有consumerClient</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 随机取存储topic消息的一个broker，通过它获取当前consumer所在Group中所有consumer客户端的clientId</span><br><span class="line">List&lt;String&gt; cidAll = this.mQClientFactory.findConsumerIdList(topic, consumerGroup);</span><br></pre></td></tr></table></figure>
+
+<p>按mqClient均分的方式为consumer消费的topic分配messageQueue</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * 均分算法，如果consumer数量超过messageQueue数量，超过部分的consumer实例不消费messageQueue</span><br><span class="line"> * 返回分配到的messageQueue</span><br><span class="line"> */</span><br><span class="line">int index = cidAll.indexOf(currentCID);</span><br><span class="line">int mod = mqAll.size() % cidAll.size();</span><br><span class="line">    int averageSize =</span><br><span class="line">        mqAll.size() &lt;= cidAll.size() ? 1 : (mod &gt; 0 &amp;&amp; index &lt; mod ? mqAll.size() / cidAll.size()</span><br><span class="line">            + 1 : mqAll.size() / cidAll.size());</span><br><span class="line">    int startIndex = (mod &gt; 0 &amp;&amp; index &lt; mod) ? index * averageSize : index * averageSize + mod;</span><br><span class="line">    int range = Math.min(averageSize, mqAll.size() - startIndex);</span><br><span class="line">    for (int i = 0; i &lt; range; i++) &#123;</span><br><span class="line">        result.add(mqAll.get((startIndex + i) % mqAll.size()));</span><br><span class="line">    &#125;</span><br><span class="line">    return result;</span><br></pre></td></tr></table></figure>
+
+<p>如果负载均衡分配的messageQueue在mqClient上还没有processQueue，创建与messageQueue映射的processQueue，然后构建该messageQueue上的消息拉取请求，放入阻塞队列</p>
+<ul>
+<li>如果之前已经缓存了该topic的messageQueue，会比对之前的messageQueue是否依然在该topic新分配的messageQueue里，如果不在，认为之前分配的messageQueue失效并remove，同时drop对应的processQueue</li>
+<li>如果consumerGroup顺序消费topic消息，创建ProcessQueue前，一定要用ConsumerGroup中的当前client锁住messageQueue，否则不能拉取消息。应该是担心万一messageQueue已被别的consumerClient占据，造成多个consumer同时消费一个messageQueue产生乱序消费<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">Iterator&lt;Entry&lt;MessageQueue, ProcessQueue&gt;&gt; it = this.processQueueTable.entrySet().iterator();</span><br><span class="line">...</span><br><span class="line">// messageQueue的topic与consumer订阅的topic相同，说明是之前已经负载均衡后给consumer分配的messageQueue</span><br><span class="line">// 但messageQueue不在最新负载均衡分配的mqs里，说明broker上的messageQueue有调整，之前的messageQueue失效，需要remove，并drop对应的processQueue</span><br><span class="line">if (mq.getTopic().equals(topic)) &#123;</span><br><span class="line">    if (!mqSet.contains(mq)) &#123;</span><br><span class="line">    pq.setDropped(true);</span><br><span class="line">    if (this.removeUnnecessaryMessageQueue(mq, pq)) &#123;</span><br><span class="line">        it.remove();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">...</span><br><span class="line">// mqSet：负载均衡器给当前consumer实例分配的messageQueueSet</span><br><span class="line">for (MessageQueue mq : mqSet) &#123;</span><br><span class="line">    // 如果最新负载均衡分配的messageQueue在mqClient没有对应的processQueue，初始化processQueue，然后构建消息拉取请求，拉取messageQueue里的消息</span><br><span class="line">    if (!this.processQueueTable.containsKey(mq)) &#123;</span><br><span class="line">        ProcessQueue pq = new ProcessQueue();</span><br><span class="line">        // 获取从messageQueue拉取消息的起始位点</span><br><span class="line">        long nextOffset = this.computePullFromWhere(mq);</span><br><span class="line">        if (nextOffset &gt;= 0) &#123;</span><br><span class="line">            // 初始化缓存队列，映射分配的messageQueue</span><br><span class="line">            ProcessQueue pre = this.processQueueTable.putIfAbsent(mq, pq);</span><br><span class="line">            if (pre != null) &#123;</span><br><span class="line">                log.info(&quot;doRebalance, &#123;&#125;, mq already exists, &#123;&#125;&quot;, consumerGroup, mq);</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                // 初始化后，构建消息拉取请求，拉取messageQueue里的消息</span><br><span class="line">                log.info(&quot;doRebalance, &#123;&#125;, add a new mq, &#123;&#125;&quot;, consumerGroup, mq);</span><br><span class="line">                PullRequest pullRequest = new PullRequest();</span><br><span class="line">                pullRequest.setConsumerGroup(consumerGroup);</span><br><span class="line">                pullRequest.setNextOffset(nextOffset);</span><br><span class="line">                pullRequest.setMessageQueue(mq);</span><br><span class="line">                pullRequest.setProcessQueue(pq);</span><br><span class="line">                pullRequestList.add(pullRequest);</span><br><span class="line">                changed = true;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">// 消息拉取请求放入阻塞队列</span><br><span class="line">this.dispatchPullRequest(pullRequestList);</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="更新mqClient的状态"><a href="#更新mqClient的状态" class="headerlink" title="更新mqClient的状态"></a>更新mqClient的状态</h3><p>producer所属mqClient的serviceState变为RUNNING，表示producer实例启动成功</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">this.serviceState = ServiceState.RUNNING;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>西米大人
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://dcbupt.github.io/2020/05/26/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0rocketmq%E6%BA%90%E7%A0%81/" title="系统学习rocketmq源码">http://dcbupt.github.io/2020/05/26/blog_article/系统学习系列/系统学习rocketmq源码/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+
+        
+
+<blockquote class="blockquote-center" style="color: #f0ad4e">完 ♥ 结</blockquote>
+
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/05/21/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0CQRS%E5%92%8CEventSourcing/" rel="prev" title="系统学习CQRS和EventSourcing">
+      <i class="fa fa-chevron-left"></i> 系统学习CQRS和EventSourcing
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/05/26/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Netty/" rel="next" title="系统学习Netty">
+      系统学习Netty <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9E%B6%E6%9E%84%E5%9B%BE"><span class="nav-number">1.</span> <span class="nav-text">架构图</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8producer%E5%AE%9E%E4%BE%8B"><span class="nav-number">2.</span> <span class="nav-text">启动producer实例</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E4%BE%8B%E5%8C%96DefaultMQProducer"><span class="nav-number">2.1.</span> <span class="nav-text">实例化DefaultMQProducer</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E4%BE%8B%E5%8C%96DefaultMQProducerImpl"><span class="nav-number">2.1.1.</span> <span class="nav-text">实例化DefaultMQProducerImpl</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8DefaultMQProducer"><span class="nav-number">2.2.</span> <span class="nav-text">启动DefaultMQProducer</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E4%BE%8B%E5%8C%96MQClientInstance"><span class="nav-number">2.2.1.</span> <span class="nav-text">实例化MQClientInstance</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8MQClientInstance"><span class="nav-number">2.3.</span> <span class="nav-text">启动MQClientInstance</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0ns%E5%9C%B0%E5%9D%80"><span class="nav-number">2.3.1.</span> <span class="nav-text">更新ns地址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8MQClientAPIImpl"><span class="nav-number">2.3.2.</span> <span class="nav-text">启动MQClientAPIImpl</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8mqClient%E7%9A%84%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1"><span class="nav-number">2.3.3.</span> <span class="nav-text">启动mqClient的定时任务</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9A%E6%97%B6%E6%9B%B4%E6%96%B0ns%E5%9C%B0%E5%9D%80"><span class="nav-number">2.3.3.1.</span> <span class="nav-text">定时更新ns地址</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9A%E6%97%B6%E5%88%B7%E6%96%B0topic%E6%B6%88%E6%81%AF%E8%B7%AF%E7%94%B1"><span class="nav-number">2.3.3.2.</span> <span class="nav-text">定时刷新topic消息路由</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9A%E6%97%B6%E5%90%91broker%E5%8F%91%E9%80%81%E5%BF%83%E8%B7%B3"><span class="nav-number">2.3.3.3.</span> <span class="nav-text">定时向broker发送心跳</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9A%E6%97%B6%E5%8F%91%E9%80%81consumer%E7%9A%84%E6%B6%88%E8%B4%B9%E4%BD%8D%E7%82%B9"><span class="nav-number">2.3.3.4.</span> <span class="nav-text">定时发送consumer的消费位点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E6%B6%88%E6%81%AF%E6%8B%89%E5%8F%96%E7%BA%BF%E7%A8%8B"><span class="nav-number">2.3.4.</span> <span class="nav-text">启动消息拉取线程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%91%E9%80%81%E6%B6%88%E6%81%AF%E6%8B%89%E5%8F%96%E8%AF%B7%E6%B1%82"><span class="nav-number">2.3.4.1.</span> <span class="nav-text">发送消息拉取请求</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B6%88%E8%B4%B9%E6%8B%89%E5%8F%96%E5%88%B0%E7%9A%84%E6%B6%88%E6%81%AF"><span class="nav-number">2.3.4.2.</span> <span class="nav-text">消费拉取到的消息</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%B9%B1%E5%BA%8F%E6%B6%88%E8%B4%B9"><span class="nav-number">2.3.4.2.1.</span> <span class="nav-text">乱序消费</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%A1%BA%E5%BA%8F%E6%B6%88%E8%B4%B9"><span class="nav-number">2.3.4.2.2.</span> <span class="nav-text">顺序消费</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E7%BA%BF%E7%A8%8B"><span class="nav-number">2.3.5.</span> <span class="nav-text">启动负载均衡线程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0mqClient%E7%9A%84%E7%8A%B6%E6%80%81"><span class="nav-number">2.3.6.</span> <span class="nav-text">更新mqClient的状态</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="西米大人"
+      src="/images/me.png">
+  <p class="site-author-name" itemprop="name">西米大人</p>
+  <div class="site-description" itemprop="description"><blockquote class="blockquote-center">优秀的人，不是不合群，而是他们合群的人里面没有你</blockquote></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">151</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dcbupt" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;dcbupt" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:byrddc@hotmail.com" title="E-Mail → mailto:byrddc@hotmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">西米大人</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">388k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">10:47</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.id);
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            let target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    let { app_id, app_key, server_url } = {"enable":true,"app_id":"OBdFsOOtfIDcNnWdzkGbICmj-gzGzoHsz","app_key":"89LmL4tP7hkyChAmEleq2MdO","server_url":null,"security":true};
+    function fetchData(api_server) {
+      var Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    let api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+<script src="/js/love.js"></script>
+
+<script src="/js/particle.js"></script>
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('https://cdn.jsdelivr.net/npm/valine@1.4.18/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'OBdFsOOtfIDcNnWdzkGbICmj-gzGzoHsz',
+      appKey     : '89LmL4tP7hkyChAmEleq2MdO',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

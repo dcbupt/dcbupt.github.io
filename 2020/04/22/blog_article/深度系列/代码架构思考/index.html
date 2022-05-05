@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-mac-osx.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"dcbupt.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="代码架构思考，demo示例：https:&#x2F;&#x2F;github.com&#x2F;dcbupt&#x2F;structure-framework.git">
+<meta property="og:type" content="article">
+<meta property="og:title" content="代码架构思考">
+<meta property="og:url" content="http://dcbupt.github.io/2020/04/22/blog_article/%E6%B7%B1%E5%BA%A6%E7%B3%BB%E5%88%97/%E4%BB%A3%E7%A0%81%E6%9E%B6%E6%9E%84%E6%80%9D%E8%80%83/index.html">
+<meta property="og:site_name" content="dcddc">
+<meta property="og:description" content="代码架构思考，demo示例：https:&#x2F;&#x2F;github.com&#x2F;dcbupt&#x2F;structure-framework.git">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-04-22T07:15:00.000Z">
+<meta property="article:modified_time" content="2022-05-01T06:44:18.771Z">
+<meta property="article:author" content="西米大人">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://dcbupt.github.io/2020/04/22/blog_article/%E6%B7%B1%E5%BA%A6%E7%B3%BB%E5%88%97/%E4%BB%A3%E7%A0%81%E6%9E%B6%E6%9E%84%E6%80%9D%E8%80%83/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+  <title>代码架构思考 | dcddc</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">dcddc</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">西米大人的博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dcbupt.github.io/2020/04/22/blog_article/%E6%B7%B1%E5%BA%A6%E7%B3%BB%E5%88%97/%E4%BB%A3%E7%A0%81%E6%9E%B6%E6%9E%84%E6%80%9D%E8%80%83/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/me.png">
+      <meta itemprop="name" content="西米大人">
+      <meta itemprop="description" content="<blockquote class="blockquote-center">优秀的人，不是不合群，而是他们合群的人里面没有你</blockquote>">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="dcddc">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          代码架构思考
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-04-22 15:15:00" itemprop="dateCreated datePublished" datetime="2020-04-22T15:15:00+08:00">2020-04-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-05-01 14:44:18" itemprop="dateModified" datetime="2022-05-01T14:44:18+08:00">2022-05-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E7%B3%BB%E5%88%97/" itemprop="url" rel="index"><span itemprop="name">深度系列</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/04/22/blog_article/%E6%B7%B1%E5%BA%A6%E7%B3%BB%E5%88%97/%E4%BB%A3%E7%A0%81%E6%9E%B6%E6%9E%84%E6%80%9D%E8%80%83/" class="post-meta-item leancloud_visitors" data-flag-title="代码架构思考" title="热度">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">热度:</span>
+              <span class="leancloud-visitors-count"></span>℃
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">评论:</span>
+    
+    <a title="valine" href="/2020/04/22/blog_article/%E6%B7%B1%E5%BA%A6%E7%B3%BB%E5%88%97/%E4%BB%A3%E7%A0%81%E6%9E%B6%E6%9E%84%E6%80%9D%E8%80%83/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/04/22/blog_article/%E6%B7%B1%E5%BA%A6%E7%B3%BB%E5%88%97/%E4%BB%A3%E7%A0%81%E6%9E%B6%E6%9E%84%E6%80%9D%E8%80%83/" itemprop="commentCount"></span>℃
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">字数：</span>
+              <span>1.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+            <div class="post-description"><blockquote class="blockquote-center">代码架构思考，demo示例：https://github.com/dcbupt/structure-framework.git</blockquote></div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="业务代码与rpc服务解耦"><a href="#业务代码与rpc服务解耦" class="headerlink" title="业务代码与rpc服务解耦"></a>业务代码与rpc服务解耦</h1><p>调用RPC服务的代码不要侵入业务代码，在业务代码层之上新增provider层。provider层负责调RPC服务，每个provider类针对某一类特定的RPC服务（比如商品服务，交易服务，促销服务等）。在provider类的方法里做RPC方法入参出参的校验，对下游的业务代码封装统一数据结构的出参，增强代码的可读性和可维护性。</p>
+<h1 id="业务异常与错误码Enum结合"><a href="#业务异常与错误码Enum结合" class="headerlink" title="业务异常与错误码Enum结合"></a>业务异常与错误码Enum结合</h1><p>自定义业务Runtime异常类，构造参数为业务异常枚举类。针对业务异常，统一进行catch捕获，获取异常类里携带的业务异常枚举对象，打印枚举对象里携带的业务异常日志，最后将异常枚举对象的errCode、errMsg封装到Result里返回给调用方：<code>Result.fail(errCode, errMsg)</code></p>
+<h1 id="Service层通用方法设计"><a href="#Service层通用方法设计" class="headerlink" title="Service层通用方法设计"></a>Service层通用方法设计</h1><p>Service层接口设计往往要考虑通用性。有时一个接口要服务于多个上层业务。如何设计通用接口，隔离多个上层业务定制逻辑的同时，也能提取出通用逻辑。<br>业务间隔离可以通过策略模式实现。基于入参标获取业务枚举，再从上下文根据枚举获取匹配的策略实例。另一方面，可以通过模板方法模式提取多个业务公共逻辑到策略基类，再提供模板方法给具体的业务策略实例来实现定制逻辑。</p>
+<h1 id="链式调用处理长业务逻辑"><a href="#链式调用处理长业务逻辑" class="headerlink" title="链式调用处理长业务逻辑"></a>链式调用处理长业务逻辑</h1><p>如果一个业务的处理流程较长，且希望可以动态增删、调整处理流，可以使用责任链模式。<br>核心是定义一个ProcessorManager来初始化责任链，主要作用是：</p>
+<ul>
+<li>按业务维度初始化业务处理的责任链</li>
+<li>执行业务链式处理</li>
+</ul>
+<p>考虑到通用性，ProcessorRequest和ProcessorResponse都是泛型类，将业务入参出参泛型化的同时，也定义了一些通用的入参出参属性，这里就不贴代码了。<br>重点看一下ProcessorManager的实现：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">public class ProcessorManager &#123;</span><br><span class="line"></span><br><span class="line">    private final static Logger logger = LoggerFactory.getLogger(ProcessorManager.class);</span><br><span class="line"></span><br><span class="line">    @SuppressWarnings(&quot;rawtypes&quot;)</span><br><span class="line">    private Map&lt;String, List&lt;Processor&gt;&gt; processors = new TreeMap&lt;String, List&lt;Processor&gt;&gt;();</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public &lt;Req, Res&gt; ProcessorResponse&lt;Res&gt; process(ProcessorRequest&lt;Req&gt; request) &#123;</span><br><span class="line">        ProcessorResponse&lt;Res&gt; processorResponse = new ProcessorResponse&lt;Res&gt;();</span><br><span class="line">        List&lt;TradeProcessor&gt; invokes = processors.get(request.getBizCode());</span><br><span class="line">        Map&lt;String, Object&gt; context = Maps.newHashMap();</span><br><span class="line">        context.put(ProcessorResponse.class.getSimpleName(), processorResponse);</span><br><span class="line">        for (TradeProcessor invoke : invokes)</span><br><span class="line">        &#123;</span><br><span class="line">            invoke.invoke(request, context);</span><br><span class="line">        &#125;</span><br><span class="line">        return processorResponse;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setProcessors(Map&lt;String, List&lt;Processor&gt;&gt; processors) &#123;</span><br><span class="line"></span><br><span class="line">        this.processors = processors;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>几点说明：</p>
+<ul>
+<li>ProcessorManager可以定义为bean，初始化责任链可以通过xml方式显式配置到bean定义里，在bean属性填充阶段完成依赖注入</li>
+<li>将ProcessorResponse业务出参放入上下文context</li>
+</ul>
+<p>这种模式还有一种更优雅实现方案：<br>bizType之前是在processorManagerBean注册配置里写死的，不够灵活和优雅。下面介绍基于注解配置bizType和处理链的映射关系。<br>processor实现类添加注解：<code>@BizType(type=&quot;xxx&quot;, index=0)</code>，type指定业务身份，index表示该处理器在责任链里的执行顺序<br>processorManager在bean初始化阶段，通过注入的ApplicationUtil bean（自省获取applicationContext），加载所有链式处理器processors，拿到注解指定的bizType和下标，就可以将责任链注入到processorManager</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>西米大人
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://dcbupt.github.io/2020/04/22/blog_article/%E6%B7%B1%E5%BA%A6%E7%B3%BB%E5%88%97/%E4%BB%A3%E7%A0%81%E6%9E%B6%E6%9E%84%E6%80%9D%E8%80%83/" title="代码架构思考">http://dcbupt.github.io/2020/04/22/blog_article/深度系列/代码架构思考/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+
+        
+
+<blockquote class="blockquote-center" style="color: #f0ad4e">完 ♥ 结</blockquote>
+
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/04/22/blog_article/%E6%B7%B1%E5%BA%A6%E7%B3%BB%E5%88%97/%E5%AF%86%E7%A0%81%E5%AD%A6/" rel="prev" title="代码架构思考">
+      <i class="fa fa-chevron-left"></i> 代码架构思考
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/04/23/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0threadLocal/" rel="next" title="系统学习线程池">
+      系统学习线程池 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81%E4%B8%8Erpc%E6%9C%8D%E5%8A%A1%E8%A7%A3%E8%80%A6"><span class="nav-number">1.</span> <span class="nav-text">业务代码与rpc服务解耦</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%9A%E5%8A%A1%E5%BC%82%E5%B8%B8%E4%B8%8E%E9%94%99%E8%AF%AF%E7%A0%81Enum%E7%BB%93%E5%90%88"><span class="nav-number">2.</span> <span class="nav-text">业务异常与错误码Enum结合</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Service%E5%B1%82%E9%80%9A%E7%94%A8%E6%96%B9%E6%B3%95%E8%AE%BE%E8%AE%A1"><span class="nav-number">3.</span> <span class="nav-text">Service层通用方法设计</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%93%BE%E5%BC%8F%E8%B0%83%E7%94%A8%E5%A4%84%E7%90%86%E9%95%BF%E4%B8%9A%E5%8A%A1%E9%80%BB%E8%BE%91"><span class="nav-number">4.</span> <span class="nav-text">链式调用处理长业务逻辑</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="西米大人"
+      src="/images/me.png">
+  <p class="site-author-name" itemprop="name">西米大人</p>
+  <div class="site-description" itemprop="description"><blockquote class="blockquote-center">优秀的人，不是不合群，而是他们合群的人里面没有你</blockquote></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">151</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dcbupt" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;dcbupt" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:byrddc@hotmail.com" title="E-Mail → mailto:byrddc@hotmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">西米大人</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">388k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">10:47</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.id);
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            let target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    let { app_id, app_key, server_url } = {"enable":true,"app_id":"OBdFsOOtfIDcNnWdzkGbICmj-gzGzoHsz","app_key":"89LmL4tP7hkyChAmEleq2MdO","server_url":null,"security":true};
+    function fetchData(api_server) {
+      var Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    let api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+<script src="/js/love.js"></script>
+
+<script src="/js/particle.js"></script>
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('https://cdn.jsdelivr.net/npm/valine@1.4.18/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'OBdFsOOtfIDcNnWdzkGbICmj-gzGzoHsz',
+      appKey     : '89LmL4tP7hkyChAmEleq2MdO',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

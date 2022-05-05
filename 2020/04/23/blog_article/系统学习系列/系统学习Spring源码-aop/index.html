@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-mac-osx.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"dcbupt.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="系统学习Spring源码-aop">
+<meta property="og:type" content="article">
+<meta property="og:title" content="系统学习Spring源码-aop">
+<meta property="og:url" content="http://dcbupt.github.io/2020/04/23/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Spring%E6%BA%90%E7%A0%81-aop/index.html">
+<meta property="og:site_name" content="dcddc">
+<meta property="og:description" content="系统学习Spring源码-aop">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-04-23T03:57:00.000Z">
+<meta property="article:modified_time" content="2022-05-01T06:44:18.825Z">
+<meta property="article:author" content="西米大人">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://dcbupt.github.io/2020/04/23/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Spring%E6%BA%90%E7%A0%81-aop/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+  <title>系统学习Spring源码-aop | dcddc</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">dcddc</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">西米大人的博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dcbupt.github.io/2020/04/23/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Spring%E6%BA%90%E7%A0%81-aop/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/me.png">
+      <meta itemprop="name" content="西米大人">
+      <meta itemprop="description" content="<blockquote class="blockquote-center">优秀的人，不是不合群，而是他们合群的人里面没有你</blockquote>">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="dcddc">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          系统学习Spring源码-aop
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-04-23 11:57:00" itemprop="dateCreated datePublished" datetime="2020-04-23T11:57:00+08:00">2020-04-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-05-01 14:44:18" itemprop="dateModified" datetime="2022-05-01T14:44:18+08:00">2022-05-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/" itemprop="url" rel="index"><span itemprop="name">系统学习系列</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/04/23/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Spring%E6%BA%90%E7%A0%81-aop/" class="post-meta-item leancloud_visitors" data-flag-title="系统学习Spring源码-aop" title="热度">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">热度:</span>
+              <span class="leancloud-visitors-count"></span>℃
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">评论:</span>
+    
+    <a title="valine" href="/2020/04/23/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Spring%E6%BA%90%E7%A0%81-aop/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/04/23/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Spring%E6%BA%90%E7%A0%81-aop/" itemprop="commentCount"></span>℃
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">字数：</span>
+              <span>10k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>17 分钟</span>
+            </span>
+            <div class="post-description"><blockquote class="blockquote-center">系统学习Spring源码-aop</blockquote></div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>为了避免一些公共代码每次都要在bean里单独添加，提出了aop的解决方案，使用面向切面编程的思想，统一处理bean中与业务逻辑无关的公共代码</p>
+<h1 id="注册APC的BD"><a href="#注册APC的BD" class="headerlink" title="注册APC的BD"></a>注册APC的BD</h1><p>xml方式通过配置<code>&lt;aop:aspectj-autoproxy/&gt;</code>启用AOP，在bean注册里介绍过，这属于Spring的自定义标签，命名空间是aop，标签是aspectj-autoproxy。Spring会通过aop命名空间Handler：<code>AopNamespaceHandler</code>，获取aspectj-autoproxy标签的解析器<code>AspectJAutoProxyBeanDefinitionParser</code>，执行parse方法解析标签，注册自动代理创建器（APC）的bd到beanFactory</p>
+<ul>
+<li>默认注册的APC是<code>AnnotationAwareAspectJAutoProxyCreator</code>，Spring定义了三个自动代理APC，根据优先级来决定最终注册哪个APC的bd到beanFactory<ul>
+<li>优先级：<code>AnnotationAwareAspectJAutoProxyCreator</code> &gt; <code>AspectJAwareAdvisorAutoProxyCreator</code> &gt; <code>InfrastructureAdvisorAutoProxyCreator</code></li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line">public BeanDefinition parse(Element element, ParserContext parserContext) &#123;</span><br><span class="line">	// 主要是注册APC的bd到beanFactory</span><br><span class="line">	AopNamespaceUtils.registerAspectJAnnotationAutoProxyCreatorIfNecessary(parserContext, element);</span><br><span class="line">	extendBeanDefinition(element, parserContext);</span><br><span class="line">	return null;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public static void registerAspectJAnnotationAutoProxyCreatorIfNecessary(</span><br><span class="line">		ParserContext parserContext, Element sourceElement) &#123;</span><br><span class="line"></span><br><span class="line">	// 注册自动代理创建器APC的bd到beanFactory</span><br><span class="line">	BeanDefinition beanDefinition = AopConfigUtils.registerAspectJAnnotationAutoProxyCreatorIfNecessary(</span><br><span class="line">			parserContext.getRegistry(), parserContext.extractSource(sourceElement));</span><br><span class="line">	// APC的bd增加一些自定义逻辑控制属性，包括是否强制使用CGLIB代理、是否暴露代理类给用户使用</span><br><span class="line">	useClassProxyingIfNecessary(parserContext.getRegistry(), sourceElement);</span><br><span class="line">	registerComponentIfNecessary(beanDefinition, parserContext);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public static BeanDefinition registerAspectJAnnotationAutoProxyCreatorIfNecessary(</span><br><span class="line">		BeanDefinitionRegistry registry, @Nullable Object source) &#123;</span><br><span class="line"></span><br><span class="line">	return registerOrEscalateApcAsRequired(AnnotationAwareAspectJAutoProxyCreator.class, registry, source);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private static BeanDefinition registerOrEscalateApcAsRequired(</span><br><span class="line">		Class&lt;?&gt; cls, BeanDefinitionRegistry registry, @Nullable Object source) &#123;</span><br><span class="line"></span><br><span class="line">	Assert.notNull(registry, &quot;BeanDefinitionRegistry must not be null&quot;);</span><br><span class="line"></span><br><span class="line">	// 如果已存在APC（自动代理创建器）的bd，按APC优先级决定最终使用的APC</span><br><span class="line">	if (registry.containsBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME)) &#123;</span><br><span class="line">		BeanDefinition apcDefinition = registry.getBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME);</span><br><span class="line">		if (!cls.getName().equals(apcDefinition.getBeanClassName())) &#123;</span><br><span class="line">			int currentPriority = findPriorityForClass(apcDefinition.getBeanClassName());</span><br><span class="line">			int requiredPriority = findPriorityForClass(cls);</span><br><span class="line">			if (currentPriority &lt; requiredPriority) &#123;</span><br><span class="line">				apcDefinition.setBeanClassName(cls.getName());</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		return null;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	RootBeanDefinition beanDefinition = new RootBeanDefinition(cls);</span><br><span class="line">	beanDefinition.setSource(source);</span><br><span class="line">	beanDefinition.getPropertyValues().add(&quot;order&quot;, Ordered.HIGHEST_PRECEDENCE);</span><br><span class="line">	beanDefinition.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);</span><br><span class="line">	registry.registerBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME, beanDefinition);</span><br><span class="line">	return beanDefinition;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private static int findPriorityForClass(@Nullable String className) &#123;</span><br><span class="line">	for (int i = 0; i &lt; APC_PRIORITY_LIST.size(); i++) &#123;</span><br><span class="line">		Class&lt;?&gt; clazz = APC_PRIORITY_LIST.get(i);</span><br><span class="line">		if (clazz.getName().equals(className)) &#123;</span><br><span class="line">			return i;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	... ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private static final List&lt;Class&lt;?&gt;&gt; APC_PRIORITY_LIST = new ArrayList&lt;&gt;(3);</span><br><span class="line"></span><br><span class="line">static &#123;</span><br><span class="line">	// Set up the escalation list...</span><br><span class="line">	APC_PRIORITY_LIST.add(InfrastructureAdvisorAutoProxyCreator.class);</span><br><span class="line">	APC_PRIORITY_LIST.add(AspectJAwareAdvisorAutoProxyCreator.class);</span><br><span class="line">	APC_PRIORITY_LIST.add(AnnotationAwareAspectJAutoProxyCreator.class);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>APC的bd.pv增加一些逻辑控制属性</p>
+<ul>
+<li>是否强制使用CGLIB代理<ul>
+<li>如果aspectj-autoproxy标签的proxy-target-class属性为true，强制使用CGLIB为目标对象创建代理</li>
+<li>CGLIB是在运行期依赖ASM操作字节码生成目标类的子类来实现代理，能代理除final方法（不能被override）外的所有方法，且性能更好</li>
+<li>JDK动态代理是Spring默认使用的动态代理，在运行期创建接口实现类来代理目标类，因此只能代理接口方法</li>
+</ul>
+</li>
+<li>是否支持暴露代理类<ul>
+<li>如果aspectj-autoproxy标签的expose-proxy属性为true，支持暴露代理类</li>
+<li>目的是解决某些场景下无法代理方法的问题：例如被代理类方法a内部又调用了它的另一个方法b，该方法b的调用是无法被代理的，需要显式调用AopContext.currentProxy获取代理类来调用方法b</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">private static void useClassProxyingIfNecessary(BeanDefinitionRegistry registry, @Nullable Element sourceElement) &#123;</span><br><span class="line">	if (sourceElement != null) &#123;</span><br><span class="line">		boolean proxyTargetClass = Boolean.parseBoolean(sourceElement.getAttribute(PROXY_TARGET_CLASS_ATTRIBUTE));</span><br><span class="line">		if (proxyTargetClass) &#123;</span><br><span class="line">			AopConfigUtils.forceAutoProxyCreatorToUseClassProxying(registry);</span><br><span class="line">		&#125;</span><br><span class="line">		boolean exposeProxy = Boolean.parseBoolean(sourceElement.getAttribute(EXPOSE_PROXY_ATTRIBUTE));</span><br><span class="line">		if (exposeProxy) &#123;</span><br><span class="line">			AopConfigUtils.forceAutoProxyCreatorToExposeProxy(registry);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public static void forceAutoProxyCreatorToUseClassProxying(BeanDefinitionRegistry registry) &#123;</span><br><span class="line">	if (registry.containsBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME)) &#123;</span><br><span class="line">		BeanDefinition definition = registry.getBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME);</span><br><span class="line">		definition.getPropertyValues().add(&quot;proxyTargetClass&quot;, Boolean.TRUE);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public static void forceAutoProxyCreatorToExposeProxy(BeanDefinitionRegistry registry) &#123;</span><br><span class="line">	if (registry.containsBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME)) &#123;</span><br><span class="line">		BeanDefinition definition = registry.getBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME);</span><br><span class="line">		definition.getPropertyValues().add(&quot;exposeProxy&quot;, Boolean.TRUE);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="AnnotationAwareAspectJAutoProxyCreator"><a href="#AnnotationAwareAspectJAutoProxyCreator" class="headerlink" title="AnnotationAwareAspectJAutoProxyCreator"></a>AnnotationAwareAspectJAutoProxyCreator</h2><p><code>AnnotationAwareAspectJAutoProxyCreator</code>的基类是<code>AbstractAutoProxyCreator</code>，它是一个<code>SmartInstantiationAwareBeanPostProcessor</code>，所以我们通过解析aop的自定义标签实际注册了一个bpp的bd</p>
+<p>如果你的应用使用的Spring容器是ApplicationContext，通过上面的分析可知，在Spring容器构建阶段就会加载所有bpp，并注册到beanFactory。所以Spring容器启动后，<code>AnnotationAwareAspectJAutoProxyCreator</code>作为bpp已经加载并注册到容器内部的beanFactory</p>
+<h1 id="AnnotationAwareAspectJAutoProxyCreator创建bean代理类"><a href="#AnnotationAwareAspectJAutoProxyCreator创建bean代理类" class="headerlink" title="AnnotationAwareAspectJAutoProxyCreator创建bean代理类"></a>AnnotationAwareAspectJAutoProxyCreator创建bean代理类</h1><p>通过上面的分析，对于<code>&lt;aop:aspectj-autoproxy/&gt;</code>这种xml方式启用AOP，默认使用的APC就是<code>AnnotationAwareAspectJAutoProxyCreator</code>，它是一个bpp，在bean加载过程中完成对目标bean的代理，下面重点看一下<code>AnnotationAwareAspectJAutoProxyCreator</code>在bean加载过程中如何对bean进行代理</p>
+<p>在分析源码前，先说一下预备知识：</p>
+<ul>
+<li>aop模块的核心bean是<code>Advisor</code>增强容器，它包括增强器<code>Advice</code>和切点<code>Pointcut</code>。增强器Advice实现具体的增强逻辑，切点PointCut用于判断是否与bean方法匹配，只有匹配上的bean才会被aop代理<ul>
+<li><code>Advisor</code>其实只包含<code>Advice</code>，它的子类<code>PointcutAdvisor</code>引入了<code>Pointcut</code>，所以增强容器真正指的是<code>PointcutAdvisor</code>，下文不区分<code>Advisor</code>和<code>PointcutAdvisor</code></li>
+</ul>
+</li>
+<li>aop使用APC为bean创建aop代理，如果用<code>&lt;aop:aspectj-autoproxy/&gt;</code>方式启用aop，APC是<code>AnnotationAwareAspectJAutoProxyCreator</code>，但aop还有其他的APC，例如<code>InfrastructureAdvisorAutoProxyCreator</code>，不同的APC在代理bean过程中有差异。且通过上面的分析可知，如果beanFactory要注册多个aop的apc beanDefinition时，实际注册的是优先级最高的apc，<code>AnnotationAwareAspectJAutoProxyCreator</code>优先级高于<code>InfrastructureAdvisorAutoProxyCreator</code>，下面分析<code>AnnotationAwareAspectJAutoProxyCreator</code>是如何代理bean的</li>
+</ul>
+<h2 id="bean前置实例化处理"><a href="#bean前置实例化处理" class="headerlink" title="bean前置实例化处理"></a>bean前置实例化处理</h2><p>bean前置实例化处理主要做了两件事：</p>
+<ul>
+<li>缓存不需要被代理增强的bean<ul>
+<li>用于做aop代理的bean，包括Advisor、Advice、Pointcut的实现类</li>
+<li>使用@Aspect修饰的切面类</li>
+</ul>
+</li>
+<li>为@Aspect切面类中每个增强方法创建增强容器advisor并缓存</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">if (isInfrastructureClass(beanClass) || shouldSkip(beanClass, beanName)) &#123;</span><br><span class="line">	// 缓存无需增强代理的bean</span><br><span class="line">	this.advisedBeans.put(cacheKey, Boolean.FALSE);</span><br><span class="line">	return null;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">protected boolean isInfrastructureClass(Class&lt;?&gt; beanClass) &#123;</span><br><span class="line">	boolean retVal = Advice.class.isAssignableFrom(beanClass) ||</span><br><span class="line">			Pointcut.class.isAssignableFrom(beanClass) ||</span><br><span class="line">			Advisor.class.isAssignableFrom(beanClass) ||</span><br><span class="line">			AopInfrastructureBean.class.isAssignableFrom(beanClass);</span><br><span class="line">	return retVal || hasAspectAnnotation(beanClass);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private boolean hasAspectAnnotation(Class&lt;?&gt; clazz) &#123;</span><br><span class="line">	return (AnnotationUtils.findAnnotation(clazz, Aspect.class) != null);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">protected boolean shouldSkip(Class&lt;?&gt; beanClass, String beanName) &#123;</span><br><span class="line">	List&lt;Advisor&gt; candidateAdvisors = findCandidateAdvisors();</span><br><span class="line">	for (Advisor advisor : candidateAdvisors) &#123;</span><br><span class="line">		if (advisor instanceof AspectJPointcutAdvisor &amp;&amp;</span><br><span class="line">				((AspectJPointcutAdvisor) advisor).getAspectName().equals(beanName)) &#123;</span><br><span class="line">			return true;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	return super.shouldSkip(beanClass, beanName);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>findCandidateAdvisors是aop的核心方法，它会返回当前APC下的所有候选advisor。<code>AbstractAdvisorAutoProxyCreator</code>里首次定义并给出了基础实现，它会加载所有Advisor bean，然后调用子类isEligibleBean方法，筛选advisor bean。<code>AnnotationAwareAspectJAutoProxyCreator</code>返回true，不过滤advisor bean。<code>InfrastructureAdvisorAutoProxyCreator</code>筛选的是role&#x3D;ROLE_INFRASTRUCTURE的基础设施advisor bean</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">protected List&lt;Advisor&gt; findCandidateAdvisors() &#123;</span><br><span class="line">	// 从beanFactory加载所有advisor类型增强器bean</span><br><span class="line">	... ...</span><br><span class="line">	advisorNames = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(</span><br><span class="line">				this.beanFactory, Advisor.class, true, false);</span><br><span class="line">	... ...</span><br><span class="line">	for (String name : advisorNames) &#123;</span><br><span class="line">		// 不同的APC实现类区分要返回哪些候选advisors，例如InfrastructureAdvisorAutoProxyCreator只会返回role=ROLE_INFRASTRUCTURE的基础设施advisor bean</span><br><span class="line">		if (isEligibleBean(name)) &#123;</span><br><span class="line">			advisors.add(this.beanFactory.getBean(name, Advisor.class));</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	... ...</span><br><span class="line">	return advisors;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>AnnotationAwareAspectJAutoProxyCreator</code>继承<code>AbstractAdvisorAutoProxyCreator</code>，并重写findCandidateAdvisors方法。它在父类的基础上，还会对@Aspect修饰的切面bean的每个增强方法，创建对应的增强容器Advisor，类型为<code>InstantiationModelAwarePointcutAdvisor</code>，作为候选advisor。这些advisor只会创建一次，然后放到map缓存在APC</p>
+<ul>
+<li>增强方法是@Around、@Before、@After、@AfterReturning、@AfterThrowing其中之一的注解修饰的方法，实现具体的增强逻辑</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">public List&lt;Advisor&gt; buildAspectJAdvisors() &#123;</span><br><span class="line">	... ...</span><br><span class="line">	// 获取所有beanName</span><br><span class="line">	String[] beanNames = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(</span><br><span class="line">						this.beanFactory, Object.class, true, false);</span><br><span class="line">	for (String beanName : beanNames) &#123;</span><br><span class="line">		... ...</span><br><span class="line">		if (this.advisorFactory.isAspect(beanType)) &#123;</span><br><span class="line">			... ...</span><br><span class="line">			// 把切面中的每个增强方法（@Around、@Before、@After、@AfterReturning、@AfterThrowing之一的注解修饰）封装为一个增强容器advisor（advisor包括pointcut切点类、advice增强类）</span><br><span class="line">			for (Method method : getAdvisorMethods(aspectClass)) &#123;</span><br><span class="line">				... ...</span><br><span class="line">				Advisor advisor = new InstantiationModelAwarePointcutAdvisorImpl(expressionPointcut, candidateAdviceMethod, this, aspectInstanceFactory, declarationOrderInAspect, aspectName);</span><br><span class="line">				if (advisor != null) &#123;</span><br><span class="line">					advisors.add(advisor);</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			... ...</span><br><span class="line">			this.advisorsCache.put(beanName, advisors);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	... ...</span><br><span class="line">	return advisors;			</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="bean后置初始化处理"><a href="#bean后置初始化处理" class="headerlink" title="bean后置初始化处理"></a>bean后置初始化处理</h2><h3 id="跳过无需代理的bean"><a href="#跳过无需代理的bean" class="headerlink" title="跳过无需代理的bean"></a>跳过无需代理的bean</h3><p>读缓存，如果bean无需代理（说明是aop组件bean），直接返回</p>
+<ul>
+<li>bean前置实例化处理时，已经将无需代理的bean加入缓存</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// aop组件bean和@Aspect定义的切面类不需要被代理</span><br><span class="line">if (Boolean.FALSE.equals(this.advisedBeans.get(cacheKey))) &#123;</span><br><span class="line">	return bean;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="获取与当前bean匹配的增强容器advisor"><a href="#获取与当前bean匹配的增强容器advisor" class="headerlink" title="获取与当前bean匹配的增强容器advisor"></a>获取与当前bean匹配的增强容器advisor</h3><p>调用getAdvicesAndAdvisorsForBean方法获取与当前bean匹配的advisor。如果存在，则bean需要被代理，否则不用代理。缓存bean是否需要代理的结果</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Object[] specificInterceptors = getAdvicesAndAdvisorsForBean(bean.getClass(), beanName, null);</span><br><span class="line">if (specificInterceptors != DO_NOT_PROXY) &#123;</span><br><span class="line">	// bean需要被代理</span><br><span class="line">	this.advisedBeans.put(cacheKey, Boolean.TRUE);</span><br><span class="line">	// 创建代理</span><br><span class="line">	Object proxy = createProxy(</span><br><span class="line">			bean.getClass(), beanName, specificInterceptors, new SingletonTargetSource(bean));</span><br><span class="line">	// 缓存代理类</span><br><span class="line">	this.proxyTypes.put(cacheKey, proxy.getClass());</span><br><span class="line">	return proxy;</span><br><span class="line">&#125;</span><br><span class="line">// bean无需代理</span><br><span class="line">this.advisedBeans.put(cacheKey, Boolean.FALSE);</span><br><span class="line">return bean;</span><br></pre></td></tr></table></figure>
+
+<p>getAdvicesAndAdvisorsForBean方法内部调用findEligibleAdvisors方法查找与bean匹配的advisors，主要逻辑为：</p>
+<ul>
+<li>findCandidateAdvisors方法获取所有增强容器advisor bean，包括配置的advisor和解析Aspect注解修饰的切面类生成的增强容器advisor，该方法上面重点介绍过</li>
+<li>逐个遍历advisor，筛选与bean方法匹配成功的增强容器advisor<ul>
+<li>基于增强容器advisor的切点<code>Pointcut</code>的方法匹配器<code>MethodMatcher</code>，逐一匹配bean的所有方法，匹配成功则advisor可用于代理bean</li>
+</ul>
+</li>
+<li>如果存在基于Aspect切面类生成的增强器advisor：<code>InstantiationModelAwarePointcutAdvisor</code>，bean的增强器链表首部添加一个Spring自带的增强器<code>DefaultPointcutAdvisor</code></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">protected List&lt;Advisor&gt; findEligibleAdvisors(Class&lt;?&gt; beanClass, String beanName) &#123;</span><br><span class="line">	// 获取所有xml定义的增强容器advisor 和 解析Aspect注解修饰的切面类生成的增强容器advisor</span><br><span class="line">	List&lt;Advisor&gt; candidateAdvisors = findCandidateAdvisors();</span><br><span class="line">	// 筛选与bean方法匹配成功的增强容器advisor</span><br><span class="line">	// 基于增强容器advisor的切点pointCut的方法匹配器methodMatcher，逐一匹配bean的所有方法，匹配成功则advisor可用于代理bean</span><br><span class="line">	List&lt;Advisor&gt; eligibleAdvisors = findAdvisorsThatCanApply(candidateAdvisors, beanClass, beanName);</span><br><span class="line">	// 如果存在基于Aspect切面类生成的增强器advisor：`InstantiationModelAwarePointcutAdvisor`，bean的增强器链表首部添加一个Spring自带的增强器`DefaultPointcutAdvisor`</span><br><span class="line">	extendAdvisors(eligibleAdvisors);</span><br><span class="line">	if (!eligibleAdvisors.isEmpty()) &#123;</span><br><span class="line">		eligibleAdvisors = sortAdvisors(eligibleAdvisors);</span><br><span class="line">	&#125;</span><br><span class="line">	return eligibleAdvisors;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">public static boolean canApply(Pointcut pc, Class&lt;?&gt; targetClass, boolean hasIntroductions) &#123;</span><br><span class="line">	... ...</span><br><span class="line"></span><br><span class="line">	MethodMatcher methodMatcher = pc.getMethodMatcher();</span><br><span class="line">	// 切点匹配任何方法时</span><br><span class="line">	if (methodMatcher == MethodMatcher.TRUE) &#123;</span><br><span class="line">		return true;</span><br><span class="line">	&#125;</span><br><span class="line">	... ...</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * 获取bean的所有方法（包括实现的接口里定义的所有方法）</span><br><span class="line">	 * 基于切点PointCut的方法匹配器methodMatcher，对每个bean实现的方法做匹配，如果匹配上，说明当前增强器可以应用于这个bean</span><br><span class="line">	 */</span><br><span class="line">	... ...</span><br><span class="line">	classes.addAll(ClassUtils.getAllInterfacesForClassAsSet(targetClass));</span><br><span class="line"></span><br><span class="line">	for (Class&lt;?&gt; clazz : classes) &#123;</span><br><span class="line">		Method[] methods = ReflectionUtils.getAllDeclaredMethods(clazz);</span><br><span class="line">		for (Method method : methods) &#123;</span><br><span class="line">			if (introductionAwareMethodMatcher != null ?</span><br><span class="line">					introductionAwareMethodMatcher.matches(method, targetClass, hasIntroductions) :</span><br><span class="line">					methodMatcher.matches(method, targetClass)) &#123;</span><br><span class="line">				return true;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	return false;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">	for (Advisor advisor : advisors) &#123;</span><br><span class="line">		if (isAspectJAdvice(advisor)) &#123;</span><br><span class="line">			foundAspectJAdvice = true;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	if (foundAspectJAdvice &amp;&amp; !advisors.contains(ExposeInvocationInterceptor.ADVISOR)) &#123;</span><br><span class="line">		advisors.add(0, ExposeInvocationInterceptor.ADVISOR);</span><br><span class="line">		... ...</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	private static boolean isAspectJAdvice(Advisor advisor) &#123;</span><br><span class="line">		return (advisor instanceof InstantiationModelAwarePointcutAdvisor ||</span><br><span class="line">			advisor.getAdvice() instanceof AbstractAspectJAdvice ||</span><br><span class="line">			(advisor instanceof PointcutAdvisor &amp;&amp;</span><br><span class="line">			((PointcutAdvisor) advisor).getPointcut() instanceof AspectJExpressionPointcut));</span><br><span class="line">	&#125;</span><br><span class="line">```		</span><br><span class="line"></span><br><span class="line">### 创建aop代理类</span><br><span class="line">创建aop代理，作为bean初始化后置处理返回值</span><br></pre></td></tr></table></figure>
+<pre><code>// 创建代理
+Object proxy = createProxy(bean.getClass(), beanName, specificInterceptors, new SingletonTargetSource(bean));
+// 缓存代理类
+this.proxyTypes.put(cacheKey, proxy.getClass());
+return proxy;
+</code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">下面看下创建aop代理的具体实现</span><br><span class="line"></span><br><span class="line">创建代理工厂，从apc bean复制一些控制属性</span><br></pre></td></tr></table></figure>
+<pre><code>ProxyFactory proxyFactory = new ProxyFactory();
+proxyFactory.copyFrom(this);
+</code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code>public void copyFrom(ProxyConfig other) &#123;
+    Assert.notNull(other, &quot;Other ProxyConfig object must not be null&quot;);
+    this.proxyTargetClass = other.proxyTargetClass;
+    this.optimize = other.optimize;
+    this.exposeProxy = other.exposeProxy;
+    this.frozen = other.frozen;
+    this.opaque = other.opaque;
+&#125;
+</code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">如果proxyFactory.proxyTargetClass=false，动态决定是否设为true</span><br><span class="line">- 如果被代理bean的bd的preserveTargetClass=true，则proxyFactory.proxyTargetClass=true</span><br><span class="line">- 如果被代理的bean没有实现用户自定义接口，proxyFactory.proxyTargetClass=true。否则，将被代理bean实现的所有接口添加到proxyFactory</span><br></pre></td></tr></table></figure>
+<pre><code>if (!proxyFactory.isProxyTargetClass()) &#123;
+    // 如果被代理bean的bd的preserveTargetClass=true，则proxyFactory.proxyTargetClass=true
+    if (shouldProxyTargetClass(beanClass, beanName)) &#123;
+        proxyFactory.setProxyTargetClass(true);
+    &#125;
+    else &#123;
+        // 如果被代理的bean没有实现用户自定义接口，proxyFactory.proxyTargetClass=true。否则，将被代理bean实现的所有接口添加到proxyFactory
+        evaluateProxyInterfaces(beanClass, proxyFactory);
+    &#125;
+&#125;
+</code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code>public static boolean shouldProxyTargetClass(ConfigurableListableBeanFactory beanFactory, @Nullable String beanName) &#123;
+    if (beanName != null &amp;&amp; beanFactory.containsBeanDefinition(beanName)) &#123;
+        BeanDefinition bd = beanFactory.getBeanDefinition(beanName);
+        return Boolean.TRUE.equals(bd.getAttribute(PRESERVE_TARGET_CLASS_ATTRIBUTE));
+    &#125;
+    return false;
+&#125;
+</code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">		</span><br></pre></td></tr></table></figure>
+<pre><code>protected void evaluateProxyInterfaces(Class&lt;?&gt; beanClass, ProxyFactory proxyFactory) &#123;
+    Class&lt;?&gt;[] targetInterfaces = ClassUtils.getAllInterfacesForClass(beanClass, getProxyClassLoader());
+    boolean hasReasonableProxyInterface = false;
+    for (Class&lt;?&gt; ifc : targetInterfaces) &#123;
+        // 如果bean实现了用户自定义的接口，hasReasonableProxyInterface = true
+        // isConfigurationCallbackInterface=true说明interface是Spring提供的回调接口
+        if (!isConfigurationCallbackInterface(ifc) &amp;&amp; !isInternalLanguageInterface(ifc) &amp;&amp; ifc.getMethods().length &gt; 0) &#123;
+            hasReasonableProxyInterface = true;
+            break;
+        &#125;
+    &#125;
+    if (hasReasonableProxyInterface) &#123;
+        for (Class&lt;?&gt; ifc : targetInterfaces) &#123;
+            proxyFactory.addInterface(ifc);
+        &#125;
+    &#125;
+    else &#123;
+        proxyFactory.setProxyTargetClass(true);
+    &#125;
+&#125;
+</code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">上面筛选得到的匹配`Advisor`添加到proxyFactory &amp;&amp; 被代理bean添加到proxyFactory</span><br><span class="line">- 如果筛选得到的是`MethodInterceptor`（Advice的子接口），将`MethodInterceptor`包装成`DefaultPointcutAdvisor`</span><br><span class="line">	- aop表征增强逻辑的`Advice`，在真正执行时都被适配为它的子类`MethodInterceptor`</span><br><span class="line">	- `DefaultPointcutAdvisor`的`Pointcut`匹配所有方法</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code>Advisor[] advisors = buildAdvisors(beanName, specificInterceptors);
+proxyFactory.addAdvisors(advisors);
+proxyFactory.setTargetSource(targetSource);
+</code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code>protected Advisor[] buildAdvisors(@Nullable String beanName, @Nullable Object[] specificInterceptors) &#123;
+    ... ...
+    for (int i = 0; i &lt; allInterceptors.size(); i++) &#123;
+        // 如果是MethodInterceptor，包装成DefaultPointcutAdvisor
+        advisors[i] = this.advisorAdapterRegistry.wrap(allInterceptors.get(i));
+    &#125;
+    return advisors;
+&#125;
+</code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code>public Advisor wrap(Object adviceObject) throws UnknownAdviceTypeException &#123;
+    if (adviceObject instanceof Advisor) &#123;
+        return (Advisor) adviceObject;
+    &#125;
+    if (!(adviceObject instanceof Advice)) &#123;
+        throw new UnknownAdviceTypeException(adviceObject);
+    &#125;
+    Advice advice = (Advice) adviceObject;
+    if (advice instanceof MethodInterceptor) &#123;
+        // So well-known it doesn&#39;t even need an adapter.
+        return new DefaultPointcutAdvisor(advice);
+    &#125;
+    for (AdvisorAdapter adapter : this.adapters) &#123;
+        // Check that it is supported.
+        if (adapter.supportsAdvice(advice)) &#123;
+            return new DefaultPointcutAdvisor(advice);
+        &#125;
+    &#125;
+    throw new UnknownAdviceTypeException(advice);
+&#125;
+</code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">创建实际的aop代理类：JDK动态代理或CgLIB动态代理</span><br><span class="line">- `ProxyFactory`继承`AdvisedSupport`，封装了代理上下文（被代理类、增强容器、代理配置属性等），用于控制创建aop代理的逻辑</span><br><span class="line">- 无特殊配置下，如果bean实现了用户自定义接口，创建JDK动态代理，否则创建CgLIB动态代理</span><br><span class="line">		</span><br></pre></td></tr></table></figure>
+<pre><code>public AopProxy createAopProxy(AdvisedSupport config) throws AopConfigException &#123;
+    // 如果被代理bean没实现用户自定义接口 || 被代理bean的bd.preserveTargetClass=true || apc的bd.proxyTargetClass=true
+    if (config.isOptimize() || config.isProxyTargetClass() || hasNoUserSuppliedProxyInterfaces(config)) &#123;
+        Class&lt;?&gt; targetClass = config.getTargetClass();
+        if (targetClass == null) &#123;
+            throw new AopConfigException(&quot;TargetSource cannot determine target class: &quot; +
+                &quot;Either an interface or a target is required for proxy creation.&quot;);
+        &#125;
+        ... ...
+        return new ObjenesisCglibAopProxy(config);
+    &#125;
+    else &#123;
+        // 如果实现了用户自定义接口，创建JDK动态代理
+        return new JdkDynamicAopProxy(config);
+    &#125;
+&#125;
+</code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 代理类执行方法代理</span><br><span class="line">这里介绍的是JDK动态代理</span><br><span class="line">入口：org.springframework.aop.framework.JdkDynamicAopProxy#invoke</span><br><span class="line"></span><br><span class="line">## 获取方法的拦截器MethodInterceptor列表</span><br><span class="line">获取被代理方法的方法拦截器`MethodInterceptor`列表</span><br><span class="line">- 从bean匹配的所有增强容器中，通过切点的`MethodMatcher`筛选出与当前方法匹配的增强容器`Advisor`</span><br><span class="line">- 通过适配器模式，使用一个适配器类把增强`Advice`包装为方法拦截器`MethodInterceptor`</span><br><span class="line">	- aop的表征增强逻辑的`Advice`，在真正执行时都被适配为它的子类`MethodInterceptor`</span><br><span class="line">- 缓存被代理方法与拦截器`MethodInterceptor`列表的映射</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code>for (Advisor advisor : config.getAdvisors()) &#123;
+    if (advisor instanceof PointcutAdvisor) &#123;
+        // Add it conditionally.
+        PointcutAdvisor pointcutAdvisor = (PointcutAdvisor) advisor;
+        if (config.isPreFiltered() || pointcutAdvisor.getPointcut().getClassFilter().matches(actualClass)) &#123;
+            MethodMatcher mm = pointcutAdvisor.getPointcut().getMethodMatcher();
+            // 在原始bean匹配的所有增强器advisor里筛选与当前调用方法匹配的advisor
+            // 然后取出advice，适配成MethodInterceptor
+            if (MethodMatchers.matches(mm, method, actualClass, hasIntroductions)) &#123;
+                MethodInterceptor[] interceptors = registry.getInterceptors(advisor);
+                if (mm.isRuntime()) &#123;
+                    // Creating a new object instance in the getInterceptors() method
+                    // isn&#39;t a problem as we normally cache created chains.
+                    for (MethodInterceptor interceptor : interceptors) &#123;
+                        interceptorList.add(new InterceptorAndDynamicMethodMatcher(interceptor, mm));
+                    &#125;
+                &#125;
+                else &#123;
+                    interceptorList.addAll(Arrays.asList(interceptors));
+                &#125;
+            &#125;
+        &#125;
+    &#125;
+    ...
+&#125;
+</code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code>public MethodInterceptor[] getInterceptors(Advisor advisor) throws UnknownAdviceTypeException &#123;
+    List&lt;MethodInterceptor&gt; interceptors = new ArrayList&lt;&gt;(3);
+    Advice advice = advisor.getAdvice();
+    if (advice instanceof MethodInterceptor) &#123;
+        interceptors.add((MethodInterceptor) advice);
+    &#125;
+    // 部分类型的增强advice本身不是拦截器methodInterceptor类型
+    // 通过适配器将advice包装为拦截器
+    for (AdvisorAdapter adapter : this.adapters) &#123;
+        if (adapter.supportsAdvice(advice)) &#123;
+            interceptors.add(adapter.getInterceptor(advisor));
+        &#125;
+    &#125;
+    if (interceptors.isEmpty()) &#123;
+        throw new UnknownAdviceTypeException(advisor.getAdvice());
+    &#125;
+    return interceptors.toArray(new MethodInterceptor[0]);
+&#125;
+</code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code>public List&lt;Object&gt; getInterceptorsAndDynamicInterceptionAdvice(Method method, @Nullable Class&lt;?&gt; targetClass) &#123;
+    MethodCacheKey cacheKey = new MethodCacheKey(method);
+    List&lt;Object&gt; cached = this.methodCache.get(cacheKey);
+    if (cached == null) &#123;
+        // 获取被代理方法的拦截器列表
+        cached = this.advisorChainFactory.getInterceptorsAndDynamicInterceptionAdvice(
+                this, method, targetClass);
+        // 缓存代理方法与拦截器列表的映射
+        this.methodCache.put(cacheKey, cached);
+    &#125;
+    return cached;
+&#125;
+</code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">## 创建代理方法上下文</span><br><span class="line">创建一个代理方法上下文`MethodInvocation`</span><br><span class="line">- 封装执行被代理方法的上下文，包括原始bean、被代理方法、入参，以及上一步获取的方法拦截器列表（用于执行代理逻辑）</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code>// 创建一个代理方法调用上下文
+MethodInvocation invocation = new ReflectiveMethodInvocation(proxy, target, method, args, targetClass, chain);
+</code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">## 执行方法代理</span><br><span class="line">调用代理方法上下文MethodInvocation的proceed方法执行方法代理，实际调用：org.springframework.aop.framework.ReflectiveMethodInvocation#proceed。回调拦截器增强方法的过程是通过`递归`实现的，下面具体分析。</span><br><span class="line"></span><br><span class="line">顺序回调方法拦截器列表里每个`MethodInterceptor`的invoke方法，传入代理方法上下文。</span><br></pre></td></tr></table></figure>
+<pre><code>...
+Object interceptorOrInterceptionAdvice =
+            this.interceptorsAndDynamicMethodMatchers.get(++this.currentInterceptorIndex);
+...
+return ((MethodInterceptor) interceptorOrInterceptionAdvice).invoke(this);
+</code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">注意，`MethodInvocation`的proceed方法是一个递归调用，`MethodInterceptor`的实现类会在合适的时机执行增强逻辑以及继续递归调用MethodInvocation的proceed方法，以此保证了所有方法拦截器的增强逻辑都会被执行到</span><br><span class="line">- 所谓“拦截方法在合适时机执行增强逻辑”，例如前置@Before增强对应的拦截器`MethodBeforeAdviceInterceptor`就会在回调代理方法前执行增强逻辑。@After增强对应的拦截器`AspectJAfterAdvice`就会先回调代理方法，返回后再执行增强逻辑</span><br><span class="line"></span><br><span class="line">MethodBeforeAdviceInterceptor：</span><br></pre></td></tr></table></figure>
+<pre><code>@Override
+public Object invoke(MethodInvocation mi) throws Throwable &#123;
+    this.advice.before(mi.getMethod(), mi.getArguments(), mi.getThis());
+    return mi.proceed();
+&#125;
+</code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">AspectJAfterAdvice：</span><br></pre></td></tr></table></figure>
+<pre><code>@Override
+public Object invoke(MethodInvocation mi) throws Throwable &#123;
+    try &#123;
+        return mi.proceed();
+    &#125;
+    finally &#123;
+        invokeAdviceMethod(getJoinPointMatch(), null, null);
+    &#125;
+&#125;
+</code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">如果所有方法拦截器的invoke方法都被调用了，则反射调用被代理方法。注意，因为`MethodInvocation`的proceed方法是递归调用的，所以会逆序从每个方法拦截器向上return，回溯过程中可能有些拦截器的增强逻辑才被调用，例如上面介绍的`AspectJAfterAdvice`</span><br></pre></td></tr></table></figure>
+<pre><code>if (this.currentInterceptorIndex == this.interceptorsAndDynamicMethodMatchers.size() - 1) &#123;
+    return invokeJoinpoint();
+&#125;
+</code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">前面提到，APC在初始化后置处理为bean创建动态代理的过程中，会寻找与当前bean匹配的增强容器advisor，如果存在来自Aspect切面类生成的增强容器，会为bean的增强容器链表首部添加一个通配的增强容器`DefaultPointcutAdvisor`。该advisor的增强advice是`ExposeInvocationInterceptor`（interceptor是advice的子接口），它的执行逻辑是将当前代理方法调用上下文写ThreadLocal，方便在该方法拦截器链上的其他拦截器通过其获取调用上下文，所以要放在拦截器链首部第一个执行</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code>@Override
+// 将当前代理方法调用上下文写ThreadLocal，方便在该方法拦截器链上的其他拦截器获取当前代理方法调用上下文
+public Object invoke(MethodInvocation mi) throws Throwable &#123;
+    MethodInvocation oldInvocation = invocation.get();
+    invocation.set(mi);
+    try &#123;
+        return mi.proceed();
+    &#125;
+    finally &#123;
+        invocation.set(oldInvocation);
+    &#125;
+&#125;
+</code></pre>
+<pre><code>
+</code></pre>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>西米大人
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://dcbupt.github.io/2020/04/23/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Spring%E6%BA%90%E7%A0%81-aop/" title="系统学习Spring源码-aop">http://dcbupt.github.io/2020/04/23/blog_article/系统学习系列/系统学习Spring源码-aop/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+
+        
+
+<blockquote class="blockquote-center" style="color: #f0ad4e">完 ♥ 结</blockquote>
+
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/04/23/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Spring%E6%BA%90%E7%A0%81-bean%E5%8A%A0%E8%BD%BD/" rel="prev" title="系统学习Spring源码-bean加载">
+      <i class="fa fa-chevron-left"></i> 系统学习Spring源码-bean加载
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/04/23/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Spring%E6%BA%90%E7%A0%81-Spring%E5%AE%B9%E5%99%A8/" rel="next" title="系统学习Spring源码-Spring容器">
+      系统学习Spring源码-Spring容器 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B3%A8%E5%86%8CAPC%E7%9A%84BD"><span class="nav-number">2.</span> <span class="nav-text">注册APC的BD</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#AnnotationAwareAspectJAutoProxyCreator"><span class="nav-number">2.1.</span> <span class="nav-text">AnnotationAwareAspectJAutoProxyCreator</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#AnnotationAwareAspectJAutoProxyCreator%E5%88%9B%E5%BB%BAbean%E4%BB%A3%E7%90%86%E7%B1%BB"><span class="nav-number">3.</span> <span class="nav-text">AnnotationAwareAspectJAutoProxyCreator创建bean代理类</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#bean%E5%89%8D%E7%BD%AE%E5%AE%9E%E4%BE%8B%E5%8C%96%E5%A4%84%E7%90%86"><span class="nav-number">3.1.</span> <span class="nav-text">bean前置实例化处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bean%E5%90%8E%E7%BD%AE%E5%88%9D%E5%A7%8B%E5%8C%96%E5%A4%84%E7%90%86"><span class="nav-number">3.2.</span> <span class="nav-text">bean后置初始化处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%B3%E8%BF%87%E6%97%A0%E9%9C%80%E4%BB%A3%E7%90%86%E7%9A%84bean"><span class="nav-number">3.2.1.</span> <span class="nav-text">跳过无需代理的bean</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E4%B8%8E%E5%BD%93%E5%89%8Dbean%E5%8C%B9%E9%85%8D%E7%9A%84%E5%A2%9E%E5%BC%BA%E5%AE%B9%E5%99%A8advisor"><span class="nav-number">3.2.2.</span> <span class="nav-text">获取与当前bean匹配的增强容器advisor</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="西米大人"
+      src="/images/me.png">
+  <p class="site-author-name" itemprop="name">西米大人</p>
+  <div class="site-description" itemprop="description"><blockquote class="blockquote-center">优秀的人，不是不合群，而是他们合群的人里面没有你</blockquote></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">151</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dcbupt" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;dcbupt" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:byrddc@hotmail.com" title="E-Mail → mailto:byrddc@hotmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">西米大人</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">388k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">10:47</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.id);
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            let target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    let { app_id, app_key, server_url } = {"enable":true,"app_id":"OBdFsOOtfIDcNnWdzkGbICmj-gzGzoHsz","app_key":"89LmL4tP7hkyChAmEleq2MdO","server_url":null,"security":true};
+    function fetchData(api_server) {
+      var Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    let api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+<script src="/js/love.js"></script>
+
+<script src="/js/particle.js"></script>
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('https://cdn.jsdelivr.net/npm/valine@1.4.18/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'OBdFsOOtfIDcNnWdzkGbICmj-gzGzoHsz',
+      appKey     : '89LmL4tP7hkyChAmEleq2MdO',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

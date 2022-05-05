@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-mac-osx.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"dcbupt.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="分布式事务">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分布式事务">
+<meta property="og:url" content="http://dcbupt.github.io/2020/12/21/blog_article/%E6%B5%85%E5%B0%9D%E7%B3%BB%E5%88%97/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/index.html">
+<meta property="og:site_name" content="dcddc">
+<meta property="og:description" content="分布式事务">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-12-21T07:19:00.000Z">
+<meta property="article:modified_time" content="2022-05-01T06:44:18.761Z">
+<meta property="article:author" content="西米大人">
+<meta property="article:tag" content="hide">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://dcbupt.github.io/2020/12/21/blog_article/%E6%B5%85%E5%B0%9D%E7%B3%BB%E5%88%97/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+  <title>分布式事务 | dcddc</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">dcddc</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">西米大人的博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dcbupt.github.io/2020/12/21/blog_article/%E6%B5%85%E5%B0%9D%E7%B3%BB%E5%88%97/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/me.png">
+      <meta itemprop="name" content="西米大人">
+      <meta itemprop="description" content="<blockquote class="blockquote-center">优秀的人，不是不合群，而是他们合群的人里面没有你</blockquote>">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="dcddc">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          分布式事务
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-12-21 15:19:00" itemprop="dateCreated datePublished" datetime="2020-12-21T15:19:00+08:00">2020-12-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-05-01 14:44:18" itemprop="dateModified" datetime="2022-05-01T14:44:18+08:00">2022-05-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B5%85%E5%B0%9D%E7%B3%BB%E5%88%97/" itemprop="url" rel="index"><span itemprop="name">浅尝系列</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/12/21/blog_article/%E6%B5%85%E5%B0%9D%E7%B3%BB%E5%88%97/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" class="post-meta-item leancloud_visitors" data-flag-title="分布式事务" title="热度">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">热度:</span>
+              <span class="leancloud-visitors-count"></span>℃
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">评论:</span>
+    
+    <a title="valine" href="/2020/12/21/blog_article/%E6%B5%85%E5%B0%9D%E7%B3%BB%E5%88%97/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/12/21/blog_article/%E6%B5%85%E5%B0%9D%E7%B3%BB%E5%88%97/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" itemprop="commentCount"></span>℃
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">字数：</span>
+              <span>4.4k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>7 分钟</span>
+            </span>
+            <div class="post-description"><blockquote class="blockquote-center">分布式事务</blockquote></div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>通过这篇文章，你需要掌握：</p>
+<ul>
+<li>CAP的含义<ul>
+<li>一致性、可用性、分区容错性</li>
+</ul>
+</li>
+<li>刚性分布式事务和柔性分布式事务的区别<ul>
+<li>CP型和AP型</li>
+</ul>
+</li>
+<li>分布式事务的实现原理：二阶段提交协议2PC<ul>
+<li>事务执行分为确认阶段和执行阶段。确认阶段进行逻辑校验和资源预留，执行阶段由事务管理器负责，不断重试保证分布式事务执行后的数据一致性</li>
+</ul>
+</li>
+<li>2PC协议的实现：TCC模型<ul>
+<li>主业务调用每个分布式事务的try方法执行确认，如果出现确认失败，交给事务管理器执行每个分布式事务的cancel方法回滚，否则交给事务管理器执行每个分布式事务的commit方法</li>
+</ul>
+</li>
+<li>分布式事务的实际使用案例<ul>
+<li>rocketmq的事务消息<ul>
+<li>2PC的确认阶段：prepare消息+本地事务+commit消息。2PC的执行阶段：mqBroker保证事务消息一定可被投递到消费端执行分布式事务。回滚阶段：本地事务执行失败，发rollback消息，删除prepare消息不下发</li>
+</ul>
+</li>
+<li>本地事务消息表<ul>
+<li>分布式事务消息落库，和本地事务做在一起。定时扫表发送分布式事务消息，成功后从本地表删除。不推荐，不如直接用mq的事务消息</li>
+</ul>
+</li>
+<li>补偿型分布式事务<ul>
+<li>适合于每个分布式事务一定可被执行。通过注解+aop方式，对执行分布式事务的方法做增强，如果执行失败，写补偿表，定时扫补偿表重试该方法，需要每个分布式事务做幂等。但这种方式完全放弃了一致性</li>
+</ul>
+</li>
+<li>TXC <ul>
+<li>集团内部的分布式事务中间件。需要每个涉及到分布式事务的数据库建一张回滚表。相对于TCC模型，事务提交和回滚都由中间件负责，不需要每个分布式事务自己实现commit和cancel接口</li>
+<li>业务应用在2PC的确认阶段创建全局事务，然后像执行本地事务一样执行每个分布式事务方法，此时回滚表会记录之前的数据。基于每个事务的执行结果，业务应用告诉TXC服务端，执行全局事务提交或回滚。回滚操作基于回滚表，回滚到之前的记录</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="CAP"><a href="#CAP" class="headerlink" title="CAP"></a>CAP</h1><p>分布式系统中，数据可能分布在多个缓存服务器、数据库中，且这些服务器、数据库往往都部署在多个网络分组中，所以可以说：<code>分布式系统中，数据是多网络环境多物理空间存储的</code></p>
+<p>多网络分组、多物理空间存储的数据，核心问题就是要解决数据读取一致性。因此，就有了CAP理论来描述这种问题</p>
+<p>CAP即Consistency、Avaliability、PartitionTolerence，一般分布式系统只能保证CP或AP，无法同时满足CAP</p>
+<p>Consistency即一致性，需要保证任何时刻分布式系统中数据存储的结果是一致的。因此数据写入时，需要对写入的所有分布式空间加读写锁，这期间数据是无法被外部访问的，因此不满足Avaliability，即可用性。所以分布式系统中一致性和可用性是相互矛盾的，无法同时满足</p>
+<p>PartitionTolerence即分区容错性。分布式系统中服务器、数据库会部署在多个网络分组中（分区的含义），相互间通信需要网络调用，因此超时、丢包问题无法避免，因此需要容忍网络超时或丢包问题（容错的含义）。所以分布式系统必须具备P，分区容错性</p>
+<h1 id="分布式事务的实现方案"><a href="#分布式事务的实现方案" class="headerlink" title="分布式事务的实现方案"></a>分布式事务的实现方案</h1><p>CAP理论在分布式系统的实际应用体现在分布式事务中。满足CP的分布式事务称为刚性分布式事务，对数据一致性是刚需的。反之是柔性分布式事务，对数据一致性不是刚需，只要保证最终一致性即可，但要保证可用性，即满足AP</p>
+<h2 id="二阶段提交协议"><a href="#二阶段提交协议" class="headerlink" title="二阶段提交协议"></a>二阶段提交协议</h2><p>无论是CP型还是AP型分布式事务，二阶段提交协议都是一个常用的实现方案。二阶段提交协议将事务的执行拆分为两个阶段，即确认阶段和执行阶段。确认阶段由业务方验证事务执行的合法性，并预留资源。执行阶段往往由事务管理器负责，保证分布式事务一定被全部执行</p>
+<p>只有在确认阶段所有事务执行者都确认并预留资源成功，才会在执行阶段真正执行分布式事务，否则回滚预留资源，分布式事务执行失败</p>
+<h2 id="CP型分布式事务的实现方案"><a href="#CP型分布式事务的实现方案" class="headerlink" title="CP型分布式事务的实现方案"></a>CP型分布式事务的实现方案</h2><p>CP型分布式事务的执行效果和执行本地事务是一致的，要么都成功，要么全部回滚，且事务执行期间，外部无法访问数据</p>
+<h3 id="二阶段提交-XA版本"><a href="#二阶段提交-XA版本" class="headerlink" title="二阶段提交-XA版本"></a>二阶段提交-XA版本</h3><p>实现CP型分布式事务的典型代表是XA模型，它将分布式系统划分为：应用程序、资源管理器、事务管理器。由事务管理器承接应用程序的分布式事务请求，面向资源管理器统一执行分布式事务</p>
+<p>XA模型使用<code>二阶段提交协议</code>（2PC，2 phase commit），由事务管理器先向所有资源管理器发起投票，称为prepare阶段。如果prepare阶段有投票反对，由事务管理器对所有资源管理器发起回滚。如果投票全部通过，执行分布式事务，称为commit阶段。这个过程中如果资源管理器宕机或网络请求异常，由事务管理器进行重试补偿</p>
+<p>XA模型虽然满足CP，但为了实现CP，执行分布式事务使用的也是同步阻塞模型，资源在prepare阶段就已经被锁定，直到回滚成功或commit成功后才释放，需要长时间锁定资源的读写，降低了并发性，由其不适合长事务。因此这种实现方式并没有在实际应用中使用</p>
+<h2 id="AP型分布式事务的实现方案"><a href="#AP型分布式事务的实现方案" class="headerlink" title="AP型分布式事务的实现方案"></a>AP型分布式事务的实现方案</h2><p>AP型分布式事务保证数据最终一致性。</p>
+<h3 id="二阶段提交-TCC版本-✨"><a href="#二阶段提交-TCC版本-✨" class="headerlink" title="二阶段提交-TCC版本 ✨"></a>二阶段提交-TCC版本 ✨</h3><p>TCC是Try-Confirm-Cancel的缩写，TCC版本和XA版本的二阶段提交协议基本一致，try阶段对应prepare阶段，由主业务调用事务执行者的try方法，做一些资源预留操作。如果try阶段有事务执行者的try方法返回失败，则交给事务管理器，调用每个事务执行者的cancel方法回滚预留的资源，分布式事务执行失败。否则进入confirm阶段，对应XA版本的commit阶段，交给事务管理器调用所有事务执行者的confirm方法执行分布式事务，如果失败需要补偿机制重试，因此confirm方法需要幂等</p>
+<p>与XA版本的主要区别是：</p>
+<ul>
+<li>业务侵入大。需要业务方实现try、confirm、cancel方法</li>
+<li>可用性好。try阶段成功，则认为分布式事务一定可以执行，分布式事务方法返回成功</li>
+<li>无资源锁定，性能好。confirm阶段由事务管理器负责执行分布式事务，保证最终一致性即可，不会锁定资源</li>
+</ul>
+<p>这种实现方式在性能和可用性上都有保障，且具备回滚功能，保证数据最终一致性，所以是一般分布式事务中的首选实现方案</p>
+<h3 id="Saga模型"><a href="#Saga模型" class="headerlink" title="Saga模型"></a>Saga模型</h3><p>Saga模型把一个分布式事务拆分为多个本地事务，每个本地事务都有相应的执行模块（Ti）和补偿模块（Ci）（对应TCC中的Confirm和Cancel），与TCC相比没有try阶段</p>
+<p>当Saga事务中任意一个本地事务出错时，如果是向前恢复，则重试失败的事务，如果向后恢复，调用已执行事务的回滚方法，达到事务最终一致性</p>
+<h1 id="分布式事务的实际解决方案"><a href="#分布式事务的实际解决方案" class="headerlink" title="分布式事务的实际解决方案"></a>分布式事务的实际解决方案</h1><p>上面介绍了分布式事务的实现方案，下面介绍具体落地的分布式事务解决方案</p>
+<h2 id="事务消息"><a href="#事务消息" class="headerlink" title="事务消息"></a>事务消息</h2><p>阿里云RocketMQ的事务消息能实现分布式事务的最终一致性，是一种AP型分布式事务的解决方案。它核心思想还是借鉴了二阶段提交协议</p>
+<p>mq的broker扮演事务管理器的角色，broker需要得到业务方（消息生产者）真正的确认回执，然后由broker保证消息一定能投递到消费端完成分布式事务中后续的事务执行操作，达到事务最终一致性。具体的执行过程描述如下</p>
+<p>二阶段提交协议的确认阶段：</p>
+<ul>
+<li>事务发起方首先发送prepare消息（半事务消息）到MQ</li>
+<li>在发送prepare消息成功后执行本地事务</li>
+<li>根据本地事务执行结果返回commit或者是rollback<ul>
+<li>commit后的消息称为事务消息</li>
+<li>如果消息是rollback，MQ将删除该prepare消息不进行下发</li>
+</ul>
+</li>
+<li>如果执行本地事务过程中，执行端挂掉或者超时，MQ服务器将不停的询问producer端获取事务状态</li>
+</ul>
+<p>二阶段提交协议的执行阶段：</p>
+<ul>
+<li>mq保证事务消息一定能被消费端成功消费<ul>
+<li>投递失败会重试，因此消费方需要保证分布式事务幂等执行</li>
+</ul>
+</li>
+</ul>
+<p>你可能会问，我何不把发mq消息也放到本地事务里，一旦发mq消息失败，本地事务就回滚，不也能实现分布式事务么？实际上这是有问题的，事务消息能保证本地事务和消息投递的强一致性，只要本地事务执行成功，一定能由mq服务端保证分布式事务执行成功。但如果把发mq放到本地事务，可能本地事务成功了，mq发送失败，但这却要回滚本地事务，当然做不到本地事务和消息投递强一致性，造成没必要的回滚</p>
+<h2 id="本地事务消息表"><a href="#本地事务消息表" class="headerlink" title="本地事务消息表"></a>本地事务消息表</h2><p>事务消息依赖mq自身的机制保证本地事务和消息投递的强一致性，本地事务消息表则由业务方保证，进而保证分布式事务的一致性</p>
+<ul>
+<li>创建本地事务消息表</li>
+<li>执行本地事务和消息数据写入本地事务表放在一个事务里，保证本地事务执行和消息投递的强一致性</li>
+<li>从消息表中获取消息数据</li>
+<li>发送消息</li>
+<li>删除本地消息</li>
+</ul>
+<h2 id="补偿型分布式事务"><a href="#补偿型分布式事务" class="headerlink" title="补偿型分布式事务"></a>补偿型分布式事务</h2><p>补偿型分布式事务适用于一定可以执行分布式事务的业务，解决一些分布式事务执行过程中因网络抖动、丢包造成的失败场景</p>
+<p>一连串分布式事务操作同步调用时，极易发生接口整体超时情况，因此特别适合于补偿型分布式事务</p>
+<p>实现上可以通过TOC方式：</p>
+<ul>
+<li>定义一个补偿表，保存分布式事务执行方法的bean名称，方法签名，方法参数</li>
+<li>定义一个补偿注解，加在分布式事务方法上</li>
+<li>通过aop将带上注解的方法作为切面方法做增强，如果分布式事务方法执行失败或异常，写入补偿表</li>
+<li>通过定时任务扫表补偿。当然，需要保证分布式事务执行的每一个方法都幂等，否则不能补偿</li>
+</ul>
+<p>这种补偿型分布式事务，通过aop+注解的方式减少对业务侵入，且性能也有保障，不会对资源加锁，极大地满足了可用性。但它完全放弃了一致性，且不支持回滚</p>
+<h2 id="TXC"><a href="#TXC" class="headerlink" title="TXC"></a>TXC</h2><p>TXC是taobao transaction constructor，是阿里的分布式事务中间件，它的设计也借鉴了XA模型，分为TXC客户端（应用程序）、TXC服务端（事务管理器）、RM（资源管理器，目前已支持数据库、mq消息），实现方案也是基于二阶段提交协议，可以认为是升级版的TCC实现方案，对业务方的侵入性更小</p>
+<p>与事务消息相比，使用TXC感觉更像是使用本地事务，最大程度屏蔽了业务方对分布式事务的感知，且业务方在分布式事务执行过程中，也会基于事务隔离级别控制对已执行的分布式事务的可见性，目前TXC支持读未提交和读已提交。不过对于读已提交，在分布式事务提交或回滚前，读操作会被阻塞，这与MySQL是不同的。当然，如果不是通过TXC发起的读操作，在分布式事务提交前都是不可见的</p>
+<p>确认阶段：</p>
+<ul>
+<li>TXC客户端向服务端发起请求，开启全局事务，然后对分布式事务中涉及的每一个RM，做资源预留操作，RM返回预留结果，客户端基于结果，向TXC服务端确认执行全局提交或全局回滚</li>
+</ul>
+<p>执行阶段：</p>
+<ul>
+<li>TXC服务端基于客户端对全局事务的确认结果，与RM交互，执行全局提交或回滚，这一过程对客户端无感</li>
+</ul>
+<p>其实严格来说，TXC用的也不是一般意义上的二阶段提交协议，因为它的回滚操作发生在执行阶段，而标准二阶段提交协议的回滚操作发生在确认阶段</p>
+<p>TXC需要业务方在分布式事务涉及到的每个数据库中创建一张回滚表TXC_UNDO_LOG。每次TXC客户端操作RM预留资源前，先往这张表记录更新前的数据，并和TXC全局事务id关联。需要回滚时，TXC只需要基于这些RM的回滚表执行回滚操作即可，这就是为什么不需要TXC客户端提供回滚接口</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>西米大人
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://dcbupt.github.io/2020/12/21/blog_article/%E6%B5%85%E5%B0%9D%E7%B3%BB%E5%88%97/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" title="分布式事务">http://dcbupt.github.io/2020/12/21/blog_article/浅尝系列/分布式事务/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/hide/" rel="tag"># hide</a>
+          </div>
+
+        
+
+<blockquote class="blockquote-center" style="color: #f0ad4e">完 ♥ 结</blockquote>
+
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/11/05/blog_article/%E8%B7%B3%E5%9D%91/html%E8%BD%AC%E7%A7%BB%E7%89%B9%E6%AE%8A%E5%AD%97%E7%AC%A6%E9%80%A0%E6%88%90JSON%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%A4%B1%E8%B4%A5/" rel="prev" title="html转移特殊字符造成JSON反序列化失败">
+      <i class="fa fa-chevron-left"></i> html转移特殊字符造成JSON反序列化失败
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/12/22/blog_article/%E6%B5%85%E5%B0%9D%E7%B3%BB%E5%88%97/rocketmq%E5%9F%BA%E7%A1%80/" rel="next" title="rocketmq">
+      rocketmq <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CAP"><span class="nav-number">2.</span> <span class="nav-text">CAP</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%A1%88"><span class="nav-number">3.</span> <span class="nav-text">分布式事务的实现方案</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4%E5%8D%8F%E8%AE%AE"><span class="nav-number">3.1.</span> <span class="nav-text">二阶段提交协议</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CP%E5%9E%8B%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%A1%88"><span class="nav-number">3.2.</span> <span class="nav-text">CP型分布式事务的实现方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4-XA%E7%89%88%E6%9C%AC"><span class="nav-number">3.2.1.</span> <span class="nav-text">二阶段提交-XA版本</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AP%E5%9E%8B%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%A1%88"><span class="nav-number">3.3.</span> <span class="nav-text">AP型分布式事务的实现方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4-TCC%E7%89%88%E6%9C%AC-%E2%9C%A8"><span class="nav-number">3.3.1.</span> <span class="nav-text">二阶段提交-TCC版本 ✨</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Saga%E6%A8%A1%E5%9E%8B"><span class="nav-number">3.3.2.</span> <span class="nav-text">Saga模型</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1%E7%9A%84%E5%AE%9E%E9%99%85%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="nav-number">4.</span> <span class="nav-text">分布式事务的实际解决方案</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8B%E5%8A%A1%E6%B6%88%E6%81%AF"><span class="nav-number">4.1.</span> <span class="nav-text">事务消息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%AC%E5%9C%B0%E4%BA%8B%E5%8A%A1%E6%B6%88%E6%81%AF%E8%A1%A8"><span class="nav-number">4.2.</span> <span class="nav-text">本地事务消息表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A1%A5%E5%81%BF%E5%9E%8B%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1"><span class="nav-number">4.3.</span> <span class="nav-text">补偿型分布式事务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TXC"><span class="nav-number">4.4.</span> <span class="nav-text">TXC</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="西米大人"
+      src="/images/me.png">
+  <p class="site-author-name" itemprop="name">西米大人</p>
+  <div class="site-description" itemprop="description"><blockquote class="blockquote-center">优秀的人，不是不合群，而是他们合群的人里面没有你</blockquote></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">151</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dcbupt" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;dcbupt" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:byrddc@hotmail.com" title="E-Mail → mailto:byrddc@hotmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">西米大人</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">388k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">10:47</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.id);
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            let target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    let { app_id, app_key, server_url } = {"enable":true,"app_id":"OBdFsOOtfIDcNnWdzkGbICmj-gzGzoHsz","app_key":"89LmL4tP7hkyChAmEleq2MdO","server_url":null,"security":true};
+    function fetchData(api_server) {
+      var Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    let api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+<script src="/js/love.js"></script>
+
+<script src="/js/particle.js"></script>
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('https://cdn.jsdelivr.net/npm/valine@1.4.18/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'OBdFsOOtfIDcNnWdzkGbICmj-gzGzoHsz',
+      appKey     : '89LmL4tP7hkyChAmEleq2MdO',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

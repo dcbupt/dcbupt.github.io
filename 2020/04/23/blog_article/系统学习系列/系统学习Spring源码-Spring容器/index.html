@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-mac-osx.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"dcbupt.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="系统学习Spring源码-Spring容器">
+<meta property="og:type" content="article">
+<meta property="og:title" content="系统学习Spring源码-Spring容器">
+<meta property="og:url" content="http://dcbupt.github.io/2020/04/23/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Spring%E6%BA%90%E7%A0%81-Spring%E5%AE%B9%E5%99%A8/index.html">
+<meta property="og:site_name" content="dcddc">
+<meta property="og:description" content="系统学习Spring源码-Spring容器">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://dcbupt.github.io/spring/ApplicationContext%E7%B1%BB%E5%9B%BE.jpg">
+<meta property="article:published_time" content="2020-04-23T03:57:00.000Z">
+<meta property="article:modified_time" content="2022-05-01T06:44:18.825Z">
+<meta property="article:author" content="西米大人">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://dcbupt.github.io/spring/ApplicationContext%E7%B1%BB%E5%9B%BE.jpg">
+
+<link rel="canonical" href="http://dcbupt.github.io/2020/04/23/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Spring%E6%BA%90%E7%A0%81-Spring%E5%AE%B9%E5%99%A8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+  <title>系统学习Spring源码-Spring容器 | dcddc</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">dcddc</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">西米大人的博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dcbupt.github.io/2020/04/23/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Spring%E6%BA%90%E7%A0%81-Spring%E5%AE%B9%E5%99%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/me.png">
+      <meta itemprop="name" content="西米大人">
+      <meta itemprop="description" content="<blockquote class="blockquote-center">优秀的人，不是不合群，而是他们合群的人里面没有你</blockquote>">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="dcddc">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          系统学习Spring源码-Spring容器
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-04-23 11:57:00" itemprop="dateCreated datePublished" datetime="2020-04-23T11:57:00+08:00">2020-04-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-05-01 14:44:18" itemprop="dateModified" datetime="2022-05-01T14:44:18+08:00">2022-05-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/" itemprop="url" rel="index"><span itemprop="name">系统学习系列</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/04/23/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Spring%E6%BA%90%E7%A0%81-Spring%E5%AE%B9%E5%99%A8/" class="post-meta-item leancloud_visitors" data-flag-title="系统学习Spring源码-Spring容器" title="热度">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">热度:</span>
+              <span class="leancloud-visitors-count"></span>℃
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">评论:</span>
+    
+    <a title="valine" href="/2020/04/23/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Spring%E6%BA%90%E7%A0%81-Spring%E5%AE%B9%E5%99%A8/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/04/23/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Spring%E6%BA%90%E7%A0%81-Spring%E5%AE%B9%E5%99%A8/" itemprop="commentCount"></span>℃
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">字数：</span>
+              <span>12k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>20 分钟</span>
+            </span>
+            <div class="post-description"><blockquote class="blockquote-center">系统学习Spring源码-Spring容器</blockquote></div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p><code>DefaultListableBeanFactory</code>是Spring的bean工厂，实现IoC控制反转，集中管理bean之间的依赖，实现依赖注入。但Spring框架不仅有bean工厂，还有许多其他特性，因此Spring提供核心接口<code>ApplicationContext</code>来描述一个可配置的Spring容器，一个ApplicationContext需要具备如下能力：</p>
+<ul>
+<li>可配置的beanFactory</li>
+<li>支持多种Spring配置方式</li>
+<li>支持应用事件广播和消费</li>
+</ul>
+<h1 id="ApplicationContext架构"><a href="#ApplicationContext架构" class="headerlink" title="ApplicationContext架构"></a>ApplicationContext架构</h1><h2 id="基础类"><a href="#基础类" class="headerlink" title="基础类"></a>基础类</h2><p><code>ApplicationContext</code></p>
+<ul>
+<li>顶层接口，用来指代一个Spring容器，<code>getAutowireCapableBeanFactory</code>方法用来获取一个可配置可依赖注入的bean工厂，可见Spring容器的核心就是包了一个基础的bean工厂</li>
+</ul>
+<p><code>ConfigurableApplicationContext</code></p>
+<ul>
+<li>继承<code>ApplicationContext</code>，描述一个可配置的Spring容器，提供配置方法，例如添加bfpp<code>addBeanFactoryPostProcessor</code>、添加应用事件监听器<code>addApplicationListener</code><ul>
+<li>类比<code>ConfigurableBeanFactory</code>，描述的是可配置的bean工厂，实现对bean加载过程的定制，例如给bean工厂配置bpp。对于Spring容器而言，它的可配置体现在对bean工厂本身的定制化，因此提供的扩展是bean工厂处理器bfpp。需要说明的是，bfpp虽然定制的是bean工厂，但有些bfpp也是调用的bean工厂的配置接口，本质上还是对bean加载过程的定制</li>
+</ul>
+</li>
+<li>定义核心方法<code>refresh</code>，该方法在<code>ApplicationContext</code>的构造函数里调用来刷新（初始化）Spring容器</li>
+</ul>
+<h2 id="核心类"><a href="#核心类" class="headerlink" title="核心类"></a>核心类</h2><p><code>AbstractApplicationContext</code></p>
+<ul>
+<li><code>ConfigurableApplicationContext</code>的基础实现，实现了<code>refresh</code>方法，框定了Spring容器刷新的主流程，该方法的实现后面会详细介绍<ul>
+<li>提供模板方法<code>refreshBeanFactory</code>，子类实现来创建beanFactory</li>
+</ul>
+</li>
+</ul>
+<p><code>AbstractRefreshableApplicationContext</code></p>
+<ul>
+<li><code>AbstractApplicationContext</code>的子类，实现了<code>refreshBeanFactory</code>方法，new一个bean工厂<code>DefaultListableBeanFactory</code>提供给它的子类去解析和注册beanDefinition<ul>
+<li>读取Spring容器的配置属性来定制bean工厂，包括是否支持循环依赖、是否支持相同beanName的beanDefinition覆盖</li>
+<li>提供模板方法<code>loadBeanDefinitions</code>，由子类负责加载bean配置定义、解析生成beanDefinition并注册到beanFactory<ul>
+<li><code>AnnotationConfigWebApplicationContext</code>实现<code>loadBeanDefinitions</code>，将注解配置的beanDefinition注册到beanFactory</li>
+<li><code>AbstractXmlApplicationContext</code>实现<code>loadBeanDefinitions</code>，将xml配置的beanDefinition注册到beanFactory</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>GenericApplicationContext</code>和<code>AbstractRefreshableApplicationContext</code>平级，也实现了<code>refreshBeanFactory</code>方法，但可以理解为一个空实现，实际是在无参构造函数里new一个bean工厂<code>DefaultListableBeanFactory</code>，子类在自己的构造函数里完成特定配置方式加载和注册beanDefinition<ul>
+<li><code>AnnotationConfigApplicationContext</code>是注解方式的spring容器</li>
+<li><code>GenericXmlApplicationContext</code>是xml方式的spring容器</li>
+</ul>
+</li>
+</ul>
+<p><code>AbstractRefreshableConfigApplicationContext</code></p>
+<ul>
+<li><code>AbstractRefreshableApplicationContext</code>的子类，提供对bean配置文件路径解析的能力<ul>
+<li>将占位符替换为实际的系统环境变量</li>
+</ul>
+</li>
+</ul>
+<p><code>AbstractXmlApplicationContext</code></p>
+<ul>
+<li><code>AbstractRefreshableConfigApplicationContext</code>的子类，实现方法<code>loadBeanDefinitions</code>，完成xml方式beanDefinition解析和注册<ul>
+<li>使用辅助类<code>XmlBeanDefinitionReader</code>完成xml配置文件的解析和beanDefinition的注册</li>
+<li>提供模板方法<code>getConfigResources</code>，由子类负责加载Spring配置文件</li>
+</ul>
+</li>
+<li><code>AnnotationConfigWebApplicationContext</code>和<code>AbstractXmlApplicationContext</code>平级，也实现了<code>loadBeanDefinitions</code>，完成注解方式的beanDefinition解析和注册</li>
+</ul>
+<p><code>ClassPathXmlApplicationContext</code></p>
+<ul>
+<li>xml配置方式的Spring容器</li>
+<li><code>AbstractXmlApplicationContext</code>的子类，实现了<code>getConfigResources</code>方法，使用辅助类<code>ClassPathResource</code>加载xml配置文件</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>ApplicationContext架构的UML类图：<br><img src="/spring/ApplicationContext%E7%B1%BB%E5%9B%BE.jpg"></p>
+<p>综上，<code>ApplicationContext</code>架构主要使用了<code>适配器模式</code>、<code>模板模式</code></p>
+<ul>
+<li><code>ApplicationContext</code>通过在内部持有一个<code>DefaultListableBeanFactory</code>，适配了BeanFactory接口</li>
+<li>Spring容器的刷新主流程在上层抽象类的refresh方法中实现。同时定义创建bean工厂的模板方法<code>refreshBeanFactory</code>，有两套bean工厂创建流程，分别由子类<code>AbstractRefreshableApplicationContext</code>和<code>GenericApplicationContext</code>实现<ul>
+<li><code>AbstractRefreshableApplicationContext</code>类和<code>GenericApplicationContext</code>类都有自己的子类，分别支持xml方式和注解方式的beanDefinition注册</li>
+</ul>
+</li>
+</ul>
+<h1 id="刷新Spring容器"><a href="#刷新Spring容器" class="headerlink" title="刷新Spring容器"></a>刷新Spring容器</h1><p>刷新（初始化）Spring容器的入口在<code>org.springframework.context.support.AbstractApplicationContext#refresh</code>，构造函数里调用</p>
+<p>下面详述refresh方法的实现逻辑</p>
+<h2 id="定制系统变量"><a href="#定制系统变量" class="headerlink" title="定制系统变量"></a>定制系统变量</h2><p>回调模板方法<code>initPropertySources</code>，由三方实现，可以添加系统变量、设置哪些系统变量是必须的（不存在直接抛异常）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// Initialize any placeholder property sources in the context environment.</span><br><span class="line">initPropertySources();</span><br><span class="line"></span><br><span class="line">// Validate that all properties marked as required are resolvable:</span><br><span class="line">// see ConfigurablePropertyResolver#setRequiredProperties</span><br><span class="line">getEnvironment().validateRequiredProperties();</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public void validateRequiredProperties() &#123;</span><br><span class="line">	MissingRequiredPropertiesException ex = new MissingRequiredPropertiesException();</span><br><span class="line">	for (String key : this.requiredProperties) &#123;</span><br><span class="line">		if (this.getProperty(key) == null) &#123;</span><br><span class="line">			ex.addMissingRequiredProperty(key);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	if (!ex.getMissingRequiredProperties().isEmpty()) &#123;</span><br><span class="line">		throw ex;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试代码：applicationcontext.RequiredPropertyTest</p>
+<h2 id="构建DefaultListableBeanFactory"><a href="#构建DefaultListableBeanFactory" class="headerlink" title="构建DefaultListableBeanFactory"></a>构建DefaultListableBeanFactory</h2><p>构建Spring容器的DefaultListableBeanFactory，提供<code>refreshBeanFactory</code>模板方法，由子类实现，创建一个已经完成beanDefinition解析和注册的bean工厂</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">protected ConfigurableListableBeanFactory obtainFreshBeanFactory() &#123;</span><br><span class="line">	refreshBeanFactory();</span><br><span class="line">	ConfigurableListableBeanFactory beanFactory = getBeanFactory();</span><br><span class="line">	if (logger.isDebugEnabled()) &#123;</span><br><span class="line">		logger.debug(&quot;Bean factory for &quot; + getDisplayName() + &quot;: &quot; + beanFactory);</span><br><span class="line">	&#125;</span><br><span class="line">	return beanFactory;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="显式配置DefaultListableBeanFactory"><a href="#显式配置DefaultListableBeanFactory" class="headerlink" title="显式配置DefaultListableBeanFactory"></a>显式配置DefaultListableBeanFactory</h2><h3 id="注册SPEL解析器"><a href="#注册SPEL解析器" class="headerlink" title="注册SPEL解析器"></a>注册SPEL解析器</h3><p>显式注册解析SpEL的<code>StandardBeanExpressionResolver</code>，该resolver会在bean属性赋值前被调用来解析配置属性的SpEL表达式</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">beanFactory.setBeanExpressionResolver(new StandardBeanExpressionResolver(beanFactory.getBeanClassLoader()));</span><br></pre></td></tr></table></figure>
+
+<h3 id="注册属性编辑注册器"><a href="#注册属性编辑注册器" class="headerlink" title="注册属性编辑注册器"></a>注册属性编辑注册器</h3><p>显式注册<code>ResourceEditorRegistrar</code>，注册器会在Bean加载阶段被调用，给BeanWrapper注册一些资源类型的<code>PropertyEditor</code></p>
+<ul>
+<li>如果用户想添加自定义的<code>PropertyEditor</code>，可以简单覆盖<code>PropertyEditorSupport</code>的<code>setAsText</code>方法来自定义一个<code>PropertyEditor</code>，再创建它的注册器<code>PropertyEditorRegistrar</code>，然后配置一个<code>CustomEditorConfigurer</code>Bean，在propertyEditorRegistrars属性中加入自定义的Registrar。<code>CustomEditorConfigurer</code>是bfpp，在beanFactory后置处理中将<code>PropertyEditorRegistrar</code>注册到BeanFactory</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">beanFactory.addPropertyEditorRegistrar(new ResourceEditorRegistrar(this, getEnvironment()));</span><br></pre></td></tr></table></figure>
+
+<h3 id="注册ApplicationContextAwareProcessor"><a href="#注册ApplicationContextAwareProcessor" class="headerlink" title="注册ApplicationContextAwareProcessor"></a>注册ApplicationContextAwareProcessor</h3><p>显式注册bpp：<code>ApplicationContextAwareProcessor</code>，它的作用是bean前置初始化时，为bean自动注入Aware方式指定的Spring容器组件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">beanFactory.addBeanPostProcessor(new ApplicationContextAwareProcessor(this));</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">private void invokeAwareInterfaces(Object bean) &#123;</span><br><span class="line">	if (bean instanceof Aware) &#123;</span><br><span class="line">		if (bean instanceof EnvironmentAware) &#123;</span><br><span class="line">			((EnvironmentAware) bean).setEnvironment(this.applicationContext.getEnvironment());</span><br><span class="line">		&#125;</span><br><span class="line">		if (bean instanceof EmbeddedValueResolverAware) &#123;</span><br><span class="line">			((EmbeddedValueResolverAware) bean).setEmbeddedValueResolver(this.embeddedValueResolver);</span><br><span class="line">		&#125;</span><br><span class="line">		if (bean instanceof ResourceLoaderAware) &#123;</span><br><span class="line">			((ResourceLoaderAware) bean).setResourceLoader(this.applicationContext);</span><br><span class="line">		&#125;</span><br><span class="line">		if (bean instanceof ApplicationEventPublisherAware) &#123;</span><br><span class="line">			((ApplicationEventPublisherAware) bean).setApplicationEventPublisher(this.applicationContext);</span><br><span class="line">		&#125;</span><br><span class="line">		if (bean instanceof MessageSourceAware) &#123;</span><br><span class="line">			((MessageSourceAware) bean).setMessageSource(this.applicationContext);</span><br><span class="line">		&#125;</span><br><span class="line">		if (bean instanceof ApplicationContextAware) &#123;</span><br><span class="line">			((ApplicationContextAware) bean).setApplicationContext(this.applicationContext);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="注册ApplicationListenerDetector"><a href="#注册ApplicationListenerDetector" class="headerlink" title="注册ApplicationListenerDetector"></a>注册ApplicationListenerDetector</h3><p>显式注册bpp：<code>ApplicationListenerDetector</code>，作用是对于类型为<code>ApplicationListener</code>子类的bean，后置初始化处理时注册到ApplicationContext。这些应用事件监听器最终会被注册到事件组播器<code>ApplicationEventMulticaster</code>，Spring容器关闭时，<code>ApplicationListenerDetector</code>会在bean销毁前置回调时，从<code>ApplicationEventMulticaster</code>里移除</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">beanFactory.addBeanPostProcessor(new ApplicationListenerDetector(this));</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">public Object postProcessAfterInitialization(Object bean, String beanName) &#123;</span><br><span class="line">	if (bean instanceof ApplicationListener) &#123;</span><br><span class="line">		// potentially not detected as a listener by getBeanNamesForType retrieval</span><br><span class="line">		Boolean flag = this.singletonNames.get(beanName);</span><br><span class="line">		if (Boolean.TRUE.equals(flag)) &#123;</span><br><span class="line">			// singleton bean (top-level or inner): register on the fly</span><br><span class="line">			this.applicationContext.addApplicationListener((ApplicationListener&lt;?&gt;) bean);</span><br><span class="line">		&#125;</span><br><span class="line">		else if (Boolean.FALSE.equals(flag)) &#123;</span><br><span class="line">			...</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	return bean;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">public void postProcessBeforeDestruction(Object bean, String beanName) &#123;</span><br><span class="line">	if (bean instanceof ApplicationListener) &#123;</span><br><span class="line">		try &#123;</span><br><span class="line">			ApplicationEventMulticaster multicaster = this.applicationContext.getApplicationEventMulticaster();</span><br><span class="line">			multicaster.removeApplicationListener((ApplicationListener&lt;?&gt;) bean);</span><br><span class="line">			multicaster.removeApplicationListenerBean(beanName);</span><br><span class="line">		&#125;</span><br><span class="line">		catch (IllegalStateException ex) &#123;</span><br><span class="line">			// ApplicationEventMulticaster not initialized yet - no need to remove a listener</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="系统环境变量以bean的形式注册到BeanFactory"><a href="#系统环境变量以bean的形式注册到BeanFactory" class="headerlink" title="系统环境变量以bean的形式注册到BeanFactory"></a>系统环境变量以bean的形式注册到BeanFactory</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">if (!beanFactory.containsLocalBean(ENVIRONMENT_BEAN_NAME)) &#123;</span><br><span class="line">	beanFactory.registerSingleton(ENVIRONMENT_BEAN_NAME, getEnvironment());</span><br><span class="line">&#125;</span><br><span class="line">if (!beanFactory.containsLocalBean(SYSTEM_PROPERTIES_BEAN_NAME)) &#123;</span><br><span class="line">	beanFactory.registerSingleton(SYSTEM_PROPERTIES_BEAN_NAME, getEnvironment().getSystemProperties());</span><br><span class="line">&#125;</span><br><span class="line">if (!beanFactory.containsLocalBean(SYSTEM_ENVIRONMENT_BEAN_NAME)) &#123;</span><br><span class="line">	beanFactory.registerSingleton(SYSTEM_ENVIRONMENT_BEAN_NAME, getEnvironment().getSystemEnvironment());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="回调三方对bean工厂的定制接口"><a href="#回调三方对bean工厂的定制接口" class="headerlink" title="回调三方对bean工厂的定制接口"></a>回调三方对bean工厂的定制接口</h2><p>提供模板方法postProcessBeanFactory，由<code>AbstractApplicationContext</code>的子类（第三方实现类）覆写，定制beanFactory</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">postProcessBeanFactory(beanFactory);</span><br></pre></td></tr></table></figure>
+
+<h2 id="调用bfpp执行bean工厂后置处理"><a href="#调用bfpp执行bean工厂后置处理" class="headerlink" title="调用bfpp执行bean工厂后置处理"></a>调用bfpp执行bean工厂后置处理</h2><p>bfpp的来源有两种渠道：</p>
+<ul>
+<li><p>调用方法<code>addBeanFactoryPostProcessor</code>显式注册到AbstractApplicationContext</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public List&lt;BeanFactoryPostProcessor&gt; getBeanFactoryPostProcessors() &#123;</span><br><span class="line">	return this.beanFactoryPostProcessors;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>通过BD走bean加载流程得到的bfpp。<code>AbstractApplicationContext</code>会从beanFactory的全局BD里枚举bfpp的beanName，然后加载bfpp</p>
+<ul>
+<li>这细分为两类，一类是用户自定义的BeanFactoryPostProcessor bean，另一类是Spring显式注册bfpp的BD到bean工厂，<code>ConfigurationClassPostProcessor</code>就是这种方式注册的</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">	postProcessorNames = beanFactory.getBeanNamesForType(BeanFactoryPostProcessor.class, true, false);</span><br><span class="line">	for (String ppName : postProcessorNames) &#123;</span><br><span class="line">		... ...</span><br><span class="line">		beanPostProcessors.add(beanFactory.getBean(ppName, BeanFactoryPostProcessor.class));</span><br><span class="line">	&#125;</span><br><span class="line">```		</span><br><span class="line"></span><br><span class="line">bfpp的调用顺序：</span><br><span class="line">- 优先执行显式注册的bfpp，再执行通过BD加载的bfpp</span><br><span class="line">- 优先执行`BeanDefinitionRegistryPostProcessor`，再执行其他的bfpp</span><br><span class="line">	- `BeanDefinitionRegistryPostProcessor`是`BeanFactoryPostProcessor`的子接口</span><br><span class="line">	- 对于`BeanDefinitionRegistryPostProcessor`，先调用`postProcessBeanDefinitionRegistry`方法，预处理bean工厂的BD，再调用bfpp的后置处理方法</span><br><span class="line">- 优先执行实现了`PriorityOrdered`、`Ordered`接口的bfpp</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code>for (BeanFactoryPostProcessor postProcessor : beanFactoryPostProcessors) &#123;
+    if (postProcessor instanceof BeanDefinitionRegistryPostProcessor) &#123;
+        BeanDefinitionRegistryPostProcessor registryProcessor =
+                (BeanDefinitionRegistryPostProcessor) postProcessor;
+        registryProcessor.postProcessBeanDefinitionRegistry(registry);
+        registryProcessors.add(registryProcessor);
+    &#125;
+    else &#123;
+        regularPostProcessors.add(postProcessor);
+    &#125;
+&#125;
+... ...
+invokeBeanFactoryPostProcessors(registryProcessors, beanFactory);
+... ...
+invokeBeanFactoryPostProcessors(regularPostProcessors, beanFactory);		
+</code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">bfpp的应用场景举例：</span><br><span class="line">- `ConfigurationClassPostProcessor`</span><br><span class="line">	- 它本身是一个`BeanDefinitionRegistryPostProcessor`。注解方式的Spring容器`AnnotationConfigApplicationContext`在构造函数中将它的bd注册到beanFactory。它的`postProcessBeanDefinitionRegistry`方法负责注册通过配置类bean（@Configuration修饰）间接定义的所有beanDefinition到BeanFactory</span><br><span class="line">- `CustomEditorConfigurer`</span><br><span class="line">	- 第三方可以注册这个bean，通过它间接注册一组自定义的`PropertyEditorRegistrar`到beanFactory</span><br><span class="line">		- 这组属性编辑注册器在bean加载阶段被回调，将属性编辑器注册到BeanWrapper，这些属性编辑器在Bean属性赋值前被回调，修改BD.PV里定义的bean属性值</span><br><span class="line">	- 测试代码：populatebean.propertyeditor.PropertyEditorTest</span><br><span class="line">- `PropertySourcesPlaceholderConfigurer`</span><br><span class="line">	- Spring解析标签&quot;context:property-placeholder&quot;，注册PPC：PropertySourcesPlaceholderConfigurer。bean工厂后置处理阶段，回调PPC，将BD.pv里定义的占位符替换为系统配置文件里的实际值</span><br><span class="line">	- 测试代码：applicationcontext.PropertyPlaceHolderConfigurerTest</span><br><span class="line"></span><br><span class="line">## 注册bpp到BeanFactory</span><br><span class="line">bpp的来源只能通过配置方式，bpp不能显式注册到ApplicationContext</span><br><span class="line">- 这里不会执行bpp的处理方法，而是在bean加载的对应阶段回调执行。需要明确，bpp作用于bean，bfpp作用于beanFactory</span><br><span class="line"></span><br><span class="line">优先注册实现了`PriorityOrdered`、`Ordered`接口的bpp</span><br></pre></td></tr></table></figure>
+<pre><code>String[] postProcessorNames = beanFactory.getBeanNamesForType(BeanPostProcessor.class, true, false);
+... ...
+for (String ppName : postProcessorNames) &#123;
+    if (beanFactory.isTypeMatch(ppName, PriorityOrdered.class)) &#123;
+        BeanPostProcessor pp = beanFactory.getBean(ppName, BeanPostProcessor.class);
+        priorityOrderedPostProcessors.add(pp);
+        if (pp instanceof MergedBeanDefinitionPostProcessor) &#123;
+            internalPostProcessors.add(pp);
+        &#125;
+    &#125;
+    else if (beanFactory.isTypeMatch(ppName, Ordered.class)) &#123;
+        orderedPostProcessorNames.add(ppName);
+    &#125;
+    else &#123;
+        nonOrderedPostProcessorNames.add(ppName);
+    &#125;
+&#125;
+... ...
+sortPostProcessors(priorityOrderedPostProcessors, beanFactory);
+registerBeanPostProcessors(beanFactory, priorityOrderedPostProcessors);
+... ...
+sortPostProcessors(orderedPostProcessors, beanFactory);
+registerBeanPostProcessors(beanFactory, orderedPostProcessors);
+... ...
+registerBeanPostProcessors(beanFactory, nonOrderedPostProcessors);
+</code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">## 注册应用事件组播器ApplicationEventMulticaster</span><br><span class="line">Spring优先注册的是第三方自定义的`ApplicationEventMulticaster`，如果不存在，则会默认注册`SimpleApplicationEventMulticaster`</span><br><span class="line">- `ApplicationContext`发布`ApplicationEvent`时使用注册的`ApplicationEventMulticaster`，因此`SimpleApplicationEventMulticaster`是默认的应用事件发布器</span><br><span class="line">- 组播器`ApplicationEventMulticaster`使用观察者模式组播应用事件给注册到它的事件监听器</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code>ConfigurableListableBeanFactory beanFactory = getBeanFactory();
+if (beanFactory.containsLocalBean(APPLICATION_EVENT_MULTICASTER_BEAN_NAME)) &#123;
+    this.applicationEventMulticaster =
+            beanFactory.getBean(APPLICATION_EVENT_MULTICASTER_BEAN_NAME, ApplicationEventMulticaster.class);
+&#125;
+else &#123;
+    this.applicationEventMulticaster = new SimpleApplicationEventMulticaster(beanFactory);
+    beanFactory.registerSingleton(APPLICATION_EVENT_MULTICASTER_BEAN_NAME, this.applicationEventMulticaster);
+&#125;
+</code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">`SimpleApplicationEventMulticaster`</span><br><span class="line">- `SimpleApplicationEventMulticaster`如果set线程池，回调监听器的任务提交到线程池中执行</span><br><span class="line">- `SimpleApplicationEventMulticaster`会筛选与应用事件匹配的`ApplicationListener`，再回调来处理事件，筛选规则是：</span><br><span class="line">    - 如果`ApplicationListener`是`GenericApplicationListener`，调用它的supportsEventType和supportsSourceType判断事件类型和事件源对象类型是否满足</span><br><span class="line">    - 否则，使用适配器模式包装成一个`GenericApplicationListenerAdapter`。如果`ApplicationListener`是`SmartApplicationListener`，调用它的supportsEventType和supportsSourceType判断事件类型和事件源对象类型是否满足，否则，只要`ApplicationEvent`的类型为ApplicationListener关注的同级或子级事件类型即可</span><br><span class="line">- 测试代码：applicationcontext.ApplicationListenerTest</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">## 注册应用事件监听器ApplicationListener</span><br><span class="line">注册应用事件监听器`ApplicationListener`到组播器`ApplicationEventMulticaster`</span><br><span class="line">- `ApplicationListener`的来源渠道同bfpp，显式添加到ApplicationContext或通过注册的BD走bean加载得到的bean</span><br><span class="line">- 这里只将显式添加到`ApplicationContext`的`ApplicationListener`注册到`ApplicationEventMulticaster`</span><br><span class="line">	- 通过注册的BD走bean加载得到的`ApplicationListener`，在前面介绍的`ApplicationListenerDetector`（bpp）后置初始化处理时注册到`ApplicationEventMulticaster`。最终效果都是一样的，只是注册的时机不同</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code>protected void registerListeners() &#123;
+    // 显式注册到Spring容器的监听器，注册到应用事件组播器
+    for (ApplicationListener&lt;?&gt; listener : getApplicationListeners()) &#123;
+        getApplicationEventMulticaster().addApplicationListener(listener);
+    &#125;
+
+    // 通过注册的BD走bean加载的监听器，beanName注册到应用事件组播器
+    String[] listenerBeanNames = getBeanNamesForType(ApplicationListener.class, true, false);
+    for (String listenerBeanName : listenerBeanNames) &#123;
+        getApplicationEventMulticaster().addApplicationListenerBean(listenerBeanName);
+    &#125;
+&#125;
+</code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">## 注册属性占位符解析器StringValueResolver</span><br><span class="line">如果bean工厂不存在占位符解析器`StringValueResolver`，则注册默认的属性占位符解析器：`ConfigurablePropertyResolver`到beanFactory，它使用系统环境变量作为配置源，解析bean属性中的占位符</span><br></pre></td></tr></table></figure>
+<pre><code>if (!beanFactory.hasEmbeddedValueResolver()) &#123;
+    beanFactory.addEmbeddedValueResolver(strVal -&gt; getEnvironment().resolvePlaceholders(strVal));
+&#125;
+</code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">如果通过配置标签&quot;context:property-placeholder&quot;，注册了`PropertySourcesPlaceholderConfigurer`，在beanFactory后置处理时，会注册一个Lambda写的匿名`StringValueResolver`来解析bean属性中的占位符，配置源来自系统环境变量和第三方定义的应用配置文件</span><br></pre></td></tr></table></figure>
+<pre><code>public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException &#123;
+    if (this.propertySources == null) &#123;
+        this.propertySources = new MutablePropertySources();
+        if (this.environment != null) &#123;
+            this.propertySources.addLast(
+                new PropertySource&lt;Environment&gt;(ENVIRONMENT_PROPERTIES_PROPERTY_SOURCE_NAME, this.environment) &#123;
+                    @Override
+                    @Nullable
+                    public String getProperty(String key) &#123;
+                        return this.source.getProperty(key);
+                    &#125;
+                &#125;
+            );
+        &#125;
+        try &#123;
+            PropertySource&lt;?&gt; localPropertySource =
+                    new PropertiesPropertySource(LOCAL_PROPERTIES_PROPERTY_SOURCE_NAME, mergeProperties());
+            if (this.localOverride) &#123;
+                this.propertySources.addFirst(localPropertySource);
+            &#125;
+            else &#123;
+                this.propertySources.addLast(localPropertySource);
+            &#125;
+        &#125;
+        catch (IOException ex) &#123;
+            throw new BeanInitializationException(&quot;Could not load properties&quot;, ex);
+        &#125;
+    &#125;
+
+    processProperties(beanFactory, new PropertySourcesPropertyResolver(this.propertySources));
+    this.appliedPropertySources = this.propertySources;
+&#125;
+</code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code>protected void processProperties(ConfigurableListableBeanFactory beanFactoryToProcess,
+        final ConfigurablePropertyResolver propertyResolver) throws BeansException &#123;
+
+    propertyResolver.setPlaceholderPrefix(this.placeholderPrefix);
+    propertyResolver.setPlaceholderSuffix(this.placeholderSuffix);
+    propertyResolver.setValueSeparator(this.valueSeparator);
+
+    StringValueResolver valueResolver = strVal -&gt; &#123;
+        String resolved = (this.ignoreUnresolvablePlaceholders ?
+                propertyResolver.resolvePlaceholders(strVal) :
+                propertyResolver.resolveRequiredPlaceholders(strVal));
+        if (this.trimValues) &#123;
+            resolved = resolved.trim();
+        &#125;
+        return (resolved.equals(this.nullValue) ? null : resolved);
+    &#125;;
+
+    ...
+    beanFactoryToProcess.embeddedValueResolvers.add(valueResolver);
+&#125;
+</code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">## 加载单例beans</span><br><span class="line">预加载所有非懒加载的单例到beanFactory（好处是提前暴露bean配置的错误）</span><br><span class="line">- 如果加载的bean实现了`SmartInitializingSingleton`接口，加载后回调afterSingletonsInstantiated方法</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code>List&lt;String&gt; beanNames = new ArrayList&lt;&gt;(this.beanDefinitionNames);
+for (String beanName : beanNames) &#123;
+    RootBeanDefinition bd = getMergedLocalBeanDefinition(beanName);
+    if (!bd.isAbstract() &amp;&amp; bd.isSingleton() &amp;&amp; !bd.isLazyInit()) &#123;
+        if (isFactoryBean(beanName)) &#123;
+            ... ...
+        else &#123;
+            getBean(beanName);
+        &#125;
+    &#125;
+&#125;
+
+for (String beanName : beanNames) &#123;
+    Object singletonInstance = getSingleton(beanName);
+    if (singletonInstance instanceof SmartInitializingSingleton) &#123;
+        SmartInitializingSingleton smartSingleton = (SmartInitializingSingleton) singletonInstance;
+        ... ...
+        smartSingleton.afterSingletonsInstantiated();
+    &#125;
+&#125;
+</code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">## Spring容器初始化后置处理 </span><br><span class="line">走到这里说明Spring容器初始化核心流程已经结束，接下来进行收尾工作</span><br><span class="line"></span><br><span class="line">### 回调Bean的生命周期start方法</span><br><span class="line">注册`LifecycleProcessor`到ApplicationContext，优先从BD获取并加载配置注册的bean，不存在则创建默认的`DefaultLifecycleProcessor`</span><br></pre></td></tr></table></figure>
+<pre><code>protected void initLifecycleProcessor() &#123;
+    ConfigurableListableBeanFactory beanFactory = getBeanFactory();
+    if (beanFactory.containsLocalBean(LIFECYCLE_PROCESSOR_BEAN_NAME)) &#123;
+        this.lifecycleProcessor =
+                beanFactory.getBean(LIFECYCLE_PROCESSOR_BEAN_NAME, LifecycleProcessor.class);
+    &#125;
+    else &#123;
+        DefaultLifecycleProcessor defaultProcessor = new DefaultLifecycleProcessor();
+        defaultProcessor.setBeanFactory(beanFactory);
+        this.lifecycleProcessor = defaultProcessor;
+        beanFactory.registerSingleton(LIFECYCLE_PROCESSOR_BEAN_NAME, this.lifecycleProcessor);
+    &#125;
+&#125;
+</code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">	</span><br><span class="line">调用LifecycleProcessor#onRefresh，此时autoStartupOnly=true，将`SmartLifecycle`bean分组后调用它的start方法实现自动启动</span><br><span class="line">- 如果是单独调LifecycyleProcessor#start方法，autoStartupOnly=false，会对所有的`SmartLifecycle`和`Lifeclcye`bean，分组后回调start方法</span><br><span class="line">- 如果是`SmartLifecycle` bean，isAutoStartup方法必须返回true，才会回调start方法</span><br><span class="line">- 分组通过`Phased`接口获得分组号，未实现则为0号。最后按分组号从小到大回调组内bean的start方法</span><br><span class="line">	- Spring容器close时，按分组号从大到小回调stop方法，与start方法顺序相反</span><br><span class="line">	</span><br></pre></td></tr></table></figure>
+<pre><code>private void startBeans(boolean autoStartupOnly) &#123;
+    Map&lt;String, Lifecycle&gt; lifecycleBeans = getLifecycleBeans();
+    Map&lt;Integer, LifecycleGroup&gt; phases = new HashMap&lt;&gt;();
+    lifecycleBeans.forEach((beanName, bean) -&gt; &#123;
+        if (!autoStartupOnly || (bean instanceof SmartLifecycle &amp;&amp; ((SmartLifecycle) bean).isAutoStartup())) &#123;
+            int phase = getPhase(bean);
+            LifecycleGroup group = phases.get(phase);
+            if (group == null) &#123;
+                group = new LifecycleGroup(phase, this.timeoutPerShutdownPhase, lifecycleBeans, autoStartupOnly);
+                phases.put(phase, group);
+            &#125;
+            group.add(beanName, bean);
+        &#125;
+    &#125;);
+    if (!phases.isEmpty()) &#123;
+        List&lt;Integer&gt; keys = new ArrayList&lt;&gt;(phases.keySet());
+        Collections.sort(keys);
+        for (Integer key : keys) &#123;
+            phases.get(key).start();
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code>private void doStart(Map&lt;String, ? extends Lifecycle&gt; lifecycleBeans, String beanName, boolean autoStartupOnly) &#123;
+    Lifecycle bean = lifecycleBeans.remove(beanName);
+    if (bean != null &amp;&amp; bean != this) &#123;
+        String[] dependenciesForBean = getBeanFactory().getDependenciesForBean(beanName);
+        // 优先启动所有Lifycycle bean依赖的lifecycle beans
+        for (String dependency : dependenciesForBean) &#123;
+            doStart(lifecycleBeans, dependency, autoStartupOnly);
+        &#125;
+        if (!bean.isRunning() &amp;&amp;
+                (!autoStartupOnly || !(bean instanceof SmartLifecycle) || ((SmartLifecycle) bean).isAutoStartup())) &#123;
+            try &#123;
+                // 启动lifecycle bean
+                bean.start();
+            &#125;
+            ... ...
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">### 组播Spring容器初始化完成事件</span><br><span class="line">通过`ApplicationEventMulticaster`组播`ApplicationContext`的刷新完成事件`ContextRefreshedEvent`到注册的`ApplicationListener` </span><br></pre></td></tr></table></figure>
+<pre><code>publishEvent(new ContextRefreshedEvent(this));
+... ...
+
+protected void publishEvent(Object event, @Nullable ResolvableType eventType) &#123;
+    Assert.notNull(event, &quot;Event must not be null&quot;);
+    
+    ApplicationEvent applicationEvent;
+    if (event instanceof ApplicationEvent) &#123;
+        applicationEvent = (ApplicationEvent) event;
+    &#125;
+    else &#123;
+        applicationEvent = new PayloadApplicationEvent&lt;&gt;(this, event);
+        if (eventType == null) &#123;
+            eventType = ((PayloadApplicationEvent&lt;?&gt;) applicationEvent).getResolvableType();
+        &#125;
+    &#125;
+
+    ... ...
+    getApplicationEventMulticaster().multicastEvent(applicationEvent, eventType);
+    ... ...
+&#125;
+</code></pre>
+<p>&#96;&#96;&#96;</p>
+<h1 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h1><p>综上，可以总结出ApplicationContext具备这些定制和扩展能力：</p>
+<ul>
+<li>支持SPEL<ul>
+<li>显式注册表达式解析器到beanFactory</li>
+</ul>
+</li>
+<li>支持自定义bean属性编辑器<ul>
+<li>通过bfpp后置处理时把属性编辑注册器注册到beanFactory</li>
+</ul>
+</li>
+<li>支持自定义BeanFactoryPostProcessor<ul>
+<li>显式注册或配置方式自定义bfpp</li>
+</ul>
+</li>
+<li>支持自定义BeanPostProcessor<ul>
+<li>配置方式发现自定义bpp</li>
+</ul>
+</li>
+<li>支持自定义发布和监听应用事件<ul>
+<li>配置方式自定义事件组播器，否则Spring容器提供默认的组播器</li>
+<li>显式注册或配置方式自定义bfpp</li>
+</ul>
+</li>
+<li>支持Spring容器在启动或停止时刻回调LifeCycle bean对应的生命周期方法</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>西米大人
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://dcbupt.github.io/2020/04/23/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Spring%E6%BA%90%E7%A0%81-Spring%E5%AE%B9%E5%99%A8/" title="系统学习Spring源码-Spring容器">http://dcbupt.github.io/2020/04/23/blog_article/系统学习系列/系统学习Spring源码-Spring容器/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+
+        
+
+<blockquote class="blockquote-center" style="color: #f0ad4e">完 ♥ 结</blockquote>
+
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/04/23/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Spring%E6%BA%90%E7%A0%81-aop/" rel="prev" title="系统学习Spring源码-aop">
+      <i class="fa fa-chevron-left"></i> 系统学习Spring源码-aop
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/04/23/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Spring%E6%BA%90%E7%A0%81-BeanFactory%E6%9E%B6%E6%9E%84/" rel="next" title="系统学习Spring源码-BeanFactory架构">
+      系统学习Spring源码-BeanFactory架构 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ApplicationContext%E6%9E%B6%E6%9E%84"><span class="nav-number">2.</span> <span class="nav-text">ApplicationContext架构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E7%B1%BB"><span class="nav-number">2.1.</span> <span class="nav-text">基础类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E7%B1%BB"><span class="nav-number">2.2.</span> <span class="nav-text">核心类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">2.3.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%B7%E6%96%B0Spring%E5%AE%B9%E5%99%A8"><span class="nav-number">3.</span> <span class="nav-text">刷新Spring容器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E5%88%B6%E7%B3%BB%E7%BB%9F%E5%8F%98%E9%87%8F"><span class="nav-number">3.1.</span> <span class="nav-text">定制系统变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%84%E5%BB%BADefaultListableBeanFactory"><span class="nav-number">3.2.</span> <span class="nav-text">构建DefaultListableBeanFactory</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%98%BE%E5%BC%8F%E9%85%8D%E7%BD%AEDefaultListableBeanFactory"><span class="nav-number">3.3.</span> <span class="nav-text">显式配置DefaultListableBeanFactory</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E5%86%8CSPEL%E8%A7%A3%E6%9E%90%E5%99%A8"><span class="nav-number">3.3.1.</span> <span class="nav-text">注册SPEL解析器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E5%86%8C%E5%B1%9E%E6%80%A7%E7%BC%96%E8%BE%91%E6%B3%A8%E5%86%8C%E5%99%A8"><span class="nav-number">3.3.2.</span> <span class="nav-text">注册属性编辑注册器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E5%86%8CApplicationContextAwareProcessor"><span class="nav-number">3.3.3.</span> <span class="nav-text">注册ApplicationContextAwareProcessor</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E5%86%8CApplicationListenerDetector"><span class="nav-number">3.3.4.</span> <span class="nav-text">注册ApplicationListenerDetector</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F%E4%BB%A5bean%E7%9A%84%E5%BD%A2%E5%BC%8F%E6%B3%A8%E5%86%8C%E5%88%B0BeanFactory"><span class="nav-number">3.3.5.</span> <span class="nav-text">系统环境变量以bean的形式注册到BeanFactory</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9E%E8%B0%83%E4%B8%89%E6%96%B9%E5%AF%B9bean%E5%B7%A5%E5%8E%82%E7%9A%84%E5%AE%9A%E5%88%B6%E6%8E%A5%E5%8F%A3"><span class="nav-number">3.4.</span> <span class="nav-text">回调三方对bean工厂的定制接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B0%83%E7%94%A8bfpp%E6%89%A7%E8%A1%8Cbean%E5%B7%A5%E5%8E%82%E5%90%8E%E7%BD%AE%E5%A4%84%E7%90%86"><span class="nav-number">3.5.</span> <span class="nav-text">调用bfpp执行bean工厂后置处理</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93-1"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="西米大人"
+      src="/images/me.png">
+  <p class="site-author-name" itemprop="name">西米大人</p>
+  <div class="site-description" itemprop="description"><blockquote class="blockquote-center">优秀的人，不是不合群，而是他们合群的人里面没有你</blockquote></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">151</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dcbupt" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;dcbupt" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:byrddc@hotmail.com" title="E-Mail → mailto:byrddc@hotmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">西米大人</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">388k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">10:47</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.id);
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            let target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    let { app_id, app_key, server_url } = {"enable":true,"app_id":"OBdFsOOtfIDcNnWdzkGbICmj-gzGzoHsz","app_key":"89LmL4tP7hkyChAmEleq2MdO","server_url":null,"security":true};
+    function fetchData(api_server) {
+      var Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    let api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+<script src="/js/love.js"></script>
+
+<script src="/js/particle.js"></script>
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('https://cdn.jsdelivr.net/npm/valine@1.4.18/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'OBdFsOOtfIDcNnWdzkGbICmj-gzGzoHsz',
+      appKey     : '89LmL4tP7hkyChAmEleq2MdO',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

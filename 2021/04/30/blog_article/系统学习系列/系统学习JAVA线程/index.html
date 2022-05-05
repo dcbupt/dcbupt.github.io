@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-mac-osx.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"dcbupt.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="系统学习JAVA线程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="系统学习JAVA线程">
+<meta property="og:url" content="http://dcbupt.github.io/2021/04/30/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0JAVA%E7%BA%BF%E7%A8%8B/index.html">
+<meta property="og:site_name" content="dcddc">
+<meta property="og:description" content="系统学习JAVA线程">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://dcbupt.github.io/JVM/JAVA%E7%BA%BF%E7%A8%8B.png">
+<meta property="og:image" content="http://dcbupt.github.io/JVM/%E5%8A%A0%E8%A7%A3%E9%94%81%E6%B5%81%E7%A8%8B.webp">
+<meta property="article:published_time" content="2021-04-30T07:06:00.000Z">
+<meta property="article:modified_time" content="2022-05-01T06:44:18.821Z">
+<meta property="article:author" content="西米大人">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://dcbupt.github.io/JVM/JAVA%E7%BA%BF%E7%A8%8B.png">
+
+<link rel="canonical" href="http://dcbupt.github.io/2021/04/30/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0JAVA%E7%BA%BF%E7%A8%8B/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+  <title>系统学习JAVA线程 | dcddc</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">dcddc</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">西米大人的博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dcbupt.github.io/2021/04/30/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0JAVA%E7%BA%BF%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/me.png">
+      <meta itemprop="name" content="西米大人">
+      <meta itemprop="description" content="<blockquote class="blockquote-center">优秀的人，不是不合群，而是他们合群的人里面没有你</blockquote>">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="dcddc">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          系统学习JAVA线程
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-04-30 15:06:00" itemprop="dateCreated datePublished" datetime="2021-04-30T15:06:00+08:00">2021-04-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-05-01 14:44:18" itemprop="dateModified" datetime="2022-05-01T14:44:18+08:00">2022-05-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/" itemprop="url" rel="index"><span itemprop="name">系统学习系列</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2021/04/30/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0JAVA%E7%BA%BF%E7%A8%8B/" class="post-meta-item leancloud_visitors" data-flag-title="系统学习JAVA线程" title="热度">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">热度:</span>
+              <span class="leancloud-visitors-count"></span>℃
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">评论:</span>
+    
+    <a title="valine" href="/2021/04/30/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0JAVA%E7%BA%BF%E7%A8%8B/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/04/30/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0JAVA%E7%BA%BF%E7%A8%8B/" itemprop="commentCount"></span>℃
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">字数：</span>
+              <span>7.6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>13 分钟</span>
+            </span>
+            <div class="post-description"><blockquote class="blockquote-center">系统学习JAVA线程</blockquote></div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="JAVA线程"><a href="#JAVA线程" class="headerlink" title="JAVA线程"></a>JAVA线程</h1><p><img src="/JVM/JAVA%E7%BA%BF%E7%A8%8B.png"></p>
+<h2 id="知识点"><a href="#知识点" class="headerlink" title="知识点"></a>知识点</h2><p>JAVA线程和操作系统的内核线程的映射关系？</p>
+<ul>
+<li>一一映射</li>
+</ul>
+<p>线程的调度方式有哪两种？JAVA使用哪种？</p>
+<ul>
+<li>协同式和抢占式。Java使用抢占式，由操作系统调度。</li>
+</ul>
+<p>为什么JAVA的线程优先级在不同操作系统下的表现不同？</p>
+<ul>
+<li>JAVA定义的线程优先级需要映射到操作系统内核线程优先级，因此优先级表现与操作系统相关联</li>
+</ul>
+<p>JAVA线程有哪五种状态？状态转移关系是？</p>
+<ul>
+<li>New、Runnable、Waiting、TimedWaiting、Block</li>
+</ul>
+<p>共享对象按线程安全等级可划分为哪几类？</p>
+<ul>
+<li>不可变、绝对线程安全、相对线程安全、线程兼容（线程不安全）</li>
+</ul>
+<p>哪些类型声明为不可变final类型就可以保证一定线程安全？</p>
+<ul>
+<li>基本数据类型、枚举类、String</li>
+</ul>
+<p>什么是绝对线程安全？什么是相对线程安全？</p>
+<ul>
+<li>绝对线程安全的对象，做任何操作都需要保证是线程安全的，包括复合操作，所以绝对安全的类很少，String是绝对线程安全的</li>
+<li>相对线程安全的对象，调用任何方法都需要保证是线程安全的，但复合操作不能保证线程安全。我们一般使用的同步集合类都属于相对线程安全的，例如Vector、HashTable、ConcurrentHashMap</li>
+</ul>
+<p>为什么Vector类是相对线程安全，而非绝对线程安全？</p>
+<ul>
+<li>复合操作无法保证线程安全。例如常见的putIfAbsent操作，判断absent和put操作都是线程安全的，但作为一个复合操作并不能保证线程安全，可能判断absent成功后线程切换，其他线程添加了这个对象。</li>
+</ul>
+<p>JAVA实现互斥同步的方式有哪些？</p>
+<ul>
+<li>synchronised、ReentrantLock</li>
+</ul>
+<p>为什么说Synchronized同步方式是一个重量级操作？</p>
+<ul>
+<li>通过操作系统的互斥量实现互斥同步，线程阻塞和唤醒需要在线程用户态和内核态之间切换，成本高</li>
+</ul>
+<p>ReentrantLock和Synchronized的区别有哪些？</p>
+<ul>
+<li>ReentrantLock阻塞可被中断</li>
+<li>ReentrantLock支持同时存在多个wait&#x2F;signal，通过condition实现，更灵活地唤醒阻塞在某个condition条件下的线程</li>
+<li>ReentrantLock支持公平锁</li>
+</ul>
+<p>JAVA中非阻塞同步（乐观策略）的典型实现方式是什么？J</p>
+<ul>
+<li>CAS</li>
+</ul>
+<p>什么是CAS操作的”ABA问题”？</p>
+<ul>
+<li>CAS虽然成功，但可能Compare的时候对象的值是A，但在Set前，经历了从A到B再回到A的过程，因此虽然CAS成功，但过程中对象仍可能被并发修改</li>
+</ul>
+<p>什么是自旋？什么是自适应自旋？</p>
+<ul>
+<li>线程获取不到锁时，不挂起，而是跑一定次数的空循环，期间依然不断尝试获取锁。在锁很快得到释放时，这么做能避免线程阻塞唤醒带来的开销</li>
+<li>基于之前自旋后获取锁的情况，动态调整自旋时间</li>
+</ul>
+<p>什么是锁消除？什么是锁粗化？</p>
+<ul>
+<li>不发生线程逃逸的代码，可以消除加锁操作，称为锁消除。连续执行的代码频繁加解锁，可以在外层只加一次锁，称为锁粗化</li>
+</ul>
+<p>轻量级锁的加解锁过程是怎样的？什么情况下轻量级锁会升级为重量级锁？</p>
+<ul>
+<li>加锁：先根据锁对象的MarkWord判断是否未被加锁，是则把MarkWord复制到栈帧上，再CAS将加锁对象的MarkWord区域指向栈帧上存储MarkWord的地址，成功则加锁成功。否则说明被其他线程抢占了，升为重量级锁，锁对象的MarkWord指向互斥量</li>
+<li>解锁：CAS将栈空间的MarkWord写回到锁对象，如果失败，说明已经升级到重量级锁，需要唤醒被阻塞的线程</li>
+</ul>
+<p>轻量级锁相比重量级锁（互斥量）的优势是？什么场景下更适合使用轻量级锁？</p>
+<ul>
+<li>轻量级锁使用CAS避免了使用互斥量的开销，在加解锁期间如果不存在并发竞争锁对象，就不会升级为重量级锁，减少了使用互斥量的性能开销</li>
+<li>锁竞争不激烈，线程间交替持有锁时，适合轻量级锁</li>
+</ul>
+<p>偏向锁的工作原理是？适合什么场景？</p>
+<ul>
+<li>MarkWord区域指向持有锁的线程id，这样同一线程下次获取锁时，无需额外操作</li>
+<li>只有同一个线程尝试获取锁，适合用偏向锁</li>
+</ul>
+<p>偏向锁、轻量级锁、重量级锁之间的升降级流转过程是？</p>
+<ul>
+<li>如果MarkWord处于无锁状态且偏向锁可用，则尝试获取偏向锁，失败则升级为轻量级锁</li>
+<li>轻量级锁解锁成功，恢复到无锁状态，偏向锁不可用。解锁失败，升级为重量级锁，唤醒阻塞线程</li>
+<li>重量级锁解锁成功，恢复到无锁状态，偏向锁不可用</li>
+</ul>
+<h2 id="线程模型"><a href="#线程模型" class="headerlink" title="线程模型"></a>线程模型</h2><p>JAVA的线程是纯native实现的，因此完全依赖底层操作系统。JAVA线程最终会映射到操作系统的线程模型上</p>
+<p>操作系统的线程模型有以下三类：</p>
+<ul>
+<li>一对一线程模型。程序里创建的线程实际是内核线程封装的轻量级进程，程序线程与<code>内核线程</code>是一一映射的</li>
+<li>一对多线程模型。程序里创建的线程与系统内核无关，是纯用户态的线程（<code>用户线程</code>）。一个内核线程映射多个用户线程</li>
+</ul>
+<p>JAVA在Windows和Linux操作系统上，使用一对一线程模型，即JAVA线程会映射到内核线程</p>
+<h2 id="线程调度"><a href="#线程调度" class="headerlink" title="线程调度"></a>线程调度</h2><p>线程调度有两种方式</p>
+<ul>
+<li>协同式：线程控制型。线程执行完后通知操作系统进行线程切换。缺点是一旦线程执行时间过长，会阻塞其他的线程</li>
+<li>抢占式：操作系统控制型。操作系统来调度线程的执行。JAVA使用这种方式<ul>
+<li>JAVA支持设置线程优先级来影响线程调度，但因为JAVA线程与内核线程一一映射，而内核线程的优先级与对应的操作系统有关，因此JAVA定义的线程优先级需要映射到操作系统内核线程优先级。所以在不同操作系统中，JAVA线程优先级表现不同，不能完全依赖设置的优先级</li>
+</ul>
+</li>
+</ul>
+<h2 id="线程状态"><a href="#线程状态" class="headerlink" title="线程状态"></a>线程状态</h2><p>JAVA定义了五种线程状态</p>
+<ul>
+<li>新建（New）：线程创建且未启动前</li>
+<li>运行（Runable）：Ready和Running都对应这种状态</li>
+<li>无限期等待（Waiting）：线程执行时主动调用监视器对象的无参wait方法。需要被其他线程显式notify唤醒</li>
+<li>限期等待（TimedWaiting）：线程执行时主动调用sleep和wait带参方法，会让出执行权。但会在指定时间后回到Runable状态<ul>
+<li>sleep和join不会释放锁，wait会释放锁</li>
+</ul>
+</li>
+<li>阻塞（Blocked）：线程执行时遇到同步代码且未获得排它锁，则被动让出执行权。获得对象锁后回到Runable状态</li>
+</ul>
+<h3 id="wait-amp-notify"><a href="#wait-amp-notify" class="headerlink" title="wait &amp; notify"></a>wait &amp; notify</h3><p>wait和notify的总结如下：</p>
+<ul>
+<li>wait方法会使当前线程进入自己所持有的监视器锁(this object)的等待队列中, 并且放弃一切已经拥有的(这个监视器锁上的)同步资源, 然后挂起当前线程, 直到以下四个条件之一发生:<ul>
+<li>其他线程调用了this object的notify方法, 并且当前线程恰好是被选中来唤醒的那一个</li>
+<li>其他线程调用了this object的notifyAll方法</li>
+<li>其他线程中断了当前线程</li>
+<li>指定的超时时间到了.(如果指定的超时时间是0, 则该线程会一直等待, 直到收到其他线程的通知)</li>
+</ul>
+</li>
+<li>当以上4个条件之一满足后, 该线程从wait set中移除, 重新参与到线程调度中, 并且和其他线程一样, 竞争锁资源, 一旦它又获得了监视器锁, 则它在调用wait方法时的所有状态都会被恢复, 这里要注意“假唤醒”的问题<ul>
+<li>如果用if判断唤醒条件，则notifyAll唤醒后可能产生虚假唤醒。例如生产消费模型，生产者notifyAll唤醒所有消费者，可能出现超额消费（超卖）。最好的解法是使用while判断唤醒条件，因为if判断唤醒条件，唤醒后不会再次校验唤醒条件，可能这时又不满足唤醒条件了，即发生了虚假唤醒。see：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/jichi/p/12694260.html">https://www.cnblogs.com/jichi/p/12694260.html</a></li>
+</ul>
+</li>
+<li>当前线程在进入wait set之前或者在wait set之中时, 如果被其他线程中断了, 则会抛出InterruptedException异常, 但是, 如果是在恢复现场的过程中被中断了, 则直到现场恢复完成后才会抛出InterruptedException</li>
+<li>即使wait方法把当前线程放入this object的wait set里, 也只会释放当前监视器锁(this object), 如果当前线程还持有了其他同步资源, 则即使它在this object中的等待队列中, 也不会释放</li>
+<li>notify方法会在所有等待监视器锁的线程中任意选一个唤醒, 具体唤醒哪一个, 交由该方法的实现者自己决定.</li>
+<li>线程调用notify方法后不会立即释放监视器锁，只有退出同步代码块后，才会释放锁（与之相对，调用wait方法会立即释放监视器锁）</li>
+<li>线程被notify或notifyAll唤醒后会继续和其他普通线程一样竞争锁资源</li>
+</ul>
+<h2 id="线程安全"><a href="#线程安全" class="headerlink" title="线程安全"></a>线程安全</h2><p>线程安全的极简定义：</p>
+<p>并发下对共享对象的操作都可以获得正确的结果</p>
+<h3 id="共享数据的五类线程安全等级"><a href="#共享数据的五类线程安全等级" class="headerlink" title="共享数据的五类线程安全等级"></a>共享数据的五类线程安全等级</h3><p>按共享数据的线程安全等级由强至弱排序，可以将共享数据分为五类：</p>
+<p>不可变、绝对线程安全、相对线程安全、线程兼容、线程对立</p>
+<h4 id="不可变"><a href="#不可变" class="headerlink" title="不可变"></a>不可变</h4><p>不可变类型的共享数据，无需进行任何同步措施，一定是线程安全的</p>
+<p>如果共享数据是基本数据类型，只要定义时使用final修饰就可以保证它不会变</p>
+<p>如果共享数据类型是引用类型，需要保证对象的行为不会对其状态（属性）产生任何影响。常见的例子是String对象，String类任何的方法都不会影响原来的值，只会返回一个新构造的字符串对象</p>
+<h4 id="绝对线程安全"><a href="#绝对线程安全" class="headerlink" title="绝对线程安全"></a>绝对线程安全</h4><p>绝对线程安全类型的共享数据，要求调用方不需要任何同步措施，就能保证对共享数据的操作是线程安全的</p>
+<p>有些声明为线程安全的类，不一定是绝对线程安全的</p>
+<p>例如Vector类，虽然它的所有方法都声明为同步来保证线程安全，但对于<code>复合操作</code>依然需要调用方使用同步措施保证线程安全。例如经典的<code>put-if-absent</code>情况，尽管contains、add方法都正确地同步了，但复合操作时，if条件判断为真，那个用来访问vector.contains方法的锁已经释放，在即将的vector.add方法调用之间有间隙，在多线程环境中，完全有可能被其他线程获得vector的lock并改变其状态，此后vector.add继续，但此时它已经基于一个错误的假设了</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">if (!vector.contains(element)) </span><br><span class="line">    vector.add(element); </span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="相对线程安全"><a href="#相对线程安全" class="headerlink" title="相对线程安全"></a>相对线程安全</h4><p>相对线程安全类型的共享数据，需要保证对共享对象单独的操作是线程安全的。但对于一些复合操作，就可能需要调用方额外的同步措施保证调用的正确性。上面Vector例子就能印证。所以说Vector类是相对线程安全的。类似的还有HashTable和一些其他的同步集合类。</p>
+<h4 id="线程兼容"><a href="#线程兼容" class="headerlink" title="线程兼容"></a>线程兼容</h4><p>线程兼容类型的共享数据，需要调用端正确使用同步措施保证对象并发环境下安全的使用。我们平时说一个类不是线程安全的，基本都是这种情况。</p>
+<h4 id="线程对立"><a href="#线程对立" class="headerlink" title="线程对立"></a>线程对立</h4><p>线程对立类型的共享数据，无论调用方是否采取同步措施，都无法在多线程环境下并发操作对象。</p>
+<h3 id="线程同步机制"><a href="#线程同步机制" class="headerlink" title="线程同步机制"></a>线程同步机制</h3><h4 id="互斥同步"><a href="#互斥同步" class="headerlink" title="互斥同步"></a>互斥同步</h4><p>同步指多线程并发访问共享数据时，同一时刻数据只被一个线程使用。互斥是实现同步的方式</p>
+<p>JAVA中最常使用的互斥同步方式就是synchronized关键字。使用synchronized需要明确指明锁定和解锁的对象，可以在代码里明确声明，如果没有，根据synchronized修饰的是类方法还是实例方法，取对应的class对象或实例对象作为锁对象</p>
+<blockquote>
+<p>Synchronized</p>
+</blockquote>
+<p>synchronized关键字编译后会在同步块前后形成两条字节码指令：monitorenter和monitorexit。enter时需要获得对象的锁，如果对象没被锁定或当前线程已经持有对象锁，把锁的计数器+1。exit时把锁的计数器-1。如果线程获取对象锁失败，则阻塞等待</p>
+<p>由此可知，synchronized同步块对线程来说是可重入的</p>
+<p>synchronized是重量级的一个操作：JAVA的线程会映射到系统内核线程，synchronized同步会频繁阻塞和唤醒线程，这些操作都要依赖操作系统完成，因此要频繁地在用户态和内核态之间切换，影响性能</p>
+<blockquote>
+<p>ReentrantLock</p>
+</blockquote>
+<p>和synchronized类似，都是可重入锁。但也有区别：</p>
+<ul>
+<li>阻塞可中断：阻塞在等待对象锁的线程可以中断来放弃等待，改为处理其他的事情</li>
+<li>公平锁：多个线程按申请对象锁的时间顺序依次获得锁。ReentrantLock支持公平锁和非公平锁两种模式，synchronized的锁是非公平的，任何等待锁的线程都有机会获得锁</li>
+<li>更灵活的等待通知模式：synchronized的锁对象执行wait&#x2F;notify方法可以实现一个条件下的等待通知。ReentrandLock可以创建多个condition（监视器对象），每个condition都可以自由调用await&#x2F;signal完成等待通知，从而有选择性地通知那些等待在特定condition的线程，线程调度更加灵活</li>
+</ul>
+<p>性能上，在JDK1.6发布后（1.6对synchronized做了优化），二者基本持平</p>
+<h4 id="非阻塞同步"><a href="#非阻塞同步" class="headerlink" title="非阻塞同步"></a>非阻塞同步</h4><p>互斥同步是一种重量级的、悲观的并发策略</p>
+<p>那什么是乐观的并发策略呢？通俗说，就是先操作，再检测有没有并发存在，如果没有就操作成功了，如果有，就采取补偿措施（最常见的就是不断重试直至成功）</p>
+<p>这种乐观策略的许多实现方式，都不需要线程挂起，因此称为非阻塞同步</p>
+<p>得益于指令集对原子操作指令的丰富，使得非阻塞同步能够实现</p>
+<p>JAVA的Unsafe类里提供了compareAndSwapXXX方法，该方法会即时编译为一条CAS(compareAndSwap指令，当前值比较成功后与期望值交换，不成功返回当前值)原子操作指令。基于该方法，诞生了一些非阻塞同步的实现类，例如JUC包里的整数原子类，其中的compareAndSet和getAndIncrement方法都用到了CAS指令。以AtomInteger的自增接口为例，它通过volatile可见性机制直接读到主内存最新值，然后作为当前值，+1后的值作为期望值，调用CAS指令</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public final int getAndIncrement() &#123;</span><br><span class="line">    return unsafe.getAndAddInt(this, valueOffset, 1);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public final int getAndAddInt(Object var1, long var2, int var4) &#123;</span><br><span class="line">    int var5;</span><br><span class="line">    do &#123;</span><br><span class="line">        var5 = this.getIntVolatile(var1, var2);</span><br><span class="line">    &#125; while(!this.compareAndSwapInt(var1, var2, var5, var5 + var4));</span><br><span class="line"></span><br><span class="line">    return var5;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>CAS看起来很适合非阻塞同步，但也有一个漏洞，即<code>ABA问题</code>：变量在读取时是A值，CAS阶段也成功，即当前值仍然是A，但无法能保证在读取和CAS操作期间，变量从未改变过，可能从A到B，又回到A。解决这个问题可以使用版本号，但意义不大，因为通常情况下，ABA问题不会影响并发操作的正确性。如果影响，可以使用传统的互斥同步。</p>
+<h3 id="锁优化"><a href="#锁优化" class="headerlink" title="锁优化"></a>锁优化</h3><p>锁优化是为了更高效地实现线程间对共享对象的竞争</p>
+<h4 id="自旋与自适应自旋"><a href="#自旋与自适应自旋" class="headerlink" title="自旋与自适应自旋"></a>自旋与自适应自旋</h4><p>自旋锁的目标是降低线程切换的成本</p>
+<p>自旋的概念：</p>
+<ul>
+<li>通常线程对共享数据的锁定时间很短。在多核处理器中，可以让多个线程并行执行。所以在线程获取不到锁时，可以执行一个忙循环（自旋），看看锁是否会很快释放。自旋次数默认是10次，否则一直自旋得不到锁时，反而浪费硬件资源。</li>
+</ul>
+<p>自适应自旋：</p>
+<ul>
+<li>基于对锁的自旋等待结果，动态调整自旋次数，称为自适应自旋</li>
+</ul>
+<h4 id="锁消除"><a href="#锁消除" class="headerlink" title="锁消除"></a>锁消除</h4><p>JVM在即时编译阶段，对一些代码要求同步，但被检测到不可能存在共享数据竞争的锁进行消除。检测的方法是逃逸分析技术，判断一段代码里堆上的数据是否会逃逸从而被其他线程访问（线程逃逸），如果不会，则可以进行锁消除</p>
+<h4 id="锁粗化"><a href="#锁粗化" class="headerlink" title="锁粗化"></a>锁粗化</h4><p>对同一个锁对象一连串零碎的加锁同步代码，会把加锁范围扩大到最外层，避免频繁的加解锁造成线程阻塞与唤醒带来的性能损耗</p>
+<h4 id="轻量级锁"><a href="#轻量级锁" class="headerlink" title="轻量级锁"></a>轻量级锁</h4><p>轻量级锁的目标是，减少无实际竞争情况下，使用重量级锁产生的性能消耗，包括系统调用引起的内核态与用户态切换、线程阻塞造成的线程切换等</p>
+<p>首先介绍Hotspot虚拟机中<code>对象头的内存布局</code>：</p>
+<ul>
+<li>对象未被锁定时，一部分存储对象自身的运行时数据，包括哈希码、GC分代年龄、锁标志位等，官方称为<code>Mark Word</code><ul>
+<li>MarkWord空间是被复用的，在对象被锁定时，存储的内容会不同</li>
+</ul>
+</li>
+<li>另一部分存储指向方法区对象类型的指针</li>
+</ul>
+<p>轻量级锁的加锁过程：<br>代码进入同步块时，如果同步对象没有被锁定，JVM会在当前线程的栈帧中分配一部分空间，存储锁对象MarkWord的拷贝称为<code>DisplacedMarkWord</code>，然后CAS将锁对象MarkWord的值改为指向这部分栈帧空间的指针。如果修改成功，这个线程就拥有了锁对象，锁标志位改为轻量级锁状态。如果修改失败，说明锁对象已经被其他线程抢占，锁对象要膨胀为重量级锁，MarkWord存储指向互斥量的指针，锁标志位改为重量级锁状态，等待锁的线程进入阻塞状态</p>
+<p>轻量级锁的解锁过程：<br>CAS将栈帧中DisplacedMarkWord的值写回到锁对象的MarkWord区域。如果MarkWord值并未指向栈地址，说明已经升级为重量级锁，解锁还需要唤醒被阻塞线程。</p>
+<p>综上，轻量级锁使用CAS避免了使用互斥量的开销，在加解锁期间如果不存在并发竞争锁对象，就不会升级为重量级锁，减少了使用互斥量的性能开销。但如果在并发激烈的场景，轻量级锁会比重量级锁慢，因为额外产生了CAS操作</p>
+<h4 id="偏向锁"><a href="#偏向锁" class="headerlink" title="偏向锁"></a>偏向锁</h4><p>偏向锁的目标是，减少无竞争且只有一个线程使用锁的情况下，使用轻量级锁产生的性能消耗。轻量级锁每次申请、释放锁都至少需要一次CAS，但偏向锁只有初始化时需要一次CAS。</p>
+<p>“偏向”的意思是，偏向锁假定将来只有第一个申请锁的线程会使用锁（不会有任何线程再来申请锁），因此，只需要在Mark Word中CAS记录owner（本质上也是更新，但初始值为空），如果记录成功，则偏向锁获取成功，记录锁状态为偏向锁，以后当前线程等于owner就可以零成本的直接获得锁；否则，说明有其他线程竞争，膨胀为轻量级锁。</p>
+<h4 id="偏向锁、轻量级锁、重量级锁的使用场景"><a href="#偏向锁、轻量级锁、重量级锁的使用场景" class="headerlink" title="偏向锁、轻量级锁、重量级锁的使用场景"></a>偏向锁、轻量级锁、重量级锁的使用场景</h4><p>偏向锁：</p>
+<ul>
+<li>无实际竞争，且将来只有第一个申请锁的线程会使用锁。</li>
+</ul>
+<p>轻量级锁：</p>
+<ul>
+<li>无实际竞争，多个线程交替使用锁；允许短时间的锁竞争。</li>
+</ul>
+<p>重量级锁：</p>
+<ul>
+<li>有实际竞争，且锁竞争时间长。</li>
+</ul>
+<h4 id="不同锁升降级流转"><a href="#不同锁升降级流转" class="headerlink" title="不同锁升降级流转"></a>不同锁升降级流转</h4><p>没有任何线程尝试获取锁对象时，处于未锁定状态</p>
+<p>锁对象被初始锁定后，处于偏向锁状态</p>
+<p>其他线程尝试获取偏向锁时，如果锁对象正被持有，升级为轻量级锁，如果未被持有，降级为未锁定状态，但后续不可再使用偏向锁</p>
+<p>轻量级锁定阶段，如果有其他线程尝试获取锁，升级为重量级锁</p>
+<p>轻量级锁和重量级锁解锁后都降级到未锁定状态，重量级锁还需要唤醒阻塞线程</p>
+<p><img src="/JVM/%E5%8A%A0%E8%A7%A3%E9%94%81%E6%B5%81%E7%A8%8B.webp"></p>
+<h2 id="异步任务FutureTask"><a href="#异步任务FutureTask" class="headerlink" title="异步任务FutureTask"></a>异步任务FutureTask</h2><p>FutureTask表示一个异步任务，它实现了Runnable和Future接口，其中Future接口提供了获取任务结果、取消任务的能力。线程池ThreadPoolExecutor的submit方法会创建一个异步任务FutureTask并执行，然后返回FuturTask，外部通过调用它的get方法获取异步结算结果</p>
+<p>FutureTask内部有一个volatile state，表示当前任务的执行状态，含义如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">private static final int NEW          = 0; //任务新建和执行中</span><br><span class="line">private static final int COMPLETING   = 1; //瞬态，任务已经执行完毕或抛异常了，出参赋值给outcome前的状态</span><br><span class="line">private static final int NORMAL       = 2; //终态，任务正常执行结束，出参赋值给outcome后的状态</span><br><span class="line">private static final int EXCEPTIONAL  = 3; //终态，任务执行异常，throwable赋值给outcome后的状态</span><br><span class="line">private static final int CANCELLED    = 4; //终态，任务从NEW到CANCELED，如果任务还没执行，则不会执行。如果正在执行，cancel方法没效果，只是状态变为canceled</span><br><span class="line">private static final int INTERRUPTING = 5; //瞬态，调用cancel方法且需要中断任务时，在调用任务线程的interupt中断方法前的状态</span><br><span class="line">private static final int INTERRUPTED  = 6; //终态，已调用任务线程的interupt中断方法</span><br></pre></td></tr></table></figure>
+
+<p>重点说下对cancel的理解：</p>
+<ul>
+<li>异步任务还没执行或还没执行完，状态为NEW，此时可取消，返回true，future.get方法抛任务取消异常。否则如果执行完了或者执行异常了或者之前已经取消了，则不能取消，返回false</li>
+<li>如果任务还没执行，则取消生效，任务不会执行</li>
+<li>如果任务在执行中<ul>
+<li>cancel方法不设置中断线程，则对任务没有任何效果，任务状态改为Canceled</li>
+<li>cancel方法设置中断线程，则调用thread.interupt做线程中断，任务状态最终为INTERUPTED</li>
+</ul>
+</li>
+</ul>
+<p>源码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line">public class FutureDemo &#123;</span><br><span class="line">    public static void main(String[] args) throws InterruptedException &#123;</span><br><span class="line"></span><br><span class="line">        //ThreadPoolExecutor executorService = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);</span><br><span class="line"></span><br><span class="line">        ThreadPoolExecutor executorService = new ThreadPoolExecutor(1, 1,</span><br><span class="line">            0L, TimeUnit.MILLISECONDS,</span><br><span class="line">            new LinkedBlockingQueue&lt;Runnable&gt;());</span><br><span class="line">        // 预创建线程</span><br><span class="line">        executorService.prestartCoreThread();</span><br><span class="line"></span><br><span class="line">        Future future = executorService.submit(new Callable&lt;Object&gt;() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public Object call() &#123;</span><br><span class="line">                System.out.println(&quot;start to run callable&quot;);</span><br><span class="line">                Long start = System.currentTimeMillis();</span><br><span class="line">                while (!Thread.currentThread().isInterrupted()) &#123;</span><br><span class="line">                    Long current = System.currentTimeMillis();</span><br><span class="line">                    if ((current - start) &gt; 5000) &#123;</span><br><span class="line">                        System.out.println(&quot;当前任务执行已经超过5s&quot;);</span><br><span class="line">                        return 1;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                System.out.println(&quot;当前任务已被中断&quot;);</span><br><span class="line">                return -1;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        // 保证异步任务已经在执行了</span><br><span class="line">        Thread.sleep(1000);</span><br><span class="line"></span><br><span class="line">        /**</span><br><span class="line">         * future.cancel方法说明：</span><br><span class="line">         * 异步任务还没执行或还没执行完，状态为NEW，此时可取消，返回true，否则如果执行完了或者执行异常了或者之前已经取消了，则不能取消，返回false</span><br><span class="line">         * 如果任务还没执行，则取消生效，任务不会执行</span><br><span class="line">         * 如果任务在执行中</span><br><span class="line">         *      cancel方法不设置中断线程，则对任务没有任何效果</span><br><span class="line">         *      cancel方法设置中断线程，则调用thread.interupt做线程中断，任务状态最终为INTERUPTED</span><br><span class="line">         */</span><br><span class="line">        System.out.println(future.cancel(true));</span><br><span class="line"></span><br><span class="line">        try &#123;</span><br><span class="line">            /**</span><br><span class="line">             * 上面future.cancel返回true，但任务已经在执行中了且没有中断，实际不影响任务执行</span><br><span class="line">             * 不过Future(实际为FutureTask)的状态已经改为Canceled，get方法抛任务取消异常</span><br><span class="line">             * 所以只要任务被取消成功，就无法通过future.get拿到结果</span><br><span class="line">             */</span><br><span class="line">            System.out.println(future.get());</span><br><span class="line">            Thread.sleep(500);</span><br><span class="line"></span><br><span class="line">        &#125; catch (Exception e) &#123;</span><br><span class="line">            //NO OP</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; finally &#123;</span><br><span class="line">            executorService.shutdown();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>西米大人
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://dcbupt.github.io/2021/04/30/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0JAVA%E7%BA%BF%E7%A8%8B/" title="系统学习JAVA线程">http://dcbupt.github.io/2021/04/30/blog_article/系统学习系列/系统学习JAVA线程/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+
+        
+
+<blockquote class="blockquote-center" style="color: #f0ad4e">完 ♥ 结</blockquote>
+
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/03/07/blog_article/%E5%8E%A8%E8%89%BA/%E8%BE%A3%E6%A4%92%E7%82%92%E8%82%89/" rel="prev" title="辣椒炒肉">
+      <i class="fa fa-chevron-left"></i> 辣椒炒肉
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/04/30/blog_article/%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD/%E7%BA%BF%E7%A8%8B%E4%B8%AD%E6%96%AD%E8%AF%A6%E8%A7%A3/" rel="next" title="线程中断详解">
+      线程中断详解 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#JAVA%E7%BA%BF%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text">JAVA线程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9F%A5%E8%AF%86%E7%82%B9"><span class="nav-number">1.1.</span> <span class="nav-text">知识点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.2.</span> <span class="nav-text">线程模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E8%B0%83%E5%BA%A6"><span class="nav-number">1.3.</span> <span class="nav-text">线程调度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E7%8A%B6%E6%80%81"><span class="nav-number">1.4.</span> <span class="nav-text">线程状态</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#wait-amp-notify"><span class="nav-number">1.4.1.</span> <span class="nav-text">wait &amp; notify</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8"><span class="nav-number">1.5.</span> <span class="nav-text">线程安全</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B1%E4%BA%AB%E6%95%B0%E6%8D%AE%E7%9A%84%E4%BA%94%E7%B1%BB%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E7%AD%89%E7%BA%A7"><span class="nav-number">1.5.1.</span> <span class="nav-text">共享数据的五类线程安全等级</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%8D%E5%8F%AF%E5%8F%98"><span class="nav-number">1.5.1.1.</span> <span class="nav-text">不可变</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%9D%E5%AF%B9%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8"><span class="nav-number">1.5.1.2.</span> <span class="nav-text">绝对线程安全</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%9B%B8%E5%AF%B9%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8"><span class="nav-number">1.5.1.3.</span> <span class="nav-text">相对线程安全</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E5%85%BC%E5%AE%B9"><span class="nav-number">1.5.1.4.</span> <span class="nav-text">线程兼容</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E5%AF%B9%E7%AB%8B"><span class="nav-number">1.5.1.5.</span> <span class="nav-text">线程对立</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5%E6%9C%BA%E5%88%B6"><span class="nav-number">1.5.2.</span> <span class="nav-text">线程同步机制</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%92%E6%96%A5%E5%90%8C%E6%AD%A5"><span class="nav-number">1.5.2.1.</span> <span class="nav-text">互斥同步</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9D%9E%E9%98%BB%E5%A1%9E%E5%90%8C%E6%AD%A5"><span class="nav-number">1.5.2.2.</span> <span class="nav-text">非阻塞同步</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%94%81%E4%BC%98%E5%8C%96"><span class="nav-number">1.5.3.</span> <span class="nav-text">锁优化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%87%AA%E6%97%8B%E4%B8%8E%E8%87%AA%E9%80%82%E5%BA%94%E8%87%AA%E6%97%8B"><span class="nav-number">1.5.3.1.</span> <span class="nav-text">自旋与自适应自旋</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%94%81%E6%B6%88%E9%99%A4"><span class="nav-number">1.5.3.2.</span> <span class="nav-text">锁消除</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%94%81%E7%B2%97%E5%8C%96"><span class="nav-number">1.5.3.3.</span> <span class="nav-text">锁粗化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BD%BB%E9%87%8F%E7%BA%A7%E9%94%81"><span class="nav-number">1.5.3.4.</span> <span class="nav-text">轻量级锁</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%81%8F%E5%90%91%E9%94%81"><span class="nav-number">1.5.3.5.</span> <span class="nav-text">偏向锁</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%81%8F%E5%90%91%E9%94%81%E3%80%81%E8%BD%BB%E9%87%8F%E7%BA%A7%E9%94%81%E3%80%81%E9%87%8D%E9%87%8F%E7%BA%A7%E9%94%81%E7%9A%84%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">1.5.3.6.</span> <span class="nav-text">偏向锁、轻量级锁、重量级锁的使用场景</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%8D%E5%90%8C%E9%94%81%E5%8D%87%E9%99%8D%E7%BA%A7%E6%B5%81%E8%BD%AC"><span class="nav-number">1.5.3.7.</span> <span class="nav-text">不同锁升降级流转</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%82%E6%AD%A5%E4%BB%BB%E5%8A%A1FutureTask"><span class="nav-number">1.6.</span> <span class="nav-text">异步任务FutureTask</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="西米大人"
+      src="/images/me.png">
+  <p class="site-author-name" itemprop="name">西米大人</p>
+  <div class="site-description" itemprop="description"><blockquote class="blockquote-center">优秀的人，不是不合群，而是他们合群的人里面没有你</blockquote></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">151</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dcbupt" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;dcbupt" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:byrddc@hotmail.com" title="E-Mail → mailto:byrddc@hotmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">西米大人</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">388k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">10:47</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.id);
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            let target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    let { app_id, app_key, server_url } = {"enable":true,"app_id":"OBdFsOOtfIDcNnWdzkGbICmj-gzGzoHsz","app_key":"89LmL4tP7hkyChAmEleq2MdO","server_url":null,"security":true};
+    function fetchData(api_server) {
+      var Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    let api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+<script src="/js/love.js"></script>
+
+<script src="/js/particle.js"></script>
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('https://cdn.jsdelivr.net/npm/valine@1.4.18/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'OBdFsOOtfIDcNnWdzkGbICmj-gzGzoHsz',
+      appKey     : '89LmL4tP7hkyChAmEleq2MdO',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

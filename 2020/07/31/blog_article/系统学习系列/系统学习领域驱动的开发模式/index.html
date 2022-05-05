@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-mac-osx.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"dcbupt.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="系统学习领域驱动的开发模式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="系统学习领域驱动的开发模式">
+<meta property="og:url" content="http://dcbupt.github.io/2020/07/31/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8%E7%9A%84%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F/index.html">
+<meta property="og:site_name" content="dcddc">
+<meta property="og:description" content="系统学习领域驱动的开发模式">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-07-31T04:02:00.000Z">
+<meta property="article:modified_time" content="2022-05-01T06:44:18.828Z">
+<meta property="article:author" content="西米大人">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://dcbupt.github.io/2020/07/31/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8%E7%9A%84%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+  <title>系统学习领域驱动的开发模式 | dcddc</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">dcddc</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">西米大人的博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dcbupt.github.io/2020/07/31/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8%E7%9A%84%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/me.png">
+      <meta itemprop="name" content="西米大人">
+      <meta itemprop="description" content="<blockquote class="blockquote-center">优秀的人，不是不合群，而是他们合群的人里面没有你</blockquote>">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="dcddc">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          系统学习领域驱动的开发模式
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-07-31 12:02:00" itemprop="dateCreated datePublished" datetime="2020-07-31T12:02:00+08:00">2020-07-31</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-05-01 14:44:18" itemprop="dateModified" datetime="2022-05-01T14:44:18+08:00">2022-05-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/" itemprop="url" rel="index"><span itemprop="name">系统学习系列</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/07/31/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8%E7%9A%84%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F/" class="post-meta-item leancloud_visitors" data-flag-title="系统学习领域驱动的开发模式" title="热度">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">热度:</span>
+              <span class="leancloud-visitors-count"></span>℃
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">评论:</span>
+    
+    <a title="valine" href="/2020/07/31/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8%E7%9A%84%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/07/31/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8%E7%9A%84%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F/" itemprop="commentCount"></span>℃
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">字数：</span>
+              <span>4.1k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>7 分钟</span>
+            </span>
+            <div class="post-description"><blockquote class="blockquote-center">系统学习领域驱动的开发模式</blockquote></div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>软件开发当前的问题现状：</p>
+<ul>
+<li>交付速度不够快</li>
+<li>测试覆盖度不够，上线后容易出故障，质量难以保证</li>
+</ul>
+<p>原因：<br>随着软件的持续演进，系统复杂度成倍增加，造成技术债务越来越多，阻塞了开发效率也降低了交付质量</p>
+<p>重构能解决吗？<br>重构有边界，边界内的重构无法影响到边界外的代码设计，且重构后的代码也容易被逐渐侵蚀。所以很难。</p>
+<p>微服务、中台化能解决吗？<br>在不良的业务分析、架构设计基础上，推动中台化或微服务，往往会使矛盾凸显</p>
+<p>云原生时代，软件性能、可靠性等已被底层接管。作为业务研发，实现软件高质量、快速交付的关键因素应该是：</p>
+<ul>
+<li>需求分析能力<ul>
+<li>该阶段需要做到：业务引领的领域建模</li>
+</ul>
+</li>
+<li>架构设计和实现能力<ul>
+<li>该阶段需要做到：设计领域驱动的微服务架构 &amp; 契约导向的软件实现</li>
+</ul>
+</li>
+</ul>
+<h1 id="领域模型"><a href="#领域模型" class="headerlink" title="领域模型"></a>领域模型</h1><h2 id="领域模型的重要性"><a href="#领域模型的重要性" class="headerlink" title="领域模型的重要性"></a>领域模型的重要性</h2><p>领域模型是软件开发的核心载体<br>好的领域模型沉淀下来的是领域资产，能快速满足后续业务发展。领域资产越来越多，技术债务就会越来越少<br>领域模型反应的是对行业的<code>认知</code>，是一家企业的根本能力和竞争力。</p>
+<h2 id="领域模型的基本概念"><a href="#领域模型的基本概念" class="headerlink" title="领域模型的基本概念"></a>领域模型的基本概念</h2><p>领域模型是概念模型，描述的是现实世界的实体和他们之间的关系，与软件实现无关，存在于问题空间，在需求分析阶段产生领域模型。<br>领域模型建立后，会贯穿软件开发始终，直接指导架构设计和实现</p>
+<h2 id="领域模型的表示"><a href="#领域模型的表示" class="headerlink" title="领域模型的表示"></a>领域模型的表示</h2><p>类图是一种较好的领域模型表示方法。<br>每个类代表一种概念。<br>普通箭头表示一种可见关系。<br>空心菱形箭头表示一种包含关系，但生命周期不同。<br>实心菱形箭头表示一种包含关系，但生命周期相同。<br>三角箭头表示一种抽象与继承关系。</p>
+<h2 id="领域模型的作用"><a href="#领域模型的作用" class="headerlink" title="领域模型的作用"></a>领域模型的作用</h2><p>好的领域模型应该具备以下三个作用。</p>
+<ul>
+<li>建立共识 <ul>
+<li>建立与业务人员对于需求、产品的共识。避免需求失焦而产生返工，甚至做错。</li>
+<li>建立共识需要拉齐业务与开发，在协作空间（白板）里产生共识。</li>
+<li>建立共识的目的就是统一语言。</li>
+<li>建立共识衡量的方法：<code>任何在需求中出现的概念，都必须出现在领域模型中</code></li>
+</ul>
+</li>
+<li>产生洞察<ul>
+<li>产生洞察要相信业务人员的直觉</li>
+<li>产生洞察要有分解和抽象的能力</li>
+<li>产生洞察的领域模型才是企业真正的领域资产</li>
+</ul>
+</li>
+<li>持续演进<ul>
+<li>没有绝对正确的领域模型。随着认知的深入，领域模型需要持续演进</li>
+<li>持续演进对领域模型的修改，也要相应修改代码和架构</li>
+</ul>
+</li>
+</ul>
+<h2 id="从需求分析到领域建模"><a href="#从需求分析到领域建模" class="headerlink" title="从需求分析到领域建模"></a>从需求分析到领域建模</h2><p>任何业务需求都可以拆分为三个组成部分，逐层展开分别是目标、操作流程、规则。<br>需求分析有很多方法论。</p>
+<ul>
+<li>用例分析：结构化的分析繁杂的业务场景。用例组成元素有执行者、交互、边界、前置后置条件、例外等。 </li>
+<li>事件风暴：事件+风暴。以领域事件（业务视角的重要事件）为主体构建业务场景的流程，用头脑风暴探索和发现可能的异常情况而衍生出的其他场景。</li>
+</ul>
+<p>事件风暴是一种很适合用来分析需求的方法论。<br>事件风暴中，需要我们先划分业务场景，然后针对一次完整的业务场景去定义其中产生的所有领域事件。<br>领域事件是由执行者执行了一些命令而产生的。因此一个领域事件必然会携带执行者和命令。</p>
+<p>事件风暴的过程中，领域模型同步产出。<br>验证领域模型的方法：</p>
+<ul>
+<li>用例场景中的任何实体都应该出现在领域模型中</li>
+<li>任何领域模型都应该有对应的用例场景</li>
+</ul>
+<h1 id="从领域模型到代码实现"><a href="#从领域模型到代码实现" class="headerlink" title="从领域模型到代码实现"></a>从领域模型到代码实现</h1><p>好的代码设计应该具备以下三点：</p>
+<ul>
+<li>易于理解</li>
+<li>易于演进</li>
+<li>低开发成本</li>
+</ul>
+<h2 id="实现域的核心概念"><a href="#实现域的核心概念" class="headerlink" title="实现域的核心概念"></a>实现域的核心概念</h2><h3 id="实体"><a href="#实体" class="headerlink" title="实体"></a>实体</h3><p>领域模型构建之后，首先要找出其中最重要的概念模型。一般来说，重要的概念模型有两个特定：</p>
+<ul>
+<li>与其他模型建立的关系更多</li>
+<li>需要使用唯一标识符进行跟踪</li>
+<li>随着业务进展，概念模型的状态和属性也会改变</li>
+</ul>
+<p>对于这种最重要的概念模型，在解空间（实现域）我们称它为<code>实体</code>，用唯一id来标识。</p>
+<h3 id="值对象"><a href="#值对象" class="headerlink" title="值对象"></a>值对象</h3><p>领域模型中那些用来描述实体模型的概念，称为值对象。<br>值对象用来描述实体的特征，我们只关心值对象的属性，不关心它有没有唯一标识符。值对象的值相同，就认为相同，值不同，就认为不同。<br>引入值对象的原因是，在解空间需要将其和实体区分开，减少系统的复杂度</p>
+<p>有时可以使用id作为一种特殊的值对象，代替实体的全部信息，例如用户id。需要的时候再通过id查出实体信息</p>
+<h3 id="领域服务"><a href="#领域服务" class="headerlink" title="领域服务"></a>领域服务</h3><p>领域模型中不包含任何数据的无状态的概念模型，例如一些业务处理过程和业务策略。这类概念模型称为领域服务。</p>
+<h3 id="领域事件"><a href="#领域事件" class="headerlink" title="领域事件"></a>领域事件</h3><p>通过事件风暴进行需求分析，可以很容易得到领域事件。<br>领域事件表达了<code>系统中发生了什么</code>，它们源自于业务活动的结果<br>引入领域事件可以解耦业务间的复杂关系<br>领域事件里需要记录事件上下文，例如一些实体id等 </p>
+<h2 id="聚合"><a href="#聚合" class="headerlink" title="聚合"></a>聚合</h2><p>引入聚合有两个好处</p>
+<ul>
+<li>保证业务逻辑的完整性，减少出错的概率</li>
+<li>明确划分业务边界</li>
+</ul>
+<p>聚合的概念：</p>
+<ul>
+<li>将实体对象和值对象划分为聚合，形成聚合根，并围绕聚合根定义边界</li>
+<li>每个聚合根需要用实体来描述<ul>
+<li>聚合根往往就是领域模型里的实体，围绕实体划分边界，保障对实体操作的业务完整性</li>
+</ul>
+</li>
+<li>聚合根使用充血模式，执行边界内的业务行为，保障边界内的业务逻辑完整性</li>
+<li>外部只能通过持有对聚合根的引用来执行聚合根边界内的业务行为，不能越过聚合根，直接持有聚合根内部的属性</li>
+</ul>
+<h3 id="划分聚合的原则"><a href="#划分聚合的原则" class="headerlink" title="划分聚合的原则"></a>划分聚合的原则</h3><p>生命周期一致性原则：</p>
+<ul>
+<li>聚合边界内的对象，和聚合根之间存在人身依附关系。即，聚合根消失，聚合根内的元素应该同时消失</li>
+<li>如果聚合根需要依赖其他的实体对象，引用实体id作为值对象，不要直接依赖实体对象，因为实体对象间的生命周期是不同的<ul>
+<li>聚合根只持有其他聚合根（实体）的id，这样聚合根只能在充血模式下操作和自己生命周期一致的值对象保证业务完整性，无法操作其他聚合根。保证了业务边界清晰，也符合高内聚低耦合的设计原则</li>
+</ul>
+</li>
+</ul>
+<p>小聚合原则：</p>
+<ul>
+<li>在不破坏业务逻辑完整性的基础上，小聚合带来更大的灵活性</li>
+<li>小聚合的聚合根可能并不是实体的概念，但也包含了一套完整的业务逻辑。将小聚合根作为值对象提供给更大边界的实体，相比于直接在实体里保证小聚合根内部的业务逻辑完整性更加灵活</li>
+</ul>
+<h2 id="工厂"><a href="#工厂" class="headerlink" title="工厂"></a>工厂</h2><p>使用工厂模式来构建聚合根，保障聚合根构造的业务完整性。也可以使用Builder模式</p>
+<h2 id="资源库"><a href="#资源库" class="headerlink" title="资源库"></a>资源库</h2><p>资源库是聚合根的仓储机制，外界只能通过资源库完成对聚合根的访问，也只有聚合根需要提供资源库访问方式。</p>
+<h2 id="代码结构"><a href="#代码结构" class="headerlink" title="代码结构"></a>代码结构</h2><p>使用聚合根名称作为包名。包下是围绕这个聚合定义的所有JAVA类，例如一些描述值对象的类</p>
+<h2 id="分层架构"><a href="#分层架构" class="headerlink" title="分层架构"></a>分层架构</h2><p>基于领域驱动的软件开发，系统架构一般由上到下分为这几层：接口层、应用层、领域层、基础设施层。<br>接口层：</p>
+<ul>
+<li>基于特性通信协议封装对外提供的接口服务。通信协议例如Dubbo\HSF\Restful<br>应用层：</li>
+<li>实现满足应用场景的外层服务，这部分的业务逻辑是经常变动的<br>领域层：</li>
+<li>基于领域模型得到的实例、值对象、领域服务、领域事件集合。负责处理稳定的业务相关逻辑，应用层的接口需要依赖领域层的能力<br>基础设施层：</li>
+<li>数据库、消息、缓存等中间件</li>
+<li>通过防腐层模式包装的外部依赖服务</li>
+</ul>
+<p>建立高效的软件开发，应该以领域层为核心进行开发。领域层和其他层之间通过接口建立联系。因为领域层是最稳定也是最核心的业务抽象和实现。</p>
+<h2 id="意图导向编程"><a href="#意图导向编程" class="headerlink" title="意图导向编程"></a>意图导向编程</h2><p>在开发阶段，编程的顺序应该是由外而内，即意图导向的编程。理由是：</p>
+<ul>
+<li>外层功能比底层实现方案具有更高的确定性</li>
+<li>延迟决策到最后时刻，关键信息经常会自然显现</li>
+<li>由外而内编程允许暂时忽略不重要的细节</li>
+</ul>
+<p>结合上面介绍的分层架构，我们在编码阶段应该先从应用层入口，围绕应用场景定义接口职责。然后再将职责分配到领域层相关的实体、领域服务、领域事件等。</p>
+<h2 id="测试先行"><a href="#测试先行" class="headerlink" title="测试先行"></a>测试先行</h2><p>后置的自动化单元测试的弊端：</p>
+<ul>
+<li>上下文丢失<ul>
+<li>编码后再写测试，很难回忆起编码时考虑到的所有case，丢失上下文也就很难写出完备的测试用例</li>
+</ul>
+</li>
+<li>情绪和动机<ul>
+<li>编码完成后再补测试，情绪和动机上都会受影响</li>
+</ul>
+</li>
+</ul>
+<p>自动化测试Case应该是表达业务意图，在定义好满足业务需求的应用层接口后，在实现内部逻辑前就应该补上测试Case，来检验接口的业务功能是否满足。</p>
+<p>测试用例的本质不是对被测代码的白盒化测试，而是对接口职责的测试。这样能保证在重构后，测试用例依旧可用。<br>测试用例其实描述的是软件开发中的契约（接口的入参格式、出参格式、出参值）。测试先行，就是为了在实现具体的功能细节（与接口职责无关）前，定义契约。</p>
+<p>因此，测试先行的收益包括：</p>
+<ul>
+<li>聚焦于接口职责，从测试用例就能读懂接口意图</li>
+<li>在接口的内部功能实现前，就可以产出接口测试用例，避免丢失上下文</li>
+<li>支持重构</li>
+<li>持续建立对接口的信心</li>
+</ul>
+<h1 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h1><h2 id="子域和限界上下文"><a href="#子域和限界上下文" class="headerlink" title="子域和限界上下文"></a>子域和限界上下文</h2><p>复杂的东西分而治之，各个击破，独立进化，易于复用。</p>
+<p>领域划分需要围绕业务进行，而非技术实现！</p>
+<p>核心域：提炼最有价值和最专业的概念到核心域，把核心变小，发现深层模型，打造核心竞争力<br>核心域需要能提炼出一句话来描述其职能，要足够内聚。</p>
+<p>通用子域：简单理解为非核心域</p>
+<p>拆分领域的方法论</p>
+<ul>
+<li>在业务流程中识别领域</li>
+<li>在领域模型中识别领域</li>
+</ul>
+<p>限界上下文<br>比方：细胞膜隔离了细胞内的物质和细胞外的物质<br>限界上下文的边界和子域定义保持一致。在编码阶段维护住限界上下文是很有挑战的。最好的做法是用领域模型来守护限界上下文</p>
+<p>如何识别限界上下文被破坏了？<br>一个子域的实现代码里，引入了其他域的领域服务。或者，一个领域模型里，引入了其他领域的概念模型</p>
+<p>微服务很适合于保障限界上下文。即，通过进程来隔离，而非通过包来隔离（很容易被破坏）</p>
+<p>划分领域需要保守一些，后续持续演进中可以再拆开细化。如果一开始就拆的太细，后续合并会很痛苦。</p>
+<h1 id="领域资产"><a href="#领域资产" class="headerlink" title="领域资产"></a>领域资产</h1><p>好的领域资产一定是可以<code>被集成、被扩展、被信赖</code>的<br>如何才能做出好的领域资产呢？必须满足以下三点：</p>
+<ul>
+<li>合理划分子域</li>
+<li>良好的契约描述资产能力和约束</li>
+<li>持续演进</li>
+</ul>
+<h2 id="处理遗留资产"><a href="#处理遗留资产" class="headerlink" title="处理遗留资产"></a>处理遗留资产</h2><p>对于遗留资产（前人写的并不符合领域驱动设计的代码），首先还是要把它当做资产看待，因为它还提供正常的功能。对待遗留资产，有这些方法：</p>
+<ul>
+<li>防腐层<ul>
+<li>不直接调用遗留资产的方法，依然调用新的领域模型中定义的方法，在方法内部调用遗留资产的方法，增加防腐层（适配器）来适配遗留资产</li>
+</ul>
+</li>
+<li>在遗留资产上包装并暴露api<ul>
+<li>从遗留资产出发，进行领域分析，提炼出领域方法，内部适配遗留资产的方法，对外只暴露领域方法，并做好自动化测试</li>
+<li>在这个基础上逐步重写遗留资产的方法，称为<code>绞杀者模式</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="防腐层的设计"><a href="#防腐层的设计" class="headerlink" title="防腐层的设计"></a>防腐层的设计</h3><p>防腐层主要作用：</p>
+<ul>
+<li>在新的领域模型里兼容老的历史代码（遗留资产）</li>
+<li>封装其他领域提供的接口</li>
+</ul>
+<p>1、使用门面模式，按新的领域模型需要，定义门面接口，实现上可能会调用多个遗留代码的接口来实现逻辑。</p>
+<p>2、使用适配器模式，，提供适配器类，聚合门面类。它的作用是，对于调用门面类接口时，需要传入的一些遗留代码定义的参数，做一层新老模型的转义（适配）。新的领域模型里直接使用适配器类</p>
+<ul>
+<li>其实也可以直接把新老模型的转义适配放到门面类里，这样就只用一层门面类就能达到防腐层的作用</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>西米大人
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://dcbupt.github.io/2020/07/31/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8%E7%9A%84%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F/" title="系统学习领域驱动的开发模式">http://dcbupt.github.io/2020/07/31/blog_article/系统学习系列/系统学习领域驱动的开发模式/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+
+        
+
+<blockquote class="blockquote-center" style="color: #f0ad4e">完 ♥ 结</blockquote>
+
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/07/13/blog_article/%E6%B5%85%E5%B0%9D%E7%B3%BB%E5%88%97/UML/" rel="prev" title="UML">
+      <i class="fa fa-chevron-left"></i> UML
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/07/31/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" rel="next" title="系统学习分布式锁">
+      系统学习分布式锁 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A2%86%E5%9F%9F%E6%A8%A1%E5%9E%8B"><span class="nav-number">2.</span> <span class="nav-text">领域模型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%86%E5%9F%9F%E6%A8%A1%E5%9E%8B%E7%9A%84%E9%87%8D%E8%A6%81%E6%80%A7"><span class="nav-number">2.1.</span> <span class="nav-text">领域模型的重要性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%86%E5%9F%9F%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">2.2.</span> <span class="nav-text">领域模型的基本概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%86%E5%9F%9F%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%A1%A8%E7%A4%BA"><span class="nav-number">2.3.</span> <span class="nav-text">领域模型的表示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%86%E5%9F%9F%E6%A8%A1%E5%9E%8B%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="nav-number">2.4.</span> <span class="nav-text">领域模型的作用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%8E%E9%9C%80%E6%B1%82%E5%88%86%E6%9E%90%E5%88%B0%E9%A2%86%E5%9F%9F%E5%BB%BA%E6%A8%A1"><span class="nav-number">2.5.</span> <span class="nav-text">从需求分析到领域建模</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%8E%E9%A2%86%E5%9F%9F%E6%A8%A1%E5%9E%8B%E5%88%B0%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="nav-number">3.</span> <span class="nav-text">从领域模型到代码实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E5%9F%9F%E7%9A%84%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5"><span class="nav-number">3.1.</span> <span class="nav-text">实现域的核心概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E4%BD%93"><span class="nav-number">3.1.1.</span> <span class="nav-text">实体</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%80%BC%E5%AF%B9%E8%B1%A1"><span class="nav-number">3.1.2.</span> <span class="nav-text">值对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%86%E5%9F%9F%E6%9C%8D%E5%8A%A1"><span class="nav-number">3.1.3.</span> <span class="nav-text">领域服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%86%E5%9F%9F%E4%BA%8B%E4%BB%B6"><span class="nav-number">3.1.4.</span> <span class="nav-text">领域事件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%81%9A%E5%90%88"><span class="nav-number">3.2.</span> <span class="nav-text">聚合</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%92%E5%88%86%E8%81%9A%E5%90%88%E7%9A%84%E5%8E%9F%E5%88%99"><span class="nav-number">3.2.1.</span> <span class="nav-text">划分聚合的原则</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%A5%E5%8E%82"><span class="nav-number">3.3.</span> <span class="nav-text">工厂</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B5%84%E6%BA%90%E5%BA%93"><span class="nav-number">3.4.</span> <span class="nav-text">资源库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E7%BB%93%E6%9E%84"><span class="nav-number">3.5.</span> <span class="nav-text">代码结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E5%B1%82%E6%9E%B6%E6%9E%84"><span class="nav-number">3.6.</span> <span class="nav-text">分层架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%84%8F%E5%9B%BE%E5%AF%BC%E5%90%91%E7%BC%96%E7%A8%8B"><span class="nav-number">3.7.</span> <span class="nav-text">意图导向编程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E5%85%88%E8%A1%8C"><span class="nav-number">3.8.</span> <span class="nav-text">测试先行</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9E%B6%E6%9E%84"><span class="nav-number">4.</span> <span class="nav-text">架构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%90%E5%9F%9F%E5%92%8C%E9%99%90%E7%95%8C%E4%B8%8A%E4%B8%8B%E6%96%87"><span class="nav-number">4.1.</span> <span class="nav-text">子域和限界上下文</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A2%86%E5%9F%9F%E8%B5%84%E4%BA%A7"><span class="nav-number">5.</span> <span class="nav-text">领域资产</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%84%E7%90%86%E9%81%97%E7%95%99%E8%B5%84%E4%BA%A7"><span class="nav-number">5.1.</span> <span class="nav-text">处理遗留资产</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%98%B2%E8%85%90%E5%B1%82%E7%9A%84%E8%AE%BE%E8%AE%A1"><span class="nav-number">5.1.1.</span> <span class="nav-text">防腐层的设计</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="西米大人"
+      src="/images/me.png">
+  <p class="site-author-name" itemprop="name">西米大人</p>
+  <div class="site-description" itemprop="description"><blockquote class="blockquote-center">优秀的人，不是不合群，而是他们合群的人里面没有你</blockquote></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">151</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dcbupt" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;dcbupt" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:byrddc@hotmail.com" title="E-Mail → mailto:byrddc@hotmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">西米大人</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">388k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">10:47</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.id);
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            let target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    let { app_id, app_key, server_url } = {"enable":true,"app_id":"OBdFsOOtfIDcNnWdzkGbICmj-gzGzoHsz","app_key":"89LmL4tP7hkyChAmEleq2MdO","server_url":null,"security":true};
+    function fetchData(api_server) {
+      var Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    let api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+<script src="/js/love.js"></script>
+
+<script src="/js/particle.js"></script>
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('https://cdn.jsdelivr.net/npm/valine@1.4.18/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'OBdFsOOtfIDcNnWdzkGbICmj-gzGzoHsz',
+      appKey     : '89LmL4tP7hkyChAmEleq2MdO',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

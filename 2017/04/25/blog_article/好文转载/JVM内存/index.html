@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-mac-osx.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"dcbupt.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="JVM知识">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JVM内存">
+<meta property="og:url" content="http://dcbupt.github.io/2017/04/25/blog_article/%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD/JVM%E5%86%85%E5%AD%98/index.html">
+<meta property="og:site_name" content="dcddc">
+<meta property="og:description" content="JVM知识">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2184951-75502fd0f9001ece.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2184951-a72a68ca4967fdd9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2184951-de41c8e6b7e7a36d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2184951-5718ab305b056d54.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2184951-3e3fb6dc3ec8253c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="article:published_time" content="2017-04-25T11:54:00.000Z">
+<meta property="article:modified_time" content="2022-05-01T06:44:18.726Z">
+<meta property="article:author" content="西米大人">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/2184951-75502fd0f9001ece.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+<link rel="canonical" href="http://dcbupt.github.io/2017/04/25/blog_article/%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD/JVM%E5%86%85%E5%AD%98/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+  <title>JVM内存 | dcddc</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">dcddc</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">西米大人的博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dcbupt.github.io/2017/04/25/blog_article/%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD/JVM%E5%86%85%E5%AD%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/me.png">
+      <meta itemprop="name" content="西米大人">
+      <meta itemprop="description" content="<blockquote class="blockquote-center">优秀的人，不是不合群，而是他们合群的人里面没有你</blockquote>">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="dcddc">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          JVM内存
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-04-25 19:54:00" itemprop="dateCreated datePublished" datetime="2017-04-25T19:54:00+08:00">2017-04-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-05-01 14:44:18" itemprop="dateModified" datetime="2022-05-01T14:44:18+08:00">2022-05-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD/" itemprop="url" rel="index"><span itemprop="name">好文转载</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2017/04/25/blog_article/%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD/JVM%E5%86%85%E5%AD%98/" class="post-meta-item leancloud_visitors" data-flag-title="JVM内存" title="热度">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">热度:</span>
+              <span class="leancloud-visitors-count"></span>℃
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">评论:</span>
+    
+    <a title="valine" href="/2017/04/25/blog_article/%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD/JVM%E5%86%85%E5%AD%98/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2017/04/25/blog_article/%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD/JVM%E5%86%85%E5%AD%98/" itemprop="commentCount"></span>℃
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">字数：</span>
+              <span>6.8k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>11 分钟</span>
+            </span>
+            <div class="post-description"><blockquote class="blockquote-center">JVM知识</blockquote></div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="JVM内存划分"><a href="#JVM内存划分" class="headerlink" title="JVM内存划分"></a>JVM内存划分</h1><blockquote>
+<p>在HotSpot实现中，内存被划分成Java堆、方法区、Java栈、本地方法栈和PC寄存器几个部分：<br>1、Java栈和本地方法栈用于方法之间的调用，进栈出栈的过程；<br>2、Java堆用于存放对象，在Java中，所有对象的创建都在堆上申请内存，并被GC管理；<br>3、方法区分成PermGen和CodeCache：PermGen存放Java类的相关信息，如静态变量、成员方法和抽象方法等；CodeCache存放JIT编译之后的本地代码；</p>
+</blockquote>
+<p>JAVA虚拟机把管理的内存划分为几个不同的数据区。<br><img src="http://upload-images.jianshu.io/upload_images/2184951-75502fd0f9001ece.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"></p>
+<h2 id="Java堆"><a href="#Java堆" class="headerlink" title="Java堆"></a>Java堆</h2><blockquote>
+<p>Java堆是被所有线程共享的一块内存区域，主要用于存放对象实例</p>
+</blockquote>
+<p>Java虚拟机规范中有这样一段描述：所有的对象实例和数据都要在堆上进行分配。为对象分配内存就是把一块大小确定的内存从堆内存中划分出来，通常有两种方法实现：</p>
+<p>1 、指针碰撞法<br>假设Java堆中内存时完整的，已分配的内存和空闲内存分别在不同的一侧，通过一个指针作为分界点，需要分配内存时，仅仅需要把指针往空闲的一端移动与对象大小相等的距离。</p>
+<p>2、空闲列表法<br>事实上，Java堆的内存并不是完整的，已分配的内存和空闲内存相互交错，JVM通过维护一个列表，记录可用的内存块信息，当分配操作发生时，从列表中找到一个足够大的内存块分配给对象实例，并更新列表上的记录。</p>
+<p>对象创建是一个非常频繁的行为，进行堆内存分配时还需要考虑多线程并发问题，可能出现正在给对象A分配内存，指针或记录还未更新，对象B又同时分配到原来的内存，解决这个问题有两种方案：<br>1、采用CAS保证数据更新操作的原子性；<br>2、把内存分配的行为按照线程进行划分，在不同的空间中进行，每个线程在Java堆中预先分配一个内存块，称为本地线程分配缓冲（Thread Local Allocation Buffer, TLAB）;</p>
+<h2 id="Java栈"><a href="#Java栈" class="headerlink" title="Java栈"></a>Java栈</h2><blockquote>
+<p>Java栈是线程私有的，每个线程对应一个Java栈，每个线程在执行一个方法时会创建一个对应的栈帧（Stack Frame），栈帧负责存储<code>局部变量变量表、操作数栈、动态链接和方法返回地址</code>等信息。<code>每个方法的调用过程，相当于栈帧在Java栈的入栈和出栈过程</code>。</p>
+</blockquote>
+<p><img src="http://upload-images.jianshu.io/upload_images/2184951-a72a68ca4967fdd9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"></p>
+<p>局部变量表<br>用于存放方法参数和方法内部定义的局部变量，其大小在代码编译期间已经确定，在方法运行期间不会改变。局部变量表以变量槽（Slot）为最小存储单位，每个Slot能够存放一个boolean、byte、char、shot、int、float、reference和returnAddress类型的32位数据，对于64位的数据类型long和double，虚拟机会以高位对齐的方式为其分配两个连续的Slot空间。</p>
+<p>在方法执行时，如果是实例方法，即非static方法，局部变量表中第0位Slot默认存放对象实例的引用，在方法中可以通过关键字 this 进行访问，方法参数按照参数列表顺序，从第1位Slot开始分配，方法内部变量则按照定义顺序进行分配其余的Slot。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">class test &#123;</span><br><span class="line">    public int calc(int a, int b, String operation) &#123;</span><br><span class="line">        operation = &quot;+&quot;;</span><br><span class="line">        return  a + b;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    public void main(String args[]) &#123;</span><br><span class="line">        calc(100, 200, &quot;+&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对应的局部变量表如下：<br><img src="http://upload-images.jianshu.io/upload_images/2184951-de41c8e6b7e7a36d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"></p>
+<h2 id="方法区"><a href="#方法区" class="headerlink" title="方法区"></a>方法区</h2><p>方法区和Java堆一样，是所有线程共享的内存区域，用于存放已被虚拟机加载的类信息、常量、静态变量和即时编译器编译后的代码等数据。<br>运行时常量池是方法区的一部分，用于存放编译期间生成的各种字面常量和符号引用。</p>
+<blockquote>
+<p>方法区我理解就是静态区，类中的方法体里编译后的代码也保存在这里<br>方法在执行时，方法体的入口地址和方法的返回地址参数都是存放于栈帧中，静态方法和非静态方法一样，只是非静态方法传入的参数包含this<br>【以上是我个人的理解】</p>
+</blockquote>
+<h3 id="【引申】java中静态方法和非静态方法的存储"><a href="#【引申】java中静态方法和非静态方法的存储" class="headerlink" title="【引申】java中静态方法和非静态方法的存储"></a>【引申】java中静态方法和非静态方法的存储</h3><p>Java中非静态方法是否共用同一块内存？</p>
+<p>将某 class 产生出一个 instance 之后，此 class 所有的 instance field 都会新增一份，那么所有的 instance method 是否也会新增一份？答案是不会，我们用field表示字段，用method表示方法，那么加上static区分后就 有四种：</p>
+<p>class field：有用static修饰的field<br>class method：有用static修饰的method<br>instance field：没有用static修饰的field<br>instance method：没有用static修饰的method</p>
+<p>那么他们在内存中的表示为：</p>
+<p>class field：共用一块记忆体<br>class method：共用一块记忆体<br>instance field：随着每个instance各有一块记忆体<br>instance method：共用一块记忆体</p>
+<p>如果instance method也随着instance增加而增加的话，那内存消耗也太大了，为了做到共用一小段内存，Java是根据this关键字做到的<br>比如：instance1.instanceMethod(); instance2.instanceMethod(); 在传递给对象参数的时候，Java编译器自动先加上了一个this参数，它表示传递的是这个对象引用，虽然他们两个对象共用一个方法，但是他们的方法中所产生的数据是私有的，这是因为参数被传进来变成call stack内的entry，而各个对象都有不同call stack，所以不会混淆。其实调用每个非static方法时，Java编译器都会自动的先加上当前调用此方法对象的参数，有时候在一个方法调用另一个方法，这时可以不用在前面加上this的，因为要传递的对象参数就是当前执行这个方法的对象。</p>
+<p>为什么静态方法中不能调用非静态方法？这是因为静态方法直接跟class相关，调用此方法的时候是类直接调用的，而不是对象，所以Java编译器就没有对象参数可以传递，这样，如果你在静态方法内部调用非静态方法，那么Java编译器怎么判断这个非静态方法是哪个对象调用的？对吧，所以Java编译器就会报错，但是也不是绝对的，Java编译器是隐式的传递对象参数，那么我们总可以显示的传递对象参数吧，如果我们把某个对象的引用传递到static方法里，然后通过这个引用就可以调用非静态方法和访问非静态数据成员了。</p>
+<h2 id="指令计数器"><a href="#指令计数器" class="headerlink" title="指令计数器"></a>指令计数器</h2><p>指令计数器是线程私有的，每个线程都有独立的指令计数器，计数器记录着虚拟机正在执行的字节码指令的地址，分支、循环、跳转、异常处理和线程恢复等操作都依赖这个计数器完成。如果线程执行的是native方法，这个计数器则为空。</p>
+<h2 id="对象的内存布局"><a href="#对象的内存布局" class="headerlink" title="对象的内存布局"></a>对象的内存布局</h2><p>对象在内存中布局可以分成三块区域：<code>对象头、实例数据和对齐填充</code>。<br>1、对象头<br>对象头包括两部分信息：<code>运行时数据和类型指针</code>，如果对象是一个数组，还需要一块用于记录数组长度的数据。</p>
+<p>1.1、运行时数据包括哈希码（HashCode）、GC分代年龄、锁状态标志、线程持有的锁、偏向锁ID和偏向时间戳等，这部分数据在32位和64位虚拟机中的长度分别为32bit和64bit，官方称为”Mark Word”。Mark Word被设计成非固定的数据结构，以实现在有限空间内保存尽可能多的数据。<br>32位的虚拟机中，对象未被锁定的状态下，Mark Word的32bit中25bit存储对象的HashCode、4bit存储对象分代年龄、2bit存储锁标志位、1bit固定为0，具体如下：<br><img src="http://upload-images.jianshu.io/upload_images/2184951-5718ab305b056d54.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"></p>
+<p>其它状态（轻量级锁定、重量级锁定、GC锁定、可偏向锁）下Mark Word的存储内容如下：<br><img src="http://upload-images.jianshu.io/upload_images/2184951-3e3fb6dc3ec8253c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"></p>
+<p>1.2、对象头的类型指针指向该对象的类元数据，<code>虚拟机通过这个指针可以确定该对象是哪个类的实例</code>。</p>
+<p>2、实例数据<br>实例数据就是在程序代码中所定义的各种类型的字段，包括从父类继承的，这部分的存储顺序会受到虚拟机分配策略和字段在源码中定义顺序的影响。</p>
+<p>3、对齐填充<br>由于HotSpot的自动内存管理要求对象的起始地址必须是8字节的整数倍，即对象的大小必须是8字节的整数倍，对象头的数据正好是8的整数倍，所以当实例数据不够8字节整数倍时，需要通过对齐填充进行补全。</p>
+<h1 id="我的理解"><a href="#我的理解" class="headerlink" title="我的理解"></a>我的理解</h1><p>堆中存放new出来的java对象的field数据<br>栈存放方法体的地址和方法的参数，方法内部的局部变量和方法返回值等临时数据<br>方法区存放类中的static field数据以及方法体编译后的代码，可以理解为一个常量池</p>
+<h1 id="JVM的类加载机制"><a href="#JVM的类加载机制" class="headerlink" title="JVM的类加载机制"></a>JVM的类加载机制</h1><p>类的加载指的是将类的.class文件中的二进制数据读入到内存中，将其放在运行时数据区的方法区内，然后在堆区创建一个java.lang.Class对象，用来封装类在方法区内的数据结构。类的加载的最终产品是位于堆区中的Class对象，Class对象封装了类在方法区内的数据结构，并且向Java程序员提供了访问方法区内的数据结构的接口</p>
+<blockquote>
+<p>类加载可以理解为：在堆中开辟一段内存空间指向方法区保存的类的常量数据，以后通过访问堆中的JAVA.LANG.CLASS访问方法区的常量（static field 、method）</p>
+</blockquote>
+<h2 id="类的生命周期"><a href="#类的生命周期" class="headerlink" title="类的生命周期"></a>类的生命周期</h2><p>其中类加载的过程包括了<code>加载、验证、准备、解析、初始化</code>五个阶段。在这五个阶段中，加载、验证、准备和初始化这四个阶段发生的顺序是确定的，而解析阶段则不一定，它在某些情况下可以在初始化阶段之后开始，这是为了支持Java语言的运行时绑定（也成为动态绑定或晚期绑定）</p>
+<h3 id="加载"><a href="#加载" class="headerlink" title="加载"></a>加载</h3><blockquote>
+<p>在方法区和堆中分配内存，为后续赋值做准备</p>
+</blockquote>
+<p>1、通过一个类的全限定名来获取其定义的二进制字节流。<br>2、将这个字节流所代表的静态存储结构转化为方法区的运行时数据结构。<br>3、在Java堆中生成一个代表这个类的java.lang.Class对象，作为对方法区中这些数据的访问入口。</p>
+<p>加载阶段完成后，虚拟机外部的二进制字节流就按照虚拟机所需的格式存储在方法区之中，而且在Java堆中也创建一个java.lang.Class类的对象，这样便可以通过该对象访问方法区中的这些数据。</p>
+<h3 id="连接"><a href="#连接" class="headerlink" title="连接"></a>连接</h3><blockquote>
+<p>方法区常量赋默认值，并关联堆中的CLASS</p>
+</blockquote>
+<h4 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h4><blockquote>
+<p>确保被加载的类的正确性</p>
+</blockquote>
+<p>验证是连接阶段的第一步，这一阶段的目的是为了确保Class文件的字节流中包含的信息符合当前虚拟机的要求，并且不会危害虚拟机自身的安全。<br><code>如果所引用的类经过反复验证，那么可以考虑采用-Xverifynone参数来关闭大部分的类验证措施，以缩短虚拟机类加载的时间</code>。</p>
+<h4 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h4><blockquote>
+<p>正式为类变量分配内存并设置类变量初始值</p>
+</blockquote>
+<p>准备阶段是正式为类变量分配内存并设置类变量初始值的阶段，这些内存都将在<code>方法区</code>中分配。对于该阶段有以下几点需要注意：<br>i、这时候进行内存分配的仅包括类变量（static），而不包括实例变量，实例变量会在对象实例化时随着对象一块分配在Java堆中。<br>ii、这里所设置的初始值通常情况下是数据类型默认的零值（如0、0L、null、false等），而不是被在Java代码中被显式地赋予的值。</p>
+<p>假设一个类变量的定义为：public static int value &#x3D; 3；</p>
+<p>那么变量value在准备阶段过后的初始值为0，而不是3，因为这时候尚未开始执行任何Java方法，而把value赋值为3的putstatic指令是在程序编译后，存放于类构造器<clinit>（）方法之中的，<code>所以把value赋值为3的动作将在初始化阶段才会执行</code>。</p>
+<p>这里还需要注意如下几点：<br>被final修饰的常量则既可以在声明时显式地为其赋值，也可以在类初始化时显式地为其赋值，总之，在使用前必须为其显式地赋值，系统不会为其赋予默认零值。<br>对于引用数据类型reference来说，如数组引用、对象引用等，如果没有对其进行显式地赋值而直接使用，系统都会为其赋予默认的零值，即null。<br>如果在数组初始化时没有对数组中的各元素赋值，那么其中的元素将根据对应的数据类型而被赋予默认的零值。<br><code>如果类字段的字段属性表中存在ConstantValue属性，即同时被final和static修饰，那么在准备阶段变量value就会被初始化为ConstValue属性所指定的值</code>。</p>
+<p>假设上面的类变量value被定义为： public static final int value &#x3D; 3；<br>编译时Javac将会为value生成ConstantValue属性，在准备阶段虚拟机就会根据ConstantValue的设置将value赋值为3。我们可以理解为static final常量在编译期就将其结果放入了调用它的类的常量池中</p>
+<h4 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h4><blockquote>
+<p>关联CLASS堆和方法区的常量</p>
+</blockquote>
+<p>解析阶段是虚拟机将常量池内的符号引用替换为直接引用的过程，解析动作主要针对类或接口、字段、类方法、接口方法、方法类型、方法句柄和调用点限定符7类符号引用进行。符号引用就是一组符号来描述目标，可以是任何字面量。</p>
+<p>直接引用就是直接指向目标的指针、相对偏移量或一个间接定位到目标的句柄。</p>
+<blockquote>
+<p>目标就是堆中的JAVA.LANG.CLASS，即类在堆中的内存空间</p>
+</blockquote>
+<h3 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h3><p>初始化，为类的静态变量赋予正确的初始值，JVM负责对类进行初始化，主要对类变量进行初始化。在Java中对类变量进行初始值设定有两种方式：<br>①声明类变量时指定初始值<br>②使用静态代码块为类变量指定初始值</p>
+<p>JVM初始化步骤<br>1、假如这个类还没有被加载和连接，则程序先加载并连接该类<br>2、假如该类的直接父类还没有被初始化，则先初始化其直接父类<br>3、假如类中有初始化语句，则系统依次执行这些初始化语句</p>
+<p>类初始化时机：只有当对类的主动使用的时候才会导致类的初始化，类的主动使用包括以下六种：<br>– 创建类的实例，也就是new的方式<br>– 访问某个类或接口的静态变量，或者对该静态变量赋值<br>– 调用类的静态方法<br>– 反射（如Class.forName(“com.shengsiyuan.Test”)）<br>– 初始化某个类的子类，则其父类也会被初始化<br>– Java虚拟机启动时被标明为启动类的类（Java Test），直接使用java.exe命令来运行某个主类</p>
+<p>在如下几种情况下，Java虚拟机将结束生命周期<br>– 执行了System.exit()方法<br>– 程序正常执行结束<br>– 程序在执行过程中遇到了异常或错误而异常终止<br>– 由于操作系统出现错误而导致Java虚拟机进程终止</p>
+<h2 id="类加载器"><a href="#类加载器" class="headerlink" title="类加载器"></a>类加载器</h2><p>站在Java开发人员的角度来看，类加载器可以大致划分为以下三类：</p>
+<p>启动类加载器：<br>Bootstrap ClassLoader，负责加载存放在JDK\jre\lib(JDK代表JDK的安装目录，下同)下，或被-Xbootclasspath参数指定的路径中的，并且能被虚拟机识别的类库（如rt.jar，<code>所有的java.*开头的类均被Bootstrap ClassLoader加载</code>）。启动类加载器是无法被Java程序直接引用的。</p>
+<p>扩展类加载器：<br>Extension ClassLoader，该加载器由sun.misc.Launcher$ExtClassLoader实现，它负责加载DK\jre\lib\ext目录中，或者由java.ext.dirs系统变量指定的路径中的所有类库（如<code>javax.*开头的类</code>），开发者可以直接使用扩展类加载器。</p>
+<p>应用程序类加载器：<br>Application ClassLoader，该类加载器由sun.misc.Launcher$AppClassLoader来实现，它负责加载用户类路径<code>（ClassPath）所指定的类</code>，开发者可以直接使用该类加载器，如果应用程序中没有自定义过自己的类加载器，一般情况下这个就是程序中默认的类加载器。</p>
+<p>JVM类加载机制</p>
+<ul>
+<li><p>全盘负责<br>当一个类加载器负责加载某个Class时，该Class所依赖的和引用的其他Class也将由该类加载器负责载入，除非显示使用另外一个类加载器来载入</p>
+</li>
+<li><p>父类委托<br>先让父类加载器试图加载该类，只有在父类加载器无法加载该类时才尝试从自己的类路径中加载该类</p>
+</li>
+</ul>
+<p>双亲委派机制:<br>1、当AppClassLoader加载一个class时，它首先不会自己去尝试加载这个类，而是把类加载请求委派给父类加载器ExtClassLoader去完成。<br>2、当ExtClassLoader加载一个class时，它首先也不会自己去尝试加载这个类，而是把类加载请求委派给BootStrapClassLoader去完成。<br>3、如果BootStrapClassLoader加载失败（例如在$JAVA_HOME&#x2F;jre&#x2F;lib里未查找到该class），会使用ExtClassLoader来尝试加载；<br>4、若ExtClassLoader也加载失败，则会使用AppClassLoader来加载，如果AppClassLoader也加载失败，则会报出异常ClassNotFoundException。</p>
+<ul>
+<li>缓存机制<br>缓存机制将会保证所有加载过的Class都会被缓存，当程序中需要使用某个Class时，类加载器先从缓存区寻找该Class，只有缓存区不存在，系统才会读取该类对应的二进制数据，并将其转换成Class对象，存入缓存区。这就是为什么修改了Class后，必须重启JVM，程序的修改才会生效</li>
+</ul>
+<h2 id="类加载方式"><a href="#类加载方式" class="headerlink" title="类加载方式"></a>类加载方式</h2><p>类加载有三种方式：<br>1、命令行启动应用时候由JVM初始化加载<br>2、通过Class.forName()方法动态加载<br>3、通过ClassLoader.loadClass()方法动态加载</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>西米大人
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://dcbupt.github.io/2017/04/25/blog_article/%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD/JVM%E5%86%85%E5%AD%98/" title="JVM内存">http://dcbupt.github.io/2017/04/25/blog_article/好文转载/JVM内存/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+
+        
+
+<blockquote class="blockquote-center" style="color: #f0ad4e">完 ♥ 结</blockquote>
+
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/04/24/blog_article/%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD/%E6%B5%85%E6%9E%90%E8%8B%A5%E5%B9%B2Java%E5%BA%8F%E5%88%97%E5%8C%96%E5%B7%A5%E5%85%B7/" rel="prev" title="浅析若干Java序列化工具">
+      <i class="fa fa-chevron-left"></i> 浅析若干Java序列化工具
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/05/04/blog_article/%E6%B5%85%E5%B0%9D%E7%B3%BB%E5%88%97/MyBatis/" rel="next" title="MyBatis">
+      MyBatis <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#JVM%E5%86%85%E5%AD%98%E5%88%92%E5%88%86"><span class="nav-number">1.</span> <span class="nav-text">JVM内存划分</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Java%E5%A0%86"><span class="nav-number">1.1.</span> <span class="nav-text">Java堆</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java%E6%A0%88"><span class="nav-number">1.2.</span> <span class="nav-text">Java栈</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E5%8C%BA"><span class="nav-number">1.3.</span> <span class="nav-text">方法区</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%80%90%E5%BC%95%E7%94%B3%E3%80%91java%E4%B8%AD%E9%9D%99%E6%80%81%E6%96%B9%E6%B3%95%E5%92%8C%E9%9D%9E%E9%9D%99%E6%80%81%E6%96%B9%E6%B3%95%E7%9A%84%E5%AD%98%E5%82%A8"><span class="nav-number">1.3.1.</span> <span class="nav-text">【引申】java中静态方法和非静态方法的存储</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%87%E4%BB%A4%E8%AE%A1%E6%95%B0%E5%99%A8"><span class="nav-number">1.4.</span> <span class="nav-text">指令计数器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80"><span class="nav-number">1.5.</span> <span class="nav-text">对象的内存布局</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%88%91%E7%9A%84%E7%90%86%E8%A7%A3"><span class="nav-number">2.</span> <span class="nav-text">我的理解</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JVM%E7%9A%84%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6"><span class="nav-number">3.</span> <span class="nav-text">JVM的类加载机制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B1%BB%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="nav-number">3.1.</span> <span class="nav-text">类的生命周期</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A0%E8%BD%BD"><span class="nav-number">3.1.1.</span> <span class="nav-text">加载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9E%E6%8E%A5"><span class="nav-number">3.1.2.</span> <span class="nav-text">连接</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%AA%8C%E8%AF%81"><span class="nav-number">3.1.2.1.</span> <span class="nav-text">验证</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%87%86%E5%A4%87"><span class="nav-number">3.1.2.2.</span> <span class="nav-text">准备</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E6%9E%90"><span class="nav-number">3.1.2.3.</span> <span class="nav-text">解析</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">3.1.3.</span> <span class="nav-text">初始化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8"><span class="nav-number">3.2.</span> <span class="nav-text">类加载器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%96%B9%E5%BC%8F"><span class="nav-number">3.3.</span> <span class="nav-text">类加载方式</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="西米大人"
+      src="/images/me.png">
+  <p class="site-author-name" itemprop="name">西米大人</p>
+  <div class="site-description" itemprop="description"><blockquote class="blockquote-center">优秀的人，不是不合群，而是他们合群的人里面没有你</blockquote></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">151</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dcbupt" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;dcbupt" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:byrddc@hotmail.com" title="E-Mail → mailto:byrddc@hotmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">西米大人</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">388k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">10:47</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.id);
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            let target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    let { app_id, app_key, server_url } = {"enable":true,"app_id":"OBdFsOOtfIDcNnWdzkGbICmj-gzGzoHsz","app_key":"89LmL4tP7hkyChAmEleq2MdO","server_url":null,"security":true};
+    function fetchData(api_server) {
+      var Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    let api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+<script src="/js/love.js"></script>
+
+<script src="/js/particle.js"></script>
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('https://cdn.jsdelivr.net/npm/valine@1.4.18/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'OBdFsOOtfIDcNnWdzkGbICmj-gzGzoHsz',
+      appKey     : '89LmL4tP7hkyChAmEleq2MdO',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

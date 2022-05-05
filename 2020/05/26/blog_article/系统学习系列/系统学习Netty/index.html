@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-mac-osx.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"dcbupt.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="系统学习Netty">
+<meta property="og:type" content="article">
+<meta property="og:title" content="系统学习Netty">
+<meta property="og:url" content="http://dcbupt.github.io/2020/05/26/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Netty/index.html">
+<meta property="og:site_name" content="dcddc">
+<meta property="og:description" content="系统学习Netty">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://dcbupt.github.io/Netty/IO%E6%A8%A1%E5%9E%8B.jpg">
+<meta property="og:image" content="http://dcbupt.github.io/Netty/epoll%E5%AE%9E%E7%8E%B0.png">
+<meta property="og:image" content="http://dcbupt.github.io/Netty/Netty%E7%BB%84%E4%BB%B6%E8%A7%86%E5%9B%BE.png">
+<meta property="og:image" content="http://dcbupt.github.io/Netty/Netty%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B.png">
+<meta property="og:image" content="http://dcbupt.github.io/Netty/Netty%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B1.png">
+<meta property="og:image" content="http://dcbupt.github.io/Netty/Netty%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B.png">
+<meta property="article:published_time" content="2020-05-26T06:55:00.000Z">
+<meta property="article:modified_time" content="2022-05-01T06:44:18.823Z">
+<meta property="article:author" content="西米大人">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://dcbupt.github.io/Netty/IO%E6%A8%A1%E5%9E%8B.jpg">
+
+<link rel="canonical" href="http://dcbupt.github.io/2020/05/26/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Netty/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+  <title>系统学习Netty | dcddc</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">dcddc</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">西米大人的博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dcbupt.github.io/2020/05/26/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Netty/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/me.png">
+      <meta itemprop="name" content="西米大人">
+      <meta itemprop="description" content="<blockquote class="blockquote-center">优秀的人，不是不合群，而是他们合群的人里面没有你</blockquote>">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="dcddc">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          系统学习Netty
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-26 14:55:00" itemprop="dateCreated datePublished" datetime="2020-05-26T14:55:00+08:00">2020-05-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-05-01 14:44:18" itemprop="dateModified" datetime="2022-05-01T14:44:18+08:00">2022-05-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/" itemprop="url" rel="index"><span itemprop="name">系统学习系列</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/05/26/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Netty/" class="post-meta-item leancloud_visitors" data-flag-title="系统学习Netty" title="热度">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">热度:</span>
+              <span class="leancloud-visitors-count"></span>℃
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">评论:</span>
+    
+    <a title="valine" href="/2020/05/26/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Netty/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/05/26/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Netty/" itemprop="commentCount"></span>℃
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">字数：</span>
+              <span>9.7k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>16 分钟</span>
+            </span>
+            <div class="post-description"><blockquote class="blockquote-center">系统学习Netty</blockquote></div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h1><h2 id="TCP-vs-UDP"><a href="#TCP-vs-UDP" class="headerlink" title="TCP vs UDP"></a>TCP vs UDP</h2><p>TCP：传输控制协议<br>UDP：用户数据协议</p>
+<ul>
+<li>TCP是面向连接的（在客户端和服务器之间传输数据之前要先建立连接），UDP是无连接的（发送数据之前不需要先建立连接）</li>
+<li>TCP提供可靠的服务（通过TCP传输的数据。无差错，不丢失，不重复，且按序到达）；UDP提供面向事务的简单的不可靠的传输。</li>
+<li>UDP具有较好的实时性，工作效率比TCP高，适用于对高速传输和实时性比较高的通讯或广播通信。随着网速的提高，UDP使用越来越多。</li>
+<li>每一条TCP连接只能是点到点的，UDP支持一对一，一对多和多对多的交互通信。</li>
+<li>TCP对系统资源要求比较多，UDP对系统资源要求比较少</li>
+<li>UDP程序结构更加简单</li>
+<li>TCP是流模式，UDP是数据报模式</li>
+</ul>
+<p>UDP应用场景</p>
+<ul>
+<li>数据包总量比较少的通信，比如DNS、SNMP</li>
+<li>视频、音频等对实时性要求比较高的多媒体通信</li>
+<li>广播通信、多播通信</li>
+</ul>
+<p>TCP如果保证高可靠传输？</p>
+<ul>
+<li>序列号：TCP给发送的每一个包进行编号，接收方对数据包进行排序，把有序数据传送给应用层。</li>
+<li>校验和：TCP将保存它首部和数据的检验和。这是一个端到端的检验和，目的是检测数据在传输过程中的任何变化。如果接收端的检验和有差错，TCP将丢弃这个报文段和不确认收到此报文段。</li>
+<li>流量控制：控制发送速率。TCP连接的每一方都有固定大小的缓冲空间（窗口）。通过可变大小的滑动窗口协议，发送方根据确认消息里接收方窗口的大小，控制发送速率，防止丢数据。</li>
+<li>拥塞控制：发送方还有一个拥塞窗口，窗口大小基于一定的策略（慢开始、快重传、快恢复）动态调整。目的是当网络拥塞时，减少数据的发送。<ul>
+<li>发送方的发送窗口取的是拥塞窗口和接收方接收窗口的最小值。</li>
+</ul>
+</li>
+<li>自动重传ARQ协议：每发完一个分组就启动一个定时器，并停止发送，等待对方确认。在收到确认后再发下一个分组。如果超时未收到对方确认，将重发这个报文段。这种方式信道利用率低，一般采取连续ARQ协议，即位于发送窗口内的分组可以连续发送而不用等确认，接收方对按序到达的最后一个分组发送确认。缺点是如果出现消息丢失，发送方需要回退N重发。</li>
+</ul>
+<p>TCP建联的三次握手机制：</p>
+<ul>
+<li>第一次握手：主机A发送位码syn＝1，随机产生seq number&#x3D;1234567的数据包到服务器，主机B由syn&#x3D;1知道，A要求建立联机；</li>
+<li>第二次握手：主机B收到请求后要确认联机信息，向A发送ack number&#x3D;(主机A的seq+1)，syn&#x3D;1，ack&#x3D;1，随机产生seq&#x3D;7654321的包</li>
+<li>第三次握手：主机A收到后检查ack number是否正确，即第一次发送的seq number+1，以及位码ack是否为1。若正确，主机A会再发送ack number&#x3D;(主机B的seq+1)，ack&#x3D;1。主机B收到后确认seq值与ack&#x3D;1则连接建立成功</li>
+</ul>
+<p>TCP断连的四次挥手机制(假设C端发起断连)：</p>
+<ul>
+<li>C端发送FIN报文</li>
+<li>S端发送ACK报文，然后把剩余数据发完</li>
+<li>S端发送FIN报文</li>
+<li>C端发送ACK报文，S端收到ACK后，关闭连接。C端超过一定时长后没收到消息（担心C端发送的ACK丢失），证明S端已经断开，则关闭连接</li>
+</ul>
+<p>为什么建联三次握手，断连四次握手？<br>因为建联时，接收端可以ACK和SYN一起发送。断连时，被断开方收到FIN消息后，还可能有需要发送的数据，所以只能先ACK，等发完数据后再发送FIN。</p>
+<p>什么是TCP拆包、粘包？<br>拆包：将应用层下发的一个大数据包拆成多个数据包<br>粘包：将应用层下发的多个小数据包合成一个数据包</p>
+<p>TCP为什么存在拆包、粘包？</p>
+<ul>
+<li>TCP基于字节流，对应用层下发的数据看成一连串无边界的字节流</li>
+<li>TCP的数据帧结构没有标识数据长度的字段</li>
+<li>TCP基于发送窗口大小来发送数据包，且发送窗口存在动态调整，所以存在拆包、粘包</li>
+</ul>
+<p>如何解决拆包、粘包？<br>只能通过在应用层定制协议来实现。一般有三种方式：</p>
+<ul>
+<li>消息定长</li>
+<li>每条报文尾部增加特殊字符来标识</li>
+<li>应用层定制协议字段，消息头增加字段标识数据长度</li>
+</ul>
+<h2 id="Socket套接字"><a href="#Socket套接字" class="headerlink" title="Socket套接字"></a>Socket套接字</h2><p>在传输层上做的一层抽象编程接口，不同编程语言都有对应的Socket服务端和客户端的库。<br>Socket在设计之初就希望也能适应其他网络协议，不局限于TCP&#x2F;IP协议，<code>但一般用到的Socket都是基于TCP/IP协议的实现</code>，且Socket在传输层既可以基于TCP协议，也可以基于UDP协议做实现。</p>
+<h3 id="长连接-amp-短链接"><a href="#长连接-amp-短链接" class="headerlink" title="长连接 &amp; 短链接"></a>长连接 &amp; 短链接</h3><p>所谓长连接，指在一个TCP连接上可以连续发送多个数据包，在TCP连接保持期间，如果没有数据包发送，需要双方发检测包以维持此连接(心跳包)。基于TCP的Socket连接就是长连接（三次握手建联后，除非一方主动发起断连，否则连接通道不会断开）。数据库连接就用的长连接。<br>短连接是指通信双方有数据交互时，就建立一个TCP连接，数据发送完成后，则断开此TCP连接。比如一次HTTP连接，只是TCP建连、发送请求、接收响应、断连。<br>HTTP&#x2F;1.1已经默认开启长连接：把Connection头写进标准，除非请求中写明Connection: close，否则浏览器和服务器之间是会<code>维持一段时间</code>的TCP连接，不会一个请求结束就断掉。</p>
+<blockquote>
+<p>延伸：Http&#x2F;1.1除了默认开启长连接来减少TCP建连的开销，还有什么提效的方法？</p>
+</blockquote>
+<p>答案在Http2，其提供了multiplexing多路传输特性，可以在一个TCP链接建立后，并行完成多个Http请求，以提高页面加载效率。<br>Http&#x2F;1.1时代是采用上面说的默认开启长连接和同时建立多个TCP连接来提高页面加载效率</p>
+<h2 id="用户空间与内核空间"><a href="#用户空间与内核空间" class="headerlink" title="用户空间与内核空间"></a>用户空间与内核空间</h2><p>操作系统的核心是内核，独立于普通的应用程序，有访问底层硬件设备的所有权限。为了保证用户进程不能直接操作内核（kernel），保证内核的安全，操心系统将内存划分为两部分，一部分为内核空间，一部分为用户空间。对32位操作系统而言，虚拟存储空间为2^32&#x3D;4G。针对linux操作系统，将最高的1G字节（从虚拟地址0xC0000000到0xFFFFFFFF），供内核使用，称为内核空间，而将较低的3G字节（从虚拟地址0x00000000到0xBFFFFFFF），供各个进程使用，称为用户空间</p>
+<h2 id="文件描述符fd"><a href="#文件描述符fd" class="headerlink" title="文件描述符fd"></a>文件描述符fd</h2><p>文件描述符（File descriptor）是计算机科学中的一个术语，是一个用于表述指向文件的引用的抽象化概念。当程序打开一个现有文件或者创建一个新文件时，内核向进程返回一个文件描述符（socket也是一种文件描述符，因为需要IO操作）。在程序设计中，一些涉及底层的程序编写往往会围绕着文件描述符展开。但是文件描述符这一概念往往只适用于UNIX、Linux这样的操作系统。<br><code>网络IO里，fd可以简单理解为socket连接</code></p>
+<h2 id="缓存I-x2F-O"><a href="#缓存I-x2F-O" class="headerlink" title="缓存I&#x2F;O"></a>缓存I&#x2F;O</h2><p>缓存 I&#x2F;O 又被称作标准 I&#x2F;O，大多数文件系统的默认 I&#x2F;O 操作都是缓存 I&#x2F;O。在 Linux 的缓存 I&#x2F;O 机制中，操作系统会将 I&#x2F;O 的数据缓存在文件系统的页缓存（ page cache ）中，也就是说，数据会先被拷贝到操作系统内核的缓冲区中，然后才会从操作系统内核的缓冲区拷贝到应用程序的地址空间。</p>
+<h2 id="IO模型"><a href="#IO模型" class="headerlink" title="IO模型"></a>IO模型</h2><p>以IO的读操作为例，它可以细分为两个阶段：</p>
+<ul>
+<li>等待数据到达（耗时长，阻塞IO一般指用户线程阻塞在这里）</li>
+<li>将数据从内核空间拷贝到用户空间（内存拷贝，带宽高，耗时短）</li>
+</ul>
+<p>针对这两个阶段，IO又可以细分为阻塞、非阻塞IO，同步、异步IO</p>
+<p>阻塞IO or 非阻塞IO：</p>
+<ul>
+<li>阻塞IO表示用户线程阻塞在<code>等待数据到达</code></li>
+<li>非阻塞IO表示用户线程不阻塞在<code>等待数据到达</code></li>
+</ul>
+<p>同步IO or 异步IO：</p>
+<ul>
+<li>同步IO表示发起IO请求后，必须完成IO操作才能继续执行</li>
+<li>异步IO表示发起IO请求后，不用完成IO操作就能继续执行</li>
+</ul>
+<p>IO的几种模型</p>
+<ul>
+<li>同步阻塞IO<ul>
+<li>线程发起IO请求后，阻塞在等待数据到达（<code>BIO模式</code>）</li>
+</ul>
+</li>
+<li>同步非阻塞IO    <ul>
+<li>轮询IO数据是否到达内核。数据到达后，用户线程copy数据到用户空间（<code>NIO模式</code>）  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NIO的非阻塞特性，使其可以让服务器端使用一个或有限几个线程来同时处理连接到服务器端的所有客户端</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>异步非阻塞IO<ul>
+<li>线程发起IO请求后继续执行（异步）。当线程接到通知时，数据已经拷贝到用户空间（<code>AIO模式</code>）</li>
+</ul>
+</li>
+</ul>
+<p><code>BIO里用户最关心“我要读”，NIO里用户最关心&quot;我可以读了&quot;，在AIO模型里用户更需要关注的是“读完了”</code></p>
+<p><img src="/Netty/IO%E6%A8%A1%E5%9E%8B.jpg"></p>
+<h2 id="NIO"><a href="#NIO" class="headerlink" title="NIO"></a>NIO</h2><p>讲解NIO前，首先需要了解它的前辈BIO(同步阻塞IO)，其工作模式为：<br>Server端监听端口获得Client端发起的Socket链接，为每个Socket链接创建线程来处理Client端应用层发送的数据，典型的<code>一请求一应答模型</code>。<br>这里Server端的线程会有两处阻塞：</p>
+<ul>
+<li>监听端口的线程阻塞在获取Socket链接</li>
+<li>消费Socket的线程阻塞在等待并获取Client端应用层发送的数据</li>
+</ul>
+<p>因此弊端是：</p>
+<ul>
+<li><code>不具备弹性伸缩能力</code>，当存在大量客户端连接时，服务端也会存在大量处理线程，线程切换效率低</li>
+<li>大量线程处于阻塞状态，浪费系统资源</li>
+</ul>
+<p>为了解决传统网络IO编程的弊端，jdk1.4之后推出了NIO编程模型。</p>
+<p><code>NIO(non-blocking IO)即非阻塞IO。传统的BIO中，单个线程阻塞在单次IO操作（读\写）。NIO使用多路复用模式，使得单个线程可以轮询（epoll模式是回调）监听多个IO事件（IO操作的是fd，底层是获取fd事件）。实现单线程同时处理多个客户端请求。拿到IO事件后再执行IO操作，减少了服务端线程数。</code></p>
+<p>NIO的非阻塞怎么理解？<br>阻塞IO模式下，线程阻塞在等待IO数据到达。NIO模式中，线程可以立刻获取IO数据是否到达的结果，所以这里是非阻塞的。然后通过轮询的方式不断请求，直到IO数据到达（Selector.select方法做的事情）。<br>基于非阻塞特性，单个线程可以管理一批IO，因此适合高并发IO的场景，节省线程数、系统资源</p>
+<p>NIO编程规范：<br><code>Channel</code><br>fd抽象为Channel，例如网络IO中的SocketChannel和ServerSocketChannel。与传统Stream的区别，channel是双向的，Stream是单向的<br><code>Selector</code><br>channel调用register方法注册到选择器selector，并指定该channel需要监听的IO事件类型（网络IO中，分为accept、read、write）<br>selector调用select方法获取有IO事件发生的所有channel<br><code>Buffer</code><br>buffer的作用是增加数据操作的灵活性。读操作从channel读取到buffer，写操作从buffer写入到channel，因此读写不会直接操作channel，而是操作buffer，由buffer再和channel进行数据互通</p>
+<h3 id="多路复用IO"><a href="#多路复用IO" class="headerlink" title="多路复用IO"></a>多路复用IO</h3><p>NIO的核心是选择器Selector的select方法，获取发生了IO事件的所有channel，底层使用多路复用实现。</p>
+<p>多路复用IO的实现方式有三种：select、poll和epoll模式，可以理解为epoll是改进版，JDK1.6之后使用的是epoll模式，极大提升了NIO的性能。</p>
+<p>select模式(<code>两次拷贝+轮询+遍历=性能低</code>)：<br>用户线程里将要监控的文件描述符添加到fd_set数组中，用户空间需要维护这个数组，然后<code>拷贝</code>到内核进行监控。因为数组存储文件描述符，所以能监控的文件描述符数量受限，一般最大为1024。<br>内核需要<code>轮询</code>fd_set数组检测这些文件描述符是否发生了事件，当事件发生后，将fd_set数组同步<code>拷贝</code>回用户空间的数组<br>用户线程需要<code>遍历</code>用户空间的数组才知道哪个文件描述符发生了事件。<br>缺点：</p>
+<ul>
+<li>存在大量的内核和用户空间的内存拷贝，系统开销大</li>
+<li>内核轮询fd数组获取事件 &amp; 用户线程需要遍历fd数组判断哪些fd有事件到达，效率低</li>
+</ul>
+<p>poll模式：<br>存储文件描述符的结构从数组改为链表，因此监听文件描述符的数量不受限，其他地方和select模式相同</p>
+<p>epoll模式把select调用分为了三部分：</p>
+<ul>
+<li>调用epoll_create建立一个epoll对象，这个对象包含了一个红黑树和一个双向链表。并与底层建立回调机制。</li>
+<li>调用epoll_ctl向epoll对象中添加所有fd（网络IO中就是socket句柄）</li>
+<li>调用epoll_wait收集发生事件的socket连接。</li>
+</ul>
+<p>性能上有哪些提升呢？</p>
+<ul>
+<li>用户空间拷贝全量fds到内核？No!<ul>
+<li>内核里使用<code>红黑树</code>存储所有文件描述符，高效添加和删除文件描述符（网络IO里是socket连接），<code>省去</code>从用户空间往内核拷贝全量文件描述符的性能消耗</li>
+</ul>
+</li>
+<li>轮询fds获取fd事件？No!<ul>
+<li><code>回调而非轮询</code>的方式获取事件（socket数据到达）</li>
+</ul>
+</li>
+<li>内核拷贝全量fds到用户空间？No!<ul>
+<li>使用双向链表存储发生事件的socket，只需要从内核拷贝<code>发生事件的fd</code>到用户空间</li>
+</ul>
+</li>
+</ul>
+<p>总结：<br>一颗红黑树，一张准备就绪句柄（fd）双向链表，少量的内核cache（存储红黑树），就帮我们解决了大并发下的socket处理问题。执行epoll_create时，创建了红黑树和fd双向链表，执行epoll_ctl时，如果增加socket句柄，则检查在红黑树中是否存在，存在立即返回，不存在则添加到树干上，然后向内核注册回调函数，用于当中断事件来临时向fd双向链表中插入数据。执行epoll_wait时立刻返回链表里的数据即可。<br><img src="/Netty/epoll%E5%AE%9E%E7%8E%B0.png"></p>
+<h1 id="Netty"><a href="#Netty" class="headerlink" title="Netty"></a>Netty</h1><blockquote>
+<p>Netty 封装了JDK的NIO，是一个事件驱动的网络通信框架</p>
+</blockquote>
+<p>Netty用到了这些技术：</p>
+<ul>
+<li>Epoll模式的多路复用技术</li>
+<li>Reactor设计模式</li>
+<li>主从多线程模型</li>
+</ul>
+<h2 id="Netty核心组件"><a href="#Netty核心组件" class="headerlink" title="Netty核心组件"></a>Netty核心组件</h2><p>Netty的核心组件：Bootstrap、NioSocketChannel、ChannelPipeline、NioEventLoopGroup、NioEventLoop</p>
+<p>Bootstrap：</p>
+<ul>
+<li>客户端Netty引导类，负责在客户端初始化和启动netty组件</li>
+</ul>
+<p>ServerBootstrap：</p>
+<ul>
+<li>服务端Netty引导类，负责在服务端初始化和启动netty组件</li>
+</ul>
+<p>NioXxxChannel：</p>
+<ul>
+<li>netty里的channel，对应nio里的Channel，表示一个网络连接，包括NioSocketChannel，NioServerSocketChannel</li>
+</ul>
+<p>ChannelPipeline：</p>
+<ul>
+<li>每个channel都有自己的pipeLine责任链，它维护一个双向链表，channel的io事件会根据事件类型（in\out）交给链表里匹配的channelHandler处理</li>
+</ul>
+<p>ChannelHandler：</p>
+<ul>
+<li>channel的IO事件处理器，作为双向链表的节点挂载在channelPipeLine上</li>
+</ul>
+<p>NioEventLoopGroup：</p>
+<ul>
+<li>管理一组NioEventLoop线程。提供一个自定义线程池ThreadPerTaskExecutor，为每个NioEventLoop创建独立的线程。默认会初始化16个NioEventLoop</li>
+<li>它的作用主要是负载均衡，将channel均分给Loop线程来监听和执行IO事件</li>
+</ul>
+<p>NioEventLoop：</p>
+<ul>
+<li>可以理解为一个Loop线程，每个NioEventLoop内部都有一个Selector。在loop线程里监听已注册到内部Selector上的所有channel的IO事件，并调用channel责任链pipeLine上的channelHandlers执行IO事件</li>
+</ul>
+<p><img src="/Netty/Netty%E7%BB%84%E4%BB%B6%E8%A7%86%E5%9B%BE.png"></p>
+<h2 id="启动流程"><a href="#启动流程" class="headerlink" title="启动流程"></a>启动流程</h2><p>先附上客户端和服务端Netty启动程序Demo</p>
+<p>客户端：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">public class SimpleClient &#123;</span><br><span class="line"></span><br><span class="line">    public void connect(String host, int port) throws Exception &#123;</span><br><span class="line">        EventLoopGroup workerGroup = new NioEventLoopGroup();</span><br><span class="line"></span><br><span class="line">        try &#123;</span><br><span class="line">            Bootstrap b = new Bootstrap();</span><br><span class="line">            b.group(workerGroup);</span><br><span class="line">            b.channel(NioSocketChannel.class);</span><br><span class="line">            b.option(ChannelOption.SO_KEEPALIVE, true);</span><br><span class="line">            b.handler(new ChannelInitializer&lt;SocketChannel&gt;() &#123;</span><br><span class="line">                @Override</span><br><span class="line">                public void initChannel(SocketChannel ch) throws Exception &#123;</span><br><span class="line">                    ch.pipeline().addLast(new SimpleClientHandler());</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line"></span><br><span class="line">            // Start the client.</span><br><span class="line">            ChannelFuture f = b.connect(host, port).sync();</span><br><span class="line"></span><br><span class="line">            // Wait until the connection is closed.</span><br><span class="line">            f.channel().closeFuture().sync();</span><br><span class="line">        &#125; finally &#123;</span><br><span class="line">            workerGroup.shutdownGracefully();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) throws Exception &#123;</span><br><span class="line">        SimpleClient client=new SimpleClient();</span><br><span class="line">        client.connect(&quot;127.0.0.1&quot;, 9999);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>服务端：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">public class SimpleServer &#123;</span><br><span class="line">    private int port;</span><br><span class="line"></span><br><span class="line">    public SimpleServer(int port) &#123;</span><br><span class="line">        this.port = port;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void run() throws Exception &#123;</span><br><span class="line">        //EventLoopGroup是用来处理IO操作的多线程事件循环器</span><br><span class="line">        //bossGroup 用来接收进来的连接</span><br><span class="line">        EventLoopGroup bossGroup = new NioEventLoopGroup();</span><br><span class="line">        //workerGroup 用来处理已经被接收的连接</span><br><span class="line">        EventLoopGroup workerGroup = new NioEventLoopGroup();</span><br><span class="line">        try &#123;</span><br><span class="line">            //启动 NIO 服务的辅助启动类</span><br><span class="line">            ServerBootstrap b = new ServerBootstrap();</span><br><span class="line">            b.group(bossGroup, workerGroup)</span><br><span class="line">                //配置 Channel</span><br><span class="line">                .channel(NioServerSocketChannel.class)</span><br><span class="line">                .childHandler(new ChannelInitializer&lt;SocketChannel&gt;() &#123;</span><br><span class="line">                    @Override</span><br><span class="line">                    public void initChannel(SocketChannel ch) throws Exception &#123;</span><br><span class="line">                        // 注册handler</span><br><span class="line">                        ch.pipeline().addLast(new SimpleServerHandler());</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;)</span><br><span class="line">                .option(ChannelOption.SO_BACKLOG, 128)</span><br><span class="line">                .childOption(ChannelOption.SO_KEEPALIVE, true);</span><br><span class="line"></span><br><span class="line">            // 绑定端口，开始接收进来的连接</span><br><span class="line">            ChannelFuture f = b.bind(port).sync();</span><br><span class="line">            // 等待服务器 socket 关闭 。</span><br><span class="line">            f.channel().closeFuture().sync();</span><br><span class="line">        &#125; finally &#123;</span><br><span class="line">            workerGroup.shutdownGracefully();</span><br><span class="line">            bossGroup.shutdownGracefully();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) throws Exception &#123;</span><br><span class="line">        new SimpleServer(9999).run();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>客户端Netty程序启动入口：io.netty.bootstrap.Bootstrap#connect(java.lang.String, int)</p>
+<ul>
+<li>与指定ip:port建立连接，创建相应的客户端NioSocketChannel，并注册到NioEventLoopGroup分配的一个NioEventLoop线程的Selector上，监听和执行（责任链模式）READ事件</li>
+</ul>
+<p>服务端Netty程序启动入口：io.netty.bootstrap.AbstractBootstrap#bind(int)</p>
+<ul>
+<li>创建NioServerSocketChannel绑定到Server的一个port，并注册NioServerSocketChannel到parentNioEventLoopGroup分配的一个NioEventLoop线程的Selector上，监听和执行（责任链模式）Accept事件<ul>
+<li>执行Accept事件，将客户端Channel注册到childNioEventLoopGroup分配的一个NioEventLoop线程，监听和执行READ事件</li>
+</ul>
+</li>
+</ul>
+<p>以客户端为例来分析下Netty启动程序源码，整体流程图如下：<br><img src="/Netty/Netty%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B.png"></p>
+<p>有些细节需要特别说明：</p>
+<ul>
+<li>DefaultChannelPipeline是一个双向链表，初始化后有head和tail节点（head节点本身是out类型节点，是in类型IO事件的入口，tail节点相反）</li>
+<li>如果想将自定义的channelHandler添加到PipeLine，通过将add逻辑写到ChannelInitializer的initChannel方法来实现。该方法在channel注册到selector的流程中被回调执行，执行后channelInitializer会从pipeLine双向链表里remove。因此channelInitializer的使命就是将自定义channelHandler添加到pipeLine</li>
+<li>NioEventLoopGroup的默认chooser通过一个原子计数器，每次choose的时候计数器+1后对NioEventLoop个数取模得到选取的下标，可以理解为顺序选取NioEventLoop，每个NioEventLoop线程均匀承接channel，达到负载均衡</li>
+<li>nioEventLoopGroup负责为nioEventLoop创建线程，而loop线程里主要做两件事<ul>
+<li>轮询获取注册到nioEventLoop内部selector上的所有channel的IO事件，调用channel的责任链pipeline上handlers处理</li>
+<li>执行提交到nioEventLoop队列的所有任务（包括定时任务）<ul>
+<li>channel注册流程就是作为任务提交到nioEventLoop的任务队列，在loop线程里执行</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>服务端启动Netty进程与客户端的区别：</p>
+<ul>
+<li>服务端初始化NioServerSocketChannel<ul>
+<li>加入的channelHandler是Netty自带的<code>ServerBootstrapAcceptor</code>，而非用户定义的ChannelInitializer，它的作用是在channelRead方法里专门处理Accept事件<ul>
+<li>把用户自定义的ChannelInitializer加入接收到的客户端Channel的pipeLine的尾部，并注册客户端Channel到childNioEventLoopGroup选择的一个NioEventLoop。即，parentNioEventLoopGroup维护的NioEventLoop负责监听和处理客户端Socket的ACCEPT事件，childNioEventLoopGroup维护的NioEventLoop负责监听和处理客户端Socket读写请求事件</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>客户端connect vs 服务端bind<ul>
+<li>channel在initAndRegister后，客户端通过pipeLine责任链由handlers处理connect事件，建立与服务端的tcp连接。服务端通过pipeLine责任链由handlers处理bind事件，绑定端口开启监听</li>
+</ul>
+</li>
+</ul>
+<h2 id="Netty解决NIO空轮询bug"><a href="#Netty解决NIO空轮询bug" class="headerlink" title="Netty解决NIO空轮询bug"></a>Netty解决NIO空轮询bug</h2><p>所谓NIO空轮询bug，指调用Selector.select轮询方法等待channel事件到来，但这个阻塞方法有时在没有channel事件到来时也可能直接返回，即出现了空轮询，然后再次回到while循环不断空轮询，最终导致CPU利用率飙到100%，程序崩溃。</p>
+<p>Netty在io.netty.channel.nio.NioEventLoop#select方法里解决了空轮询bug，具体做法是：</p>
+<ul>
+<li>检测到while死循环里空轮询次数达到阈值（默认512）时，重建nioEventLoop的selector，然后将注册到老selector的channel重新注册到新selector</li>
+</ul>
+<h2 id="Netty线程模型"><a href="#Netty线程模型" class="headerlink" title="Netty线程模型"></a>Netty线程模型</h2><blockquote>
+<p>reactor设计模式</p>
+</blockquote>
+<p>Reactor模式是处理并发I&#x2F;O比较常见的一种模式，中心思想是将所有要处理的I&#x2F;O事件注册到一个中心I&#x2F;O多路复用器上，主线程阻塞监听注册在多路复用器上的I&#x2F;O事件；一旦有I&#x2F;O事件到来或是准备就绪，多路复用器返回并将相应I&#x2F;O事件分发到对应的处理器中处理。</p>
+<p>优点：</p>
+<ul>
+<li>多路复用技术节省了服务端线程数，避免了多线程切换带来的性能问题</li>
+<li>可水平扩展。灵活增加多路复用器来处理高并发请求</li>
+</ul>
+<p>基于Reactor模式，Netty线程模型分为三种：</p>
+<ul>
+<li>单线程模型：所有IO事件（ACCEPT、读写事件）都在一个线程里监听和处理，适合并发极低的场景</li>
+<li>多线程模型：ACCEPT事件单线程，和客户端的读写事件多线程。对于登录、认证耗时的场景，也存在性能问题。</li>
+<li>主从多线程模型：ACCEPT事件在主线程池里分配线程处理，和客户端的读写事件在从线程池里分配线程处理。<code>Netty推荐使用这种线程模型</code></li>
+</ul>
+<p>主从多线程模型的优势：</p>
+<ul>
+<li>多线程方式解决了单点性能问题</li>
+<li>主从线程池解决了ACCEPT事件中可能出现的一些耗时操作（登录、认证）带来的性能问题</li>
+<li>每个SocketChannel都在唯一一个NioEventLoop线程里执行IO，确保了这些操作都是线程安全的</li>
+</ul>
+<p>在Netty组件中，NioEventLoopGroup扮演了线程池角色，主从线程模型中分别有一个主NioEventLoopGroup，用线程池并发处理多个NioServerSocketChannel（多个服务端的ip:port）上的ACCEPT事件。从NioEventLoopGroup负责多线程并发处理所有Server接收到的客户端NioSocketChannel的读写事件。NioEventLoop扮演执行线程角色，监听注册在它内部的多路复用器Selector上的所有channel的IO事件并调用channel的handlers链式处理。</p>
+<p><img src="/Netty/Netty%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B1.png"></p>
+<p><img src="/Netty/Netty%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B.png"></p>
+<h2 id="编解码器"><a href="#编解码器" class="headerlink" title="编解码器"></a>编解码器</h2><p>Netty的编解码器分为两大类</p>
+<ul>
+<li>Byte &lt;–&gt; Message</li>
+<li>Message &lt;–&gt; Message</li>
+</ul>
+<p>Encoder和Decoder都是ChannelHandler，在pipeLine责任链里被调用执行编码和解码操作</p>
+<p>解码器Decoder主要用于解决TCP粘包、拆包问题，常用的解码器有：</p>
+<ul>
+<li>DelimiterBasedFrameDecoder：执行消息分隔符的解码器</li>
+<li>LineBasedFrameDecoder：以换行符为结束标志的解码器</li>
+<li>FixedLengthFrameDecoder：固定长度的解码器</li>
+</ul>
+<p>还有一个常用的解码器StringDecoder，一般会与上面的几种进行组合，将字节流转为字符串</p>
+<h2 id="todo"><a href="#todo" class="headerlink" title="todo"></a>todo</h2><ul>
+<li>ChannelOption</li>
+<li>ChannelHandlerContext</li>
+<li>ChannelFuture</li>
+</ul>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/cj2580/java/article/details/78087101">https://blog.csdn.net/cj2580/java/article/details/78087101</a><br><a target="_blank" rel="noopener" href="https://blog.csdn.net/zgege/java/article/details/81632990">https://blog.csdn.net/zgege/java/article/details/81632990</a><br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/23488863">https://zhuanlan.zhihu.com/p/23488863</a><br><a target="_blank" rel="noopener" href="https://wenjie.store/archives/netty-nioeventloop-boot-2">https://wenjie.store/archives/netty-nioeventloop-boot-2</a><br><a target="_blank" rel="noopener" href="https://blog.csdn.net/eric_sunah/article/details/80437025?utm_medium=distribute.pc_relevant.none-task-blog-baidujs-1">https://blog.csdn.net/eric_sunah/article/details/80437025?utm_medium=distribute.pc_relevant.none-task-blog-baidujs-1</a></p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>西米大人
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://dcbupt.github.io/2020/05/26/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Netty/" title="系统学习Netty">http://dcbupt.github.io/2020/05/26/blog_article/系统学习系列/系统学习Netty/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+
+        
+
+<blockquote class="blockquote-center" style="color: #f0ad4e">完 ♥ 结</blockquote>
+
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/05/26/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0rocketmq%E6%BA%90%E7%A0%81/" rel="prev" title="系统学习rocketmq源码">
+      <i class="fa fa-chevron-left"></i> 系统学习rocketmq源码
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/06/18/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0HashMap/" rel="next" title="系统学习HashMap">
+      系统学习HashMap <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80"><span class="nav-number">1.</span> <span class="nav-text">基础</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#TCP-vs-UDP"><span class="nav-number">1.1.</span> <span class="nav-text">TCP vs UDP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Socket%E5%A5%97%E6%8E%A5%E5%AD%97"><span class="nav-number">1.2.</span> <span class="nav-text">Socket套接字</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%95%BF%E8%BF%9E%E6%8E%A5-amp-%E7%9F%AD%E9%93%BE%E6%8E%A5"><span class="nav-number">1.2.1.</span> <span class="nav-text">长连接 &amp; 短链接</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E7%A9%BA%E9%97%B4%E4%B8%8E%E5%86%85%E6%A0%B8%E7%A9%BA%E9%97%B4"><span class="nav-number">1.3.</span> <span class="nav-text">用户空间与内核空间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6fd"><span class="nav-number">1.4.</span> <span class="nav-text">文件描述符fd</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%93%E5%AD%98I-x2F-O"><span class="nav-number">1.5.</span> <span class="nav-text">缓存I&#x2F;O</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IO%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.6.</span> <span class="nav-text">IO模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NIO"><span class="nav-number">1.7.</span> <span class="nav-text">NIO</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8IO"><span class="nav-number">1.7.1.</span> <span class="nav-text">多路复用IO</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Netty"><span class="nav-number">2.</span> <span class="nav-text">Netty</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Netty%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6"><span class="nav-number">2.1.</span> <span class="nav-text">Netty核心组件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B"><span class="nav-number">2.2.</span> <span class="nav-text">启动流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Netty%E8%A7%A3%E5%86%B3NIO%E7%A9%BA%E8%BD%AE%E8%AF%A2bug"><span class="nav-number">2.3.</span> <span class="nav-text">Netty解决NIO空轮询bug</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Netty%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B"><span class="nav-number">2.4.</span> <span class="nav-text">Netty线程模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%96%E8%A7%A3%E7%A0%81%E5%99%A8"><span class="nav-number">2.5.</span> <span class="nav-text">编解码器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#todo"><span class="nav-number">2.6.</span> <span class="nav-text">todo</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">3.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="西米大人"
+      src="/images/me.png">
+  <p class="site-author-name" itemprop="name">西米大人</p>
+  <div class="site-description" itemprop="description"><blockquote class="blockquote-center">优秀的人，不是不合群，而是他们合群的人里面没有你</blockquote></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">151</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dcbupt" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;dcbupt" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:byrddc@hotmail.com" title="E-Mail → mailto:byrddc@hotmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">西米大人</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">388k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">10:47</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.id);
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            let target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    let { app_id, app_key, server_url } = {"enable":true,"app_id":"OBdFsOOtfIDcNnWdzkGbICmj-gzGzoHsz","app_key":"89LmL4tP7hkyChAmEleq2MdO","server_url":null,"security":true};
+    function fetchData(api_server) {
+      var Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    let api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+<script src="/js/love.js"></script>
+
+<script src="/js/particle.js"></script>
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('https://cdn.jsdelivr.net/npm/valine@1.4.18/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'OBdFsOOtfIDcNnWdzkGbICmj-gzGzoHsz',
+      appKey     : '89LmL4tP7hkyChAmEleq2MdO',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

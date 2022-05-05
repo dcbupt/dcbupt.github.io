@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-mac-osx.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"dcbupt.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="《第一行代码》学习笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android学习笔记">
+<meta property="og:url" content="http://dcbupt.github.io/2017/03/25/blog_article/%E5%BE%85%E5%BA%9F%E5%BC%83/Android%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="dcddc">
+<meta property="og:description" content="《第一行代码》学习笔记">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-03-25T05:50:00.000Z">
+<meta property="article:modified_time" content="2022-05-01T06:44:18.734Z">
+<meta property="article:author" content="西米大人">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://dcbupt.github.io/2017/03/25/blog_article/%E5%BE%85%E5%BA%9F%E5%BC%83/Android%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+  <title>Android学习笔记 | dcddc</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">dcddc</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">西米大人的博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dcbupt.github.io/2017/03/25/blog_article/%E5%BE%85%E5%BA%9F%E5%BC%83/Android%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/me.png">
+      <meta itemprop="name" content="西米大人">
+      <meta itemprop="description" content="<blockquote class="blockquote-center">优秀的人，不是不合群，而是他们合群的人里面没有你</blockquote>">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="dcddc">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Android学习笔记
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-03-25 13:50:00" itemprop="dateCreated datePublished" datetime="2017-03-25T13:50:00+08:00">2017-03-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-05-01 14:44:18" itemprop="dateModified" datetime="2022-05-01T14:44:18+08:00">2022-05-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/JAVA/" itemprop="url" rel="index"><span itemprop="name">JAVA</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2017/03/25/blog_article/%E5%BE%85%E5%BA%9F%E5%BC%83/Android%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="post-meta-item leancloud_visitors" data-flag-title="Android学习笔记" title="热度">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">热度:</span>
+              <span class="leancloud-visitors-count"></span>℃
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">评论:</span>
+    
+    <a title="valine" href="/2017/03/25/blog_article/%E5%BE%85%E5%BA%9F%E5%BC%83/Android%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2017/03/25/blog_article/%E5%BE%85%E5%BA%9F%E5%BC%83/Android%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="commentCount"></span>℃
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">字数：</span>
+              <span>5.7k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>10 分钟</span>
+            </span>
+            <div class="post-description"><blockquote class="blockquote-center">《第一行代码》学习笔记</blockquote></div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>之前看过第一版《第一行代码》的部分章节，恰逢第二版基于Android7且使用AS开发，实在很诱人！</p>
+</blockquote>
+<h1 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h1><ul>
+<li>JDK + Android Studio + Android SDK<br><code>http://pan.baidu.com/s/1nuABMDb</code> 该网盘可以下载AndroidStudio和AndroidSDK<br>AS第一次打开，是默认从C盘找AndroidSDK的，如果你指定了其他路径，需要指定路径</li>
+<li><code>熟悉开发环境</code><br>file-settings可以修改AS的主题<br>上方工具栏中，一个类似手机的图标是AS的模拟器，启动模拟器并创建好虚拟设备后，模拟器即可运行<br>工具栏中的锤子图标是用来编译项目，三角图标用来在模拟器上运行项目</li>
+<li><code>buildgradle</code><br>Android项目有两个buildgradle，一个在项目根路径下，一个在app路径下</li>
+</ul>
+<p><code>根路径下的buildgradle</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">repositories &#123;</span><br><span class="line">        jcenter()</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>指定jcenter仓库，该仓库托管了很多开源Android项目，这使得我们可以方便引用任何开源项目</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">dependencies &#123;</span><br><span class="line">        classpath &#x27;com.android.tools.build:gradle:2.2.0&#x27;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p>指定构件Android项目的gradle插件（gradle不仅为Android服务，所以这里要指定gradle插件）<br><code>app路径下的buildgradle</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">targetSdkVersion 24</span><br></pre></td></tr></table></figure>
+<p>这表明你的项目在AndroidSDK24api（Android7.0）版本下做了充分的测试。所以，Android7.0引入的新特性会支持你的项目！<br>如果你的SDK小于24，那么你的APP将无法支持Andorid7.0的新特性</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">minifyEnabled false</span><br><span class="line">proguardFiles getDefaultProguardFile(&#x27;proguard-android.txt&#x27;), &#x27;proguard-rules.pro&#x27;</span><br></pre></td></tr></table></figure>
+<p>设为true表示进行代码混淆，别人就无法获得你的源码了。<br>proguardFiles文件定义混淆规则<br>app的buildgradle里的dependencies定义了三种依赖：本地、库、远程依赖。<br>本地依赖就是依赖本地路径下的jar包，库依赖表示依赖项目的库模块，远程依赖定义jcenter的开源项目依赖</p>
+<h1 id="Android基础知识"><a href="#Android基础知识" class="headerlink" title="Android基础知识"></a>Android基础知识</h1><p>1、Android应用的启动顺序<br>AndroidManifest声明Activity-&gt;继承自Activity的Class执行onCreate方法<br>2、什么是逻辑和视图分离<br>Activity Class里写的是逻辑代码，而视图文件在layout文件夹里创建，在Activity里引用该文件指定视图，即视图和逻辑代码分开</p>
+<h1 id="Activity"><a href="#Activity" class="headerlink" title="Activity"></a>Activity</h1><h2 id="创建一个活动的三个步骤"><a href="#创建一个活动的三个步骤" class="headerlink" title="创建一个活动的三个步骤"></a>创建一个活动的三个步骤</h2><p>Activity在Android.manifest的<Application>中使用<Activity>进行注册。<br>编写继承自Activity的活动类，重写onCreate方法call setContentView传入布局文件<br>编写layout.xml</p>
+<h2 id="获取布局文件中的组件"><a href="#获取布局文件中的组件" class="headerlink" title="获取布局文件中的组件"></a>获取布局文件中的组件</h2><p>call findViewById并传入组件的id</p>
+<h2 id="按钮添加监听"><a href="#按钮添加监听" class="headerlink" title="按钮添加监听"></a>按钮添加监听</h2><p><code>Button button = (Button)findViewById(R.id.button_1);</code></p>
+<h2 id="Toast"><a href="#Toast" class="headerlink" title="Toast"></a>Toast</h2><p>Android提供的一种消息提醒方式，Toast会在屏幕显示一小段时间后消失，用法如下：<br><code>Toast.makeText(FirstActivity.this, &quot;You clicked button_1&quot;, Toast.LENGTH_SHORT);</code></p>
+<h2 id="Menu"><a href="#Menu" class="headerlink" title="Menu"></a>Menu</h2><blockquote>
+<p>menu就是在手机屏幕右上角的形如”|”的图标，点击后会出现下拉菜单可供选择</p>
+</blockquote>
+<p>在activity里启用menu的步骤：<br>1、在res-menu路径下定义main.xml（命名随意），表示menu的布局文件<br>在布局文件里定义item</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;menu xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;&gt;</span><br><span class="line">    &lt;item</span><br><span class="line">        android:id=&quot;@+id/add_item&quot;</span><br><span class="line">        android:title=&quot;Add&quot;/&gt;</span><br><span class="line">    &lt;item</span><br><span class="line">        android:id=&quot;@+id/remove_item&quot;</span><br><span class="line">        android:title=&quot;Remove&quot;/&gt;</span><br><span class="line">&lt;/menu&gt;</span><br></pre></td></tr></table></figure>
+<p>2、在activity里启用menu</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">    public boolean onCreateOptionsMenu(Menu menu) &#123;</span><br><span class="line">        getMenuInflater().inflate(R.menu.main, menu);</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>3、为menu的item添加监听</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">    public boolean onOptionsItemSelected(MenuItem item) &#123;</span><br><span class="line">        switch (item.getItemId()) &#123;</span><br><span class="line">            case R.id.add_item:</span><br><span class="line">                Toast.makeText(this, &quot;You Clicked Add&quot;, Toast.LENGTH_SHORT).show();</span><br><span class="line">                break;</span><br><span class="line">            case R.id.remove_item:</span><br><span class="line">                Toast.makeText(this, &quot;You Clicked Remove&quot;, Toast.LENGTH_SHORT).show();</span><br><span class="line">                break;</span><br><span class="line">            default:</span><br><span class="line">        &#125;</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="销毁当前活动"><a href="#销毁当前活动" class="headerlink" title="销毁当前活动"></a>销毁当前活动</h2><p>call finish</p>
+<h2 id="显式Intent和隐式Intent"><a href="#显式Intent和隐式Intent" class="headerlink" title="显式Intent和隐式Intent"></a>显式Intent和隐式Intent</h2><p>显示Intent构造Intent时，直接指定要启动的Activity</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Intent intent = new Intent(SecondActivity.this, ThirdActivity.class);</span><br><span class="line">startActivity(intent);</span><br></pre></td></tr></table></figure>
+
+<p>隐式Intent指定action、category，满足匹配条件的Activity会被启动<br>注：匹配activity-&gt;intent-filter-&gt;action &amp;&amp; category（Android.manifest里定义）<br>例子：<code>通过Intent启动浏览器访问URL</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Intent view = new Intent();</span><br><span class="line">view.setAction(Intent.ACTION_VIEW);</span><br><span class="line">view.setData(Uri.parse(&quot;http://www.baidu.com&quot;));</span><br><span class="line">startActivity(view);</span><br></pre></td></tr></table></figure>
+
+<h2 id="通过Intent在Activit间传递数据"><a href="#通过Intent在Activit间传递数据" class="headerlink" title="通过Intent在Activit间传递数据"></a>通过Intent在Activit间传递数据</h2><p>Intent在启动活动之前，可以放入一些data，被Intent启动的活动可以获取该Intent，从而得到Intent中的data<br>放入data：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Intent intent = new Intent(FirstActivity.this, SecondActivity.class);</span><br><span class="line">                intent.putExtra(&quot;data&quot;, &quot;hello secondActivity&quot;);</span><br><span class="line">                startActivity(intent);</span><br></pre></td></tr></table></figure>
+
+<p>在被启动的Activity里取出data：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Intent intent = getIntent();</span><br><span class="line">        Log.d(&quot;intent data&quot;, intent.getStringExtra(&quot;data&quot;));</span><br></pre></td></tr></table></figure>
+
+<p>当活动A通过Intent启动了活动B，如果想获得活动B结束后返回的数据，可以通过在启动活动时指定RequestCode并根据返回的ResultCode获得对应Intent中的data<br>这样启动活动：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">startActivityForResult(intent, 1);</span><br></pre></td></tr></table></figure>
+
+<p>根据RequestCode和ResultCode获取满足条件的活动返回的Intent中的数据</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">    protected void onActivityResult(int requestCode, int resultCode, Intent data) &#123;</span><br><span class="line">        switch (requestCode) &#123;</span><br><span class="line">            case 1:</span><br><span class="line">                if(resultCode == RESULT_OK) &#123;</span><br><span class="line">                    Log.d(&quot;return data:&quot;, data.getStringExtra(&quot;return data&quot;));</span><br><span class="line">                &#125;</span><br><span class="line">                break;</span><br><span class="line">            default:</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>活动在finish之前通过将ResultCode和Intent绑定的方式，把Intent返回给调用方</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Intent ret = new Intent();</span><br><span class="line">                ret.putExtra(&quot;return data&quot;, &quot;helloFirstActivity&quot;);</span><br><span class="line">                setResult(RESULT_OK, ret);</span><br><span class="line">                finish();</span><br></pre></td></tr></table></figure>
+
+<p>如果活动界面用户按了返回键也会调用finish（另一种结束活动的方式是在代码里显示finish），如果仍想返回给调用方数据，可以：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">    public void onBackPressed() &#123;</span><br><span class="line">        Intent intent = new Intent();</span><br><span class="line">        intent.putExtra(&quot;return data&quot;, &quot;SecondActivityBackPressed&quot;);</span><br><span class="line">        setResult(RESULT_OK, intent);</span><br><span class="line">        finish();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="活动的生命周期"><a href="#活动的生命周期" class="headerlink" title="活动的生命周期"></a>活动的生命周期</h2><p>onCreate-onStart-onResume-onPause-onStop-onDestroy-onRestart<br>完整生存期：onCreate-&gt;onDestroy<br>可见期：onStart-&gt;onStop<br>交互期：onResume-&gt;onPause</p>
+<blockquote>
+<p>app先call onCreate加载布局与监听等，然后call onStart使app可见，再call onResume使得其可以被交互，这三个函数会在app启动时先后调用<br>当从MainActivity到其他活动时，会先后调用onPause暂停与当前活动的交互、onStop使活动不可见，如果退出程序，会调用onDestroy<br>如果又back回到MainActivity，会call onRestart</p>
+</blockquote>
+<h2 id="启动一个Android内置的Dialog"><a href="#启动一个Android内置的Dialog" class="headerlink" title="启动一个Android内置的Dialog"></a>启动一个Android内置的Dialog</h2><p>建一个Activity并在其AndroidManifest中注册如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;activity android:name=&quot;.DialogActivity&quot;</span><br><span class="line">            android:theme=&quot;@style/Theme.AppCompat.Dialog&quot;&gt;</span><br><span class="line">        &lt;/activity&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="启动模式"><a href="#启动模式" class="headerlink" title="启动模式"></a>启动模式</h2><blockquote>
+<p>活动有四种andorid:launchmode，包括：standard，singletop，singletask，singleinstance<br>每个APP都会维护一个栈，当启动新的活动时，旧的活动会入栈。</p>
+</blockquote>
+<p>用法：<br>在活动注册XML中，定义：<code>android:launchMode=&quot;singleTask&quot;</code></p>
+<p>默认启动的是standard模式，该模式不区分活动，每次启动的都是新的活动<br>singletop模式在启动活动时，如果活动位于栈顶，则返回活动，否则创建新的活动<br>singletask模式对于同一个活动，只会创建一次，当再次访问时，会返回之前创建的活动<br>singleinstance模式修饰的活动，会用另一个单独的栈来保存。这么做的目的是为了让多个活动能够共享singleinstance修饰的活动。</p>
+<h1 id="UI"><a href="#UI" class="headerlink" title="UI"></a>UI</h1><p>控件UI</p>
+<h2 id="TextView"><a href="#TextView" class="headerlink" title="TextView"></a>TextView</h2><p>设置文字对齐方式<br><code>android:gravity=&quot;center&quot;</code></p>
+<h2 id="EditText"><a href="#EditText" class="headerlink" title="EditText"></a>EditText</h2><p>设置提示字符串<br><code>android:hint=&quot;Type something here&quot;</code></p>
+<p>设置可编辑的最大行数（超过最大行数，之前的内容会被覆盖）<br><code>android:maxLines=&quot;2&quot;</code></p>
+<h2 id="ProgressBar"><a href="#ProgressBar" class="headerlink" title="ProgressBar"></a>ProgressBar</h2><p>进度条，默认是圆形显示的，可以修改成水平进度条：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">style=&quot;?android:attr/progressBarStyleHorizontal&quot;</span><br><span class="line">        android:max=&quot;100&quot;</span><br></pre></td></tr></table></figure>
+
+<h2 id="组件的可见性"><a href="#组件的可见性" class="headerlink" title="组件的可见性"></a>组件的可见性</h2><p>组件默认是<code>View.VISIBLE</code>的，可以改成：<code>View.INVISIBLE</code>或者<code>View.GONE</code></p>
+<h2 id="AlertDialog"><a href="#AlertDialog" class="headerlink" title="AlertDialog"></a>AlertDialog</h2><p>弹出警告对话框，提供可选择的Button和用户交互，DEMO：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);</span><br><span class="line">                dialog.setTitle(&quot;This is alert dialog&quot;);</span><br><span class="line">                dialog.setMessage(&quot;Something important&quot;);</span><br><span class="line">                dialog.setCancelable(false);</span><br><span class="line">                dialog.setPositiveButton(&quot;OK&quot;, new DialogInterface.OnClickListener()&#123;</span><br><span class="line">                    @Override</span><br><span class="line">                    public void onClick(DialogInterface dialog, int which) &#123;</span><br><span class="line"></span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br><span class="line">                dialog.setNegativeButton(&quot;Cancle&quot;, new DialogInterface.OnClickListener()&#123;</span><br><span class="line">                    @Override</span><br><span class="line">                    public void onClick(DialogInterface dialog, int which) &#123;</span><br><span class="line"></span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br><span class="line">                dialog.show();</span><br></pre></td></tr></table></figure>
+
+<h2 id="ProgressDialog"><a href="#ProgressDialog" class="headerlink" title="ProgressDialog"></a>ProgressDialog</h2><p>弹出进度条对话框，不存在交互，如果需要取消，call dismiss()，DEMO：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);</span><br><span class="line">                progressDialog.setTitle(&quot;This is ProgressDialog&quot;);</span><br><span class="line">                progressDialog.setMessage(&quot;Loading...&quot;);</span><br><span class="line">                progressDialog.setCancelable(true);</span><br><span class="line">                progressDialog.show();</span><br><span class="line">                </span><br></pre></td></tr></table></figure>
+
+<p>布局UI</p>
+<h2 id="LinearLayout"><a href="#LinearLayout" class="headerlink" title="LinearLayout"></a>LinearLayout</h2><p>线性布局<br>1、定义布局的组件水平&#x2F;垂直排列<br><code>android:orientation=&quot;horizontal&quot;</code> 这里也可以是vertical，默认的orientation是horizontal</p>
+<p>2、定义组件的对齐方式<br><code>android:layout_gravity=&quot;left|top&quot;</code> 这里是组件相对布局的对齐方式，注意其与布局的orientation有关</p>
+<p>3、设置组件所占宽（高）占比</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">android:layout_width=&quot;0dp&quot;</span><br><span class="line">        android:layout_weight=&quot;1&quot;</span><br></pre></td></tr></table></figure>
+
+<p>dp是组件大小的单位，这里虽然为0，但是Android会累加所有layout_weight的值，单个组件所占的宽（高）是其自身的layout_weight的占比</p>
+<h2 id="RelativeLayout"><a href="#RelativeLayout" class="headerlink" title="RelativeLayout"></a>RelativeLayout</h2><p>相对布局，组件在此布局里可以定义相对位置<br>1、定义组件相对布局的位置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;!--定义组件在左下角--&gt;</span><br><span class="line">android:layout_alignParentBottom=&quot;true&quot;</span><br><span class="line">        android:layout_alignParentLeft=&quot;true&quot;</span><br></pre></td></tr></table></figure>
+
+<p>2、定义组件相对于其他组件的相对位置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;!--将组件放在button1的左下角--&gt;</span><br><span class="line">        android:layout_below=&quot;@id/button1&quot;</span><br><span class="line">        android:layout_toLeftOf=&quot;@id/button1&quot;</span><br><span class="line">        </span><br><span class="line">&lt;!--将组件与button1左对齐--&gt;</span><br><span class="line">        android:layout_alignLeft=&quot;@id/button1&quot;</span><br></pre></td></tr></table></figure>
+
+<h2 id="PercentFrameLayout"><a href="#PercentFrameLayout" class="headerlink" title="PercentFrameLayout"></a>PercentFrameLayout</h2><p>百分比布局，类似LinearLayout的layout_weight功能</p>
+<p>1、导入PercentFrameLayout<br>该布局是新布局，需要在build.gradle里添加依赖：<br><code>compile &#39;com.android.support:percent:24.2.1&#39;</code></p>
+<p>2、创建布局<br>i. 因为不是内置布局，所以需要写全路径<br><code>&lt;android.support.percent.PercentFrameLayout</code><br>ii.定义app命名空间<br><code>xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;</code><br>其实任何布局里都会使用的是Android命名空间：<code>xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</code></p>
+<p>3、组件布局</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;!--设置组件的占比以及位置--&gt;</span><br><span class="line">        android:layout_gravity=&quot;right|top&quot;</span><br><span class="line">        app:layout_widthPercent=&quot;50%&quot;</span><br><span class="line">        app:layout_heightPercent=&quot;50%&quot;</span><br></pre></td></tr></table></figure>
+
+<p>因为该布局是继承FrameLayout的，所以默认组件都会放在左上角，但可以通过layout_gravity改变位置</p>
+<h2 id="自定义布局"><a href="#自定义布局" class="headerlink" title="自定义布局"></a>自定义布局</h2><p>1、设置布局（组件）的背景<br><code>android:background=&quot;@drawable/back_bg&quot;</code></p>
+<p>2、在其他布局里导入自定义布局<br><code>&lt;include layout=&quot;@layout/title&quot;/&gt;</code></p>
+<p>tips：如果自定义的布局覆盖了系统自带的标题栏，可以在Activity里将标题栏隐藏</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ActionBar actionbar = getSupportActionBar();</span><br><span class="line">        if (actionbar != null) &#123;</span><br><span class="line">            actionbar.hide();</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+
+<p>3、为自定义的布局控件添加监听<br>第二点只能保证在其他的布局文件里导入静态的自定义布局，如果想要为自定义的布局控件添加监听：<br>i. 创建一个继承布局的Activity</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">public class TitleLayout extends LinearLayout &#123;</span><br><span class="line">    public TitleLayout(Context context, AttributeSet attrs) &#123;</span><br><span class="line">        super(context, attrs);</span><br><span class="line">        LayoutInflater.from(context).inflate(R.layout.title, this);</span><br><span class="line">        Button titleBack = (Button) findViewById(R.id.title_back);</span><br><span class="line">        Button titleEdit = (Button) findViewById(R.id.title_edit);</span><br><span class="line">        titleBack.setOnClickListener(new OnClickListener() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public void onClick(View v) &#123;</span><br><span class="line">                ((Activity) getContext()).finish();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        titleEdit.setOnClickListener(new OnClickListener() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public void onClick(View v) &#123;</span><br><span class="line">                Toast.makeText(getContext(), &quot;You clicked Edit button&quot;,</span><br><span class="line">                        Toast.LENGTH_SHORT).show();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>因为自定义布局使用LinearLayout，所以继承LinearLayout，构造函数里通过LayoutInflater加载布局文件，并添加控件监听</p>
+<p>ii. 在布局文件里导入这个Activity（该Activity对应了自定义布局）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;com.example.uicustomviews.TitleLayout</span><br><span class="line">        android:layout_width=&quot;match_parent&quot;</span><br><span class="line">        android:layout_height=&quot;wrap_content&quot; /&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="ListView"><a href="#ListView" class="headerlink" title="ListView"></a>ListView</h2><blockquote>
+<p>ListView是最常用控件，因为其可以通过拖动的方式显示超过屏幕的数据</p>
+</blockquote>
+<p>使用ListView：<br>1、在布局中创建ListView组件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;ListView</span><br><span class="line">        android:id=&quot;@+id/list_view&quot;</span><br><span class="line">        android:layout_width=&quot;match_parent&quot;</span><br><span class="line">        android:layout_height=&quot;match_parent&quot; &gt;</span><br><span class="line">    &lt;/ListView&gt;</span><br></pre></td></tr></table></figure>
+
+<p>2、在Activity里创建ListView需要显示的数据（通常是一个List）<br><code>private List&lt;Fruit&gt; fruitList = new ArrayList&lt;Fruit&gt;();</code></p>
+<p>3、将数据与ListView适配器绑定<br><code>FruitAdapter adapter = new FruitAdapter(MainActivity.this, R.layout.fruit_item, fruitList);</code><br>FruitAdapter是自己实现的适配器。因为ListView以多行的形式显示数据，适配器作用就是在每一行将数据适配自定义的布局，这里就是R.layout.fruit_item</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">public class FruitAdapter extends ArrayAdapter&lt;Fruit&gt; &#123;</span><br><span class="line"></span><br><span class="line">    private int resourceId;</span><br><span class="line"></span><br><span class="line">    public FruitAdapter(Context context, int textViewResourceId,</span><br><span class="line">                        List&lt;Fruit&gt; objects) &#123;</span><br><span class="line">        super(context, textViewResourceId, objects);</span><br><span class="line">        resourceId = textViewResourceId;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    @Override</span><br><span class="line">    public View getView(int position, View convertView, ViewGroup parent) &#123;</span><br><span class="line">        Fruit fruit = getItem(position); // 获取当前项的Fruit实例</span><br><span class="line">        View view;</span><br><span class="line">        ViewHolder viewHolder;</span><br><span class="line">        if (convertView == null) &#123;</span><br><span class="line">            view = LayoutInflater.from(getContext()).inflate(resourceId, parent, false);</span><br><span class="line">            viewHolder = new ViewHolder();</span><br><span class="line">            viewHolder.fruitImage = (ImageView) view.findViewById (R.id.fruit_image);</span><br><span class="line">            viewHolder.fruitName = (TextView) view.findViewById (R.id.fruit_name);</span><br><span class="line">            view.setTag(viewHolder); // 将ViewHolder存储在View中</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            view = convertView;</span><br><span class="line">            viewHolder = (ViewHolder) view.getTag(); // 重新获取ViewHolder</span><br><span class="line">        &#125;</span><br><span class="line">        viewHolder.fruitImage.setImageResource(fruit.getImageId());</span><br><span class="line">        viewHolder.fruitName.setText(fruit.getName());</span><br><span class="line">        return view;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    class ViewHolder &#123;</span><br><span class="line"></span><br><span class="line">        ImageView fruitImage;</span><br><span class="line"></span><br><span class="line">        TextView fruitName;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果想要加载自定义的ListView子布局，需要在自定义的适配器中重写getView方法，该方法会在新的子布局要显示的时候被调用。<br>如果View对象为null，就通过LayoutInflater加载子布局，通过返回的View得到子布局的控件，将子布局的控件通过ViewHolder保存起来，这么做是为了在第一次加载子布局的时候就保存控件，避免了重复获取控件影响性能。<br>如果View不为null，直接取得保存控件的对象。<br>最后控件调用set方法显示List里的对象的数据即可。</p>
+<p>4、将适配器注入到ListView</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ListView listView = (ListView) findViewById(R.id.list_view);</span><br><span class="line">        listView.setAdapter(adapter);</span><br></pre></td></tr></table></figure>
+
+<p>至此，ListView可以完成加载自定义的子布局和显示数据</p>
+<p>5、为子布局的Item添加监听</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">listView.setOnItemClickListener(new AdapterView.OnItemClickListener() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public void onItemClick(AdapterView&lt;?&gt; parent, View view,</span><br><span class="line">                                    int position, long id) &#123;</span><br><span class="line">                Fruit fruit = fruitList.get(position);</span><br><span class="line">                Toast.makeText(MainActivity.this, fruit.getName(), Toast.LENGTH_SHORT).show();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br></pre></td></tr></table></figure>
+
+<h2 id="RecyclerView"><a href="#RecyclerView" class="headerlink" title="RecyclerView"></a>RecyclerView</h2><blockquote>
+<p>ListView的增强版，和PercentFrameLayout一样也是新出的</p>
+</blockquote>
+<p>1、从support库导入RecyclerView<br><code>compile &#39;com.android.support:recyclerview-v7:24.2.1&#39;</code></p>
+<p>2、创建RecyclerView控件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;android.support.v7.widget.RecyclerView</span><br><span class="line">        android:id=&quot;@+id/recycler_view&quot;</span><br><span class="line">        android:layout_width=&quot;match_parent&quot;</span><br><span class="line">        android:layout_height=&quot;match_parent&quot; /&gt;</span><br></pre></td></tr></table></figure>
+
+<p>3、设置RecyclerView的布局方式</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">StaggeredGridLayoutManager layoutManager = new</span><br><span class="line">                StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);</span><br><span class="line">        recyclerView.setLayoutManager(layoutManager);</span><br></pre></td></tr></table></figure>
+
+<p>这就是RecyclerView有别于ListView的地方，ListView自身控制布局方式，所以只能采用LinearLayout的Vertical方式布局，但RecyclerView将布局方式交给LayoutManager负责，再将其注入给自己，实现自由地设定自己的布局方式<br>这里设置的是瀑布流网格，按列布局排成三列</p>
+<p>4、创建适配器<br>提供静态内部ViewHolder类专门保存子布局View，通过子布局View不仅可以为View添加监听，还可以为子布局里的控件添加监听，而ListView只能为子布局添加监听。<br>相比ListView的适配器，具有更完备和强大的接口管理子视图：<br>onCreateViewHolder方法用于完成加载子布局以及为Item添加监听，onBindViewHolder方法用于加载数据</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line">public class FruitAdapter extends RecyclerView.Adapter&lt;FruitAdapter.ViewHolder&gt;&#123;</span><br><span class="line"></span><br><span class="line">    private List&lt;Fruit&gt; mFruitList;</span><br><span class="line"></span><br><span class="line">    static class ViewHolder extends RecyclerView.ViewHolder &#123;</span><br><span class="line">        View fruitView;</span><br><span class="line">        ImageView fruitImage;</span><br><span class="line">        TextView fruitName;</span><br><span class="line"></span><br><span class="line">        public ViewHolder(View view) &#123;</span><br><span class="line">            super(view);</span><br><span class="line">            fruitView = view;</span><br><span class="line">            fruitImage = (ImageView) view.findViewById(R.id.fruit_image);</span><br><span class="line">            fruitName = (TextView) view.findViewById(R.id.fruit_name);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public FruitAdapter(List&lt;Fruit&gt; fruitList) &#123;</span><br><span class="line">        mFruitList = fruitList;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) &#123;</span><br><span class="line">        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fruit_item, parent, false);</span><br><span class="line">        final ViewHolder holder = new ViewHolder(view);</span><br><span class="line">        holder.fruitView.setOnClickListener(new View.OnClickListener() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public void onClick(View v) &#123;</span><br><span class="line">                int position = holder.getAdapterPosition();</span><br><span class="line">                Fruit fruit = mFruitList.get(position);</span><br><span class="line">                Toast.makeText(v.getContext(), &quot;you clicked view &quot; + fruit.getName(), Toast.LENGTH_SHORT).show();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        holder.fruitImage.setOnClickListener(new View.OnClickListener() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public void onClick(View v) &#123;</span><br><span class="line">                int position = holder.getAdapterPosition();</span><br><span class="line">                Fruit fruit = mFruitList.get(position);</span><br><span class="line">                Toast.makeText(v.getContext(), &quot;you clicked image &quot; + fruit.getName(), Toast.LENGTH_SHORT).show();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        return holder;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void onBindViewHolder(ViewHolder holder, int position) &#123;</span><br><span class="line">        Fruit fruit = mFruitList.get(position);</span><br><span class="line">        holder.fruitImage.setImageResource(fruit.getImageId());</span><br><span class="line">        holder.fruitName.setText(fruit.getName());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public int getItemCount() &#123;</span><br><span class="line">        return mFruitList.size();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>5、将适配器注入到RecyclerView</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">FruitAdapter adapter = new FruitAdapter(fruitList);</span><br><span class="line">        recyclerView.setAdapter(adapter);</span><br></pre></td></tr></table></figure>
+
+<p>6、高级应用<br>当RecyclerView显示的内容有新的数据加入时，可以通知Adapter去调用onBindViewHolder加载数据<br><code>adapter.notifyItemInserted(msgList.size() - 1);</code></p>
+<p>当新加入的数据RecyclerView无法在屏幕显示时，可以让RecyclerView滑动到指定id的子布局位置：<br><code>msgRecyclerView.scrollToPosition(msgList.size() - 1); </code></p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>西米大人
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://dcbupt.github.io/2017/03/25/blog_article/%E5%BE%85%E5%BA%9F%E5%BC%83/Android%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="Android学习笔记">http://dcbupt.github.io/2017/03/25/blog_article/待废弃/Android学习笔记/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+
+        
+
+<blockquote class="blockquote-center" style="color: #f0ad4e">完 ♥ 结</blockquote>
+
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/03/22/blog_article/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%AD%97%E7%AC%A6%E4%B8%B2/" rel="prev" title="字符串">
+      <i class="fa fa-chevron-left"></i> 字符串
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/03/25/blog_article/%E7%AE%97%E6%B3%95/%E5%AE%9E%E7%8E%B0Trie/" rel="next" title="实现Trie">
+      实现Trie <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="nav-number">1.</span> <span class="nav-text">环境搭建</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Android%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86"><span class="nav-number">2.</span> <span class="nav-text">Android基础知识</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Activity"><span class="nav-number">3.</span> <span class="nav-text">Activity</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E6%B4%BB%E5%8A%A8%E7%9A%84%E4%B8%89%E4%B8%AA%E6%AD%A5%E9%AA%A4"><span class="nav-number">3.1.</span> <span class="nav-text">创建一个活动的三个步骤</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E5%B8%83%E5%B1%80%E6%96%87%E4%BB%B6%E4%B8%AD%E7%9A%84%E7%BB%84%E4%BB%B6"><span class="nav-number">3.2.</span> <span class="nav-text">获取布局文件中的组件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%89%E9%92%AE%E6%B7%BB%E5%8A%A0%E7%9B%91%E5%90%AC"><span class="nav-number">3.3.</span> <span class="nav-text">按钮添加监听</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Toast"><span class="nav-number">3.4.</span> <span class="nav-text">Toast</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Menu"><span class="nav-number">3.5.</span> <span class="nav-text">Menu</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%94%80%E6%AF%81%E5%BD%93%E5%89%8D%E6%B4%BB%E5%8A%A8"><span class="nav-number">3.6.</span> <span class="nav-text">销毁当前活动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%98%BE%E5%BC%8FIntent%E5%92%8C%E9%9A%90%E5%BC%8FIntent"><span class="nav-number">3.7.</span> <span class="nav-text">显式Intent和隐式Intent</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%9A%E8%BF%87Intent%E5%9C%A8Activit%E9%97%B4%E4%BC%A0%E9%80%92%E6%95%B0%E6%8D%AE"><span class="nav-number">3.8.</span> <span class="nav-text">通过Intent在Activit间传递数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B4%BB%E5%8A%A8%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="nav-number">3.9.</span> <span class="nav-text">活动的生命周期</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E4%B8%80%E4%B8%AAAndroid%E5%86%85%E7%BD%AE%E7%9A%84Dialog"><span class="nav-number">3.10.</span> <span class="nav-text">启动一个Android内置的Dialog</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E6%A8%A1%E5%BC%8F"><span class="nav-number">3.11.</span> <span class="nav-text">启动模式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#UI"><span class="nav-number">4.</span> <span class="nav-text">UI</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#TextView"><span class="nav-number">4.1.</span> <span class="nav-text">TextView</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#EditText"><span class="nav-number">4.2.</span> <span class="nav-text">EditText</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ProgressBar"><span class="nav-number">4.3.</span> <span class="nav-text">ProgressBar</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%84%E4%BB%B6%E7%9A%84%E5%8F%AF%E8%A7%81%E6%80%A7"><span class="nav-number">4.4.</span> <span class="nav-text">组件的可见性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AlertDialog"><span class="nav-number">4.5.</span> <span class="nav-text">AlertDialog</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ProgressDialog"><span class="nav-number">4.6.</span> <span class="nav-text">ProgressDialog</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LinearLayout"><span class="nav-number">4.7.</span> <span class="nav-text">LinearLayout</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RelativeLayout"><span class="nav-number">4.8.</span> <span class="nav-text">RelativeLayout</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PercentFrameLayout"><span class="nav-number">4.9.</span> <span class="nav-text">PercentFrameLayout</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B8%83%E5%B1%80"><span class="nav-number">4.10.</span> <span class="nav-text">自定义布局</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ListView"><span class="nav-number">4.11.</span> <span class="nav-text">ListView</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RecyclerView"><span class="nav-number">4.12.</span> <span class="nav-text">RecyclerView</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="西米大人"
+      src="/images/me.png">
+  <p class="site-author-name" itemprop="name">西米大人</p>
+  <div class="site-description" itemprop="description"><blockquote class="blockquote-center">优秀的人，不是不合群，而是他们合群的人里面没有你</blockquote></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">151</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dcbupt" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;dcbupt" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:byrddc@hotmail.com" title="E-Mail → mailto:byrddc@hotmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">西米大人</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">388k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">10:47</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.id);
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            let target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    let { app_id, app_key, server_url } = {"enable":true,"app_id":"OBdFsOOtfIDcNnWdzkGbICmj-gzGzoHsz","app_key":"89LmL4tP7hkyChAmEleq2MdO","server_url":null,"security":true};
+    function fetchData(api_server) {
+      var Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    let api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+<script src="/js/love.js"></script>
+
+<script src="/js/particle.js"></script>
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('https://cdn.jsdelivr.net/npm/valine@1.4.18/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'OBdFsOOtfIDcNnWdzkGbICmj-gzGzoHsz',
+      appKey     : '89LmL4tP7hkyChAmEleq2MdO',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

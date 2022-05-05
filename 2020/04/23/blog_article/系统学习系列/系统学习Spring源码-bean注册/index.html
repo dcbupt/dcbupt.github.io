@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-mac-osx.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"dcbupt.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="系统学习Spring源码-bean注册">
+<meta property="og:type" content="article">
+<meta property="og:title" content="系统学习Spring源码-bean注册">
+<meta property="og:url" content="http://dcbupt.github.io/2020/04/23/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Spring%E6%BA%90%E7%A0%81-bean%E6%B3%A8%E5%86%8C/index.html">
+<meta property="og:site_name" content="dcddc">
+<meta property="og:description" content="系统学习Spring源码-bean注册">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://dcbupt.github.io/spring/xml%E6%96%B9%E5%BC%8Fbean%E8%A7%A3%E6%9E%90%E6%B3%A8%E5%86%8C%E6%B5%81%E7%A8%8B.png">
+<meta property="article:published_time" content="2020-04-23T03:57:00.000Z">
+<meta property="article:modified_time" content="2022-05-01T06:44:18.826Z">
+<meta property="article:author" content="西米大人">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://dcbupt.github.io/spring/xml%E6%96%B9%E5%BC%8Fbean%E8%A7%A3%E6%9E%90%E6%B3%A8%E5%86%8C%E6%B5%81%E7%A8%8B.png">
+
+<link rel="canonical" href="http://dcbupt.github.io/2020/04/23/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Spring%E6%BA%90%E7%A0%81-bean%E6%B3%A8%E5%86%8C/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+  <title>系统学习Spring源码-bean注册 | dcddc</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">dcddc</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">西米大人的博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dcbupt.github.io/2020/04/23/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Spring%E6%BA%90%E7%A0%81-bean%E6%B3%A8%E5%86%8C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/me.png">
+      <meta itemprop="name" content="西米大人">
+      <meta itemprop="description" content="<blockquote class="blockquote-center">优秀的人，不是不合群，而是他们合群的人里面没有你</blockquote>">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="dcddc">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          系统学习Spring源码-bean注册
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-04-23 11:57:00" itemprop="dateCreated datePublished" datetime="2020-04-23T11:57:00+08:00">2020-04-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-05-01 14:44:18" itemprop="dateModified" datetime="2022-05-01T14:44:18+08:00">2022-05-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/" itemprop="url" rel="index"><span itemprop="name">系统学习系列</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/04/23/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Spring%E6%BA%90%E7%A0%81-bean%E6%B3%A8%E5%86%8C/" class="post-meta-item leancloud_visitors" data-flag-title="系统学习Spring源码-bean注册" title="热度">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">热度:</span>
+              <span class="leancloud-visitors-count"></span>℃
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">评论:</span>
+    
+    <a title="valine" href="/2020/04/23/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Spring%E6%BA%90%E7%A0%81-bean%E6%B3%A8%E5%86%8C/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/04/23/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Spring%E6%BA%90%E7%A0%81-bean%E6%B3%A8%E5%86%8C/" itemprop="commentCount"></span>℃
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">字数：</span>
+              <span>7.1k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>12 分钟</span>
+            </span>
+            <div class="post-description"><blockquote class="blockquote-center">系统学习Spring源码-bean注册</blockquote></div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>bean注册指bean定义的注册，bean加载的前置条件就是解析bean定义并注册到bean工厂</p>
+<p>bean定义有多种方式，本文以xml方式为例，介绍Spring如何解析bean定义并注册到bean工厂</p>
+<h1 id="ClassPathResource"><a href="#ClassPathResource" class="headerlink" title="ClassPathResource"></a>ClassPathResource</h1><p>Spring定义了统一的资源接口Resource。<code>ClassPathResource</code>是它的实现类，通过CL加载classpath下的资源文件，得到输入流</p>
+<p>构造函数：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">   public ClassPathResource(String path, @Nullable ClassLoader classLoader) &#123;</span><br><span class="line">	Assert.notNull(path, &quot;Path must not be null&quot;);</span><br><span class="line">	String pathToUse = StringUtils.cleanPath(path);</span><br><span class="line">	if (pathToUse.startsWith(&quot;/&quot;)) &#123;</span><br><span class="line">		pathToUse = pathToUse.substring(1);</span><br><span class="line">	&#125;</span><br><span class="line">	this.path = pathToUse;</span><br><span class="line">	this.classLoader = (classLoader != null ? classLoader : ClassUtils.getDefaultClassLoader());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>构造函数第一个参数是资源文件路径，通常是bean的xml定义文件。第二个参数是CL，ClassUtils取的默认CL是<code>线程上下文加载器</code>，代码：<br><code>cl = Thread.currentThread().getContextClassLoader();</code></p>
+<p>加载资源文件得到输入流：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">   public InputStream getInputStream() throws IOException &#123;</span><br><span class="line">	InputStream is;</span><br><span class="line">	if (this.clazz != null) &#123;</span><br><span class="line">		is = this.clazz.getResourceAsStream(this.path);</span><br><span class="line">	&#125;</span><br><span class="line">	else if (this.classLoader != null) &#123;</span><br><span class="line">		is = this.classLoader.getResourceAsStream(this.path);</span><br><span class="line">	&#125;</span><br><span class="line">	else &#123;</span><br><span class="line">		is = ClassLoader.getSystemResourceAsStream(this.path);</span><br><span class="line">	&#125;</span><br><span class="line">	if (is == null) &#123;</span><br><span class="line">		throw new FileNotFoundException(getDescription() + &quot; cannot be opened because it does not exist&quot;);</span><br><span class="line">	&#125;</span><br><span class="line">	return is;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Class和ClassLoader的getResourceAsStream差别不大</p>
+<ul>
+<li>Class的getResourceAsStream(String name)方法，参数不以”&#x2F;“开头则默认从此类对应的.class文件所在的packge下取资源，以”&#x2F;“开头则从CLASSPATH下获取</li>
+<li>ClassLoader的getResourceAsStream(String name)方法，默认就是从CLASSPATH下获取资源，参数不能以”&#x2F;“开头</li>
+</ul>
+<h1 id="XmlBeanDefinitionReader"><a href="#XmlBeanDefinitionReader" class="headerlink" title="XmlBeanDefinitionReader"></a>XmlBeanDefinitionReader</h1><h2 id="构造器"><a href="#构造器" class="headerlink" title="构造器"></a>构造器</h2><p><code>XmlBeanDefinitionReader</code>基于Resource提供的bean定义文件输入流，解析后得到beanDefinition并注册到bean工厂，先看下它的构造函数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">   public XmlBeanDefinitionReader(BeanDefinitionRegistry registry) &#123;</span><br><span class="line">	super(registry);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>XmlBeanDefinitionReader</code>的通用基类是<code>AbstractBeanDefinitionReader</code>，它通过构造函数注入一个Bean定义注册中心<code>BeanDefinitionRegistry</code>，实际类型是<code>DefaultListableBeanFactory</code>，Spring默认的bean工厂，本身也是bean注册中心。<code>XmlBeanDefinitionReader</code>解析得到的<code>BeanDefinition</code>会注册到<code>DefaultListableBeanFactory</code></p>
+<h2 id="解析xml文件输入流"><a href="#解析xml文件输入流" class="headerlink" title="解析xml文件输入流"></a>解析xml文件输入流</h2><p>解析xml并注册bean的入口方法<code>loadBeanDefinitions</code>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">   public int loadBeanDefinitions(Resource resource) throws BeanDefinitionStoreException &#123;</span><br><span class="line">	return loadBeanDefinitions(new EncodedResource(resource));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Resource即代表bean定义文件的资源类，如果是CLASSPATH路径下获取的xml文件，则Resource的类型就是上面介绍的<code>ClassPathResource</code></p>
+<h3 id="SAX包装XML输入流"><a href="#SAX包装XML输入流" class="headerlink" title="SAX包装XML输入流"></a>SAX包装XML输入流</h3><p>使用SAX包装xml文件输入流</p>
+<ul>
+<li>SAX（simple API for XML）是xml最常用的解析工具<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">  InputStream inputStream = encodedResource.getResource().getInputStream();</span><br><span class="line">try &#123;</span><br><span class="line">	InputSource inputSource = new InputSource(inputStream);</span><br><span class="line">          ...</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="解析XML得到Document"><a href="#解析XML得到Document" class="headerlink" title="解析XML得到Document"></a>解析XML得到Document</h3><p>使用简单工厂模式创建一个<code>DocumentBuilder</code>来解析SAX包装的xml输入流，生成解析后的<code>Document</code>。通过<code>Document</code>可以方便获取xml的标签元素</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">   public Document loadDocument(InputSource inputSource, EntityResolver entityResolver,</span><br><span class="line">		ErrorHandler errorHandler, int validationMode, boolean namespaceAware) throws Exception &#123;</span><br><span class="line"></span><br><span class="line">	DocumentBuilderFactory factory = createDocumentBuilderFactory(validationMode, namespaceAware);</span><br><span class="line">	if (logger.isDebugEnabled()) &#123;</span><br><span class="line">		logger.debug(&quot;Using JAXP provider [&quot; + factory.getClass().getName() + &quot;]&quot;);</span><br><span class="line">	&#125;</span><br><span class="line">	DocumentBuilder builder = createDocumentBuilder(factory, entityResolver, errorHandler);</span><br><span class="line">	return builder.parse(inputSource);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>工厂<code>DocumentBuilderFactory</code>在创建时可以自定义一些feature来影响创建的<code>DocumentBuilder</code>，例如validationMode决定DocumentBuilder按哪种规范校验xml文件格式。validationMode从xml头部声明里获取，DTD和XSD是两种常用的XML文档格式定义规范。例如使用XSD格式的头部这么声明：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;</span><br><span class="line">   xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span><br><span class="line">   xmlns:aop=&quot;http://www.springframework.org/schema/aop&quot;</span><br><span class="line">   xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans-2.0.xsd</span><br><span class="line">			http://www.springframework.org/schema/aop https://www.springframework.org/schema/aop/spring-aop-2.0.xsd&quot;&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="读取Document注册BeanDefinition"><a href="#读取Document注册BeanDefinition" class="headerlink" title="读取Document注册BeanDefinition"></a>读取Document注册BeanDefinition</h2><p>创建一个<code>BeanDefinitionDocumentReader</code>读取<code>Document</code>里的bean定义信息，注册beanDefinition</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public int registerBeanDefinitions(Document doc, Resource resource) throws BeanDefinitionStoreException &#123;</span><br><span class="line">	BeanDefinitionDocumentReader documentReader = createBeanDefinitionDocumentReader();</span><br><span class="line">	int countBefore = getRegistry().getBeanDefinitionCount();</span><br><span class="line">	// 由DocumentReader负责读取Document并注册bd到beanFactory</span><br><span class="line">	documentReader.registerBeanDefinitions(doc, createReaderContext(resource));</span><br><span class="line">	return getRegistry().getBeanDefinitionCount() - countBefore;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="profile环境隔离"><a href="#profile环境隔离" class="headerlink" title="profile环境隔离"></a>profile环境隔离</h3><p>首先处理根标签。判断标签的命名空间是否为spring的beans命名空间（<a target="_blank" rel="noopener" href="http://www.springframework.org/schema/beans%EF%BC%89%E3%80%82%E5%A6%82%E6%9E%9C%E6%98%AF%EF%BC%8C%E8%AF%B4%E6%98%8E%E6%A0%B9%E6%A0%87%E7%AD%BE%E6%98%AFbeans%E6%A0%87%E7%AD%BE%EF%BC%8C%E5%88%A4%E6%96%ADbeans%E7%9A%84profile%E5%B1%9E%E6%80%A7%E6%8C%87%E5%AE%9A%E7%9A%84%E7%8E%AF%E5%A2%83%E6%A0%87%E6%98%AF%E5%90%A6%E6%BB%A1%E8%B6%B3%E5%BD%93%E5%89%8D%E7%8E%AF%E5%A2%83%EF%BC%8C%E4%B8%8D%E6%BB%A1%E8%B6%B3%E5%88%99%E4%B8%8D%E6%B3%A8%E5%86%8C%E8%BF%99%E4%BA%9Bbeans">http://www.springframework.org/schema/beans）。如果是，说明根标签是beans标签，判断beans的profile属性指定的环境标是否满足当前环境，不满足则不注册这些beans</a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">      if (this.delegate.isDefaultNamespace(root)) &#123;</span><br><span class="line">	String profileSpec = root.getAttribute(PROFILE_ATTRIBUTE);</span><br><span class="line">	if (StringUtils.hasText(profileSpec)) &#123;</span><br><span class="line">		String[] specifiedProfiles = StringUtils.tokenizeToStringArray(</span><br><span class="line">				profileSpec, BeanDefinitionParserDelegate.MULTI_VALUE_ATTRIBUTE_DELIMITERS);</span><br><span class="line">		if (!getReaderContext().getEnvironment().acceptsProfiles(specifiedProfiles)) &#123;</span><br><span class="line">			if (logger.isInfoEnabled()) &#123;</span><br><span class="line">				logger.info(&quot;Skipped XML bean definition file due to specified profiles [&quot; + profileSpec +</span><br><span class="line">						&quot;] not matching: &quot; + getReaderContext().getResource());</span><br><span class="line">			&#125;</span><br><span class="line">			return;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>acceptsProfiles方法传入beans指定的所有profile环境标，isProfileActive方法判断环境标是否满足当前环境。优先判断ActiveProfiles，有activeProfiles，不满足则无法注册beans。没有activeProfiles，再去判断是否满足defaultProfiles</p>
+<ul>
+<li>ActiveProfiles集合是从系统变量或环境变量里，通过key&#x3D;<code>spring.profiles.active</code>拿到value，按”,”分隔后的集合。默认的ActiveProfiles为空，可以通过几种方式指定环境标： <ul>
+<li>显式添加到系统属性：<code>System.setProperty(&quot;spring.profiles.active&quot;, &quot;development&quot;);</code></li>
+<li>web.xml里配置spring.profiles.active到context-param</li>
+<li>使用注解：@ActiveProfiles(“test”)</li>
+</ul>
+</li>
+<li>DefaultProfiles集合类似，只不过key&#x3D;<code>spring.profiles.default</code>。Spring默认有一个预留reserved的DefaultProfile&#x3D;”default”，如果用户有通过环境变量设置了，则替换</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">   protected boolean isProfileActive(String profile) &#123;</span><br><span class="line">	validateProfile(profile);</span><br><span class="line">	Set&lt;String&gt; currentActiveProfiles = doGetActiveProfiles();</span><br><span class="line">	return (currentActiveProfiles.contains(profile) ||</span><br><span class="line">			(currentActiveProfiles.isEmpty() &amp;&amp; doGetDefaultProfiles().contains(profile)));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试代码：beandefinition.BeanDefinitionTests#testProfile</p>
+<h3 id="解析beans的子标签"><a href="#解析beans的子标签" class="headerlink" title="解析beans的子标签"></a>解析beans的子标签</h3><p>从根标签开始遍历孩子节点，如果是孩子节点是标签元素，判断是Spring的beans命名空间，则走beans子标签解析逻辑。否则走第三方自定义的标签解析逻辑</p>
+<ul>
+<li>debug发现，孩子节点是行维度的，空行或者注释的行，也是一个孩子。但如果碰到标签，整体作为一个孩子节点。所以xml文件尽量写得紧凑些，避免产生一些无用的孩子节点<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">      if (delegate.isDefaultNamespace(root)) &#123;</span><br><span class="line">	// beans-&gt;bean-&gt;property</span><br><span class="line">	NodeList nl = root.getChildNodes();</span><br><span class="line">	for (int i = 0; i &lt; nl.getLength(); i++) &#123;</span><br><span class="line">		Node node = nl.item(i);</span><br><span class="line">		if (node instanceof Element) &#123;</span><br><span class="line">			Element ele = (Element) node;</span><br><span class="line">			if (delegate.isDefaultNamespace(ele)) &#123;</span><br><span class="line">				parseDefaultElement(ele, delegate);</span><br><span class="line">			&#125;</span><br><span class="line">			else &#123;</span><br><span class="line">				delegate.parseCustomElement(ele);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">else &#123;</span><br><span class="line">	delegate.parseCustomElement(root);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>beans的子标签目前有四个：import、alias、bean、beans（嵌套方式），重点是解析bean标签</p>
+<ul>
+<li>对于import子标签，重新加载resource属性指定的资源文件，然后再重新调用<code>loadBeanDefinitions</code>方法，走一遍解析xml并注册bean</li>
+<li>对于alias子标签，别名与beanName的映射关系注册到beanFactory</li>
+<li>对于嵌套beans标签，当做根标签处理<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">   private void parseDefaultElement(Element ele, BeanDefinitionParserDelegate delegate) &#123;</span><br><span class="line">	// 加载import resource指定的bean定义文件，注册beanDefinition到beanFactory</span><br><span class="line">	if (delegate.nodeNameEquals(ele, IMPORT_ELEMENT)) &#123;</span><br><span class="line">		importBeanDefinitionResource(ele);</span><br><span class="line">	&#125;</span><br><span class="line">	// 别名与beanName的映射关系注册到beanFactory</span><br><span class="line">	else if (delegate.nodeNameEquals(ele, ALIAS_ELEMENT)) &#123;</span><br><span class="line">		processAliasRegistration(ele);</span><br><span class="line">	&#125;</span><br><span class="line">	// 注册beanDefinition到beanFactory</span><br><span class="line">	else if (delegate.nodeNameEquals(ele, BEAN_ELEMENT)) &#123;</span><br><span class="line">		processBeanDefinition(ele, delegate);</span><br><span class="line">	&#125;</span><br><span class="line">	// 注册嵌套式定义的beans到beanFactory。嵌套式即beans标签里还嵌套了beans标签</span><br><span class="line">	else if (delegate.nodeNameEquals(ele, NESTED_BEANS_ELEMENT)) &#123;</span><br><span class="line">		// recurse</span><br><span class="line">		doRegisterBeanDefinitions(ele);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>执行processBeanDefinition方法，开始解析bean标签，下面重点分析</p>
+<h3 id="解析bean标签"><a href="#解析bean标签" class="headerlink" title="解析bean标签"></a>解析bean标签</h3><h4 id="确定beanName"><a href="#确定beanName" class="headerlink" title="确定beanName"></a>确定beanName</h4><p>确定beanName。优先取id属性值作为beanName。如果为空，name属性按”,”或”;”分隔后，取第一个字符串作为beanName，剩下的每个字符串作为别名，最后会注册到bean工厂。如果id和name都为空，由spring生成BeanName，格式为：{类的全路径名}#0，别名为：类的全路径名</p>
+<ul>
+<li><p>注意，getBean方法可以传入别名，但getBeanDefinition方法只能传入beanName，不认别名。测试代码：beandefinition.BeanDefinitionTests#testBeanName</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">    String id = ele.getAttribute(ID_ATTRIBUTE);</span><br><span class="line">		String nameAttr = ele.getAttribute(NAME_ATTRIBUTE);</span><br><span class="line"></span><br><span class="line">		List&lt;String&gt; aliases = new ArrayList&lt;&gt;();</span><br><span class="line">		if (StringUtils.hasLength(nameAttr)) &#123;</span><br><span class="line">			String[] nameArr = StringUtils.tokenizeToStringArray(nameAttr, MULTI_VALUE_ATTRIBUTE_DELIMITERS);</span><br><span class="line">			aliases.addAll(Arrays.asList(nameArr));</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		String beanName = id;</span><br><span class="line">		// 如果bean的id为空，取第一个name作为beanName</span><br><span class="line">		if (!StringUtils.hasText(beanName) &amp;&amp; !aliases.isEmpty()) &#123;</span><br><span class="line">			beanName = aliases.remove(0);</span><br><span class="line">			if (logger.isDebugEnabled()) &#123;</span><br><span class="line">				logger.debug(&quot;No XML &#x27;id&#x27; specified - using &#x27;&quot; + beanName +</span><br><span class="line">						&quot;&#x27; as bean name and &quot; + aliases + &quot; as aliases&quot;);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">```    </span><br><span class="line"></span><br><span class="line">#### FactoryBean和factory-method</span><br><span class="line">确定beanName后，继续解析bean标签的属性和子标签，封装到BeanDefinition</span><br></pre></td></tr></table></figure>
+<p>  &#x2F;&#x2F; bd最基本的属性是CL加载的bean类对象<br>  AbstractBeanDefinition bd &#x3D; createBeanDefinition(className, parent);<br>  &#x2F;&#x2F; bean的各种框架属性封装到bd，例如scope、lazy-init(默认false)、autowire(默认no)、init-method、factory-method<br>  parseBeanDefinitionAttributes(ele, beanName, containingBean, bd);<br>  bd.setDescription(DomUtils.getChildElementValueByTagName(ele, DESCRIPTION_ELEMENT));<br>  &#x2F;&#x2F; 解析bean的meta子标签属性（bean属性之外的键值对）并添加到bd。通过bd的getAttribute可以获取meta属性<br>  parseMetaElements(ele, bd);<br>  &#x2F;&#x2F; 解析lookup-method。bean方法声明一个父类返回结果，实际返回bean在lookup-method中声明<br>  parseLookupOverrideSubElements(ele, bd.getMethodOverrides());<br>  &#x2F;&#x2F; 解析replaced-method。replaced-method用于完全替换bean方法的实现<br>  parseReplacedMethodSubElements(ele, bd.getMethodOverrides());<br>  &#x2F;&#x2F; 解析bean的constructor-arg子标签得到构造函数参数，添加到bd.constructorArgumentValues<br>  parseConstructorArgElements(ele, bd);<br>  &#x2F;&#x2F; 解析bean的property子标签得到业务属性，添加到bd.propertyValues。如果属性值是一个ref，封装成RuntimeBeanReference，如果是一个value，封装成TypedStringValue<br>  parsePropertyElements(ele, bd);<br>  &#x2F;&#x2F; 解析bean的qualifier子标签，添加到bd.qualifiers。qualifier的作用是按byName声明要注入的实际bean<br>  parseQualifierElements(ele, bd);</p>
+<p>  bd.setResource(this.readerContext.getResource());<br>  bd.setSource(extractSource(ele));</p>
+<p>  return bd;</p>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">factoryBean和factoryMethod都使用工厂模式创建bean，但二者有一些区别</span><br><span class="line"></span><br><span class="line">factoryBean：</span><br><span class="line">- 实现了FactoryBean接口的bean称为工厂bean，只注册工厂bean的BD</span><br><span class="line">- 加载realBean的两种方式：byFactoryBeanName或者byRealBeanType，推荐byRealBeanType。这两种方式最终都是byFactoryBeanName加载，调用工厂bean的getObject方法返回realBean并缓存。realBean不参与bean后续的加载流程，包括依赖注入和初始化。如果想加载工厂bean，使用byName方式，name为&#x27;&amp;factoryBeanName&#x27;</span><br><span class="line"></span><br><span class="line">factory-method：</span><br><span class="line">- factory-method有两种方式：通过xml配置的方式指定，或者通过@Bean方式指定</span><br><span class="line">- xml方式和FactoryBean方式基本一致，区别是factory-method所在类不会成为bean，加载realBean时，通过反射调用工厂类的factory-method方法实例化bean，并参与后续bean依赖注入和初始化流程</span><br><span class="line">- @Bean方式会为配置类和@Bean方法都注册beanDefinition，因此要加载@Bean方式注册的bean和普通bean无区别，本质会反射调用配置类beanClass的factory-method方法（@Bean修饰的方法）实例化realBean，并参与后续bean依赖注入和初始化流程。</span><br><span class="line"></span><br><span class="line">测试代码：instantiation.ing.factorymethod.FactoryMethodTest、instantiation.before.factorybean.FactoryBeanTest</span><br><span class="line"></span><br><span class="line">#### 其他bean属性和子标签</span><br><span class="line">- autowire属性的作用：如果bean类里要依赖注入的对象没有用@Autowire或@Resource修饰，可以在xml里使用autowire属性统一指定依赖注入方式，一般为byName或byType</span><br><span class="line">- meta子标签的作用：额外定义一些bean的元属性KV，保存到BD。只能通过BD获取，不会作为bean实例的属性，因此是元属性的含义</span><br><span class="line">- lookup子标签的作用：通过xml配置，指定允许时注入的实际bean类型。相比于@Autowire和@Resource更灵活，不需要改动代码</span><br><span class="line"></span><br><span class="line">### 注册BD到bean工厂    </span><br><span class="line">注册即beanDefinition添加到beanFactory.beanDefinitionMap，key=beanName，别名注册到beanFactory.aliasMap，key=alias，value=beanName</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code>public static void registerBeanDefinition(BeanDefinitionHolder definitionHolder, BeanDefinitionRegistry registry)
+        throws BeanDefinitionStoreException &#123;
+
+    // Register bean definition under primary name.
+    String beanName = definitionHolder.getBeanName();
+    registry.registerBeanDefinition(beanName, definitionHolder.getBeanDefinition());
+
+    // Register aliases for bean name, if any.
+    String[] aliases = definitionHolder.getAliases();
+    if (aliases != null) &#123;
+        for (String alias : aliases) &#123;
+            registry.registerAlias(beanName, alias);
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">### 解析自定义标签</span><br><span class="line">所谓自定义标签，即标签的命名空间不是Spring的beans命名空间，下面介绍用户自定义标签的解析和注册beanDefinition</span><br><span class="line"></span><br><span class="line">获取自定义标签的命名空间，找到和它映射的`NamespaceHandler`，调用handler的parse方法解析自定义标签</span><br></pre></td></tr></table></figure>
+<pre><code>public BeanDefinition parseCustomElement(Element ele, @Nullable BeanDefinition containingBd) &#123;
+    // 获取自定义标签的命名空间，Spring默认命名空间是beans
+    String namespaceUri = getNamespaceURI(ele);
+    if (namespaceUri == null) &#123;
+        return null;
+    &#125;
+    // 找到该命名空间的自定义Handler
+    NamespaceHandler handler = this.readerContext.getNamespaceHandlerResolver().resolve(namespaceUri);
+    if (handler == null) &#123;
+        error(&quot;Unable to locate Spring NamespaceHandler for XML schema namespace [&quot; + namespaceUri + &quot;]&quot;, ele);
+        return null;
+    &#125;
+    // 通过handler找到自定义parser，解析自定义标签，生成beanDefinition注册到beanFactory
+    return handler.parse(ele, new ParserContext(this.readerContext, this, containingBd));
+&#125;
+</code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">第一次解析自定义标签时，会加载描述命名空间和`NamespaceHandler`映射关系的资源文件，默认是类路径下的`META-INF/spring.handlers`文件，然后反射实例化handler，再调用它的init方法内部注册该命名空间下的所有标签解析器`BeanDefinitionParser`，最后将命名空间和`NamespaceHandler`的映射关系放入map缓存</span><br></pre></td></tr></table></figure>
+<pre><code>// handlerMappingsLocation默认为：META-INF/spring.handlers，classLoader默认为ClassUtils.getDefaultClassLoader方法返回的线程上下文加载器
+Properties mappings = PropertiesLoaderUtils.loadAllProperties(this.handlerMappingsLocation, this.classLoader);
+... ...
+NamespaceHandler namespaceHandler = (NamespaceHandler) BeanUtils.instantiateClass(handlerClass);
+// 注册用于解析自定义标签的用户实现的BeanDefinitionParser
+namespaceHandler.init();
+handlerMappings.put(namespaceUri, namespaceHandler);
+</code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">META-INF/spring.handlers文件示例，`SimpleConstructorNamespaceHandler`支持所有&quot;&lt;c:xxx&gt;&quot;标签的解析，c是命名空间，xxx是标签名</span><br></pre></td></tr></table></figure>
+<p>http:&#x2F;&#x2F;<a target="_blank" rel="noopener" href="http://www.springframework.org/schema/c=org.springframework.beans.factory.xml.SimpleConstructorNamespaceHandler">www.springframework.org/schema/c=org.springframework.beans.factory.xml.SimpleConstructorNamespaceHandler</a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">`NamespaceHandler`的parse方法，会通过标签名获取标签解析器`BeanDefinitionParser`，调用parse方法解析标签，生成BeanDefinition。通过ParserContext能拿到beanFactory，至于是否注册beanDefinition到beanFactory，由parse方法的实现决定</span><br></pre></td></tr></table></figure>
+<pre><code>private BeanDefinitionParser findParserForElement(Element element, ParserContext parserContext) &#123;
+    // 获取命名空间后面的标签名，例如&lt;mybean:user xxx/&gt;，标签名就是user
+    String localName = parserContext.getDelegate().getLocalName(element);
+    BeanDefinitionParser parser = this.parsers.get(localName);
+    if (parser == null) &#123;
+        parserContext.getReaderContext().fatal(
+                &quot;Cannot locate BeanDefinitionParser for element [&quot; + localName + &quot;]&quot;, element);
+    &#125;
+    return parser;
+&#125;
+</code></pre>
+<p>&#96;&#96;&#96;</p>
+<p>如果需要使用自定义标签，需要：</p>
+<ul>
+<li>写一个自定义命名空间下的XML文档协议规范XSD</li>
+<li>实现NamespaceHandler和标签解析器BeanDefinitionParser</li>
+<li>将命名空间和NamespaceHandler的映射关系写入<code>META-INF/spring.handlers</code>资源文件</li>
+<li>在xml文件中声明自定义的命名空间</li>
+</ul>
+<h1 id="XmlBeanFactory"><a href="#XmlBeanFactory" class="headerlink" title="XmlBeanFactory"></a>XmlBeanFactory</h1><p>bean工厂的主要职责是管理注册的beanDefinition以及加载bean，即实现所谓的IoC控制反转</p>
+<p><code>DefaultListableBeanFactory</code>是Spring最常用的bean工厂，<code>XmlBeanFactory</code>是它的子类，可以理解为<code>XML配置方式得到的bean工厂</code>，使用<code>XmlBeanDefinitionReader</code>解析XML配置文件、生成beanDefinition并注册到bean工厂</p>
+<blockquote>
+<p>bean工厂本身并不负责解析各种方式（注解、XML）的bean定义并生成beanDefinition，它只是拿到beanDefinition执行后续bean注册、加载流程。bean定义的解析由各种<code>BeanDefinitionReader</code>完成，它持有bean工厂，生成beanDefinition后回调bean工厂的注册方法注册bean</p>
+</blockquote>
+<p>注意，XmlBeanFactory现在已经被Spring废弃，替代它的是<code>ClassPathXmlApplicationContext</code></p>
+<p><code>ClassPathXmlApplicationContext</code>本身是一个Spring容器<code>ApplicationContext</code>，在构造函数中创建好<code>DefaultListableBeanFactory</code>，其中xml解析和注册beanDefinition仍然通过<code>XmlBeanDefinitionReader</code></p>
+<p>Spring容器<code>ApplicationContext</code>具备bean工厂的全部能力，并提供给业务方对于bean工厂更对的定制和扩展能力，后文会详细介绍Spring容器</p>
+<h1 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h1><p><img src="/spring/xml%E6%96%B9%E5%BC%8Fbean%E8%A7%A3%E6%9E%90%E6%B3%A8%E5%86%8C%E6%B5%81%E7%A8%8B.png"></p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>西米大人
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://dcbupt.github.io/2020/04/23/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Spring%E6%BA%90%E7%A0%81-bean%E6%B3%A8%E5%86%8C/" title="系统学习Spring源码-bean注册">http://dcbupt.github.io/2020/04/23/blog_article/系统学习系列/系统学习Spring源码-bean注册/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+
+        
+
+<blockquote class="blockquote-center" style="color: #f0ad4e">完 ♥ 结</blockquote>
+
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/04/23/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Spring%E6%BA%90%E7%A0%81/" rel="prev" title="系统学习Spring源码">
+      <i class="fa fa-chevron-left"></i> 系统学习Spring源码
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/04/23/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Spring%E6%BA%90%E7%A0%81-bean%E5%8A%A0%E8%BD%BD/" rel="next" title="系统学习Spring源码-bean加载">
+      系统学习Spring源码-bean加载 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ClassPathResource"><span class="nav-number">2.</span> <span class="nav-text">ClassPathResource</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#XmlBeanDefinitionReader"><span class="nav-number">3.</span> <span class="nav-text">XmlBeanDefinitionReader</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E5%99%A8"><span class="nav-number">3.1.</span> <span class="nav-text">构造器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E6%9E%90xml%E6%96%87%E4%BB%B6%E8%BE%93%E5%85%A5%E6%B5%81"><span class="nav-number">3.2.</span> <span class="nav-text">解析xml文件输入流</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SAX%E5%8C%85%E8%A3%85XML%E8%BE%93%E5%85%A5%E6%B5%81"><span class="nav-number">3.2.1.</span> <span class="nav-text">SAX包装XML输入流</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E6%9E%90XML%E5%BE%97%E5%88%B0Document"><span class="nav-number">3.2.2.</span> <span class="nav-text">解析XML得到Document</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%BB%E5%8F%96Document%E6%B3%A8%E5%86%8CBeanDefinition"><span class="nav-number">3.3.</span> <span class="nav-text">读取Document注册BeanDefinition</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#profile%E7%8E%AF%E5%A2%83%E9%9A%94%E7%A6%BB"><span class="nav-number">3.3.1.</span> <span class="nav-text">profile环境隔离</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E6%9E%90beans%E7%9A%84%E5%AD%90%E6%A0%87%E7%AD%BE"><span class="nav-number">3.3.2.</span> <span class="nav-text">解析beans的子标签</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E6%9E%90bean%E6%A0%87%E7%AD%BE"><span class="nav-number">3.3.3.</span> <span class="nav-text">解析bean标签</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%A1%AE%E5%AE%9AbeanName"><span class="nav-number">3.3.3.1.</span> <span class="nav-text">确定beanName</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#XmlBeanFactory"><span class="nav-number">4.</span> <span class="nav-text">XmlBeanFactory</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">小结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="西米大人"
+      src="/images/me.png">
+  <p class="site-author-name" itemprop="name">西米大人</p>
+  <div class="site-description" itemprop="description"><blockquote class="blockquote-center">优秀的人，不是不合群，而是他们合群的人里面没有你</blockquote></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">151</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dcbupt" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;dcbupt" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:byrddc@hotmail.com" title="E-Mail → mailto:byrddc@hotmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">西米大人</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">388k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">10:47</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.id);
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            let target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    let { app_id, app_key, server_url } = {"enable":true,"app_id":"OBdFsOOtfIDcNnWdzkGbICmj-gzGzoHsz","app_key":"89LmL4tP7hkyChAmEleq2MdO","server_url":null,"security":true};
+    function fetchData(api_server) {
+      var Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    let api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+<script src="/js/love.js"></script>
+
+<script src="/js/particle.js"></script>
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('https://cdn.jsdelivr.net/npm/valine@1.4.18/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'OBdFsOOtfIDcNnWdzkGbICmj-gzGzoHsz',
+      appKey     : '89LmL4tP7hkyChAmEleq2MdO',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

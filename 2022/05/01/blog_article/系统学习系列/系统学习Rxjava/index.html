@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-mac-osx.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"dcbupt.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="系统学习Rxjava">
+<meta property="og:type" content="article">
+<meta property="og:title" content="系统学习Rxjava">
+<meta property="og:url" content="http://dcbupt.github.io/2022/05/01/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Rxjava/index.html">
+<meta property="og:site_name" content="dcddc">
+<meta property="og:description" content="系统学习Rxjava">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-05-01T06:44:18.823Z">
+<meta property="article:modified_time" content="2022-05-02T07:44:39.320Z">
+<meta property="article:author" content="西米大人">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://dcbupt.github.io/2022/05/01/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Rxjava/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+  <title>系统学习Rxjava | dcddc</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">dcddc</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">西米大人的博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dcbupt.github.io/2022/05/01/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Rxjava/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/me.png">
+      <meta itemprop="name" content="西米大人">
+      <meta itemprop="description" content="<blockquote class="blockquote-center">优秀的人，不是不合群，而是他们合群的人里面没有你</blockquote>">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="dcddc">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          系统学习Rxjava
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-05-01 14:44:18" itemprop="dateCreated datePublished" datetime="2022-05-01T14:44:18+08:00">2022-05-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-05-02 15:44:39" itemprop="dateModified" datetime="2022-05-02T15:44:39+08:00">2022-05-02</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/" itemprop="url" rel="index"><span itemprop="name">系统学习系列</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2022/05/01/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Rxjava/" class="post-meta-item leancloud_visitors" data-flag-title="系统学习Rxjava" title="热度">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">热度:</span>
+              <span class="leancloud-visitors-count"></span>℃
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">评论:</span>
+    
+    <a title="valine" href="/2022/05/01/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Rxjava/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/05/01/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Rxjava/" itemprop="commentCount"></span>℃
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">字数：</span>
+              <span>5.7k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>10 分钟</span>
+            </span>
+            <div class="post-description"><blockquote class="blockquote-center">系统学习Rxjava</blockquote></div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>参考：</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/88aacbed8aa5">https://www.jianshu.com/p/88aacbed8aa5</a></p>
+</blockquote>
+<p>以下介绍基于Rxjava2</p>
+<h1 id="reactive是什么"><a href="#reactive是什么" class="headerlink" title="reactive是什么"></a>reactive是什么</h1><blockquote>
+<p>一种基于观察者模式的响应式编程范式。</p>
+</blockquote>
+<p>{待补充}</p>
+<h1 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h1><h2 id="基本架构"><a href="#基本架构" class="headerlink" title="基本架构"></a>基本架构</h2><p>先看看基于Rxjava2的reactive编程最简demo：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">Observable.create(new ObservableOnSubscribe&lt;Object&gt;() &#123;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void subscribe(ObservableEmitter&lt;Object&gt; observableEmitter) throws Exception &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;).subscribe(new Observer&lt;Object&gt;() &#123;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void onNext(@NonNull Object s) &#123;</span><br><span class="line">        //订阅业务代码</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void onSubscribe(Disposable disposable) &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void onError(Throwable throwable) &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void onComplete() &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>可以看到，是一种<code>链式调用</code>的写法</p>
+<p>Observable.create会返回一个ObservableCreate，他本身也是一个Observable。</p>
+<p>Observable是一个模板类，首先看一下Observable的subscribe方法，这是真正执行消费逻辑的起点。subscribeActual是模板方法。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">@SchedulerSupport(&quot;none&quot;)</span><br><span class="line">public final void subscribe(Observer&lt;? super T&gt; observer) &#123;</span><br><span class="line">    ObjectHelper.requireNonNull(observer, &quot;observer is null&quot;);</span><br><span class="line"></span><br><span class="line">    try &#123;</span><br><span class="line">        observer = RxJavaPlugins.onSubscribe(this, observer);</span><br><span class="line">        ObjectHelper.requireNonNull(observer, &quot;The RxJavaPlugins.onSubscribe hook returned a null Observer. Please change the handler provided to RxJavaPlugins.setOnObservableSubscribe for invalid null returns. Further reading: https://github.com/ReactiveX/RxJava/wiki/Plugins&quot;);</span><br><span class="line">        this.subscribeActual(observer);</span><br><span class="line">    &#125; catch (NullPointerException var4) &#123;</span><br><span class="line">        throw var4;</span><br><span class="line">    &#125; catch (Throwable var5) &#123;</span><br><span class="line">        Exceptions.throwIfFatal(var5);</span><br><span class="line">        RxJavaPlugins.onError(var5);</span><br><span class="line">        NullPointerException npe = new NullPointerException(&quot;Actually not, but can&#x27;t throw other exceptions due to RS&quot;);</span><br><span class="line">        npe.initCause(var5);</span><br><span class="line">        throw npe;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>ObservableCreate的subscribeActual方法实现</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">protected void subscribeActual(Observer&lt;? super T&gt; observer) &#123;</span><br><span class="line">    ObservableCreate.CreateEmitter&lt;T&gt; parent = new ObservableCreate.CreateEmitter(observer);</span><br><span class="line">    observer.onSubscribe(parent);</span><br><span class="line"></span><br><span class="line">    try &#123;</span><br><span class="line">        this.source.subscribe(parent);</span><br><span class="line">    &#125; catch (Throwable var4) &#123;</span><br><span class="line">        Exceptions.throwIfFatal(var4);</span><br><span class="line">        parent.onError(var4);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>subscribeActual方法做了这几件事：</p>
+<ul>
+<li>Observer包装成CreateEmitter，</li>
+<li>Observer和Emitter彼此持有对方的引用</li>
+<li>调用ObservableOnSubscribe的subscribe方法（ObservableCreate构造方法里注入source，类型是ObservableOnSubscribe）</li>
+</ul>
+<blockquote>
+<p>执行流程</p>
+</blockquote>
+<p>Observer包装成Emitter –&gt;<br>ObservableOnSubscribe生产事件，调用Emitter的onNext方法将事件传递给订阅者 –&gt;<br>Emitter执行一些框架自身的逻辑功能（比如流控），然后调用Observer的onNext方法将事件传递回Observer –&gt;<br>执行Observer的onNext方法</p>
+<blockquote>
+<p>执行链路</p>
+</blockquote>
+<p>Observer –(包装)–&gt; Emitter –(传递)–&gt; ObservableOnSubscribe –(回调)–&gt; Emitter –(回调)–&gt; Observer</p>
+<blockquote>
+<p>小结</p>
+</blockquote>
+<ul>
+<li>Rxjava框架提供核心类：ObservableCreate。核心方法：subscribeActual。</li>
+<li>ObservableCreate负责将事件源的生产与消费串联起来。当然，还有负责事件源类型映射的ObservableMap等。</li>
+<li>ObservableCreate拿到业务方的Observer实现类，包装成CreateEmitter（RxJava提供的事件发送器）传递给事件源生产者ObservableOnSubscribe。</li>
+<li>ObservableCreate注入业务方的ObservableOnSubscribe实现类，调用其subscribe方法执行“事件源的生产逻辑”。方法内部逻辑：生产事件源Object，通过Emitter向下传递到Observer，执行消费逻辑。</li>
+</ul>
+<p>所以使用reactive编程的基本模式：</p>
+<ul>
+<li>自定义Observer（负责事件源的消费）</li>
+<li>实现ObservableOnSubscribe接口的subscribe方法（负责事件源的生产）</li>
+</ul>
+<h2 id="加工“事件源”"><a href="#加工“事件源”" class="headerlink" title="加工“事件源”"></a>加工“事件源”</h2><p>先看下写法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">Observable.create(new ObservableOnSubscribe&lt;Object&gt;() &#123;            </span><br><span class="line">    @Override            </span><br><span class="line">    public void call(@NonNull Observer&lt;Object&gt; e) throws Exception &#123;</span><br><span class="line">        // 生产并发送数据源            </span><br><span class="line">    &#125;</span><br><span class="line">&#125;).map(new Function&lt;Object, String&gt;() &#123;</span><br><span class="line">    @Override            </span><br><span class="line">    public String apply(@NonNull Object o) throws Exception &#123;</span><br><span class="line">        // 数据源类型转换              </span><br><span class="line">        // return &quot;Obj&quot;;            </span><br><span class="line">    &#125;        </span><br><span class="line">&#125;).subscribe(new Observer&lt;String&gt;() &#123;</span><br><span class="line">    @Override            </span><br><span class="line">    public void onNext(@NonNull String s) &#123;</span><br><span class="line">        //订阅业务代码            </span><br><span class="line">    &#125;    </span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>Observable可以调用map\filter等方法对事件源进行加工</p>
+<p>Observable调用create创建ObservableCreate，调用map创建ObservableMap</p>
+<p>下面是ObservableMap的subscribeActual方法</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public void subscribeActual(Observer&lt;? super U&gt; t) &#123;</span><br><span class="line">    this.source.subscribe(new ObservableMap.MapObserver(t, this.function));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>ObservableMap把Observer包装为MapObserver，Function是业务方自定义的映射函数，然后调用ObservableCreate的subscribe方法执行“事件源的生产与发送”。对于ObservableMap，source就是级联调用上一级的Observable实现类，这个demo里就是ObservableCreate</p>
+<p>MapObserver的“发送数据源”onNext方法</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">public void onNext(T t) &#123;</span><br><span class="line">    if (!this.done) &#123;</span><br><span class="line">        if (this.sourceMode != 0) &#123;</span><br><span class="line">            this.downstream.onNext((Object)null);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            Object v;</span><br><span class="line">            try &#123;</span><br><span class="line">                v = ObjectHelper.requireNonNull(this.mapper.apply(t), &quot;The mapper function returned a null value.&quot;);</span><br><span class="line">            &#125; catch (Throwable var4) &#123;</span><br><span class="line">                this.fail(var4);</span><br><span class="line">                return;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            this.downstream.onNext(v);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>downstream是业务方实现类Observer的引用，mapper是业务方定义的映射函数，这两个参数均在构造函数里指定了。</p>
+<p>上层（ObservableCreate）调用onNext生产并发送数据后，调用下层MapObserver的onNext方法。内部逻辑：执行映射函数完成数据源类型转换，最后交给业务方实现的Observer消费数据（onNext方法）。</p>
+<blockquote>
+<p>执行链路</p>
+</blockquote>
+<p>Observer –(包装)–&gt; MapObserver –(包装)–&gt; Emitter –(传递)–&gt; ObservableOnSubscribe –(回调)–&gt; Emitter –(回调)–&gt; MapObserver –(回调)–&gt; Observer</p>
+<p>前半程一层层包装Observer，后半程<code>从顶到底逐层回调</code>每一层Observer包装类的onNext方法消费数据源，直至调到最底层业务方Observer实现类的onNext方法。</p>
+<blockquote>
+<p>小结</p>
+</blockquote>
+<ul>
+<li>ObservableCreate负责生产和发送数据。生产数据的逻辑由业务方在ObservableOnSubscribe的实现类里控制，发送数据的机制由RxJava框架提供的CreateEmitter负责。</li>
+<li>ObservableMap负责完成数据类型的映射。</li>
+<li>最后执行业务方Observer的onNext方法消费数据。</li>
+</ul>
+<p>看到这，基本能看出reactive在实现生产-消费模型的一般思路：</p>
+<p>ObservableCreate-&gt;ObservableMap-&gt;ObservableXXX。箭头左边的是右边的parent，右边的ObservableXXX使用一些包装类例如MapObserver、CreateEmitter包装Observer，指定从数据生产后到消费前的处理逻辑。ObservableCreate最终拿到Observer的包装类CreateEmitter，发送数据</p>
+<h2 id="流控"><a href="#流控" class="headerlink" title="流控"></a>流控</h2><p>所谓流控，在Rxjava架构下，就是消费端（下游）Observer可以决定何时终止对事件源生产端（上游）的消费。</p>
+<p>上下游的这种流控通过Disposable实现。</p>
+<p>看下Observer的定义：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public interface Observer&lt;T&gt; &#123;</span><br><span class="line">    void onSubscribe(@NonNull Disposable var1);</span><br><span class="line"></span><br><span class="line">    void onNext(@NonNull T var1);</span><br><span class="line"></span><br><span class="line">    void onError(@NonNull Throwable var1);</span><br><span class="line"></span><br><span class="line">    void onComplete();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Observer的onSubscribe维护一个上游事件生产端创建的Disposable引用，执行dispose方法来终止对上游的消费。</p>
+<p>demo：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">public void demo8() &#123;</span><br><span class="line">        Observable.create(new ObservableOnSubscribe&lt;Integer&gt;() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public void subscribe(ObservableEmitter&lt;Integer&gt; emitter) throws Exception &#123;</span><br><span class="line">                for (int i = 0; i &lt; 10; i++) &#123;</span><br><span class="line">                    System.out.println(&quot;发送&quot; + i);</span><br><span class="line">                    emitter.onNext(i);</span><br><span class="line">                &#125;</span><br><span class="line">                emitter.onComplete();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;).subscribe(new Observer&lt;Integer&gt;() &#123;</span><br><span class="line">            private Disposable disposable;</span><br><span class="line"></span><br><span class="line">            @Override</span><br><span class="line">            public void onSubscribe(Disposable d) &#123;</span><br><span class="line">                disposable = d;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            @Override</span><br><span class="line">            public void onNext(Integer integer) &#123;</span><br><span class="line">                System.out.println(&quot;接收&quot; + integer);</span><br><span class="line">                if (integer &gt; 4) disposable.dispose();</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            @Override</span><br><span class="line">            public void onError(Throwable e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            @Override</span><br><span class="line">            public void onComplete() &#123;</span><br><span class="line">                System.out.println(&quot;数据接受完成&quot;);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>那么，Disposable是何时创建并注入Observer的？</p>
+<p>上面提到，ObservableCreate会把Observer包装成一个发射器CreateEmitter，代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">protected void subscribeActual(Observer&lt;? super T&gt; observer) &#123;</span><br><span class="line">    ObservableCreate.CreateEmitter&lt;T&gt; parent = new ObservableCreate.CreateEmitter(observer);</span><br><span class="line">    observer.onSubscribe(parent);</span><br><span class="line"></span><br><span class="line">    try &#123;</span><br><span class="line">        this.source.subscribe(parent);</span><br><span class="line">    &#125; catch (Throwable var4) &#123;</span><br><span class="line">        Exceptions.throwIfFatal(var4);</span><br><span class="line">        parent.onError(var4);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>消费者Observer不持有生产者Observable，而是持有Emitter。生产者Observable也是持有Emitter，可以理解Emitter是生产消费者之间的桥梁。生产者产出的数据通过Emitter传递给消费者，所以Emitter可以承担流控的职责。</p>
+<p>CreateEmitter其实是Disposable的一个实现类，Disposable是一次性的意思。流控时，可以理解为消费者不再需要消费了，那么这个Emitter发送器就没有价值了，即它是一次性的，用后即丢。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">static final class CreateEmitter&lt;T&gt; extends AtomicReference&lt;Disposable&gt; implements ObservableEmitter&lt;T&gt;, Disposable &#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Observer想终止消费时，调用Disposable的dispose方法，实际会执行CreateEmiter的dispose方法，将发射器设置为已废弃</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public void dispose() &#123;</span><br><span class="line">    DisposableHelper.dispose(this);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>再看下CreateEmitter的onNext方法</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">public void onNext(T t) &#123;</span><br><span class="line">    if (t == null) &#123;</span><br><span class="line">        this.onError(new NullPointerException(&quot;onNext called with null. Null values are generally not allowed in 2.x operators and sources.&quot;));</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        if (!this.isDisposed()) &#123;</span><br><span class="line">            this.observer.onNext(t);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>因此，​下游Observer调用dispose方法废弃发射器后，发射器不再回调observer的onNext来消费，达到流控的效果</p>
+<blockquote>
+<p>小结</p>
+</blockquote>
+<ul>
+<li>CreateEmitter（一个Disposable实现类）和Observer互相持有彼此的引用</li>
+<li>CreateEmitter持有Observer来回调下游，执行事件源消费链路</li>
+<li>Observer持有CreateEmitter，控制上游是否回调下游进行消费，达到流控的目的。</li>
+</ul>
+<p>​​​</p>
+<h2 id="线程切换"><a href="#线程切换" class="headerlink" title="线程切换"></a>线程切换</h2><p>线程切换有两种方法：<code>subscribeOn</code>和<code>observeOn</code></p>
+<p>demo：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">public static void test1() &#123;</span><br><span class="line"></span><br><span class="line">        Observable.create(new ObservableOnSubscribe&lt;String&gt;() &#123;</span><br><span class="line"></span><br><span class="line">            @Override</span><br><span class="line">            public void subscribe(ObservableEmitter&lt;String&gt; observableEmitter)  &#123;</span><br><span class="line">                System.out.println(&quot;准备&quot;);</span><br><span class="line">                System.out.println(Thread.currentThread().getName());</span><br><span class="line"></span><br><span class="line">                for (int i = 0; i &lt; 5; i++) &#123;</span><br><span class="line">                    //Thread.sleep(1000);</span><br><span class="line">                    System.out.println(&quot;发射&quot; + &quot; &quot; + Thread.currentThread().getName());</span><br><span class="line">                    observableEmitter.onNext(&quot;123&quot;);</span><br><span class="line">                &#125;</span><br><span class="line">                observableEmitter.onComplete();</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;).</span><br><span class="line">            subscribeOn(Schedulers.computation()).</span><br><span class="line">            subscribeOn(Schedulers.io()).</span><br><span class="line">            observeOn(Schedulers.single()).</span><br><span class="line">            map(new Function&lt;String, String&gt;() &#123;</span><br><span class="line"></span><br><span class="line">            @Override</span><br><span class="line">            public String apply(@NonNull String o) throws Exception &#123;</span><br><span class="line">                //转换业务代码</span><br><span class="line">                System.out.println(&quot;convert&quot; + Thread.currentThread().getName());</span><br><span class="line">                return &quot;Obj&quot;;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;).</span><br><span class="line">            observeOn(Schedulers.io()).</span><br><span class="line">            subscribe(new Observer&lt;String&gt;() &#123;</span><br><span class="line"></span><br><span class="line">                @Override</span><br><span class="line">                public void onNext(@NonNull String s) &#123;</span><br><span class="line">                    //订阅业务代码</span><br><span class="line">                    System.out.println(&quot;接收&quot; + Thread.currentThread().getName());</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                @Override</span><br><span class="line">                public void onSubscribe(Disposable disposable) &#123;</span><br><span class="line">                    System.out.println(&quot;onSubscribe&quot;);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                @Override</span><br><span class="line">                public void onError(Throwable throwable) &#123;</span><br><span class="line">                    System.out.println(&quot;onError&quot; + throwable.getMessage());</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                @Override</span><br><span class="line">                public void onComplete() &#123;</span><br><span class="line">                    System.out.println(&quot;onComplete&quot;);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>先说结论：</p>
+<ul>
+<li>subscribeOn指定上游数据处理执行的线程。上游是相对subscribeOn调用处而言。以上面的例子说明，上游是数据生成和发送。每次调用subscribeOn都对上游生效。如果连续多次调用，第一次调用指定的线程生效</li>
+<li>observeOn指定下游数据消费的线程。下游是相对subscribeOn调用处而言。以上面的例子说明，下游是数据Map映射、消费数据。每次调用observeOn都对下游生效。如果连续多次调用，最后一次调用指定的线程生效</li>
+</ul>
+<p>因此，上面的demo中，数据生产和发送运行在computation线程，数据类型转换运行在single线程，消费端运行在io线程</p>
+<h3 id="subscribeOn"><a href="#subscribeOn" class="headerlink" title="subscribeOn"></a>subscribeOn</h3><p>看下subscribeOn方法的实现</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public final Observable&lt;T&gt; subscribeOn(Scheduler scheduler) &#123;</span><br><span class="line">    ObjectHelper.requireNonNull(scheduler, &quot;scheduler is null&quot;);</span><br><span class="line">    return RxJavaPlugins.onAssembly(new ObservableSubscribeOn(this, scheduler));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>和map方法类似，也是返回一个Observable，看下它的subscribeActual方法</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">public void subscribeActual(Observer&lt;? super T&gt; observer) &#123;</span><br><span class="line">    ObservableSubscribeOn.SubscribeOnObserver&lt;T&gt; parent = new ObservableSubscribeOn.SubscribeOnObserver(observer);</span><br><span class="line">    observer.onSubscribe(parent);</span><br><span class="line">    parent.setDisposable(this.scheduler.scheduleDirect(new ObservableSubscribeOn.SubscribeTask(parent)));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>也是包装了下层的Observer，不过这个SubscribeOnObserver包装类并没有对事件源做其他操作，直接调用了下游observer的onNext方法，这里就不贴代码了。</p>
+<p>​重点看下subscribeTask这个任务做了啥</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">final class SubscribeTask implements Runnable &#123;</span><br><span class="line">    private final ObservableSubscribeOn.SubscribeOnObserver&lt;T&gt; parent;</span><br><span class="line"></span><br><span class="line">    SubscribeTask(ObservableSubscribeOn.SubscribeOnObserver&lt;T&gt; parent) &#123;</span><br><span class="line">        this.parent = parent;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void run() &#123;</span><br><span class="line">        ObservableSubscribeOn.this.source.subscribe(this.parent);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>很简单，继续向上调用上层Observable的subscribe方法，重点是使得上游的代码都运行在scheduler指定的线程里</p>
+<blockquote>
+<p>执行链路</p>
+</blockquote>
+<p>Observer –(包装)–&gt; SubscribeOnObserver –(包装)–&gt; Emitter –(传递)–&gt; ObservableOnSubscribe –(回调)–&gt; Emitter –(回调)–&gt; SubscribeOnObserver –(回调)–&gt; Observer</p>
+<p>虽然SubscribeOnObserver没有对Observer做额外处理，但继续调用上层source.subscribe方法时，已经切换到scheduler定义的线程了。因此，上游的所有操作，都会在subscribeOn方法指定的scheduler线程里执行。​​由此可知，如果连续多次调用subscribeOn指定线程，只有第一次起作用</p>
+<h3 id="observeOn"><a href="#observeOn" class="headerlink" title="observeOn"></a>observeOn</h3><p>observeOn和subscribeOn的思路基本一致，这里只介绍差异。</p>
+<p><code>ObserveOnObserver</code>是observeOn方法执行后，对observer的包装类，看下它的onNext方法</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public void onNext(T t) &#123;</span><br><span class="line">    if (!this.done) &#123;</span><br><span class="line">        if (this.sourceMode != 2) &#123;</span><br><span class="line">            this.queue.offer(t);</span><br><span class="line">         &#125;</span><br><span class="line"></span><br><span class="line">        this.schedule();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>schedule方法的实现：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">void schedule() &#123;</span><br><span class="line">    if (this.getAndIncrement() == 0) &#123;</span><br><span class="line">        this.worker.schedule(this);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>this指代<code>ObserveOnObserver</code>，它是一个runnable，run方法里会调用下游observer的onNext方法。因此，下游observer的消费代码运行在observeOn方法指定的scheduler线程里。</p>
+<h2 id="Flowable背压"><a href="#Flowable背压" class="headerlink" title="Flowable背压"></a>Flowable背压</h2><p>Flowable是Rxjava2较Rxjava的主要更新，可以把它看做是<code>Observable+背压处理</code></p>
+<p>那么，什么是<code>背压</code>呢？</p>
+<p>当<code>生产速度&gt;消费速度</code>时，未被及时消费的对象堆积在内存中，就产生了所谓的<code>背压</code>。</p>
+<p>在Reactive编程模型中，只有在生产端和消费端运行在<code>不同线程</code>，且<code>生产速度&gt;消费速度</code>时，才会出现背压的情况。</p>
+<p>需要说明的是，尽管Flowable支持背压，但也牺牲了一些<code>性能</code>，所以除非满足背压的场景，否则还是推荐使用Observable。</p>
+<p>另外，Flowable使用了另一套体系（Publisher-Subscriber），与Observable体系（ObservableSource-Observer）的关系可以简单理解为：</p>
+<ul>
+<li>Flowable(Publisher实现类) &lt;–&gt; Observable(ObservableSource实现类)</li>
+<li>Subscriber &lt;–&gt; Observer</li>
+</ul>
+<p>看下背压的基本写法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">public void demo2() &#123;</span><br><span class="line">        Flowable</span><br><span class="line">                .create(new FlowableOnSubscribe&lt;Integer&gt;() &#123;</span><br><span class="line">                    @Override</span><br><span class="line">                    public void subscribe(FlowableEmitter&lt;Integer&gt; e) throws Exception &#123;</span><br><span class="line">                        System.out.println(&quot;发射----&gt; 1&quot;);</span><br><span class="line">                        e.onNext(1);</span><br><span class="line">                        System.out.println(&quot;发射----&gt; 2&quot;);</span><br><span class="line">                        e.onNext(2);</span><br><span class="line">                        System.out.println(&quot;发射----&gt; 3&quot;);</span><br><span class="line">                        e.onNext(3);</span><br><span class="line">                        System.out.println(&quot;发射----&gt; 完成&quot;);</span><br><span class="line">                        e.onComplete();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;, BackpressureStrategy.BUFFER) //create方法中多了一个BackpressureStrategy类型的参数</span><br><span class="line">                .subscribeOn(Schedulers.newThread())//为上下游分别指定各自的线程</span><br><span class="line">                .observeOn(Schedulers.newThread())</span><br><span class="line">                .subscribe(new Subscriber&lt;Integer&gt;() &#123;</span><br><span class="line">                    @Override</span><br><span class="line">                    public void onSubscribe(Subscription s) &#123;   //onSubscribe回调的参数不是Disposable而是Subscription</span><br><span class="line">                        s.request(Long.MAX_VALUE);            //注意此处，暂时先这么设置</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    @Override</span><br><span class="line">                    public void onNext(Integer integer) &#123;</span><br><span class="line">                        System.out.println(&quot;接收----&gt; &quot; + integer);</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    @Override</span><br><span class="line">                    public void onError(Throwable t) &#123;</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    @Override</span><br><span class="line">                    public void onComplete() &#123;</span><br><span class="line">                        System.out.println(&quot;接收----&gt; 完成&quot;);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>Flow.create会返回一个FlowableCreate，和ObservableCreate类似，看下它的subscribeActual方法</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">public void subscribeActual(Subscriber&lt;? super T&gt; t) &#123;</span><br><span class="line">        Object emitter;</span><br><span class="line">        switch(this.backpressure) &#123;</span><br><span class="line">        case MISSING:</span><br><span class="line">            emitter = new FlowableCreate.MissingEmitter(t);</span><br><span class="line">            break;</span><br><span class="line">        case ERROR:</span><br><span class="line">            emitter = new FlowableCreate.ErrorAsyncEmitter(t);</span><br><span class="line">            break;</span><br><span class="line">        case DROP:</span><br><span class="line">            emitter = new FlowableCreate.DropAsyncEmitter(t);</span><br><span class="line">            break;</span><br><span class="line">        case LATEST:</span><br><span class="line">            emitter = new FlowableCreate.LatestAsyncEmitter(t);</span><br><span class="line">            break;</span><br><span class="line">        default:</span><br><span class="line">            emitter = new FlowableCreate.BufferAsyncEmitter(t, bufferSize());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        t.onSubscribe((Subscription)emitter);</span><br><span class="line"></span><br><span class="line">        try &#123;</span><br><span class="line">            this.source.subscribe((FlowableEmitter)emitter);</span><br><span class="line">        &#125; catch (Throwable var4) &#123;</span><br><span class="line">            Exceptions.throwIfFatal(var4);</span><br><span class="line">            ((FlowableCreate.BaseEmitter)emitter).onError(var4);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>与ObservableCreate不同的是，这里基于入参指定的背压策略枚举，创建对应的发射器Emitter。</p>
+<p>这些Emitter对于背压有不同的处理策略，具体体现在onNext实现的差异上。</p>
+<p>但这些Emitter也有一些共同逻辑：Emitter会维护一个初始值为128的Long型原子类。每次向下游发送一次数据，该值自减1。如果减到0，基于不同的Emitter实现类，执行不同策略：<code>丢弃 or 忽略(指忽略背压，继续生产数据，可能产生OOM) or 调用subscriber的onError</code> 等等</p>
+<p>Flowable体系的Emitter发送数据和Observable体系的Emitter不同，并非依次回调下游的onNext方法，他回调下游ObserveOnSubscriber的onNext，将数据放入下游ObserveOnSubscriber的异步缓存池内（本质是一个队列Queue），然后尝试启动ObserveOnSubscriber的异步线程就结束了</p>
+<p>ObserveOnSubscriber在异步线程里执行runAsync方法，如果已消费的数据量小于消费者subscriber指定的阈值，则从异步缓存池里取数据后回调消费者subscriber.onNext方法消费。当下游消费了96个数据对象后，Emitter的原子Long当前值value+96，即已消费的额度回补给发端</p>
+<p>消费者subscriber在onSubscribe方法里设置消费数据个数，该值维护在ObserveOnSubscriber，一旦消费数达到了阈值，ObserveOnSubscriber在异步消费线程里不会回调下游subscriber.onNext方法消费</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">public void onSubscribe(Subscription s) &#123;   //onSubscribe回调的参数不是Disposable而是Subscription</span><br><span class="line">    s.request(Long.MAX_VALUE);            //注意此处，暂时先这么设置</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>总结一下：</p>
+<p>生产出来的数据，会缓存到异步缓存池中。上游发送数据前，先判断原子Long的value，如果为0，执行背压策略，否则发送数据。然后CAS操作value-1。当下游消费了96个数据对象后，回补额度，Emitter的原子Long当前value+96。</p>
+<p><code>这种设计允许下游消费速度在一定限度内比上游生产速度慢。只要生产128个数据的时间内，能消费96个数据，就能回补已消费数据额度用于再生产。否则就要执行相应的背压策略。</code></p>
+<p>打个比方：女神一开始给屌丝128的好感度，好友度随女神等级不同，下跌速度不同。在好感度跌0前，如果屌丝送了超过96次礼物，回补96好感度，并重置礼物次数。如果好感度跌0，分手。。。</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>西米大人
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://dcbupt.github.io/2022/05/01/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Rxjava/" title="系统学习Rxjava">http://dcbupt.github.io/2022/05/01/blog_article/系统学习系列/系统学习Rxjava/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+
+        
+
+<blockquote class="blockquote-center" style="color: #f0ad4e">完 ♥ 结</blockquote>
+
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/05/01/blog_article/%E6%B7%B1%E5%BA%A6%E7%B3%BB%E5%88%97/%E5%94%AF%E4%B8%80%E9%9A%8F%E6%9C%BA%E6%95%B0%E6%98%A0%E5%B0%84%E7%AE%97%E6%B3%95/" rel="prev" title="唯一随机数映射算法">
+      <i class="fa fa-chevron-left"></i> 唯一随机数映射算法
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#reactive%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-number">1.</span> <span class="nav-text">reactive是什么</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90"><span class="nav-number">2.</span> <span class="nav-text">源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84"><span class="nav-number">2.1.</span> <span class="nav-text">基本架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A0%E5%B7%A5%E2%80%9C%E4%BA%8B%E4%BB%B6%E6%BA%90%E2%80%9D"><span class="nav-number">2.2.</span> <span class="nav-text">加工“事件源”</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%81%E6%8E%A7"><span class="nav-number">2.3.</span> <span class="nav-text">流控</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E5%88%87%E6%8D%A2"><span class="nav-number">2.4.</span> <span class="nav-text">线程切换</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#subscribeOn"><span class="nav-number">2.4.1.</span> <span class="nav-text">subscribeOn</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#observeOn"><span class="nav-number">2.4.2.</span> <span class="nav-text">observeOn</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Flowable%E8%83%8C%E5%8E%8B"><span class="nav-number">2.5.</span> <span class="nav-text">Flowable背压</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="西米大人"
+      src="/images/me.png">
+  <p class="site-author-name" itemprop="name">西米大人</p>
+  <div class="site-description" itemprop="description"><blockquote class="blockquote-center">优秀的人，不是不合群，而是他们合群的人里面没有你</blockquote></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">151</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dcbupt" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;dcbupt" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:byrddc@hotmail.com" title="E-Mail → mailto:byrddc@hotmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">西米大人</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">388k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">10:47</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.id);
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            let target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    let { app_id, app_key, server_url } = {"enable":true,"app_id":"OBdFsOOtfIDcNnWdzkGbICmj-gzGzoHsz","app_key":"89LmL4tP7hkyChAmEleq2MdO","server_url":null,"security":true};
+    function fetchData(api_server) {
+      var Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    let api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+<script src="/js/love.js"></script>
+
+<script src="/js/particle.js"></script>
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('https://cdn.jsdelivr.net/npm/valine@1.4.18/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'OBdFsOOtfIDcNnWdzkGbICmj-gzGzoHsz',
+      appKey     : '89LmL4tP7hkyChAmEleq2MdO',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

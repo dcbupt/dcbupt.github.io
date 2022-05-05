@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-mac-osx.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"dcbupt.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="疯狂JAVA讲义学习笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JAVA学习笔记">
+<meta property="og:url" content="http://dcbupt.github.io/2017/03/25/blog_article/%E5%BE%85%E5%BA%9F%E5%BC%83/JAVA%E5%85%A5%E9%97%A8/index.html">
+<meta property="og:site_name" content="dcddc">
+<meta property="og:description" content="疯狂JAVA讲义学习笔记">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-03-25T12:05:00.000Z">
+<meta property="article:modified_time" content="2022-05-01T06:44:18.738Z">
+<meta property="article:author" content="西米大人">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://dcbupt.github.io/2017/03/25/blog_article/%E5%BE%85%E5%BA%9F%E5%BC%83/JAVA%E5%85%A5%E9%97%A8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+  <title>JAVA学习笔记 | dcddc</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">dcddc</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">西米大人的博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dcbupt.github.io/2017/03/25/blog_article/%E5%BE%85%E5%BA%9F%E5%BC%83/JAVA%E5%85%A5%E9%97%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/me.png">
+      <meta itemprop="name" content="西米大人">
+      <meta itemprop="description" content="<blockquote class="blockquote-center">优秀的人，不是不合群，而是他们合群的人里面没有你</blockquote>">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="dcddc">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          JAVA学习笔记
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-03-25 20:05:00" itemprop="dateCreated datePublished" datetime="2017-03-25T20:05:00+08:00">2017-03-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-05-01 14:44:18" itemprop="dateModified" datetime="2022-05-01T14:44:18+08:00">2022-05-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/JAVA/" itemprop="url" rel="index"><span itemprop="name">JAVA</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2017/03/25/blog_article/%E5%BE%85%E5%BA%9F%E5%BC%83/JAVA%E5%85%A5%E9%97%A8/" class="post-meta-item leancloud_visitors" data-flag-title="JAVA学习笔记" title="热度">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">热度:</span>
+              <span class="leancloud-visitors-count"></span>℃
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">评论:</span>
+    
+    <a title="valine" href="/2017/03/25/blog_article/%E5%BE%85%E5%BA%9F%E5%BC%83/JAVA%E5%85%A5%E9%97%A8/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2017/03/25/blog_article/%E5%BE%85%E5%BA%9F%E5%BC%83/JAVA%E5%85%A5%E9%97%A8/" itemprop="commentCount"></span>℃
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">字数：</span>
+              <span>7.3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>12 分钟</span>
+            </span>
+            <div class="post-description"><blockquote class="blockquote-center">疯狂JAVA讲义学习笔记</blockquote></div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="面试"><a href="#面试" class="headerlink" title="面试"></a>面试</h1><h2 id="JDK-JRE"><a href="#JDK-JRE" class="headerlink" title="JDK JRE"></a>JDK JRE</h2><p>JDK是JAVA开发工具，它不仅提供JAVA程序运行所需的JRE，还提供一系列编译运行工具。JRE是JAVA程序的运行环境，它最核心的就是JVM及核心类库。</p>
+<h2 id="CLASSPATH"><a href="#CLASSPATH" class="headerlink" title="CLASSPATH"></a>CLASSPATH</h2><p>CLASSPATH保存一些目录和jar文件路径，这些路径是为JAVA程序在编译和运行的时候搜索类而用到的。</p>
+<h2 id="JVM"><a href="#JVM" class="headerlink" title="JVM"></a>JVM</h2><p>JVM是一种用软件模拟出来的计算机（处理器、堆栈、寄存器、指令系统等），用于执行字节码（将字节码转换成底层硬件的机器指令）</p>
+<h2 id="堆和栈"><a href="#堆和栈" class="headerlink" title="堆和栈"></a>堆和栈</h2><p>堆和栈都是运行时的数据存储区。<br>栈存放非static的自动变量、函数参数、表达式的临时结果和函数返回值。栈数据的分配和释放由系统完成。<br>堆存放的数据是由程序中显示分配的（new出来的对象）。</p>
+<h2 id="垃圾回收"><a href="#垃圾回收" class="headerlink" title="垃圾回收"></a>垃圾回收</h2><p>JAVA堆内存的释放由垃圾回收器执行。<code>System.gc()</code> <code>Runtime.getRuntime().gc()</code><br>显示执行垃圾回收，也不一定立即执行，还是由JVM调度。<br>JAVA对象的finalize方法（继承Object）会在对象被gc前调用。</p>
+<h2 id="x3D-x3D-和equls的区别"><a href="#x3D-x3D-和equls的区别" class="headerlink" title="&#x3D;&#x3D;和equls的区别"></a>&#x3D;&#x3D;和equls的区别</h2><p>共同点是作用一致，都是判断两个对象是否相等<br>对于基本数据类型，&#x3D;&#x3D;判断的是值是否相等。<br>对于引用类型，&#x3D;&#x3D;判断的是引用是否指向同一个堆地址<br>equals可以被重写<br>String是引用类型，其equals方法不能被重写，因为该方法用来判断String值是否相等。</p>
+<h2 id="super"><a href="#super" class="headerlink" title="super"></a>super</h2><p>如果父类没有定义无参构造方法，但定义了有参构造方法，那么子类的构造方法中一定要显式调用super方法加上正确的参数来调用父类的有参构造方法。<br>其余情况，子类构造方法可以不显式调用super，super()会被隐式调用。</p>
+<h2 id="接口和抽象类"><a href="#接口和抽象类" class="headerlink" title="接口和抽象类"></a>接口和抽象类</h2><p>只要包含了抽象方法，就是抽象类。<br>接口是更抽象的抽象类，其包含的方法全是抽象的，如果包含static属性，则属性值不可被改变<br>抽象类用来继承，接口用来实现<br>抽象类和接口都不可以被直接实例化</p>
+<h2 id="内部类"><a href="#内部类" class="headerlink" title="内部类"></a>内部类</h2><p><code>静态内部类</code>：静态内部类和外部类的地位一样，在加载外部类的时候就会同时加载静态内部类（因为是静态的），同样静态内部类不能访问外部类的非静态变量<br><code>成员内部类</code>：成员内部类在创建时依赖于外部类，创建的方式：<code>Inner inner = t.new Inner();</code>，t是外部类的对象。成员内部类可以访问外部类的所有属性<br><code>局部内部类</code>：局部内部类是在方法体中创建的class，不能是static，且不能在方法体外部实例化，类内部只能访问方法体中的final型变量<br><code>匿名内部类</code>：匿名内部类有两种，一种在方法的参数中直接new的方式创建，另一种即在方法体中通过new的方式创建类。匿名内部类必须是接口的实现类或者是抽象类的子类</p>
+<h2 id="String对象池"><a href="#String对象池" class="headerlink" title="String对象池"></a>String对象池</h2><p>为了避免频繁创建和销毁对象，创建了String对象池。如果采用<code>String s = &quot;dc&quot;</code>的方式创建String，JVM会先去对象池中找是否存在值相等的String对象，如果存在返回引用，不存在JVM会new一个String返回，并将其添加到池中。但如果用new来创建String，则跳过从池中取的步骤。</p>
+<h2 id="StringBuilder"><a href="#StringBuilder" class="headerlink" title="StringBuilder"></a>StringBuilder</h2><p>如果需要大量拼接字符串，使用StringBuilder。因为如果用<code>+</code>会产生大量的字符串对象，造成JVM资源浪费。<br>StringBuilder和StringBuffer功能类似，前者线程安全，后者不能保证。</p>
+<h2 id="序列化"><a href="#序列化" class="headerlink" title="序列化"></a>序列化</h2><p>实现Serializable接口的类的对象可以被序列化和反序列化。<br>序列化将JAVA对象内存中的二进制数据通过ObjectOutputStream写入文件，反序列化将文件中的数据通过ObjectInputStream读入内存<br>可序列化的类还需要有一个private final static long serialVersionUID值来标识</p>
+<h1 id="集合"><a href="#集合" class="headerlink" title="集合"></a>集合</h1><p>JAVA集合类有两个根接口派生，他俩是：Collection和Map<br>Collection接口又派生三个子接口：Set\List\Queue</p>
+<h2 id="Collection"><a href="#Collection" class="headerlink" title="Collection"></a>Collection</h2><p>定义了一些Set\List\Queue通用的接口<br>add \ addAll \ contains \ containsAll \ isEmpty \ iterator \ remove \ removeAll \ retainAll \ size \ toArray</p>
+<h2 id="遍历集合"><a href="#遍历集合" class="headerlink" title="遍历集合"></a>遍历集合</h2><p>1、Lambda表达式<br>JAVA集合可以使用forEach方法传入Lambda表达式遍历集合<br>forEach方法是在Iterable接口中定义的，而Iterable是Collection和Map的父接口<br><code>hashMap.forEach((key, value) -&gt; System.out.println(&quot;key: &quot; + key));</code></p>
+<p>2、Iterator迭代器<br>Collection的子接口Set&#x2F;List&#x2F;Queue可以得到Iterator迭代器遍历集合，Map是通过keySet得到key的Set集合来遍历<br>遍历用到的方法用：iterator.hasNext 、iterator.next<br>遍历的过程中还支持通过iterator.remove方法删除元素，但不能使用Collection的remove删除</p>
+<h2 id="Map"><a href="#Map" class="headerlink" title="Map"></a>Map</h2><p>1、<code>Map怎么判断key-value对相等与否呢？</code><br>判断key相等，需要equals和hashCode方法都返回true</p>
+<blockquote>
+<p>如果将String作为Key，需要注意：尽管new String(“dc”) &#x3D;&#x3D; “dc”返回false，但equals和hashCode方法都返回true，所以HashMap会把“dc”和new String(“dc”)当作一个对象</p>
+</blockquote>
+<p>判断value相等，只需要equals返回true<br>2、<code>尽量不要使用可变对象作为Key</code><br>结合1，自己想想为什么。改变了Key对象后可能无法从map里找到了！</p>
+<ul>
+<li><p>HashMap和Hashtable<br>Hashtable比较古老了（从命名看得出），但有其特点：<br>线程安全，不允许存入null（key和value都不允许）<br>HashMap的特点：<br>线程不安全（可以用Collections包装成线程安全的），允许存入null（key和value都允许，但key不能重复）</p>
+</li>
+<li><p>LinkedHashMap<br>维护key-value对的插入顺序</p>
+</li>
+<li><p>Properties<br>从指定文件中读取key-value或者将Properties里的key-value对存入文件，与IO中的input&#x2F;outputStream组合使用</p>
+</li>
+<li><p>TreeMap<br>根据key的大小（自然排序或Comparator），对key-value排序，方便得到最大最小的key，内部采用红黑树实现<br>TreeMap还可以得到大于Key的最小值或小于Key的最大值，返回指定key区间的子key-value等扩展功能<br>注：应该保证当两个key相等时，equals方法也返回true</p>
+</li>
+<li><p>WeakHashMap<br>HashMap保存key的强引用，所谓强引用，就是不会轻易被gc回收，除非HashMap被gc回收了<br>WeakHashMap保存对象的弱引用，除非key被另一个对象强引用了，否则会被gc回收<br>例如key只是一个new出来的对象，并没有被具体对象的引用指代，则会被gc（执行System.gc()）</p>
+</li>
+<li><p>IdentityHashMap<br>打破了HashMap的规则：判断key相等根据equals和hashCode<br>IdentityHashMap判断key相等，需要”key1&#x3D;&#x3D;key2”，即严格相等！其实判断相等的条件变弱了！<br><code>当new两个一样构造参数的同一类对象时，HashMap会认为两个key相等导致第二个key-value会取代第一次的key-value</code>，但IdentityHashMap会放行！</p>
+</li>
+<li><p>EnumMap<br>要求Key均为枚举值，且不能为null！创建时指定Enum class<br>保存的key-value对依照key在Enum被定义的顺序，通过keyset遍历Key可以发现</p>
+</li>
+</ul>
+<h2 id="Collections"><a href="#Collections" class="headerlink" title="Collections"></a>Collections</h2><p>1、Collections提供了一堆操作List的静态方法<br>Collections.sort、Collctions.shuffle、Collections.reverse、Collections.frequency、Collections.max、Collections.min</p>
+<p>2、可以把集合三大类Set\List\Map封装成线程安全<br><code>List list = Collections.synchronizedList(new ArrayList&lt;&gt;());</code></p>
+<p>3、创建只读的Set\List\Map<br><code>Set&lt;String&gt; unmodifiedSet = Collections.unmodifiableSet(set);</code><br>set被包装成unmodified之后，只能读，不能做任何修改操作</p>
+<h2 id="stream"><a href="#stream" class="headerlink" title="stream"></a>stream</h2><p>Collection子类可以把集合通过stream方法变为流，实现更强大的操作集合元素的一些方法</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ArrayList&lt;Integer&gt; list = new ArrayList&lt;&gt;();</span><br><span class="line">		list.addAll(Arrays.asList(1,2,3,4));</span><br><span class="line">		System.out.println(list.stream().filter(Object -&gt; Object &gt; 2).count());</span><br><span class="line">		boolean isAllMatch = list.stream().map(Object -&gt; Object * 2).allMatch(Object -&gt; Object &gt; 1);</span><br><span class="line">		System.out.println(isAllMatch);</span><br></pre></td></tr></table></figure>
+
+<p>变成流后有些方法是中间方法，例如filter方法返回的是过滤后的stream，而count\allMatch等方法是末尾方法，直接返回结果</p>
+<h2 id="Set"><a href="#Set" class="headerlink" title="Set"></a>Set</h2><ul>
+<li><p>HashSet<br>equals和hashCode都返回true才认为相等<br>如果hashCode相等但equals不等，则会以链表的形式添加到同一个内存地址<br>如果equals相等但hashCode不等，也会存入HashSet但打破了SET的规则<br>加入到HashSet的元素尽量不要修改</p>
+</li>
+<li><p>LinkedHashSet<br>可以按照添加的顺序访问</p>
+</li>
+<li><p>TreeSet<br>排序的Set，通过equals判断元素相等，所以equals和比较方法应该逻辑一致<br>如果对TreeSet的元素做修改导致大小关系发生变化，但TreeSet不会调整顺序</p>
+</li>
+</ul>
+<h1 id="多线程"><a href="#多线程" class="headerlink" title="多线程"></a>多线程</h1><h2 id="进程和线程"><a href="#进程和线程" class="headerlink" title="进程和线程"></a>进程和线程</h2><p>进程是处于运行过程中的程序，线程在程序中是独立并发的执行流。<br>线程与父进程的其他线程共享进程的全局资源。<br>进程之间不能共享内存，线程间可以共享内存。创建进程要分配内存空间，创建线程不需要，代价小很多。</p>
+<h2 id="线程创建和启动"><a href="#线程创建和启动" class="headerlink" title="线程创建和启动"></a>线程创建和启动</h2><p>a. Thread模式。定义Thread类的子类，override run方法。start方法启动线程。这种方式创建线程，多个线程无法共享实例变量，因为每一个线程都只执行各自的run方法， 线程间无法通信。</p>
+<p>b. Runnable模式。创建实现runnable接口的类，实现run方法，new该类的对象作为参数传给Thread创建线程对象，调用线程对象的start方法启动线程。实现runnable的类作为Thread的target，多个线程可以使用同一个target，所以这些线程可以共享该target的实例变量。</p>
+<p>c. Future模式。创建实现callable接口的类，实现call方法。通过FutureTask类包装该类， 将FutureTask类的对象作为target来创建Thread并start启动线程，通过FutureTask对象的get方法获得线程执行的返回结果。callable接口有泛型限制，限制返回值类型。</p>
+<h2 id="线程的生命周期"><a href="#线程的生命周期" class="headerlink" title="线程的生命周期"></a>线程的生命周期</h2><p>线程得到系统的调度后执行线程，进入运行态。PC基于抢占式调度策略，系统给每个就绪态线程一个小时间段执行线程，之后剥夺线程所占用资源，选择下一个执行线程时考虑线程优先级。（手机采用的是协作式调度策略，只有一个线程调用sleep后才会放弃所占用资源，即由线程主动放弃）。</p>
+<p>线程调用sleep方法（不释放锁，触发CPU重新调度线程），或者线程等待获得同步监视器（等待获得对象锁），或者调用wait释放同步监视器（释放对象锁）后等待notify重新获得同步监视器时，线程处于阻塞态。</p>
+<h2 id="join线程"><a href="#join线程" class="headerlink" title="join线程"></a>join线程</h2><p>在线程A的执行体中调用线程B的join方法后，线程A阻塞，直到线程B执行完毕。</p>
+<h2 id="后台线程"><a href="#后台线程" class="headerlink" title="后台线程"></a>后台线程</h2><p>又称“守护线程”。如果所有的前台线程死亡，后台线程自动死亡。Thread提供了setDaemon设置为后台线程。默认创建的都是前台线程。</p>
+<h2 id="线程让步yield"><a href="#线程让步yield" class="headerlink" title="线程让步yield"></a>线程让步yield</h2><p>调用线程的yield方法后，线程从运行态回到就绪态，并让操作系统重新进行一次调度。但通常不建议用yield，一般用sleep</p>
+<h2 id="线程优先级"><a href="#线程优先级" class="headerlink" title="线程优先级"></a>线程优先级</h2><p>每个线程优先级与创建他的线程相同。main线程具有普通优先级。JAVA定义了三种Thread优先级：MAX\MIN\NORM_PRIORITY，建议使用这三个常量来设置Thread优先级，使得程序便于移植。</p>
+<h2 id="线程同步"><a href="#线程同步" class="headerlink" title="线程同步"></a>线程同步</h2><p>a. 同步代码块：使用sychronized（obj）同步代码块，obj即同步监视器，任何时刻只有唯一一个获得了同步监视器的线程可以执行同步代码块。推荐使用并发访问的对象作为同步监视器。</p>
+<p>b. 同步方法：使用synchronized修饰的方法。同步方法的同步监视器是this。synchronized只能修饰方法（除构造方法）和代码块。</p>
+<p>c. Thread执行Sleep\yield不会释放同步监视器。</p>
+<p>d. 使用ReentrantLock显示地对线程执行体加锁、释放锁。使用lock时，将lock对象设为并发访问对象的一个成员变量，做到一个并发对象对应一个lock，依然能保证对并发对象的访问是线程安全的。Thread可以对已被ReentrantLock加锁的代码再次加锁，即一段被锁保护的代码可以调用另一个被相同锁保护的方法。</p>
+<h2 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h2><p>线程A等待获得同步监视器对象a，线程B等待获得同步监视器对象b，但线程A占据着对象b，线程B占据着对象a，所以线程A和B都在等待对方先释放自己占据的同步监视器，就出现了死锁。</p>
+<h2 id="线程间通信"><a href="#线程间通信" class="headerlink" title="线程间通信"></a>线程间通信</h2><blockquote>
+<p>多个线程操作同一个对象时，如何通信？言下之意，当一个线程得到该对象的锁时，如何通过代码控制线程释放锁，等待锁这样的动作，达到和其他线程通信的效果。</p>
+</blockquote>
+<p>1、Wait\notify\notifyAll<br>        属于Object类的方法，由同步监视器synchronized对象调用<br>        wait：导致当前线程等待，直到其他线程调用该监视器的notify方法或notifyAll方法来唤醒该线程，调用wait方法的当前线程会释放对同步监视器的锁定。<br>        notify：唤醒在此同步监视器上等待的单个线程，选择是任意的。只有当前线程放弃对同步监视器的锁定（调用wait方法），才可以执行被唤醒的线程。<br>        notifyAll：唤醒在同步监视器上等待的所有线程。</p>
+<p>2、Lock\condition<br>        当代码通过lock对JAVA对象加锁代替synchronized时，不存在同步监视器对象，通过condition对象代替同步监视器对象，condition对象提供了三个方法await\signal\signalAll对应wait\notify\notifyAll<br>        通过lock.newCondition方法创建condition对象</p>
+<p>3、BlockingQueue<br>        当生产者线程试图向BlockingQueue放入元素时，如果队列已满，则该线程阻塞。如果消费者线程试图从BlockingQueue里取出元素时，如果队列已空，则该线程阻塞。<br>        BlockingQueue是一个接口。</p>
+<h2 id="线程组"><a href="#线程组" class="headerlink" title="线程组"></a>线程组</h2><p><code>基本概念</code><br>        默认情况下，子线程和创建它的父线程处于同一个线程组内。<br>        一旦某个线程加入了线程组，它将一直处于该线程组内，直到线程死亡。<br>        在创建线程时就可以指定线程组。<br>        线程组可以设为后台（守护）线程组，后台线程组的最后一个线程死亡后，后台线程组自动销毁。</p>
+<p><code>线程组的应用-线程异常处理</code><br>        线程类提供了两个可以设定异常处理器的方法，由异常处理器处理线程异常。<br>        异常处理器：实现了Thread.UncaughtExceptionHandler接口的类。该接口声明了一个处理异常的方法。<br>        如果线程类没有设定异常处理器，那么由线程组的异常处理方法处理异常（线程组实现了UncaughtExceptionHandler），本身就具备异常处理器的作用。</p>
+<h2 id="线程池"><a href="#线程池" class="headerlink" title="线程池"></a>线程池</h2><p><code>基本概念</code><br>        线程池创建大量空闲线程，接收runnable和callable对象启动线程，线程结束后返回线程池。通过线程池设定最大线程数可以有效控制并发线程的数量，防止系统崩溃。</p>
+<p><code>创建线程池</code><br>        由Exauctors工厂类的静态方法创建线程池ExecutorService</p>
+<p><code>接受Runnable、Callable对象</code><br>        通过submit\schedule方法接收对象，执行线程，该方法返回Future对象，可以通过Future get到返回值</p>
+<p><code>关闭线程池</code><br>        shutdown方法关闭线程池，关闭线程池后，不再接收新的runnable\callable对象，但会执行完已经在线程池里执行的线程。shutdownnow方法会关闭所有正在执行的线程</p>
+<p><code>JAVA8新增的ForkJoinPool线程池实现线程切分并行执行</code><br>        ForkJoinPool利用多核CPU的物理性能，可以将一个大任务（线程）拆分成多个小任务（线程）并行执行。FJP不接收Runnalble或者Callable，而是接收实现了ForkJoinTask接口的对象，该对象的compute方法作为线程执行体，在compute执行过程中再new多个ForkJoinTask，并调用fork方法递归实现多个线程(子任务)并行执行。。FJP的submit方法返回Future对象get到线程返回值</p>
+<p><code>通用线程池</code><br>        不受shutdown影响的线程池。ForkJoinPool的commonPool静态方法返回一个ForkJoinPool对象，该对象是通用线程池，可以保证submit的线程执行体一定可以执行完毕。</p>
+<h2 id="ThreadLocal"><a href="#ThreadLocal" class="headerlink" title="ThreadLocal"></a>ThreadLocal</h2><p>threadLocal修饰的对象是每个线程独占的副本。<br>如果多个线程对同一个JAVA对象操作，那么这些线程将共享对象的成员变量，但如果在这个JAVA对象里创建ThreadLocal对象，则每个线程将独占这个ThreadLocal对象，线程对ThreadLocal的操作是对副本的操作，彼此间互不影响。</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>西米大人
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://dcbupt.github.io/2017/03/25/blog_article/%E5%BE%85%E5%BA%9F%E5%BC%83/JAVA%E5%85%A5%E9%97%A8/" title="JAVA学习笔记">http://dcbupt.github.io/2017/03/25/blog_article/待废弃/JAVA入门/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+
+        
+
+<blockquote class="blockquote-center" style="color: #f0ad4e">完 ♥ 结</blockquote>
+
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/03/25/blog_article/%E7%AE%97%E6%B3%95/%E5%AE%9E%E7%8E%B0Trie/" rel="prev" title="实现Trie">
+      <i class="fa fa-chevron-left"></i> 实现Trie
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/03/26/blog_article/%E7%AE%97%E6%B3%95/%E6%8E%92%E5%BA%8F%E7%9F%A9%E9%98%B5%E4%B8%AD%E4%BB%8E%E5%B0%8F%E5%88%B0%E5%A4%A7%E7%AC%ACk%E4%B8%AA%E6%95%B0/" rel="next" title="排序矩阵中从小到大第k个数">
+      排序矩阵中从小到大第k个数 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9D%A2%E8%AF%95"><span class="nav-number">1.</span> <span class="nav-text">面试</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#JDK-JRE"><span class="nav-number">1.1.</span> <span class="nav-text">JDK JRE</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CLASSPATH"><span class="nav-number">1.2.</span> <span class="nav-text">CLASSPATH</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JVM"><span class="nav-number">1.3.</span> <span class="nav-text">JVM</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A0%86%E5%92%8C%E6%A0%88"><span class="nav-number">1.4.</span> <span class="nav-text">堆和栈</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6"><span class="nav-number">1.5.</span> <span class="nav-text">垃圾回收</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#x3D-x3D-%E5%92%8Cequls%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">1.6.</span> <span class="nav-text">&#x3D;&#x3D;和equls的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#super"><span class="nav-number">1.7.</span> <span class="nav-text">super</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%A5%E5%8F%A3%E5%92%8C%E6%8A%BD%E8%B1%A1%E7%B1%BB"><span class="nav-number">1.8.</span> <span class="nav-text">接口和抽象类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E9%83%A8%E7%B1%BB"><span class="nav-number">1.9.</span> <span class="nav-text">内部类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#String%E5%AF%B9%E8%B1%A1%E6%B1%A0"><span class="nav-number">1.10.</span> <span class="nav-text">String对象池</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#StringBuilder"><span class="nav-number">1.11.</span> <span class="nav-text">StringBuilder</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%8F%E5%88%97%E5%8C%96"><span class="nav-number">1.12.</span> <span class="nav-text">序列化</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9B%86%E5%90%88"><span class="nav-number">2.</span> <span class="nav-text">集合</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Collection"><span class="nav-number">2.1.</span> <span class="nav-text">Collection</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%81%8D%E5%8E%86%E9%9B%86%E5%90%88"><span class="nav-number">2.2.</span> <span class="nav-text">遍历集合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Map"><span class="nav-number">2.3.</span> <span class="nav-text">Map</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Collections"><span class="nav-number">2.4.</span> <span class="nav-text">Collections</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#stream"><span class="nav-number">2.5.</span> <span class="nav-text">stream</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Set"><span class="nav-number">2.6.</span> <span class="nav-text">Set</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A4%9A%E7%BA%BF%E7%A8%8B"><span class="nav-number">3.</span> <span class="nav-text">多线程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E5%92%8C%E7%BA%BF%E7%A8%8B"><span class="nav-number">3.1.</span> <span class="nav-text">进程和线程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E5%88%9B%E5%BB%BA%E5%92%8C%E5%90%AF%E5%8A%A8"><span class="nav-number">3.2.</span> <span class="nav-text">线程创建和启动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="nav-number">3.3.</span> <span class="nav-text">线程的生命周期</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#join%E7%BA%BF%E7%A8%8B"><span class="nav-number">3.4.</span> <span class="nav-text">join线程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8E%E5%8F%B0%E7%BA%BF%E7%A8%8B"><span class="nav-number">3.5.</span> <span class="nav-text">后台线程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E8%AE%A9%E6%AD%A5yield"><span class="nav-number">3.6.</span> <span class="nav-text">线程让步yield</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E4%BC%98%E5%85%88%E7%BA%A7"><span class="nav-number">3.7.</span> <span class="nav-text">线程优先级</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5"><span class="nav-number">3.8.</span> <span class="nav-text">线程同步</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%BB%E9%94%81"><span class="nav-number">3.9.</span> <span class="nav-text">死锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1"><span class="nav-number">3.10.</span> <span class="nav-text">线程间通信</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E7%BB%84"><span class="nav-number">3.11.</span> <span class="nav-text">线程组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E6%B1%A0"><span class="nav-number">3.12.</span> <span class="nav-text">线程池</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ThreadLocal"><span class="nav-number">3.13.</span> <span class="nav-text">ThreadLocal</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="西米大人"
+      src="/images/me.png">
+  <p class="site-author-name" itemprop="name">西米大人</p>
+  <div class="site-description" itemprop="description"><blockquote class="blockquote-center">优秀的人，不是不合群，而是他们合群的人里面没有你</blockquote></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">151</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dcbupt" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;dcbupt" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:byrddc@hotmail.com" title="E-Mail → mailto:byrddc@hotmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">西米大人</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">388k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">10:47</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.id);
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            let target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    let { app_id, app_key, server_url } = {"enable":true,"app_id":"OBdFsOOtfIDcNnWdzkGbICmj-gzGzoHsz","app_key":"89LmL4tP7hkyChAmEleq2MdO","server_url":null,"security":true};
+    function fetchData(api_server) {
+      var Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    let api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+<script src="/js/love.js"></script>
+
+<script src="/js/particle.js"></script>
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('https://cdn.jsdelivr.net/npm/valine@1.4.18/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'OBdFsOOtfIDcNnWdzkGbICmj-gzGzoHsz',
+      appKey     : '89LmL4tP7hkyChAmEleq2MdO',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

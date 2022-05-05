@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-mac-osx.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"dcbupt.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="系统学习分布式锁">
+<meta property="og:type" content="article">
+<meta property="og:title" content="系统学习分布式锁">
+<meta property="og:url" content="http://dcbupt.github.io/2020/07/31/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/index.html">
+<meta property="og:site_name" content="dcddc">
+<meta property="og:description" content="系统学习分布式锁">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://dcbupt.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81.png">
+<meta property="article:published_time" content="2020-07-31T04:02:00.000Z">
+<meta property="article:modified_time" content="2022-05-01T06:44:18.827Z">
+<meta property="article:author" content="西米大人">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://dcbupt.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81.png">
+
+<link rel="canonical" href="http://dcbupt.github.io/2020/07/31/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+  <title>系统学习分布式锁 | dcddc</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">dcddc</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">西米大人的博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dcbupt.github.io/2020/07/31/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/me.png">
+      <meta itemprop="name" content="西米大人">
+      <meta itemprop="description" content="<blockquote class="blockquote-center">优秀的人，不是不合群，而是他们合群的人里面没有你</blockquote>">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="dcddc">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          系统学习分布式锁
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-07-31 12:02:00" itemprop="dateCreated datePublished" datetime="2020-07-31T12:02:00+08:00">2020-07-31</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-05-01 14:44:18" itemprop="dateModified" datetime="2022-05-01T14:44:18+08:00">2022-05-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/" itemprop="url" rel="index"><span itemprop="name">系统学习系列</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/07/31/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" class="post-meta-item leancloud_visitors" data-flag-title="系统学习分布式锁" title="热度">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">热度:</span>
+              <span class="leancloud-visitors-count"></span>℃
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">评论:</span>
+    
+    <a title="valine" href="/2020/07/31/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/07/31/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" itemprop="commentCount"></span>℃
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">字数：</span>
+              <span>3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>5 分钟</span>
+            </span>
+            <div class="post-description"><blockquote class="blockquote-center">系统学习分布式锁</blockquote></div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81.png"></p>
+<h1 id="为什么要用分布式锁"><a href="#为什么要用分布式锁" class="headerlink" title="为什么要用分布式锁"></a>为什么要用分布式锁</h1><p>单机环境，可以使用一些同步组件或关键字Synchronized保证线程安全，但分布式环境下如何保证多个进程之间的线程安全性？</p>
+<h1 id="分布式锁的几种方案"><a href="#分布式锁的几种方案" class="headerlink" title="分布式锁的几种方案"></a>分布式锁的几种方案</h1><h2 id="基于数据库"><a href="#基于数据库" class="headerlink" title="基于数据库"></a>基于数据库</h2><h3 id="乐观锁"><a href="#乐观锁" class="headerlink" title="乐观锁"></a>乐观锁</h3><p>乐观锁有以下问题：</p>
+<ul>
+<li>多表更新的性能问题。如果竞争的共享资源是单个表，适合用乐观锁。如果涉及N张表，每张表的更新都用乐观锁，冲突的概率扩大N倍，性能有问题</li>
+<li>不适合插入操作。乐观锁只适合数据更新，如果需求是多进程都要插入同一条数据，但只能保证插入一条（类似单例模式），就无法用到乐观锁</li>
+</ul>
+<h3 id="排它锁（悲观锁）"><a href="#排它锁（悲观锁）" class="headerlink" title="排它锁（悲观锁）"></a>排它锁（悲观锁）</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">begin transaction；</span><br><span class="line">select ...for update；</span><br><span class="line">doSomething()；</span><br><span class="line">commit();</span><br></pre></td></tr></table></figure>
+
+<p>这种处理主要依靠排他锁来阻塞其他线程，不过这个需要注意几点：</p>
+<ul>
+<li>查询的数据要命中索引，否则会加gap锁，造成大面积的行锁，影响性能</li>
+<li>避免长事务</li>
+</ul>
+<h3 id="唯一键"><a href="#唯一键" class="headerlink" title="唯一键"></a>唯一键</h3><p>通过在一张表里创建唯一键来获取锁</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">insert table lock_store (&#x27;method_name&#x27;) values($method_name)</span><br></pre></td></tr></table></figure>
+
+<p>其中 method_name 是个唯一键，通过这种方式也可以做到，解锁的时候直接删除该行记录就行</p>
+<h2 id="基于zk"><a href="#基于zk" class="headerlink" title="基于zk"></a>基于zk</h2><p>zk可被用作分布式锁，主要由于具备以下两个特性</p>
+<ul>
+<li>zk以k-v的形式存储数据，存储结构为树状结构，这保证了同级目录下不存在相同的节点，即zk不会存储两个相同的key</li>
+<li>zk的数据节点类型分为持久节点、临时节点和顺序节点。与持久节点相比，临时节点会在zk客户端会话超时或发生异常而关闭时被删除（当然持久节点、临时节点都可以由zk客户端操作手动删除）。顺序节点指在持久节点或临时节点的基础上，key值用uuid+自增序号组成，按时间保证顺序</li>
+</ul>
+<p>zk实现非公平分布式锁：</p>
+<ul>
+<li>在父节点（持久节点）下创建zk临时节点，保证zk客户端异常断联也会删除节点</li>
+<li>创建成功则认为拿到分布式锁。失败，说明临时节点已存在，通过CDL阻塞当前线程，同时监听该节点的删除操作，一旦该节点删除，CDL执行countdown，唤醒当前线程，拿到分布式锁</li>
+</ul>
+<p>问题：</p>
+<ul>
+<li>如果并发高，释放分布式锁会回调大量zk客户端监听，产生羊群效应，性能不好</li>
+</ul>
+<p>解法：</p>
+<ul>
+<li>利用临时有序节点实现分布式公平锁，每次只回调一个zk客户端监听，公平有序获取分布式锁</li>
+</ul>
+<p>zk实现公平分布式锁：</p>
+<ul>
+<li>在父节点（持久节点）下创建zk临时有序节点</li>
+<li>获取父节点目录下所有的子节点并排序。如果当前临时有序节点就是子节点的第一个节点，则获得锁。如果不是，设置监听当前节点的上一个节点的删除事件，然后阻塞当前线程，直到监听到前一节点删除事件，通过CDL机制唤醒当前线程，再次判断当前节点如果是最小的节点，则获得锁</li>
+</ul>
+<p>Netflix公司基于ZK封装了一整套分布式锁开源框架<code>Curator</code>，目前已贡献给Apache开源组织，它不仅实现了公平分布式锁，还提供了可重入特性：</p>
+<ul>
+<li>通过一个concurrentHashMap存储线程已重入次数</li>
+<li>线程获取分布式锁先从concurrentHashMap取当前线程的可重入次数，不为空且大于0说明当前线程已经拿到分布式锁，重入次数+1</li>
+<li>如果第一次获取到公平分布式锁，初始化当前线程的可重入次数为1</li>
+<li>释放锁时，不仅要删除zk临时节点，还要从concurrentHashMap里remove当前线程的重入次数</li>
+</ul>
+<h2 id="基于Redis"><a href="#基于Redis" class="headerlink" title="基于Redis"></a>基于Redis</h2><p>以Redis的setNx命令执行成功与否，来判断是否获取基于Redis的分布式锁。不过要注意以下问题</p>
+<h3 id="锁失效问题"><a href="#锁失效问题" class="headerlink" title="锁失效问题"></a>锁失效问题</h3><p>这种情况通常是取得分布式锁的线程执行时间超过锁到期时间，例如发生了GC。等执行完业务逻辑后，再次释放Redis锁（delete）时，可能释放了其他线程的分布式锁</p>
+<p>解法：</p>
+<ul>
+<li>value传requestId，然后我们在释放锁的时候判断一下，如果是当前requestId，那就可以释放，否则不允许释放。这种方案依然不能完全解决问题，因为判断requestId和释放锁不是原子操作，不过可以将这两个操作写在一个lua脚本里，调用<code>jedis.eval</code>执行，redis保证lua脚本里的操作满足原子性。</li>
+</ul>
+<p>尽管如此，当FGC过久或者接口调用发生网络超时，线程执行时间可能超过锁过期时间，这时分布式锁就起不到作用了，该如何解决？</p>
+<p>用<code>续命锁（watchdog看门狗）</code>的方案，redis客户端定义一个子线程，定时去查看是否主线程依然持有当前锁，如果是，则为其延长锁过期时间，RedissonLock（Redis的Java客户端）的lock方法就使用了续命锁，默认锁过期时间是30s，每10s（1&#x2F;3的锁过期时间）检查一次，续30s</p>
+<ul>
+<li>你可能会想，既然Redis锁那么容易过期，我把过期时间延长或者干脆永不过期就好了。但这么做可能有更严重的后果，试想如果加锁成功的线程异常了（没有在finally里释放tair锁）或者进程挂了，没有释放Redis锁，那么就产生了“死锁”，其他线程就会长时间“阻塞”！</li>
+</ul>
+<h3 id="主从同步问题（单点问题）"><a href="#主从同步问题（单点问题）" class="headerlink" title="主从同步问题（单点问题）"></a>主从同步问题（单点问题）</h3><p>当主Redis加锁了，开始执行线程，若还未将锁通过异步同步的方式同步到从Redis节点，主节点就挂了，此时会把某一台从节点作为新的主节点，此时别的线程就可以加锁了。本质是因为Redis是AP型服务，优先服务可用性，而非数据一致性</p>
+<p>解法：</p>
+<ul>
+<li>采用zookeeper代替Redis<ul>
+<li>由于zk集群的特点，其支持的是CP。而Redis集群支持的则是AP。</li>
+</ul>
+</li>
+<li>采用RedLock<ul>
+<li>RedLock机制，需要client向超过一半的Redis节点加锁成功才认为取得了分布式锁。否则释放已加锁的Redis节点。为什么要超过一半？很容易理解，如果不超过一半节点，其他线程的RedLock也能加锁成功，锁就失效了</li>
+<li>如果并发高，多个线程同时竞争同一个redis锁，用RedLock机制可能造成每个线程都在部分节点加锁成功，但最后谁都没真正拿到分布式锁，因此重试的时候需要随机等待一段时间再重试</li>
+<li>具体使用存在争议，例如加了锁的其中几个redis节点挂了，RedLock机制就失效了，其他线程尝试获取锁会成功，因此不太推荐使用RedLock。如果考虑高可用并发推荐使用Redisson，考虑一致性推荐使用zookeeper</li>
+</ul>
+</li>
+</ul>
+<h3 id="不具备可重入能力"><a href="#不具备可重入能力" class="headerlink" title="不具备可重入能力"></a>不具备可重入能力</h3><p>解法：加入锁计数count，在获取锁的时候查询一次，如果是当前线程已经持有的锁（通过requestId判断），count加1，获取锁成功</p>
+<p>简单实现：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line">private static volatile int count = 0;</span><br><span class="line">public boolean lock(String key, V v, int expireTime)&#123;</span><br><span class="line">    int retry = 0;</span><br><span class="line">    //获取锁失败最多尝试10次</span><br><span class="line">    while (retry &lt; failRetryTimes)&#123;</span><br><span class="line">        //1.先获取锁,如果是当前线程已经持有，则直接返回</span><br><span class="line">        //2.防止后面设置锁超时，其实是设置成功，而网络超时导致客户端返回失败，所以获取锁之前需要查询一下</span><br><span class="line">        V value = redis.get(key);</span><br><span class="line">        //如果当前锁存在，并且属于当前线程持有，则锁计数+1，直接返回</span><br><span class="line">        if (null != value &amp;&amp; value.equals(v))&#123;</span><br><span class="line">            count ++;</span><br><span class="line">            return true;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        //如果锁已经被持有了，那需要等待锁的释放</span><br><span class="line">        if (value == null || count &lt;= 0)&#123;</span><br><span class="line">            //获取锁</span><br><span class="line">            Boolean result = redis.setNx(key, v, expireTime);</span><br><span class="line">            if (result)&#123;</span><br><span class="line">                count = 1;</span><br><span class="line">                return true;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        try &#123;</span><br><span class="line">            //获取锁失败间隔一段时间重试</span><br><span class="line">            TimeUnit.MILLISECONDS.sleep(sleepInterval);</span><br><span class="line">        &#125; catch (InterruptedException e) &#123;</span><br><span class="line">            Thread.currentThread().interrupt();</span><br><span class="line">            return false;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return false;</span><br><span class="line">&#125;</span><br><span class="line">public boolean unlock(String key, String requestId)&#123;</span><br><span class="line">    String value = redis.get(key);</span><br><span class="line">    if (Strings.isNullOrEmpty(value))&#123;</span><br><span class="line">        count = 0;</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line">    //判断当前锁的持有者是否是当前线程，如果是的话释放锁，不是的话返回false</span><br><span class="line">    if (value.equals(requestId))&#123;</span><br><span class="line">        if (count &gt; 1)&#123;</span><br><span class="line">            count -- ;</span><br><span class="line">            return true;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        boolean delete = redis.delete(key);</span><br><span class="line">        if (delete)&#123;</span><br><span class="line">            count = 0;</span><br><span class="line">        &#125;</span><br><span class="line">        return delete;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return false;</span><br><span class="line">&#125;</span><br><span class="line">public static void main(String[] args) &#123;</span><br><span class="line">    Integer productId = 324324;</span><br><span class="line">    RedisLock&lt;String&gt; redisLock = new RedisLock&lt;String&gt;();</span><br><span class="line">    String requestId = UUID.randomUUID().toString();</span><br><span class="line">    redisLock.lock(productId+&quot;&quot;, requestId, 1000);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="分段锁"><a href="#分段锁" class="headerlink" title="分段锁"></a>分段锁</h3><p>由于锁的作用实际上就是将并行的请求转化为串行请求。这样就降低了并发度。为了解决这一问题，可以将锁进行分段处理：例如秒杀商品A，原本存在1000个库存，可以将其分为20段，key&#x3D;A1，A2…A20，用20个Redisson做分布式锁，独立处理库存扣减</p>
+<h2 id="基于Tair"><a href="#基于Tair" class="headerlink" title="基于Tair"></a>基于Tair</h2><p>Tair相比Redis，put API里提供了乐观锁的版本号控制，可以取代上面的requestId，更适合作分布式锁</p>
+<h3 id="get-x2F-put-version"><a href="#get-x2F-put-version" class="headerlink" title="get&#x2F;put + version"></a>get&#x2F;put + version</h3><ul>
+<li>先执行get操作<ul>
+<li>如果为null，再put，version&#x3D;1，value&#x3D;true。<ul>
+<li>成功则获取到分布式锁，执行业务代码，再释放锁，执行put，version&#x3D;1，value&#x3D;false。释放锁失败增加报警</li>
+<li>失败则说明锁已被抢占，获取分布式锁失败</li>
+</ul>
+</li>
+<li>如果不为null，判断value<ul>
+<li>value为true，说明锁已被抢占，获取分布式锁失败</li>
+<li>value为false，说明锁已被释放。尝试put，version&#x3D;当前version，value&#x3D;true<ul>
+<li>成功则获取到分布式锁，执行业务代码，再释放锁，执行put，version&#x3D;version+1，value&#x3D;false。释放锁失败增加报警</li>
+<li>失败则说明锁已被抢占，获取分布式锁失败</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>tips：锁过期时间尽量久一点，保证每次释放锁都成功</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>西米大人
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://dcbupt.github.io/2020/07/31/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" title="系统学习分布式锁">http://dcbupt.github.io/2020/07/31/blog_article/系统学习系列/系统学习分布式锁/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+
+        
+
+<blockquote class="blockquote-center" style="color: #f0ad4e">完 ♥ 结</blockquote>
+
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/07/31/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8%E7%9A%84%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F/" rel="prev" title="系统学习领域驱动的开发模式">
+      <i class="fa fa-chevron-left"></i> 系统学习领域驱动的开发模式
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/08/28/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0MySQL/" rel="next" title="系统学习MySQL">
+      系统学习MySQL <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E7%94%A8%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81"><span class="nav-number">1.</span> <span class="nav-text">为什么要用分布式锁</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E6%A1%88"><span class="nav-number">2.</span> <span class="nav-text">分布式锁的几种方案</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">2.1.</span> <span class="nav-text">基于数据库</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B9%90%E8%A7%82%E9%94%81"><span class="nav-number">2.1.1.</span> <span class="nav-text">乐观锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%92%E5%AE%83%E9%94%81%EF%BC%88%E6%82%B2%E8%A7%82%E9%94%81%EF%BC%89"><span class="nav-number">2.1.2.</span> <span class="nav-text">排它锁（悲观锁）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%94%AF%E4%B8%80%E9%94%AE"><span class="nav-number">2.1.3.</span> <span class="nav-text">唯一键</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8Ezk"><span class="nav-number">2.2.</span> <span class="nav-text">基于zk</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8ERedis"><span class="nav-number">2.3.</span> <span class="nav-text">基于Redis</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%94%81%E5%A4%B1%E6%95%88%E9%97%AE%E9%A2%98"><span class="nav-number">2.3.1.</span> <span class="nav-text">锁失效问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BB%E4%BB%8E%E5%90%8C%E6%AD%A5%E9%97%AE%E9%A2%98%EF%BC%88%E5%8D%95%E7%82%B9%E9%97%AE%E9%A2%98%EF%BC%89"><span class="nav-number">2.3.2.</span> <span class="nav-text">主从同步问题（单点问题）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8D%E5%85%B7%E5%A4%87%E5%8F%AF%E9%87%8D%E5%85%A5%E8%83%BD%E5%8A%9B"><span class="nav-number">2.3.3.</span> <span class="nav-text">不具备可重入能力</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%AE%B5%E9%94%81"><span class="nav-number">2.3.4.</span> <span class="nav-text">分段锁</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8ETair"><span class="nav-number">2.4.</span> <span class="nav-text">基于Tair</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#get-x2F-put-version"><span class="nav-number">2.4.1.</span> <span class="nav-text">get&#x2F;put + version</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="西米大人"
+      src="/images/me.png">
+  <p class="site-author-name" itemprop="name">西米大人</p>
+  <div class="site-description" itemprop="description"><blockquote class="blockquote-center">优秀的人，不是不合群，而是他们合群的人里面没有你</blockquote></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">151</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dcbupt" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;dcbupt" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:byrddc@hotmail.com" title="E-Mail → mailto:byrddc@hotmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">西米大人</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">388k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">10:47</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.id);
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            let target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    let { app_id, app_key, server_url } = {"enable":true,"app_id":"OBdFsOOtfIDcNnWdzkGbICmj-gzGzoHsz","app_key":"89LmL4tP7hkyChAmEleq2MdO","server_url":null,"security":true};
+    function fetchData(api_server) {
+      var Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    let api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+<script src="/js/love.js"></script>
+
+<script src="/js/particle.js"></script>
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('https://cdn.jsdelivr.net/npm/valine@1.4.18/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'OBdFsOOtfIDcNnWdzkGbICmj-gzGzoHsz',
+      appKey     : '89LmL4tP7hkyChAmEleq2MdO',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

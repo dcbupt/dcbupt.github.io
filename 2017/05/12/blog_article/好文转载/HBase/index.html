@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-mac-osx.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"dcbupt.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="HBase是非关系型、强一致性、自动数据版本控制的分布式键值数据库。 HMaster节点负责分配和管理HRegionInfo，HRegionServer负责存储本地HRegion数据，HRegion即用户表中的一段连续的RowKey记录 ZooKeeper存储META TABLE的位置信息，META TABLE存储HMaster分配的HRegionInfo，通过META TABLE找到用户TABL">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HBase">
+<meta property="og:url" content="http://dcbupt.github.io/2017/05/12/blog_article/%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD/HBase/index.html">
+<meta property="og:site_name" content="dcddc">
+<meta property="og:description" content="HBase是非关系型、强一致性、自动数据版本控制的分布式键值数据库。 HMaster节点负责分配和管理HRegionInfo，HRegionServer负责存储本地HRegion数据，HRegion即用户表中的一段连续的RowKey记录 ZooKeeper存储META TABLE的位置信息，META TABLE存储HMaster分配的HRegionInfo，通过META TABLE找到用户TABL">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://www.blogjava.net/images/blogjava_net/dlevin/HBaseArchitecture-Blog-Fig2.png">
+<meta property="og:image" content="http://www.blogjava.net/images/blogjava_net/dlevin/HBaseArchitecture-Blog-Fig4.png">
+<meta property="og:image" content="http://www.blogjava.net/images/blogjava_net/dlevin/HBaseArchitecture-Blog-Fig5.png">
+<meta property="og:image" content="http://www.blogjava.net/images/blogjava_net/dlevin/HBaseArchitecture-Blog-Fig7.png">
+<meta property="og:image" content="http://www.blogjava.net/images/blogjava_net/dlevin/HBaseArchitecture-Blog-Fig6.png">
+<meta property="og:image" content="http://www.blogjava.net/images/blogjava_net/dlevin/HBaseArchitecture-Blog-Fig8.png">
+<meta property="og:image" content="http://www.blogjava.net/images/blogjava_net/dlevin/HBaseArchitecture-Blog-Fig9.png">
+<meta property="og:image" content="http://www.blogjava.net/images/blogjava_net/dlevin/HBaseArchitecture-Blog-Fig10.png">
+<meta property="og:image" content="http://www.blogjava.net/images/blogjava_net/dlevin/HBaseArchitecture-Blog-Fig11.png">
+<meta property="article:published_time" content="2017-05-12T15:38:00.000Z">
+<meta property="article:modified_time" content="2022-05-01T06:44:18.724Z">
+<meta property="article:author" content="西米大人">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.blogjava.net/images/blogjava_net/dlevin/HBaseArchitecture-Blog-Fig2.png">
+
+<link rel="canonical" href="http://dcbupt.github.io/2017/05/12/blog_article/%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD/HBase/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+  <title>HBase | dcddc</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">dcddc</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">西米大人的博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dcbupt.github.io/2017/05/12/blog_article/%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD/HBase/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/me.png">
+      <meta itemprop="name" content="西米大人">
+      <meta itemprop="description" content="<blockquote class="blockquote-center">优秀的人，不是不合群，而是他们合群的人里面没有你</blockquote>">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="dcddc">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          HBase
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-05-12 23:38:00" itemprop="dateCreated datePublished" datetime="2017-05-12T23:38:00+08:00">2017-05-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-05-01 14:44:18" itemprop="dateModified" datetime="2022-05-01T14:44:18+08:00">2022-05-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD/" itemprop="url" rel="index"><span itemprop="name">好文转载</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2017/05/12/blog_article/%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD/HBase/" class="post-meta-item leancloud_visitors" data-flag-title="HBase" title="热度">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">热度:</span>
+              <span class="leancloud-visitors-count"></span>℃
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">评论:</span>
+    
+    <a title="valine" href="/2017/05/12/blog_article/%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD/HBase/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2017/05/12/blog_article/%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD/HBase/" itemprop="commentCount"></span>℃
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">字数：</span>
+              <span>8.6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>14 分钟</span>
+            </span>
+            <div class="post-description"><blockquote class="blockquote-center">HBase是非关系型、强一致性、自动数据版本控制的分布式键值数据库。<BR> HMaster节点负责分配和管理HRegionInfo，HRegionServer负责存储本地HRegion数据，HRegion即用户表中的一段连续的RowKey记录<BR> ZooKeeper存储META TABLE的位置信息，META TABLE存储HMaster分配的HRegionInfo，通过META TABLE找到用户TABLE所存储的HRegionServer<br> ZooKeeper在HMaster节点和HRegionServer接入时负责产生Ephermeral节点，Ephemeral节点靠其对应节点的心跳信息维系，HMaster节点监控HRegionServer的Ephemeral获取其状态，而备机HMaster监控主HMaster的Ephemeral获取状态<BR> HRegionServer包含一个WAL和一个BlockCache WAL的用处就是为了容灾，具体来说就是HRegionServer宕机后的数据恢复，BlockCache作用是提升读数据的性能 HRegion包含多个HStore， HStore是个逻辑概念，就如同HRegion一样，底层真正存储数据的是HFile，而MemStore负责将内存的数据flush到HFile MemStore与HStore对应，表示col family列簇的数据，所以HRegion包含多个HStore，这样划分是为了提升IO性能
+
+</blockquote></div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><blockquote>
+<p>当数据积累越来越多，他们需要一个简单的方式来扩展整个系统而不是重新构建。</p>
+</blockquote>
+<p>从19世纪70年代开始，关系型数据库 （RDBMS）几乎统治了数据管理场景。</p>
+<blockquote>
+<p>但是当业务不断扩大，存储和处理的数据量也不断增长，关系型数据库越来越难以扩展。<br>假如你明白或者认为你要面对海量数据存储需求，有数十亿行及数百万列的情况，你应该考虑HBase。</p>
+</blockquote>
+<p>这类新数据库设计初衷就是在商业服务器集群中能够完成从基础建设到水平扩展阶段，而不需要垂直扩展设法去买更高级的机器（而且最终还是可能没法买到更好的机器）。</p>
+<h2 id="初入HBase"><a href="#初入HBase" class="headerlink" title="初入HBase"></a>初入HBase</h2><p>HBase是一个能够提供实时、随机读写，能够存储数十亿行和数百万列的数据库。它设计是要运行于一个商业服务器的集群之上，当新服务器添加之后能够自动扩展，还能保证同样的性能。<br>有很高的容错性，因为数据是分割至服务器集群中，保存在一个冗余的文件系统比如HDFS。当某些服务器异常时，你的数据仍然是安全的。这些数据会在当前活动的服务器中自动均衡直到替换服务器上线。<br>HBase是高一致性的数据存储。你修改的内容能够马上在其他所有的客户前展示。</p>
+<blockquote>
+<p>HBase实质是一个带有自动数据版本控制的键值（key-value）存储。</p>
+</blockquote>
+<p>当在HBase中进行数据扫描时，数据行总是按照行主键（row key）顺序返回。</p>
+<blockquote>
+<p>每行数据都由一个唯一排序后的<code>行主键</code>（可以认为是关系型数据库的主键）和<code>任意数量的列</code>，每列都属于一个<code>列簇</code>（column family）并且包含<code>一个或多个版本的值</code>。值都是简单的<code>二进制数组</code>，根据应用需要可以转换成需要展示或存储的形式。</p>
+</blockquote>
+<p>总结</p>
+<blockquote>
+<p>HBase是非关系型、强一致性、自动数据版本控制的分布式键值数据库。</p>
+</blockquote>
+<h1 id="上手"><a href="#上手" class="headerlink" title="上手"></a>上手</h1><p>如何通过命令行使用HBase。<br>HBase自带基于JRuby开发的shell工具，能够定义和管理表、对数据执行增删改查操作、扫描表以及执行一些相关的维护。<br>HBase在产品环境中应该部署到服务器集群中，但也可以下载下来然后启动运行一个单机模式，只需要花几分钟时间。第一件要做的事情就是使用HBase的shell。下面的示例中演示了通过shell新建一个博客表、展示HBase中的有效表、添加一个博客实体、查询该实体以及扫描博客表。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">$ bin/hbase shell</span><br><span class="line">HBase Shell; enter &#x27;help&lt;RETURN&gt;&#x27; for list of supported commands.</span><br><span class="line">Type &quot;exit&lt;RETURN&gt;&quot; to leave the HBase Shell</span><br><span class="line">Version 0.96.0-hadoop2, r1531434, Fri Oct 11 15:28:08 PDT 2013</span><br><span class="line"> </span><br><span class="line">hbase(main):001:0&gt; create &#x27;blog&#x27;, &#x27;info&#x27;, &#x27;content&#x27;</span><br><span class="line">0 row(s) in 6.0670 seconds</span><br><span class="line"> </span><br><span class="line">=&gt; Hbase::Table - blog</span><br><span class="line"> </span><br><span class="line">hbase(main):002:0&gt; list</span><br><span class="line">TABLE</span><br><span class="line">blog</span><br><span class="line">fakenames</span><br><span class="line">my-table</span><br><span class="line">3 row(s) in 0.0300 seconds</span><br><span class="line"> </span><br><span class="line">=&gt; [&quot;blog&quot;, &quot;fakenames&quot;, &quot;my-table&quot;]</span><br><span class="line"> </span><br><span class="line">hbase(main):003:0&gt; put &#x27;blog&#x27;, &#x27;20130320162535&#x27;, &#x27;info:title&#x27;, &#x27;Why use HBase?&#x27;</span><br><span class="line">0 row(s) in 0.0650 seconds</span><br><span class="line"> </span><br><span class="line">hbase(main):004:0&gt; put &#x27;blog&#x27;, &#x27;20130320162535&#x27;, &#x27;info:author&#x27;, &#x27;Jane Doe&#x27;</span><br><span class="line">0 row(s) in 0.0230 seconds</span><br><span class="line"> </span><br><span class="line">hbase(main):005:0&gt; put &#x27;blog&#x27;, &#x27;20130320162535&#x27;, &#x27;info:category&#x27;, &#x27;Persistence&#x27;</span><br><span class="line">0 row(s) in 0.0230 seconds</span><br><span class="line"> </span><br><span class="line">hbase(main):006:0&gt; put &#x27;blog&#x27;, &#x27;20130320162535&#x27;, &#x27;content:&#x27;, &#x27;HBase is a column-oriented...&#x27;</span><br><span class="line">0 row(s) in 0.0220 seconds</span><br><span class="line"> </span><br><span class="line">hbase(main):007:0&gt; get &#x27;blog&#x27;, &#x27;20130320162535&#x27;</span><br><span class="line">COLUMN             CELL</span><br><span class="line"> content:          timestamp=1386556660599, value=HBase is a column-oriented...</span><br><span class="line"> info:author       timestamp=1386556649116, value=Jane Doe</span><br><span class="line"> info:category     timestamp=1386556655032, value=Persistence</span><br><span class="line"> info:title        timestamp=1386556643256, value=Why use HBase?</span><br><span class="line">4 row(s) in 0.0380 seconds</span><br><span class="line"> </span><br><span class="line">hbase(main):008:0&gt; scan &#x27;blog&#x27;, &#123; STARTROW =&gt; &#x27;20130300&#x27;, STOPROW =&gt; &#x27;20130400&#x27; &#125;</span><br><span class="line">ROW                COLUMN+CELL</span><br><span class="line"> 20130320162535    column=content:, timestamp=1386556660599, value=HBase is a column-oriented...</span><br><span class="line"> 20130320162535    column=info:author, timestamp=1386556649116, value=Jane Doe</span><br><span class="line"> 20130320162535    column=info:category, timestamp=1386556655032, value=Persistence</span><br><span class="line"> 20130320162535    column=info:title, timestamp=1386556643256, value=Why use HBase?</span><br><span class="line">1 row(s) in 0.0390 seconds</span><br></pre></td></tr></table></figure>
+
+<p>上面的命令中，我们首先新建了一个包含列簇info 和 content的博客表。列出所有的表并且看到我们新建的博客表以后，我们向表中添加了一些数据。put命令指定了表名，唯一行主键，列簇的主键由列簇名和限定名（qualifier）组成，例如info是列簇名，而title和author就是限定名。所以，info:title就指向在列簇info中值为“Why use HBase?”的列title，info:title同样也被作为列主键。接下来，我们使用命令查询一行单独数据，并且最终在一个限定的行主键范围内扫描了博客表数据。指定了开始行20130300（包含）和结束行20130400 （不包含），和你预想的一样，我们能够查询到在此范围内的所有数据。上面博客的例子中，因为行主键就是发布的时间，所以实际上包含了所有2013三月份的数据。</p>
+<p>HBase的一个重要特性就是，你定义了列簇，然后根据列限制名，可以再列簇中添加任意数量的列。<code>HBase优化了磁盘的列存储方式，不存在的列不会占用空间，这样使得存储更有效率。而关系型数据库缺必须保存一个空值（null）数据</code>。数据行是由包含的列组成的，所以如果行中没有任何列理论上它是不存在的。接着上面的列子，下面会从一个数据行中删除一些指定的列。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">hbase(main):009:0&gt;  delete &#x27;blog&#x27;, &#x27;20130320162535&#x27;, &#x27;info:category&#x27;</span><br><span class="line">0 row(s) in 0.0490 seconds</span><br><span class="line"> </span><br><span class="line">hbase(main):010:0&gt; get &#x27;blog&#x27;, &#x27;20130320162535&#x27;</span><br><span class="line">COLUMN             CELL</span><br><span class="line"> content:          timestamp=1386556660599, value=HBase is a column-oriented...</span><br><span class="line"> info:author       timestamp=1386556649116, value=Jane Doe</span><br><span class="line"> info:title        timestamp=1386556643256, value=Why use HBase?</span><br><span class="line">3 row(s) in 0.0260 seconds</span><br></pre></td></tr></table></figure>
+
+<p>如上所示，你能够从表中删除一个指定列如info:category。你也可以使用deleteall命令删除一行中的所有列，从而删除这行数据。更新数据的话，只需要再次使用put命令即可。<code>HBase默认会保持单列三个版本的数据，所以假如你向 info:title put了一个新值，HBase会同时保留新旧两个值</code>。</p>
+<p>上面例子中的命令展示了如何在HBase中增、删、改、查数据。数据查询只有两种方式：使用get命令查询单行数据；通过scan查询多行数据。<code>在HBase中查询数据时，你应当注意只查询你需要的信息</code>。由于HBase是从每个列簇中分别获取数据，如果你只需要一个列簇的数据，就能够指定只获取该部分。下面的例子中，我们只查询博客 title 列，指定行主键范围为2013年3月到4月。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">hbase(main):011:0&gt; scan &#x27;blog&#x27;, &#123; STARTROW =&gt; &#x27;20130300&#x27;, STOPROW =&gt; &#x27;20130500&#x27;, COLUMNS =&gt; &#x27;info:title&#x27; &#125;</span><br><span class="line">ROW                COLUMN+CELL</span><br><span class="line"> 20130320162535    column=info:title, timestamp=1386556643256, value=Why use HBase?</span><br><span class="line">1 row(s) in 0.0290 seconds</span><br></pre></td></tr></table></figure>
+
+<p>通过设置行主键范围、限制需要的列名称、需要查询的数据版本，你能够优化HBase的数据访问。当然上面的例子中，全都是通过shell完成的，你也能够使用HBase的API完成相同甚至更多的事情。</p>
+<h1 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h1><p>HBase采用Master&#x2F;Slave架构搭建集群，它隶属于Hadoop生态系统，由一下类型节点组成：HMaster节点、HRegionServer节点、ZooKeeper集群，而在底层，它将数据存储于HDFS中，因而涉及到HDFS的NameNode、DataNode等</p>
+<h2 id="HRegion"><a href="#HRegion" class="headerlink" title="HRegion"></a>HRegion</h2><p>HBase使用RowKey将表水平切割成多个HRegion，从HMaster的角度，每个HRegion都纪录了它的StartKey和EndKey（第一个HRegion的StartKey为空，最后一个HRegion的EndKey为空），由于RowKey是排序的，因而Client可以通过HMaster快速的定位每个RowKey在哪个HRegion中。</p>
+<blockquote>
+<p>HMaster对表中的数据按照RowKey分割成几部分，每一部分就是一个HRegion</p>
+</blockquote>
+<h2 id="HRegionServer"><a href="#HRegionServer" class="headerlink" title="HRegionServer"></a>HRegionServer</h2><p>HRegion由HMaster分配到相应的HRegionServer中，然后由HRegionServer负责HRegion的启动和管理，和Client的通信，负责数据的读(使用HDFS)。每个HRegionServer可以同时管理1000个左右的HRegion<br><img src="http://www.blogjava.net/images/blogjava_net/dlevin/HBaseArchitecture-Blog-Fig2.png"></p>
+<h2 id="HMaster"><a href="#HMaster" class="headerlink" title="HMaster"></a>HMaster</h2><p>HMaster没有单点故障问题，可以启动多个HMaster，通过ZooKeeper的Master Election机制保证同时只有一个HMaster出于Active状态，其他的HMaster则处于热备份状态。</p>
+<p>一般情况下会启动两个HMaster，非Active的HMaster会定期的和Active HMaster通信以获取其最新状态，从而保证它是实时更新的，如果启动了多个HMaster反而增加了Active HMaster的负担。</p>
+<p>HMaster的主要用于HRegion的分配和管理，DDL的实现等，既它主要有两方面的职责：</p>
+<ul>
+<li>协调HRegionServer</li>
+<li>启动时HRegion的分配，以及负载均衡和修复时HRegion的重新分配。</li>
+<li>监控集群中所有HRegionServer的状态(通过Heartbeat和监听ZooKeeper中的状态)。</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><blockquote>
+<p>HMaster相当于主控节点，负责分配HRegion以及管理HRegionMaster<br>HRegionMaster相当于存储节点，与Client打交道读取数据<br>HRegion相当于表中的一块数据区</p>
+</blockquote>
+<h2 id="ZooKeeper"><a href="#ZooKeeper" class="headerlink" title="ZooKeeper"></a>ZooKeeper</h2><p>ZooKeeper为HBase集群提供协调服务，它管理着HMaster和HRegionServer的状态(available&#x2F;alive等)，并且会在它们宕机时通知给HMaster，从而HMaster可以实现HMaster之间的failover，或对宕机的HRegionServer中的HRegion集合的修复(将它们分配给其他的HRegionServer)。ZooKeeper集群本身使用一致性协议(PAXOS协议)保证每个节点状态的一致性。<br><img src="http://www.blogjava.net/images/blogjava_net/dlevin/HBaseArchitecture-Blog-Fig4.png"></p>
+<p>ZooKeeper协调集群所有节点的共享信息，在HMaster和HRegionServer连接到ZooKeeper后创建Ephemeral节点，并使用Heartbeat机制维持这个节点的存活状态</p>
+<p>HMaster通过监听ZooKeeper中的Ephemeral节点(默认：&#x2F;hbase&#x2F;rs&#x2F;*)来监控HRegionServer的加入和宕机，如果某个Ephemeral节点实效，则HMaster会收到通知，并做相应的处理。</p>
+<p>第一个HMaster连接到ZooKeeper时会创建Ephemeral节点(默认：&#x2F;hbasae&#x2F;master)来表示Active的HMaster，其后加进来的HMaster则监听该Ephemeral节点，如果当前Active的HMaster宕机，则该节点消失，因而其他HMaster得到通知，而将自身转换成Active的HMaster，在变为Active的HMaster之前，它会创建在&#x2F;hbase&#x2F;back-masters&#x2F;下创建自己的Ephemeral节点。</p>
+<blockquote>
+<p>HMaster的备份节点会监听ACTIVE HMaster的Ephemeral节点，而ACTIVE HMaster会监听HRegionMaster的Ephemeral节点</p>
+</blockquote>
+<p><img src="http://www.blogjava.net/images/blogjava_net/dlevin/HBaseArchitecture-Blog-Fig5.png"></p>
+<h1 id="HBase读写"><a href="#HBase读写" class="headerlink" title="HBase读写"></a>HBase读写</h1><h2 id="META-TABLE"><a href="#META-TABLE" class="headerlink" title="META TABLE"></a>META TABLE</h2><p>在HBase 0.96以后去掉了-ROOT- Table，只剩下这个特殊的目录表叫做Meta Table(hbase:meta)，它存储了集群中所有用户HRegion的位置信息，而ZooKeeper的节点中(&#x2F;hbase&#x2F;meta-region-server)存储的则直接是这个Meta Table的位置，并且这个Meta Table如以前的-ROOT- Table一样是不可split的。这样，客户端在第一次访问用户Table的流程就变成了：</p>
+<p>1、从ZooKeeper(&#x2F;hbase&#x2F;meta-region-server)中获取hbase:meta的位置（HRegionServer的位置），缓存该位置信息。<br>2、从HRegionServer中查询用户Table对应请求的RowKey所在的HRegionServer，缓存该位置信息。<br>3、从查询到HRegionServer中读取Row。</p>
+<blockquote>
+<p>通过ZooKeeper找到META TABLE，META TABLE存储了用户TABLE和该TABLE所存储的节点HRegionServer的对应关系<br>通过META TABLE找到存储用户TABLE数据的HRegionServer，通过HRegionServer读写数据</p>
+</blockquote>
+<p><code>我感觉META TABLE就存在HMaster节点上，因为META TABLE存储的内容其实就是HMaster为用户TABLE记录分配的HRegionInfo</code></p>
+<p><img src="http://www.blogjava.net/images/blogjava_net/dlevin/HBaseArchitecture-Blog-Fig7.png"></p>
+<p>从这个过程中，我们发现客户会缓存这些位置信息，然而第二步它只是缓存当前RowKey对应的HRegion的位置，因而如果下一个要查的RowKey不在同一个HRegion中，则需要继续查询hbase:meta所在的HRegion，然而随着时间的推移，客户端缓存的位置信息越来越多，以至于不需要再次查找hbase:meta Table的信息，除非某个HRegion因为宕机或Split被移动，此时需要重新查询并且更新缓存。<br><img src="http://www.blogjava.net/images/blogjava_net/dlevin/HBaseArchitecture-Blog-Fig6.png"></p>
+<h2 id="HRegionServer详解"><a href="#HRegionServer详解" class="headerlink" title="HRegionServer详解"></a>HRegionServer详解</h2><p>HRegionServer一般和DataNode在同一台机器上运行，实现数据的本地性。HRegionServer包含多个HRegion，由WAL(HLog)、BlockCache、MemStore、HFile组成</p>
+<p>WAL：<br>WAL即Write Ahead Log，在早期版本中称为HLog，它是HDFS上的一个文件，如其名字所表示的，所有写操作都会先保证将数据写入这个Log文件后，才会真正更新MemStore，最后写入HFile中。</p>
+<p>采用这种模式，可以保证HRegionServer宕机后，我们依然可以从该Log文件中读取数据，Replay所有的操作，而不至于数据丢失。这个Log文件会定期Roll出新的文件而删除旧的文件(那些已持久化到HFile中的Log可以删除)。</p>
+<p>WAL文件存储在&#x2F;hbase&#x2F;WALs&#x2F;${HRegionServer_Name}的目录中(在0.94之前，存储在&#x2F;hbase&#x2F;.logs&#x2F;目录中)，一般一个HRegionServer只有一个WAL实例，也就是说一个HRegionServer的所有WAL写都是串行的(就像log4j的日志写也是串行的)，这当然会引起性能问题，因而在HBase 1.0之后，通过HBASE-5699实现了多个WAL并行写(MultiWAL)，该实现采用HDFS的多个管道写，以单个HRegion为单位。</p>
+<blockquote>
+<p>WAL的用处就是为了容灾，具体来说就是HRegionServer宕机后的数据恢复</p>
+</blockquote>
+<p>BlockCache：<br>BlockCache是一个读缓存，即“引用局部性”原理（也应用于CPU，分空间局部性和时间局部性，空间局部性是指CPU在某一时刻需要某个数据，那么有很大的概率在下一时刻它需要的数据在其附近；时间局部性是指某个数据在被访问过一次后，它有很大的概率在不久的将来会被再次的访问），将数据预读取到内存中，以提升读的性能。</p>
+<p>HBase中提供两种BlockCache的实现：默认on-heap LruBlockCache和BucketCache(通常是off-heap)。通常BucketCache的性能要差于LruBlockCache，然而由于GC的影响，LruBlockCache的延迟会变的不稳定，而BucketCache由于是自己管理BlockCache，而不需要GC，因而它的延迟通常比较稳定，这也是有些时候需要选用BucketCache的原因。</p>
+<blockquote>
+<p>BlockCache作用是提升读数据的性能。注意，WAL和BlockCache都是服务于HRegionServer的，即服务于该Server上存储的所有HRegion数据</p>
+</blockquote>
+<p>HRegion：<br>HRegion是一个Table中的一个Region在一个HRegionServer中的表达。一个Table可以有一个或多个Region，他们可以在一个相同的HRegionServer上，也可以分布在不同的HRegionServer上，一个HRegionServer可以有多个HRegion，他们分别属于不同的Table。</p>
+<p>HStore：<br>HRegion由多个Store(HStore)构成，每个HStore对应了一个Table在这个HRegion中的一个Column Family，即每个Column Family就是一个集中的存储单元，因而最好将具有相近IO特性的Column存储在一个Column Family，以实现高效读取(数据局部性原理，可以提高缓存的命中率)。HStore是HBase中存储的核心，它实现了读写HDFS功能，一个HStore由一个MemStore 和0个或多个StoreFile组成。</p>
+<p>MemStore：<br>MemStore是一个写缓存(In Memory Sorted Buffer)，所有数据的写在完成WAL日志写后，会写入MemStore中，由MemStore根据一定的算法将数据Flush到底层HDFS文件中(HFile)，通常每个HRegion中的每个Column Family有一个自己的MemStore。</p>
+<p>HFile：<br>HFile(StoreFile) 用于存储HBase的数据(Cell&#x2F;KeyValue)。在HFile中的数据是按RowKey、Column Family、Column排序，对相同的Cell(即这三个值都一样)，则按timestamp倒序排列。</p>
+<blockquote>
+<p>HStore是个逻辑概念，就如同HRegion一样，底层真正存储数据的是HFile，而MemStore负责将内存的数据flush到HFile<br>MemStore与HStore对应，表示col family列簇的数据，所以HRegion包含多个HStore，这样划分是为了提升IO性能</p>
+</blockquote>
+<p><img src="http://www.blogjava.net/images/blogjava_net/dlevin/HBaseArchitecture-Blog-Fig8.png"></p>
+<h2 id="HRegionServer写数据"><a href="#HRegionServer写数据" class="headerlink" title="HRegionServer写数据"></a>HRegionServer写数据</h2><p>当客户端发起一个Put请求时，首先它从hbase:meta表中查出该Put数据最终需要去的HRegionServer。然后客户端将Put请求发送给相应的HRegionServer，在HRegionServer中它首先会将该Put操作写入WAL日志文件中(Flush到磁盘中)。<br><img src="http://www.blogjava.net/images/blogjava_net/dlevin/HBaseArchitecture-Blog-Fig9.png"></p>
+<p>写完WAL日志文件后，HRegionServer根据Put中的TableName和RowKey找到对应的HRegion，并根据Column Family找到对应的HStore，并将Put写入到该HStore的MemStore中。此时写成功，并返回通知客户端。<br><img src="http://www.blogjava.net/images/blogjava_net/dlevin/HBaseArchitecture-Blog-Fig10.png"></p>
+<p>MemStore是一个In Memory Sorted Buffer，在每个HStore中都有一个MemStore，即它是一个HRegion的一个Column Family对应一个实例。它的排列顺序以RowKey、Column Family、Column的顺序以及Timestamp的倒序，如下所示：<br><img src="http://www.blogjava.net/images/blogjava_net/dlevin/HBaseArchitecture-Blog-Fig11.png"></p>
+<p>每一次Put&#x2F;Delete请求都是先写入到MemStore中，再Flush成一个新的StoreFile(底层实现是HFile)，即一个HStore(Column Family)可以有0个或多个StoreFile(HFile)。有以下三种情况可以触发MemStore的Flush动作，需要注意的是MemStore的最小Flush单元是HRegion而不是单个MemStore。</p>
+<p>1、当一个HRegion中的所有MemStore的大小总和超过了hbase.hregion.memstore.flush.size的大小，默认128MB。此时当前的HRegion中所有的MemStore会Flush到HDFS中。</p>
+<p>2、当全局MemStore的大小超过了hbase.regionserver.global.memstore.upperLimit的大小，默认40％的内存使用量。此时当前HRegionServer中所有HRegion中的MemStore都会Flush到HDFS中，Flush顺序是MemStore大小的倒序，直到总体的MemStore使用量低于hbase.regionserver.global.memstore.lowerLimit，默认38%的内存使用量。</p>
+<blockquote>
+<p>触发MemStore flush到HFile的条件，不是MemStore负载，而是HRegion或者HRegionServer设置的负载条件</p>
+</blockquote>
+<h1 id="Java-API"><a href="#Java-API" class="headerlink" title="Java API"></a>Java API</h1><p>我们使用HBase的Java API来建表，插入数据以及按照行主键查询数据。我们也会建立一个限制列范围的基本表查询，以及使用过滤器进行分页查询。</p>
+<p>之前学习了HBase的整体架构，现在了解一下我们的应用如何通过Java API与HBase进行交互。如同之前提到的，你也同样可以通过其他的RPC（Remote Procedure Call）技术手段与HBase交互，比如Apache Thrift通过REST网关的方式，但我们主要使用Java API的方式。API提供了DDL（数据定义语言）和DML（数据操作语言）你会发现和关系型数据库SQL的语言很相似。假设我们要存储用户信息，我们先开始建立一张新表。下列代码展示如何使用HBaseAdmin类。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Configuration conf = HBaseConfiguration.create();</span><br><span class="line">HBaseAdmin admin = new HBaseAdmin(conf);</span><br><span class="line">HTableDescriptor tableDescriptor = new HTableDescriptor(TableName.valueOf(&quot;people&quot;));</span><br><span class="line">tableDescriptor.addFamily(new HColumnDescriptor(&quot;personal&quot;));</span><br><span class="line">tableDescriptor.addFamily(new HColumnDescriptor(&quot;contactinfo&quot;));</span><br><span class="line">tableDescriptor.addFamily(new HColumnDescriptor(&quot;creditcard&quot;));</span><br><span class="line">admin.createTable(tableDescriptor);</span><br></pre></td></tr></table></figure>
+
+<p>下面的代码展示了如何使用Put类插入John Doe的数据，指定名称和电子邮件指定（为了简单期间，这里忽略了通常应该有的错误处理）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Configuration conf = HBaseConfiguration.create();</span><br><span class="line">HTable table = new HTable(conf, &quot;people&quot;);</span><br><span class="line">Put put = new Put(Bytes.toBytes(&quot;doe-john-m-12345&quot;));</span><br><span class="line">put.add(Bytes.toBytes(&quot;personal&quot;), Bytes.toBytes(&quot;givenName&quot;), Bytes.toBytes(&quot;John&quot;));</span><br><span class="line">put.add(Bytes.toBytes(&quot;personal&quot;), Bytes.toBytes(&quot;mi&quot;), Bytes.toBytes(&quot;M&quot;));</span><br><span class="line">put.add(Bytes.toBytes(&quot;personal&quot;), Bytes.toBytes(&quot;surame&quot;), Bytes.toBytes(&quot;Doe&quot;));</span><br><span class="line">put.add(Bytes.toBytes(&quot;contactinfo&quot;), Bytes.toBytes(&quot;email&quot;), Bytes.toBytes(&quot;john.m.doe@gmail.com&quot;));</span><br><span class="line">table.put(put);</span><br><span class="line">table.flushCommits();</span><br><span class="line">table.close();</span><br></pre></td></tr></table></figure>
+
+<p>上面的代码中示例是Put类提供了唯一行主键作为构造方法参数。接下来我们会添加值，必须包括列簇、列标识符、二进制数组形式的值。<br>或许你会注意到，HBase API的常用工具类中的Bytes类是经常用到的，它提供了一些方法能够在原始类型、字符串与二进制数组间转换。（添加一个toBytes()静态引用方法能够节省大堆代码）接下来我们将数据存入表中，刷新提交确认本地缓存的改变能够生效，最终关闭表。更新数据也和之前展示的代码方式相同。<br>与关系型数据库不同，HBase即使只有一列改变也必须更新整行数据。假如你只需要更新一列，只需要在Put类和HBase中指定需要更新的列。也会有确认并更新的动作，本质上就是一系列并发操作，只是在用户确认待替换的值之后才进行更新动作。</p>
+<p>如下面的代码所示，使用Get类来查询我们刚刚创建完成的数据。（从这里开始，会忽略一些代码如构建配置，实例化HTable、提交及关闭）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Get get = new Get(Bytes.toBytes(&quot;doe-john-m-12345&quot;));</span><br><span class="line">get.addFamily(Bytes.toBytes(&quot;personal&quot;));</span><br><span class="line">get.setMaxVersions(3);</span><br><span class="line">Result result = table.get(get);</span><br></pre></td></tr></table></figure>
+
+<p>上面的代码中实例化了Get类，并且提供了待查询的行主键。接下来我们通过 addFamily 方法告知HBase：我们只需要从个人信息列簇中获取数据。这样能够减少HBase在读取数据时与磁盘的交互。我们还指定了结果中每列最多保存三个版本，这样就能列出每列的历史数据。最终会返回一个结果实例，包含所有可以查看的返回值列。</p>
+<p>很多情况下你需要查询多行数据，HBase使用扫描行来实现。正如在第二篇在HBase的shell工具中执行scan，下面主要讨论Scan类。Scan类支持多种条件选项，比如待查询的行主键范围、需要包含的列和列簇、以及需要展示的最大数据版本。你也可以添加一个过滤器，通过自定义过滤逻辑限制需要返回哪些行和列。过滤器的常用场景就是分页，例如我们可能想要获取所有的姓Smith的人，每次一页25人。下面的代码展示了如何使用基本的scan方法。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Scan scan = new Scan(Bytes.toBytes(&quot;smith-&quot;));</span><br><span class="line">scan.addColumn(Bytes.toBytes(&quot;personal&quot;), Bytes.toBytes(&quot;givenName&quot;));</span><br><span class="line">scan.addColumn(Bytes.toBytes(&quot;contactinfo&quot;), Bytes.toBytes(&quot;email&quot;));</span><br><span class="line">scan.setFilter(new PageFilter(25));</span><br><span class="line">ResultScanner scanner = table.getScanner(scan);</span><br><span class="line">for (Result result : scanner) &#123;</span><br><span class="line">    // ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>西米大人
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://dcbupt.github.io/2017/05/12/blog_article/%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD/HBase/" title="HBase">http://dcbupt.github.io/2017/05/12/blog_article/好文转载/HBase/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+
+        
+
+<blockquote class="blockquote-center" style="color: #f0ad4e">完 ♥ 结</blockquote>
+
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/05/11/blog_article/%E5%BE%85%E5%BA%9F%E5%BC%83/Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" rel="prev" title="Hadoop学习笔记">
+      <i class="fa fa-chevron-left"></i> Hadoop学习笔记
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/05/13/blog_article/%E5%A5%BD%E6%96%87%E8%BD%AC%E8%BD%BD/Hive/" rel="next" title="Hive">
+      Hive <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9D%E5%85%A5HBase"><span class="nav-number">1.1.</span> <span class="nav-text">初入HBase</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%8A%E6%89%8B"><span class="nav-number">2.</span> <span class="nav-text">上手</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9E%B6%E6%9E%84"><span class="nav-number">3.</span> <span class="nav-text">架构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#HRegion"><span class="nav-number">3.1.</span> <span class="nav-text">HRegion</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HRegionServer"><span class="nav-number">3.2.</span> <span class="nav-text">HRegionServer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HMaster"><span class="nav-number">3.3.</span> <span class="nav-text">HMaster</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">3.4.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ZooKeeper"><span class="nav-number">3.5.</span> <span class="nav-text">ZooKeeper</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#HBase%E8%AF%BB%E5%86%99"><span class="nav-number">4.</span> <span class="nav-text">HBase读写</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#META-TABLE"><span class="nav-number">4.1.</span> <span class="nav-text">META TABLE</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HRegionServer%E8%AF%A6%E8%A7%A3"><span class="nav-number">4.2.</span> <span class="nav-text">HRegionServer详解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HRegionServer%E5%86%99%E6%95%B0%E6%8D%AE"><span class="nav-number">4.3.</span> <span class="nav-text">HRegionServer写数据</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Java-API"><span class="nav-number">5.</span> <span class="nav-text">Java API</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="西米大人"
+      src="/images/me.png">
+  <p class="site-author-name" itemprop="name">西米大人</p>
+  <div class="site-description" itemprop="description"><blockquote class="blockquote-center">优秀的人，不是不合群，而是他们合群的人里面没有你</blockquote></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">151</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dcbupt" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;dcbupt" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:byrddc@hotmail.com" title="E-Mail → mailto:byrddc@hotmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">西米大人</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">388k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">10:47</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.id);
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            let target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    let { app_id, app_key, server_url } = {"enable":true,"app_id":"OBdFsOOtfIDcNnWdzkGbICmj-gzGzoHsz","app_key":"89LmL4tP7hkyChAmEleq2MdO","server_url":null,"security":true};
+    function fetchData(api_server) {
+      var Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    let api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+<script src="/js/love.js"></script>
+
+<script src="/js/particle.js"></script>
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('https://cdn.jsdelivr.net/npm/valine@1.4.18/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'OBdFsOOtfIDcNnWdzkGbICmj-gzGzoHsz',
+      appKey     : '89LmL4tP7hkyChAmEleq2MdO',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

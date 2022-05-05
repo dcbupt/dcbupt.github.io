@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-mac-osx.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"dcbupt.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="业务中台">
+<meta property="og:type" content="article">
+<meta property="og:title" content="业务中台">
+<meta property="og:url" content="http://dcbupt.github.io/2022/05/01/blog_article/%E6%B5%85%E5%B0%9D%E7%B3%BB%E5%88%97/%E4%B8%9A%E5%8A%A1%E4%B8%AD%E5%8F%B0/index.html">
+<meta property="og:site_name" content="dcddc">
+<meta property="og:description" content="业务中台">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-05-01T06:44:18.760Z">
+<meta property="article:modified_time" content="2022-05-01T06:44:18.760Z">
+<meta property="article:author" content="西米大人">
+<meta property="article:tag" content="hide">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://dcbupt.github.io/2022/05/01/blog_article/%E6%B5%85%E5%B0%9D%E7%B3%BB%E5%88%97/%E4%B8%9A%E5%8A%A1%E4%B8%AD%E5%8F%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+  <title>业务中台 | dcddc</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">dcddc</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">西米大人的博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dcbupt.github.io/2022/05/01/blog_article/%E6%B5%85%E5%B0%9D%E7%B3%BB%E5%88%97/%E4%B8%9A%E5%8A%A1%E4%B8%AD%E5%8F%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/me.png">
+      <meta itemprop="name" content="西米大人">
+      <meta itemprop="description" content="<blockquote class="blockquote-center">优秀的人，不是不合群，而是他们合群的人里面没有你</blockquote>">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="dcddc">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          业务中台
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-05-01 14:44:18" itemprop="dateCreated datePublished" datetime="2022-05-01T14:44:18+08:00">2022-05-01</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B5%85%E5%B0%9D%E7%B3%BB%E5%88%97/" itemprop="url" rel="index"><span itemprop="name">浅尝系列</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2022/05/01/blog_article/%E6%B5%85%E5%B0%9D%E7%B3%BB%E5%88%97/%E4%B8%9A%E5%8A%A1%E4%B8%AD%E5%8F%B0/" class="post-meta-item leancloud_visitors" data-flag-title="业务中台" title="热度">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">热度:</span>
+              <span class="leancloud-visitors-count"></span>℃
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">评论:</span>
+    
+    <a title="valine" href="/2022/05/01/blog_article/%E6%B5%85%E5%B0%9D%E7%B3%BB%E5%88%97/%E4%B8%9A%E5%8A%A1%E4%B8%AD%E5%8F%B0/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/05/01/blog_article/%E6%B5%85%E5%B0%9D%E7%B3%BB%E5%88%97/%E4%B8%9A%E5%8A%A1%E4%B8%AD%E5%8F%B0/" itemprop="commentCount"></span>℃
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">字数：</span>
+              <span>3.7k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>6 分钟</span>
+            </span>
+            <div class="post-description"><blockquote class="blockquote-center">业务中台</blockquote></div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>介绍一些业务相关术语的基本概念和含义。</p>
+<h2 id="业务"><a href="#业务" class="headerlink" title="业务"></a>业务</h2><p>如何理解<code>业务</code>？</p>
+<blockquote>
+<p>指企业组织以达成企业利益目标为目的，为客户提供产品或服务所组织的一系列活动称为业务。</p>
+</blockquote>
+<p>从这个定义，可以抽取出业务的一些特征：</p>
+<ul>
+<li>业务的载体是产品或服务<ul>
+<li>背后有明确的运营团队(企业组织)</li>
+</ul>
+</li>
+<li>业务由一系列业务活动组成</li>
+<li>业务的最终目的是售出产品&#x2F;服务，换取利润<ul>
+<li>有明确的KPI(企业利益目标)</li>
+</ul>
+</li>
+</ul>
+<p>业务的衍生无外乎来源于两个出发点：</p>
+<ul>
+<li>提高利润<ul>
+<li>创新业务模式</li>
+<li>抢占市场</li>
+<li>形成产业链闭环</li>
+</ul>
+</li>
+<li>降低成本（提效）<ul>
+<li>降低研发成本</li>
+<li>降低运营成本</li>
+</ul>
+</li>
+</ul>
+<p>业务分类</p>
+<ul>
+<li>垂直业务<ul>
+<li>通俗称谓就是：“行业”<ul>
+<li>行业有自己独有的产品或服务</li>
+<li>行业有自己独有的产业链闭环、玩法</li>
+</ul>
+</li>
+<li>对于业务中台，垂直业务之间的业务规则应该是相互隔离的</li>
+</ul>
+</li>
+<li>水平业务<ul>
+<li>面向所有垂直业务可使用的“通用能力”，也称为“产品”</li>
+<li>垂直业务想叠加水平业务，需要遵循水平业务的玩法<ul>
+<li>水平业务是对垂直业务的一种变更</li>
+<li>多个水平业务可以叠加到同一垂直业务</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="业务活动"><a href="#业务活动" class="headerlink" title="业务活动"></a>业务活动</h2><p>业务流程完整生命周期的组成部分</p>
+<p>业务活动内部会调用一个或多个域服务来做业务编排（后面会提到域服务和业务编排）</p>
+<h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>业务中台负责按业务活动维度进行业务编排，但不同业务方对同一个业务活动可能会有不同的编排要求。场景scenario的作用就是完成特定业务方的业务流程编排定制。</p>
+<h2 id="能力"><a href="#能力" class="headerlink" title="能力"></a>能力</h2><p>什么是能力？</p>
+<p>能力是载体在具体场景下的一组行为描述。例如，载体：眼，能力：看</p>
+<ul>
+<li>能力依托于载体，没有载体就没有能力的用武之地</li>
+<li>载体的行为表现是能力的外放</li>
+</ul>
+<p>能力的特性：</p>
+<ul>
+<li>可聚合：多个能力聚合后成为一个更大的能力</li>
+<li>可扩展：能力的行为可扩展，不同的扩展方式决定了同一能力的不同行为表现。<ul>
+<li>举例，载体：售后订单，能力：售后维权，行为：1、是否可维权。2、是否可要求退款。<ul>
+<li>扩展一：不实现扩展，不具备售后维权的能力</li>
+<li>扩展二：实现基本扩展，具备基本售后维权的能力</li>
+<li>扩展三：实现增强扩展，具备复杂售后维权能力</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h1 id="业务中台的目标"><a href="#业务中台的目标" class="headerlink" title="业务中台的目标"></a>业务中台的目标</h1><p>对于业务中台建设，我认为大致可以划分为三个阶段</p>
+<ul>
+<li>阶段一：垂直业务间解耦</li>
+<li>阶段二：支持垂直业务快速扩展定制</li>
+<li>阶段三：按业务模式提炼出业务中台自身的商业能力，快速赋能业务</li>
+</ul>
+<p>阶段一可以通过业务身份+业务中台自身域能力建设来实现</p>
+<p>阶段二需要业务中台提供一套机制（框架）来支持业务方特殊逻辑快速定制扩展，而不是通过在业务中台里共建来实现</p>
+<p>阶段三需要站在全局业务视角提炼出业务中台已经具备的商业能力，让业务方面向商业能力开发，降低业务方研发成本的同时，实现商业能力对业务方的快速赋能</p>
+<p>接下来主要介绍业务中台建设过程中需要掌握的一些基本术语和核心概念、思想</p>
+<hr>
+<h1 id="业务中台的基本概念"><a href="#业务中台的基本概念" class="headerlink" title="业务中台的基本概念"></a>业务中台的基本概念</h1><p>域：</p>
+<blockquote>
+<p>按业务需求划分出的抽象概念，例如交易域</p>
+</blockquote>
+<p>域服务：</p>
+<blockquote>
+<p>域对外提供用于流程编排的系统服务接口。例如交易域提供下单服务</p>
+</blockquote>
+<p>域能力：</p>
+<blockquote>
+<p>域对外能提供的可扩展（定制）能力称之为域能力。域能力会对外提供扩展点，业务方实现扩展点下的业务规则来扩展（定制）域能力。域服务的实现过程其实就是对一个或多个域能力的编排调用。</p>
+</blockquote>
+<p>扩展点：</p>
+<blockquote>
+<p>域能力下的一组提供给业务方实现的业务规则集合<br>定义扩展点一般按照域下业务实体维度</p>
+</blockquote>
+<p>扩展点门面：</p>
+<blockquote>
+<p>所有扩展点的聚合</p>
+</blockquote>
+<p>业务规则：</p>
+<blockquote>
+<p>扩展点下的方法，由业务方实现，用于将业务方逻辑定制到域能力下</p>
+</blockquote>
+<h2 id="扩展能力的一个例子"><a href="#扩展能力的一个例子" class="headerlink" title="扩展能力的一个例子"></a>扩展能力的一个例子</h2><p>以交易系统里的下单接口举例说明业务方如何实现定制化的扩展能力</p>
+<p>交易系统：</p>
+<ul>
+<li>定义域：交易域</li>
+<li>定义域服务：下单接口</li>
+<li>定义域能力：下单服务商品能力、下单服务订单能力</li>
+<li>定义下单服务商品扩展点：设置库存、设置限购次数、设置商品价格</li>
+<li>定义下单服务订单扩展点：设置订单透出渠道</li>
+<li>定义交易域下单服务扩展点门面：聚合商品模块扩展点、订单模块扩展点</li>
+</ul>
+<p>业务方：</p>
+<ul>
+<li>标识业务身份bizCode</li>
+<li>继承交易域扩展点门面，对需要定制化的扩展点进行覆写</li>
+</ul>
+<p>下单接口调用流程：</p>
+<ul>
+<li>调用域服务的下单接口</li>
+<li>执行到业务定制部分调用域能力</li>
+<li>基于业务身份获取业务方扩展点实现</li>
+<li>执行业务方扩展</li>
+<li>继续执行域服务代码</li>
+<li>返回执行结果</li>
+</ul>
+<h2 id="域职责"><a href="#域职责" class="headerlink" title="域职责"></a>域职责</h2><ul>
+<li>对具体能被持久化对象的管理（读&#x2F;写）职责</li>
+<li>负责一个或多个业务实体管理的聚合</li>
+<li>一个域管理了一个或多个业务实体，但一个业务实体只能被一个域所管理</li>
+<li>不要将ORM的映射后的持久化对象与业务对象混淆</li>
+</ul>
+<h2 id="域服务-amp-系统服务"><a href="#域服务-amp-系统服务" class="headerlink" title="域服务&amp;系统服务"></a>域服务&amp;系统服务</h2><p>域服务不等于系统服务，查询主订单的域服务只负责查询订单信息，并不会去查询优惠信息、资产信息等</p>
+<p>域服务作用于本域下的业务对象</p>
+<p>系统服务所处理的信息并不是单一的业务实体，而是一个场景化的聚合信息</p>
+<ul>
+<li>商品发布业务服务：这个服务需要将用户填写的各种信息发布并保存成商品数据、商品库存数据（包含货品）、商品价格数据、商品运费模板等等</li>
+<li>交易订单页渲染服务：这个服务需要根据用户选择的商品ItemID和SkuID以及购买数量，来展示所购买的商品信息，要展示该商品对应的优惠信息，要获取该商品的资产信息等，并聚合后生成HTML进行展现</li>
+</ul>
+<p>这种“场景”化实际上就是一种<code>业务编排</code>，不由任何一个域来承接，而是需要由单独一个应用来负责：对各个域服务的调用，并对加工的信息（读或者写结果）进行聚合加工后再返回给调用方。</p>
+<h2 id="商业能力"><a href="#商业能力" class="headerlink" title="商业能力"></a>商业能力</h2><p>基于域职责对域进行划分，可以保证域之间的互相解耦。但在具体的业务场景中，还会出现新的问题</p>
+<p>有些业务场景下，业务方实现扩展点，所需要的入参信息往往是“跨域”的。这就违背了域划分的初衷：业务对象只能被一个域所管理</p>
+<p>既满足域间解耦，又要满足业务方在实现扩展点时对跨域数据的依赖，因此在域与业务方之间需要有一个适配层做过渡，这个适配层就是<code>商业能力</code></p>
+<p>商业能力按业务场景划分。针对一个具体的业务场景：</p>
+<ul>
+<li>面向业务方，商业能力需要定义该业务场景下需要业务方实现的扩展点，以及业务方实现扩展点所依赖的数据结构，并从底层多个域间拿到这些业务方关心的字段数据</li>
+<li>面向底层域：商业能力还需实现域扩展点</li>
+</ul>
+<p>因此，原来业务方直接实现域扩展点，现在经过两层依赖反转（商业能力实现域扩展，业务方实现商业能力扩展），既保证了域间解耦，也能使业务方在实现扩展点时，能拿到特定场景所需要的全部字段，尽管这些字段可能是跨域的。</p>
+<p>注意，对于业务方来说，商业能力层和底层域是一个整体。商业能力和底层域是紧耦合的。商业能力层做的最基础的事情，仅仅是实现域扩展时，按业务场景组装业务方需要的所有参数，然后通过暴露自己扩展点的方式，供业务方获取并实现业务逻辑。商业能力拿到业务定制结果并处理后，作为域扩展点返回结果。</p>
+<h3 id="业务场景怎么理解"><a href="#业务场景怎么理解" class="headerlink" title="业务场景怎么理解"></a>业务场景怎么理解</h3><p>比如你做交易平台，那么业务场景就是一种贯穿整个交易链路的交易模式，比如担保交易模式、预售模式、即时到账模式。我们说到商业能力，一定是覆盖一个业务场景全流程的。因此交易平台需要向业务方开放担保交易、预售、即时到账这三种商业能力</p>
+<h3 id="商业能力的“能力”远不止于此"><a href="#商业能力的“能力”远不止于此" class="headerlink" title="商业能力的“能力”远不止于此"></a>商业能力的“能力”远不止于此</h3><p>既然商业能力是按业务场景对域进行扩展，那么商业能力层必然需要实现中台多个域下的扩展点，而业务方只需要对商业能力做扩展</p>
+<p>这样，业务方甚至可以无需感知到底层这些域所在的应用，也无需在这些应用的域下做扩展才能满足需求</p>
+<p>同时，商业能力定义的扩展点，一定是“面向业务”的，而不是“面向系统”的，这很重要！因为商业能力的一个很大职责就是帮助业务方由“面向系统开发”（实现域扩展点）转为“面向业务开发”（实现商业能力扩展点），这才是商业能力真正强大之处！</p>
+<p>外部系统如果想复用平台系统提供的某个商业能力，只需要面向商业能力层做定制，无需动底层域所在的这些应用。效果上，可以很快速地实现商业能力的复制！</p>
+<p>总结一下：</p>
+<ul>
+<li>商业能力对上，解决了业务方需要感知并了解底层域的设计和扩展点，需要面向系统开发来完成业务需求这个痛点。取而代之的是面向商业能力开发，按业务语言开发，商业能力面向业务方也可以实现快速复制</li>
+<li>商业能力对下，解决了域间解耦带来的扩展点无法满足业务需求这个痛点，让域模型专注于域本身的功能</li>
+</ul>
+<h3 id="商业能力实践"><a href="#商业能力实践" class="headerlink" title="商业能力实践"></a>商业能力实践</h3><p>最后引用网上写的一个具体的商业能力实践case：</p>
+<ul>
+<li>应用系统对外提供RESTFUL&#x2F;MTOP等各种形式的业务服务接口</li>
+<li>业务服务接口内部对相关的业务活动进行编排</li>
+<li>业务活动对域服务进行编排</li>
+<li>域服务在对特定的“实体”进行加工时，会对“可变”点暴露相关的域扩展点<ul>
+<li>比如交易域会暴露一个“补充订单扩展属性”的扩展点。交易域并不知道各个业务场景下，会给订单打什么特殊的业务扩展属性</li>
+</ul>
+</li>
+<li>商业能力实现相关的域扩展点，并且针对该域扩展点的实现逻辑是会被域服务通过回调方式进行触发调用</li>
+<li>商业能力对于域扩展点的实现逻辑，在复杂情况下，也会面临不确定性，针对这些不确定性需要暴露业务可扩展点<ul>
+<li>比如“电子凭证”商业能力，有单次核销和多次核销，不同的业务方核销方式不一样。因此，需要对外暴露“是否支持多次核销凭证”这个业务扩展点。电子凭证会去实现上面提到的“补充订单扩展属性”这个域扩展点，并在实现逻辑中再调用业务包里针对“是否支持多次核销凭证”的实现逻辑，并根据业务方的返回结果，给订单补充”xxx”这个标</li>
+</ul>
+</li>
+<li>业务方在业务包中的定制逻辑，会被商业能力进行回调<ul>
+<li>比如，上面电子凭证的例子，业务方只需要对“是否支持多次核销凭证”设置是”true”还是”false”即可，而不用关心订单上需要打什么标，也不用关心在后续的交易履约链路怎么去提取并识别这个标</li>
+</ul>
+</li>
+</ul>
+<p>商业能力扩展点命名规则：商业能力#业务活动#业务活动扩展点名称</p>
+<h3 id="业务活动怎么理解"><a href="#业务活动怎么理解" class="headerlink" title="业务活动怎么理解"></a>业务活动怎么理解</h3><p>商业能力对应某个业务场景，而这个业务场景全链路是由n个业务活动组成</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>西米大人
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://dcbupt.github.io/2022/05/01/blog_article/%E6%B5%85%E5%B0%9D%E7%B3%BB%E5%88%97/%E4%B8%9A%E5%8A%A1%E4%B8%AD%E5%8F%B0/" title="业务中台">http://dcbupt.github.io/2022/05/01/blog_article/浅尝系列/业务中台/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/hide/" rel="tag"># hide</a>
+          </div>
+
+        
+
+<blockquote class="blockquote-center" style="color: #f0ad4e">完 ♥ 结</blockquote>
+
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/05/01/blog_article/README/" rel="prev" title="">
+      <i class="fa fa-chevron-left"></i> 
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/05/01/blog_article/%E6%B7%B1%E5%BA%A6%E7%B3%BB%E5%88%97/springboot%20starter%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/" rel="next" title="springboot starter实现原理">
+      springboot starter实现原理 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%9A%E5%8A%A1"><span class="nav-number">1.1.</span> <span class="nav-text">业务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%9A%E5%8A%A1%E6%B4%BB%E5%8A%A8"><span class="nav-number">1.2.</span> <span class="nav-text">业务活动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF"><span class="nav-number">1.3.</span> <span class="nav-text">场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%83%BD%E5%8A%9B"><span class="nav-number">1.4.</span> <span class="nav-text">能力</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%9A%E5%8A%A1%E4%B8%AD%E5%8F%B0%E7%9A%84%E7%9B%AE%E6%A0%87"><span class="nav-number">2.</span> <span class="nav-text">业务中台的目标</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%9A%E5%8A%A1%E4%B8%AD%E5%8F%B0%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">3.</span> <span class="nav-text">业务中台的基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A9%E5%B1%95%E8%83%BD%E5%8A%9B%E7%9A%84%E4%B8%80%E4%B8%AA%E4%BE%8B%E5%AD%90"><span class="nav-number">3.1.</span> <span class="nav-text">扩展能力的一个例子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%9F%E8%81%8C%E8%B4%A3"><span class="nav-number">3.2.</span> <span class="nav-text">域职责</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%9F%E6%9C%8D%E5%8A%A1-amp-%E7%B3%BB%E7%BB%9F%E6%9C%8D%E5%8A%A1"><span class="nav-number">3.3.</span> <span class="nav-text">域服务&amp;系统服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%95%86%E4%B8%9A%E8%83%BD%E5%8A%9B"><span class="nav-number">3.4.</span> <span class="nav-text">商业能力</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%9A%E5%8A%A1%E5%9C%BA%E6%99%AF%E6%80%8E%E4%B9%88%E7%90%86%E8%A7%A3"><span class="nav-number">3.4.1.</span> <span class="nav-text">业务场景怎么理解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%95%86%E4%B8%9A%E8%83%BD%E5%8A%9B%E7%9A%84%E2%80%9C%E8%83%BD%E5%8A%9B%E2%80%9D%E8%BF%9C%E4%B8%8D%E6%AD%A2%E4%BA%8E%E6%AD%A4"><span class="nav-number">3.4.2.</span> <span class="nav-text">商业能力的“能力”远不止于此</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%95%86%E4%B8%9A%E8%83%BD%E5%8A%9B%E5%AE%9E%E8%B7%B5"><span class="nav-number">3.4.3.</span> <span class="nav-text">商业能力实践</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%9A%E5%8A%A1%E6%B4%BB%E5%8A%A8%E6%80%8E%E4%B9%88%E7%90%86%E8%A7%A3"><span class="nav-number">3.4.4.</span> <span class="nav-text">业务活动怎么理解</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="西米大人"
+      src="/images/me.png">
+  <p class="site-author-name" itemprop="name">西米大人</p>
+  <div class="site-description" itemprop="description"><blockquote class="blockquote-center">优秀的人，不是不合群，而是他们合群的人里面没有你</blockquote></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">151</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dcbupt" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;dcbupt" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:byrddc@hotmail.com" title="E-Mail → mailto:byrddc@hotmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">西米大人</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">388k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">10:47</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.id);
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            let target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    let { app_id, app_key, server_url } = {"enable":true,"app_id":"OBdFsOOtfIDcNnWdzkGbICmj-gzGzoHsz","app_key":"89LmL4tP7hkyChAmEleq2MdO","server_url":null,"security":true};
+    function fetchData(api_server) {
+      var Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    let api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+<script src="/js/love.js"></script>
+
+<script src="/js/particle.js"></script>
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('https://cdn.jsdelivr.net/npm/valine@1.4.18/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'OBdFsOOtfIDcNnWdzkGbICmj-gzGzoHsz',
+      appKey     : '89LmL4tP7hkyChAmEleq2MdO',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
