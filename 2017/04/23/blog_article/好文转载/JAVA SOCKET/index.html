@@ -32,12 +32,12 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://dcbupt.github.io/images/20131114102114890.png">
 <meta property="og:image" content="http://dcbupt.github.io/images/20131114103956484">
-<meta property="og:image" content="http://img.blog.csdn.net/20131114104647406">
-<meta property="og:image" content="http://img.blog.csdn.net/20131114105515281">
-<meta property="og:image" content="http://img.blog.csdn.net/20131114132921140">
-<meta property="og:image" content="http://img.blog.csdn.net/20131114134838328">
+<meta property="og:image" content="http://dcbupt.github.io/images/20131114104647406">
+<meta property="og:image" content="http://dcbupt.github.io/images/20131114105515281">
+<meta property="og:image" content="http://dcbupt.github.io/images/20131114132921140">
+<meta property="og:image" content="http://dcbupt.github.io/images/20131114134838328">
 <meta property="article:published_time" content="2017-04-23T07:29:00.000Z">
-<meta property="article:modified_time" content="2022-05-07T10:47:40.953Z">
+<meta property="article:modified_time" content="2022-05-07T13:13:01.258Z">
 <meta property="article:author" content="西米大人">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://dcbupt.github.io/images/20131114102114890.png">
@@ -228,7 +228,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-05-07 18:47:40" itemprop="dateModified" datetime="2022-05-07T18:47:40+08:00">2022-05-07</time>
+                <time title="修改时间：2022-05-07 21:13:01" itemprop="dateModified" datetime="2022-05-07T21:13:01+08:00">2022-05-07</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -302,25 +302,25 @@
 <h1 id="TCP套接字的生命周期"><a href="#TCP套接字的生命周期" class="headerlink" title="TCP套接字的生命周期"></a>TCP套接字的生命周期</h1><blockquote>
 <p>新的Socket实例创建后，就立即能用于发送和接收数据。也就是说，当Socket实例返回时，它已经连接到了一个远程终端，并通过协议的底层实现完成了TCP消息或握手信息的交换</p>
 </blockquote>
-<h2 id="客户端连接的建立"><a href="#客户端连接的建立" class="headerlink" title="客户端连接的建立"></a>客户端连接的建立</h2><p>Socket构造函数的调用与客户端连接建立时所关联的协议事件之间的关系下图所示<br><img src="/../images/20131114102114890.png"></p>
+<h2 id="客户端连接的建立"><a href="#客户端连接的建立" class="headerlink" title="客户端连接的建立"></a>客户端连接的建立</h2><p>Socket构造函数的调用与客户端连接建立时所关联的协议事件之间的关系下图所示<br><img src="/images/20131114102114890.png"></p>
 <p>当客户端以服务器端的互联网地址W.X.Y.Z和端口号Q作为参数，调用Socket的构造函数时，底层实现将创建一个套接字实例，该实例的初始状态是关闭的。<br>TCP开放握手也称为3次握手，这通常包括3条消息：</p>
 <blockquote>
 <p>一条从客户端到服务端的连接请求，一条从服务端到客户端的确认消息，以及另一条从客户端到服务端的确认消息。</p>
 </blockquote>
 <p><code>对客户端而言，一旦它收到了服务端发来的确认消息，就立即认为连接已经建立</code>。通常这个过程发生的很快，但连接请求消息或服务端的回复消息都有可能在传输过程中丢失，因此TCP协议实现将以递增的时间间隔重复发送几次握手消息。如果TCP客户端在一段时间后还没有收到服务端的回复消息，则发生超时并放弃连接。如果服务端并没有接收连接，则服务端的TCP将发送一条拒绝消息而不是确认消息。</p>
-<h2 id="服务端连接的建立"><a href="#服务端连接的建立" class="headerlink" title="服务端连接的建立"></a>服务端连接的建立</h2><p>与客户端的事件序列则有所不同。服务端首先创建一个ServerSocket实例，并将其与已知端口相关联（在此为Q），套接字实现为新的ServerSocket实例创建一个底层数据结构，并就Q赋给本地端口，<code>并将特定的通配符（*）赋给本地IP地址（服务器可能有多个IP地址，不过通常不会指定该参数）</code>，如下图所示：<br><img src="/../images/20131114103956484"></p>
-<p>现在服务端可以调用ServerSocket的accept（）方法，来将阻塞等待客户端连接请求的到来。当客户端的连接请求到来时，将为连接创建一个新的套接字数据结构。该套接字的地址根据到来的分组报文设置：分组报文的目标互联网地址和端口号成为该套接字的本地互联网地址和端口号；而分组报文的源地址和端口号则成为改套接字的远程互联网地址和端口号。注意，新套接字的本地端口号总是与ServerSocket的端口号一致。除了要创建一个新的底层套接字数据结构外，服务端的TCP实现还要向客户端发送一个TCP握手确认消息。如下图所示：<br><img src="http://img.blog.csdn.net/20131114104647406"></p>
-<p>但是，<code>对于服务端来说，在接收到客户端发来的第3条消息之前，服务端TCP并不会认为握手消息已经完成</code>。一旦收到客户端发来的第3条消息，则表示连接已建立，此时一个新的数据结构将从服务端所关联的列表中移除，并为创建一个Socket实例，作为accept（）方法的返回值。如下图所示：<br><img src="http://img.blog.csdn.net/20131114105515281"></p>
+<h2 id="服务端连接的建立"><a href="#服务端连接的建立" class="headerlink" title="服务端连接的建立"></a>服务端连接的建立</h2><p>与客户端的事件序列则有所不同。服务端首先创建一个ServerSocket实例，并将其与已知端口相关联（在此为Q），套接字实现为新的ServerSocket实例创建一个底层数据结构，并就Q赋给本地端口，<code>并将特定的通配符（*）赋给本地IP地址（服务器可能有多个IP地址，不过通常不会指定该参数）</code>，如下图所示：<br><img src="/images/20131114103956484"></p>
+<p>现在服务端可以调用ServerSocket的accept（）方法，来将阻塞等待客户端连接请求的到来。当客户端的连接请求到来时，将为连接创建一个新的套接字数据结构。该套接字的地址根据到来的分组报文设置：分组报文的目标互联网地址和端口号成为该套接字的本地互联网地址和端口号；而分组报文的源地址和端口号则成为改套接字的远程互联网地址和端口号。注意，新套接字的本地端口号总是与ServerSocket的端口号一致。除了要创建一个新的底层套接字数据结构外，服务端的TCP实现还要向客户端发送一个TCP握手确认消息。如下图所示：<br><img src="/images/20131114104647406"></p>
+<p>但是，<code>对于服务端来说，在接收到客户端发来的第3条消息之前，服务端TCP并不会认为握手消息已经完成</code>。一旦收到客户端发来的第3条消息，则表示连接已建立，此时一个新的数据结构将从服务端所关联的列表中移除，并为创建一个Socket实例，作为accept（）方法的返回值。如下图所示：<br><img src="/images/20131114105515281"></p>
 <blockquote>
 <p>这里有非常重要的一点需要注意，在ServerSocket关联的列表中的每个数据结构，都代表了一个与另一端的客户端已经完成建立的TCP连接。<code>实际上，客户只要收到了开放握手的第2条消息，就可以立即发送数据——这可能比服务端调用accept（）方法为其获取一个Socket实例要早很长时间</code>。</p>
 </blockquote>
 <h2 id="关闭TCP连接"><a href="#关闭TCP连接" class="headerlink" title="关闭TCP连接"></a>关闭TCP连接</h2><p>TCP协议有一个优雅的关闭机制，以保证应用程序在关闭时不必担心正在传输的数据会丢失，这个机制还可以设计为<code>允许两个方向的数据传输相互独立地终止</code>。</p>
 <p>关闭机制的工作流程是：<br>应用程序通过调用连接套接字的close（）方法或shutdownOutput（）方法表明数据已经发送完毕。底层TCP实现首先将留在SendQ队列中的数据传输出去（这还要依赖于另一端的RecvQ队列的剩余空间），然后向另一端发送一个关闭TCP连接的握手消息。该关闭握手消息可以看做流结束的标志：它告诉接收端TCP不会再有新的数据传入RecvQ队列了。注意：<code>关闭握手消息本身并没有传递给接收端应用程序，而是通过read（）方法返回-1来指示其在字节流中的位置</code>。而正在关闭的TCP将等待其关闭握手消息的确认消息，该确认消息表明在连接上传输的所有数据已经安全地传输到了RecvQ中。只要收到了确认消息，该连接变成了<code>“半关闭”</code>状态。<br><code>直到连接的另一个方向上收到了对称的握手消息后，连接才完全关闭——也就是说，连接的两端都表明它们没有数据发送了</code>。</p>
-<p>TCP连接的关闭事件序列可能以两种方式发生：<br>一种方式是先由一个应用程序调用close（）方法或shutdownOutput方法，并在另一端调用close（）方法之前完成其关闭握手消息；<br>另一种方式是两端同时调用close（）方法，他们的关闭握手消息在网络上交叉传输。<br>下图展示了以第一种方式关闭连接时，发起关闭的一端底层实现中的事件序列：<br><img src="http://img.blog.csdn.net/20131114132921140"></p>
+<p>TCP连接的关闭事件序列可能以两种方式发生：<br>一种方式是先由一个应用程序调用close（）方法或shutdownOutput方法，并在另一端调用close（）方法之前完成其关闭握手消息；<br>另一种方式是两端同时调用close（）方法，他们的关闭握手消息在网络上交叉传输。<br>下图展示了以第一种方式关闭连接时，发起关闭的一端底层实现中的事件序列：<br><img src="/images/20131114132921140"></p>
 <blockquote>
 <p>注意，如果连接处于半关闭状态时，远程终端已经离开，那么本地底层数据结构则无限期地保持在该状态。当另一端的关闭握手消息到达后，则发回一条确认消息并将状态改为“Time—Wait”。<code>虽然应用程序中相应的Socket实例可能早已消失，与之关联的底层数据结构还将在底层实现中继续存留几分钟</code></p>
 </blockquote>
-<p>对于没有首先发起关闭的一端，关闭握手消息达到后，它立即发回一个确认消息，并将连接状态改为“Close—Wait”。<code>此时，只需要等待应用程序调用Socket的close（）方法。调用该方法后，将发起最终的关闭消息 ，并释放底层套接字数据结构</code>。 下图展示了没有首先发起关闭的一端底层实现中的事件序列：<br><img src="http://img.blog.csdn.net/20131114134838328"></p>
+<p>对于没有首先发起关闭的一端，关闭握手消息达到后，它立即发回一个确认消息，并将连接状态改为“Close—Wait”。<code>此时，只需要等待应用程序调用Socket的close（）方法。调用该方法后，将发起最终的关闭消息 ，并释放底层套接字数据结构</code>。 下图展示了没有首先发起关闭的一端底层实现中的事件序列：<br><img src="/images/20131114134838328"></p>
 <blockquote>
 <p>注意这样一个事实：close（）方法和shutdownOutput（）方法都没有等待关闭握手的完成，而是调用后立即返回，这样，<code>当应用程序调用close（）方法或shutdownOutput（）方法并成功关闭连接时，有可能还有数据留在SendQ队列中。如果连接的任何一端在数据传输到RecvQ队列之前崩溃，数据将丢失，而发送端应用程序却不会知道</code>。</p>
 </blockquote>
@@ -605,7 +605,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">142</span>
+          <span class="site-state-item-count">136</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -665,12 +665,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">353k</span>
+    <span title="站点总字数">343k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">9:49</span>
+    <span title="站点阅读时长">9:32</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>
