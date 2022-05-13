@@ -23,19 +23,19 @@
     var CONFIG = {"hostname":"dcbupt.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="html转移特殊字符造成JSON反序列化失败">
+  <meta name="description" content="典型业务场景的设计方案">
 <meta property="og:type" content="article">
-<meta property="og:title" content="html转移特殊字符造成JSON反序列化失败">
-<meta property="og:url" content="http://dcbupt.github.io/2020/11/05/blog_article/%E8%B7%B3%E5%9D%91/html%E8%BD%AC%E7%A7%BB%E7%89%B9%E6%AE%8A%E5%AD%97%E7%AC%A6%E9%80%A0%E6%88%90JSON%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%A4%B1%E8%B4%A5/index.html">
+<meta property="og:title" content="典型业务场景的设计方案">
+<meta property="og:url" content="http://dcbupt.github.io/2021/10/25/blog_article/%E6%B7%B1%E5%BA%A6%E7%B3%BB%E5%88%97/%E5%85%B8%E5%9E%8B%E4%B8%9A%E5%8A%A1%E5%9C%BA%E6%99%AF%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%A1%88/index.html">
 <meta property="og:site_name" content="dcddc">
-<meta property="og:description" content="html转移特殊字符造成JSON反序列化失败">
+<meta property="og:description" content="典型业务场景的设计方案">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-11-05T09:52:00.000Z">
-<meta property="article:modified_time" content="2022-05-01T06:44:18.830Z">
+<meta property="article:published_time" content="2021-10-25T03:41:00.000Z">
+<meta property="article:modified_time" content="2022-05-13T09:51:17.301Z">
 <meta property="article:author" content="西米大人">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://dcbupt.github.io/2020/11/05/blog_article/%E8%B7%B3%E5%9D%91/html%E8%BD%AC%E7%A7%BB%E7%89%B9%E6%AE%8A%E5%AD%97%E7%AC%A6%E9%80%A0%E6%88%90JSON%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%A4%B1%E8%B4%A5/">
+<link rel="canonical" href="http://dcbupt.github.io/2021/10/25/blog_article/%E6%B7%B1%E5%BA%A6%E7%B3%BB%E5%88%97/%E5%85%B8%E5%9E%8B%E4%B8%9A%E5%8A%A1%E5%9C%BA%E6%99%AF%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%A1%88/">
 
 
 <script id="page-configurations">
@@ -47,7 +47,7 @@
     lang   : 'zh-CN'
   };
 </script>
-  <title>html转移特殊字符造成JSON反序列化失败 | dcddc</title>
+  <title>典型业务场景的设计方案 | dcddc</title>
   
 
 
@@ -191,7 +191,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://dcbupt.github.io/2020/11/05/blog_article/%E8%B7%B3%E5%9D%91/html%E8%BD%AC%E7%A7%BB%E7%89%B9%E6%AE%8A%E5%AD%97%E7%AC%A6%E9%80%A0%E6%88%90JSON%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%A4%B1%E8%B4%A5/">
+    <link itemprop="mainEntityOfPage" href="http://dcbupt.github.io/2021/10/25/blog_article/%E6%B7%B1%E5%BA%A6%E7%B3%BB%E5%88%97/%E5%85%B8%E5%9E%8B%E4%B8%9A%E5%8A%A1%E5%9C%BA%E6%99%AF%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%A1%88/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/me.png">
@@ -204,7 +204,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          html转移特殊字符造成JSON反序列化失败
+          典型业务场景的设计方案
         </h1>
 
         <div class="post-meta">
@@ -214,14 +214,14 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2020-11-05 17:52:00" itemprop="dateCreated datePublished" datetime="2020-11-05T17:52:00+08:00">2020-11-05</time>
+              <time title="创建时间：2021-10-25 11:41:00" itemprop="dateCreated datePublished" datetime="2021-10-25T11:41:00+08:00">2021-10-25</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-05-01 14:44:18" itemprop="dateModified" datetime="2022-05-01T14:44:18+08:00">2022-05-01</time>
+                <time title="修改时间：2022-05-13 17:51:17" itemprop="dateModified" datetime="2022-05-13T17:51:17+08:00">2022-05-13</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -229,12 +229,12 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%B7%B3%E5%9D%91/" itemprop="url" rel="index"><span itemprop="name">跳坑</span></a>
+                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E7%B3%BB%E5%88%97/" itemprop="url" rel="index"><span itemprop="name">深度系列</span></a>
                 </span>
             </span>
 
           
-            <span id="/2020/11/05/blog_article/%E8%B7%B3%E5%9D%91/html%E8%BD%AC%E7%A7%BB%E7%89%B9%E6%AE%8A%E5%AD%97%E7%AC%A6%E9%80%A0%E6%88%90JSON%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%A4%B1%E8%B4%A5/" class="post-meta-item leancloud_visitors" data-flag-title="html转移特殊字符造成JSON反序列化失败" title="热度">
+            <span id="/2021/10/25/blog_article/%E6%B7%B1%E5%BA%A6%E7%B3%BB%E5%88%97/%E5%85%B8%E5%9E%8B%E4%B8%9A%E5%8A%A1%E5%9C%BA%E6%99%AF%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%A1%88/" class="post-meta-item leancloud_visitors" data-flag-title="典型业务场景的设计方案" title="热度">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
@@ -249,8 +249,8 @@
       </span>
       <span class="post-meta-item-text">评论:</span>
     
-    <a title="valine" href="/2020/11/05/blog_article/%E8%B7%B3%E5%9D%91/html%E8%BD%AC%E7%A7%BB%E7%89%B9%E6%AE%8A%E5%AD%97%E7%AC%A6%E9%80%A0%E6%88%90JSON%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%A4%B1%E8%B4%A5/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/11/05/blog_article/%E8%B7%B3%E5%9D%91/html%E8%BD%AC%E7%A7%BB%E7%89%B9%E6%AE%8A%E5%AD%97%E7%AC%A6%E9%80%A0%E6%88%90JSON%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%A4%B1%E8%B4%A5/" itemprop="commentCount"></span>℃
+    <a title="valine" href="/2021/10/25/blog_article/%E6%B7%B1%E5%BA%A6%E7%B3%BB%E5%88%97/%E5%85%B8%E5%9E%8B%E4%B8%9A%E5%8A%A1%E5%9C%BA%E6%99%AF%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%A1%88/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/10/25/blog_article/%E6%B7%B1%E5%BA%A6%E7%B3%BB%E5%88%97/%E5%85%B8%E5%9E%8B%E4%B8%9A%E5%8A%A1%E5%9C%BA%E6%99%AF%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%A1%88/" itemprop="commentCount"></span>℃
     </a>
   </span>
   
@@ -260,7 +260,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">字数：</span>
-              <span>712</span>
+              <span>246</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -269,7 +269,7 @@
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
               <span>1 分钟</span>
             </span>
-            <div class="post-description"><blockquote class="blockquote-center">html转移特殊字符造成JSON反序列化失败</blockquote></div>
+            <div class="post-description"><blockquote class="blockquote-center">典型业务场景的设计方案</blockquote></div>
 
         </div>
       </header>
@@ -280,24 +280,16 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>从数据库查到的json结构的IM聊天记录做反序列化失败</p>
-<p>通过下面的demo简单复现问题：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">// 用户输入的内容： 1&quot;1&quot;1</span><br><span class="line">String userInput = &quot;1\&quot;1\&quot;1&quot;;</span><br><span class="line">System.out.println(&quot;原始用户输入：&quot;+userInput);</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * JSON序列化字符串会带上反斜杠&quot;\&quot;用于字符转义</span><br><span class="line"> */</span><br><span class="line">Content content = new Content();</span><br><span class="line">content.setText(userInput);</span><br><span class="line">String contentStr = JSON.toJSONString(content);</span><br><span class="line">System.out.println(&quot;content序列化：&quot;+contentStr);</span><br><span class="line">Request req = new Request();</span><br><span class="line">req.setContent(contentStr);</span><br><span class="line">String requestStr = JSON.toJSONString(req);</span><br><span class="line">System.out.println(&quot;request序列化：&quot;+requestStr);</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * JSON反序列化成对象后，字符串属性会去掉反斜杠&quot;\&quot;转义符，并转换成转义符转义后的原始字符串</span><br><span class="line"> */</span><br><span class="line">Request req1 = JSON.parseObject(requestStr, Request.class);</span><br><span class="line">System.out.println(&quot;requet访问content：&quot;+req1.getContent());</span><br><span class="line">//String contentTrans = HTMLUtil.securityFilterStr(req1.getContent());</span><br><span class="line">//System.out.println(&quot;content做html特殊字符转义后：&quot;+contentTrans);</span><br><span class="line">//System.out.println(&quot;content反转义html特殊字符后：&quot;+HTMLUtil.htmlUnescape(contentTrans));</span><br><span class="line">Content content1 = JSON.parseObject(req1.getContent(), Content.class);</span><br><span class="line">System.out.println(&quot;content访问text：&quot;+content1.getText());</span><br><span class="line">content1.setText(HTMLUtil.securityFilterStr(content1.getText()));</span><br><span class="line">String savedContent = JSON.toJSONString(content1);</span><br><span class="line">System.out.println(&quot;text转义特殊字符后：&quot;+savedContent);</span><br><span class="line"></span><br><span class="line">// AHIM读取消息，因为不感知消息体，所以会对整个content做html反转义，再json反序列化，反序列化会因为存在多个双引号而失败</span><br><span class="line">// 服务端因为负责维护消息体，所以拿到content后先json反序列化，再对text做html反转义，所以反序列化不会失败</span><br><span class="line">String transSavedContent = HTMLUtil.htmlUnescape(savedContent);</span><br><span class="line">System.out.println(&quot;content反转义特殊字符后：&quot;+transSavedContent);</span><br><span class="line">// 这里抛反序列化异常</span><br><span class="line">// 原因是html转义的是text，而html反转义是整个content</span><br><span class="line">// text是纯用户输入，不包含转义符&quot;\&quot;</span><br><span class="line">// 所以反转义后，也不包含&quot;\&quot;，因此得到的json串存在多个双引号，反序列化自然会失败</span><br><span class="line">Content content2 = JSON.parseObject(transSavedContent, Content.class);</span><br></pre></td></tr></table></figure>
-
-<p>首先，json在序列化时，会在特殊字符前增加反斜杠转义符<code>\</code>，在反序列化时会去掉反斜杠</p>
-<p>然后说下消息存储和读取的服务端逻辑：</p>
+        <h1 id="统计用户一分钟内下单次数"><a href="#统计用户一分钟内下单次数" class="headerlink" title="统计用户一分钟内下单次数"></a>统计用户一分钟内下单次数</h1><p>每次用户下单做两次缓存：</p>
 <ul>
-<li>端上将消息按<code>&#123;&quot;text&quot;:&quot;xxx&quot;&#125;</code>的格式json序列化后，调服务端接口发送消息。服务端拿到消息后，按约定的格式反序列化后，<code>单独</code>取出text的value做html特殊字符转义，然后再json序列化落库</li>
-<li>读取消息接口，从数据库里取出序列化的json串后，先对整个json串做html特殊字符反转义，然后再反序列化得到消息对象</li>
+<li>key&#x3D;uuid，value&#x3D;uid，expire&#x3D;60s</li>
+<li>key&#x3D;”allUUid”，value&#x3D;[${uuid1},${uuid2}…]，expire &gt; 60s</li>
 </ul>
-<p>这套流程应对绝大多数文本消息是没问题的，但当文本消息中出现英文双引号<code>&quot;</code>时，就会在读取消息接口进行反序列化操作时报错</p>
-<p>具体原因是</p>
+<p>统计一分钟内所有用户下单次数：</p>
 <ul>
-<li>存储消息时，服务端先做了反序列化，这时再读取text字段时，<code>&quot;</code>前面不会加<code>\</code>转义符，因此html转义后也不带<code>\</code></li>
-<li>读取消息时，做html反转义输出的json串的text字段的值，<code>&quot;</code>前自然也就没有<code>\</code>，所以不满足json串的结构，当然反序列化报错</li>
+<li>mget查询所有uuid对应的uids，keys&#x3D;[${uuid1},${uuid2}…]</li>
+<li>uids按uid做groupBy+count，得到Map&lt;{uid},{count}&gt;</li>
 </ul>
-<p>当然，如果在读取消息接口里，查库后先反序列化，再对text的value单独做html反转义就不会有问题，因为这正好和写库前的处理是完全逆向的。之所以读取时破坏了这种逆向，是因为有些服务端不感知IM消息结构，因此无法单独取出text字段的value值，只能对整个json做html反转义，再反序列化。</p>
-<p>所以，对于有html转义存储的场景，尽量对整个String做html反转义，不然一旦需要json序列化，就可能出现这种json反序列化失败问题</p>
 
     </div>
 
@@ -313,7 +305,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="http://dcbupt.github.io/2020/11/05/blog_article/%E8%B7%B3%E5%9D%91/html%E8%BD%AC%E7%A7%BB%E7%89%B9%E6%AE%8A%E5%AD%97%E7%AC%A6%E9%80%A0%E6%88%90JSON%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%A4%B1%E8%B4%A5/" title="html转移特殊字符造成JSON反序列化失败">http://dcbupt.github.io/2020/11/05/blog_article/跳坑/html转移特殊字符造成JSON反序列化失败/</a>
+    <a href="http://dcbupt.github.io/2021/10/25/blog_article/%E6%B7%B1%E5%BA%A6%E7%B3%BB%E5%88%97/%E5%85%B8%E5%9E%8B%E4%B8%9A%E5%8A%A1%E5%9C%BA%E6%99%AF%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%A1%88/" title="典型业务场景的设计方案">http://dcbupt.github.io/2021/10/25/blog_article/深度系列/典型业务场景的设计方案/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -333,12 +325,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/08/28/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0MySQL/" rel="prev" title="系统学习MySQL">
-      <i class="fa fa-chevron-left"></i> 系统学习MySQL
+    <a href="/2021/07/28/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Java%E4%BB%A3%E7%90%86/" rel="prev" title="系统学习JAVA代理">
+      <i class="fa fa-chevron-left"></i> 系统学习JAVA代理
     </a></div>
       <div class="post-nav-item">
-    <a href="/2020/12/22/blog_article/%E6%B5%85%E5%B0%9D%E7%B3%BB%E5%88%97/rocketmq%E5%9F%BA%E7%A1%80/" rel="next" title="rocketmq">
-      rocketmq <i class="fa fa-chevron-right"></i>
+    <a href="/2022/05/01/blog_article/README/" rel="next" title="">
+       <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -399,7 +391,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BB%9F%E8%AE%A1%E7%94%A8%E6%88%B7%E4%B8%80%E5%88%86%E9%92%9F%E5%86%85%E4%B8%8B%E5%8D%95%E6%AC%A1%E6%95%B0"><span class="nav-number">1.</span> <span class="nav-text">统计用户一分钟内下单次数</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -415,14 +407,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">129</span>
+          <span class="site-state-item-count">125</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-count">9</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
@@ -475,12 +467,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">320k</span>
+    <span title="站点总字数">314k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">8:53</span>
+    <span title="站点阅读时长">8:44</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>
