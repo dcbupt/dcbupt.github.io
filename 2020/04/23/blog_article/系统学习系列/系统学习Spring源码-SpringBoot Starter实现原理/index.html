@@ -30,13 +30,13 @@
 <meta property="og:site_name" content="dcddc">
 <meta property="og:description" content="系统学习Spring源码-SpringBoot Starter实现原理">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://dcbupt.github.io/resource/Spring%E6%B3%A8%E5%86%8C%E9%85%8D%E7%BD%AE%E7%B1%BB%E5%AF%BC%E5%85%A5%E7%9A%84bean.png">
-<meta property="og:image" content="http://dcbupt.github.io/resource/springboot-starter%E5%8E%9F%E7%90%86.png">
+<meta property="og:image" content="http://dcbupt.github.io/images/Spring1.png">
+<meta property="og:image" content="http://dcbupt.github.io/images/spring2.png">
 <meta property="article:published_time" content="2020-04-23T03:57:00.000Z">
-<meta property="article:modified_time" content="2022-05-17T09:31:47.972Z">
+<meta property="article:modified_time" content="2022-05-20T10:08:36.696Z">
 <meta property="article:author" content="西米大人">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://dcbupt.github.io/resource/Spring%E6%B3%A8%E5%86%8C%E9%85%8D%E7%BD%AE%E7%B1%BB%E5%AF%BC%E5%85%A5%E7%9A%84bean.png">
+<meta name="twitter:image" content="http://dcbupt.github.io/images/Spring1.png">
 
 <link rel="canonical" href="http://dcbupt.github.io/2020/04/23/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Spring%E6%BA%90%E7%A0%81-SpringBoot%20Starter%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/">
 
@@ -224,7 +224,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-05-17 17:31:47" itemprop="dateModified" datetime="2022-05-17T17:31:47+08:00">2022-05-17</time>
+                <time title="修改时间：2022-05-20 18:08:36" itemprop="dateModified" datetime="2022-05-20T18:08:36+08:00">2022-05-20</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -357,7 +357,7 @@
 </ul>
 <p>小结：</p>
 <p>ConfigurationClassParser的角色类似BeanDefinitionReader，都是解析得到Bean定义，不过ConfigurationClassParser是从配置类（一般是@Configuration或@Component修饰的bean）里二次解析导入的bean，包括@ComponentScan方式、@Bean方式和@Import方式。ConfigurationClassPostProcessor负责把ConfigurationClassParser解析得到的导入bean注册到beanFactory。同时，@Import方式导入的Bean能通过Import自省获取导入它的配置类上所有注解</p>
-<p><img src="/resource/Spring%E6%B3%A8%E5%86%8C%E9%85%8D%E7%BD%AE%E7%B1%BB%E5%AF%BC%E5%85%A5%E7%9A%84bean.png"></p>
+<p><img src="/images/Spring1.png"></p>
 <h1 id="springboot-start实现原理"><a href="#springboot-start实现原理" class="headerlink" title="springboot start实现原理"></a>springboot start实现原理</h1><p>springboot启动类的<code>@SpringBootApplication</code>注解会引入<code>@EnableAutoConfiguration</code>注解和<code>@SpringBootConfiguration</code>注解，<code>@SpringBootConfiguration</code>注解有一个@Configuration元注解，因此启动类就是一个配置类。<code>@EnableAutoConfiguration</code>的元注解包括<code>@Import(&#123;AutoConfigurationImportSelector.class&#125;)</code>注解，因此可以通过ImportSelector机制配合<code>@EnableAutoConfiguration</code>注解实现动态注册bean到Spring应用</p>
 <p>基于上面的源码分析，<code>ConfigurationClassParser</code>在解析springboot启动类（配置类）时，会获取AutoConfigurationImportSelector根据@EnableAutoConfiguration注解参数动态指定的bean，交给ConfigurationClassPostProcessor来注册到beanFactory</p>
 <p>所以，最后的问题就是，<code>AutoConfigurationImportSelector</code>动态指定哪些bean？看下它的实现。</p>
@@ -371,7 +371,7 @@
 </blockquote>
 <p>SpringBoot启动类作为配置类，由<code>@EnableAutoConfiguration</code>的元注解<code>@Import(&#123;AutoConfigurationImportSelector.class&#125;)</code>使用了ImportSelector机制，动态注册<code>AutoConfigurationImportSelector</code>指定的bean到Spring容器</p>
 <p><code>AutoConfigurationImportSelector</code>没有利用@Enablexxx注解参数来动态指定bean，而是使用Spring工厂加载机制，获取classpath路径下<code>META-INF/spring.factories</code>配置文件里指定key&#x3D;org.springframework.boot.autoconfigure.EnableAutoConfiguration对应的配置类全路径</p>
-<p><img src="/resource/springboot-starter%E5%8E%9F%E7%90%86.png"></p>
+<p><img src="/images/spring2.png"></p>
 <p>因此，如果想提供一个自己实现的starter给外部应用使用，只需要创建一个配置类定义外部应用依赖该starter的组件bean，然后在starter工程的<code>META-INF/spring.factories</code>配置文件里指定key&#x3D;org.springframework.boot.autoconfigure.EnableAutoConfiguration，value&#x3D;{配置类全路径}。外部应用依赖starter包后，就会通过ImportSelector机制注册它依赖starter的配置类到beanFactory，同时注册配置类里的starter组件bean到beanFactory</p>
 <p>这种注册starter组件bean的方式是基于SpringBoot的<code>约定大于配置</code>思想，其实也可以不依赖<code>@EnableAutoConfiguration</code>注解，在stater包中自定义一个注解如<code>@EnableMyApp</code>，并引入<code>@Import(&#123;MyImportSelector.class&#125;)</code>，在<code>MyImportSelector</code>实现类里，定义starter包对外提供的组件bean。外部应用只要在自己的配置类中加上我们的<code>@EnableMyApp</code>注解，就可以将starter包下的组件bean注册到Spring容器</p>
 <p>其实这种基于@EnableXXX注解和自定义实现ImportSelector来注册组件bean的方式在Spring中也有实际案例，<code>@EnableTransactionManagement</code>自动注册事务组件，<code>@EnableCaching</code>自动注册缓存组件。</p>
@@ -413,8 +413,8 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/04/23/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Spring%E6%BA%90%E7%A0%81-Spring%E5%AE%B9%E5%99%A8/" rel="prev" title="系统学习Spring源码-Spring容器">
-      <i class="fa fa-chevron-left"></i> 系统学习Spring源码-Spring容器
+    <a href="/2020/04/23/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Spring%E6%BA%90%E7%A0%81-aop/" rel="prev" title="系统学习Spring源码-aop">
+      <i class="fa fa-chevron-left"></i> 系统学习Spring源码-aop
     </a></div>
       <div class="post-nav-item">
     <a href="/2020/04/23/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Spring%E6%BA%90%E7%A0%81-BeanFactory%E6%9E%B6%E6%9E%84/" rel="next" title="系统学习Spring源码-BeanFactory架构">
@@ -495,14 +495,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">128</span>
+          <span class="site-state-item-count">121</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
@@ -555,12 +555,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">327k</span>
+    <span title="站点总字数">297k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">9:05</span>
+    <span title="站点阅读时长">8:15</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>
