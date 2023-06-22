@@ -32,7 +32,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://dcbupt.github.io/docker/docker%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B.png">
 <meta property="article:published_time" content="2021-01-25T07:10:00.000Z">
-<meta property="article:modified_time" content="2022-05-01T06:44:18.826Z">
+<meta property="article:modified_time" content="2023-06-22T15:58:37.289Z">
 <meta property="article:author" content="西米大人">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://dcbupt.github.io/docker/docker%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B.png">
@@ -223,7 +223,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-05-01 14:44:18" itemprop="dateModified" datetime="2022-05-01T14:44:18+08:00">2022-05-01</time>
+                <time title="修改时间：2023-06-22 23:58:37" itemprop="dateModified" datetime="2023-06-22T23:58:37+08:00">2023-06-22</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -262,14 +262,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">字数：</span>
-              <span>3.5k</span>
+              <span>4.7k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>6 分钟</span>
+              <span>8 分钟</span>
             </span>
             <div class="post-description"><blockquote class="blockquote-center">系统学习docker</blockquote></div>
 
@@ -283,94 +283,117 @@
 
       
         <h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>Docker 是基于 OS 层的虚拟化技术之上的容器引擎，实现对进程的封装隔离。开发者可以打包他们的应用以及依赖包到一个可移植的容器中，然后发布到任何流行的 Linux 机器上。</p>
-<p>传统的虚拟机技术是虚拟出一套硬件后，在其上运行一个完整操作系统，在该系统上再运行所需要的应用进程。实现资源隔离的方法是利用独立的OS，并利用Hypervisor虚拟化CPU、内存、IO设备等实现的</p>
-<p>docker没有自己的内核，也没有硬件虚拟，是轻量级的虚拟化技术。docker利用的是目前Linux内核本身支持的容器方式实现资源和环境隔离。简单的说，docker利用namespace实现系统环境的隔离；利用Cgroup实现资源限制；利用镜像实现根目录环境的隔离。</p>
-<h1 id="Docker基本概念"><a href="#Docker基本概念" class="headerlink" title="Docker基本概念"></a>Docker基本概念</h1><p>Docker Client: </p>
+<p>传统的虚拟机技术是虚拟出一套硬件后，在其上运行一个完整操作系统，在该系统上再运行所需要的应用进程。实现资源隔离的方法是利用独立的 OS，并利用 Hypervisor 虚拟化 CPU、内存、IO 设备等实现的</p>
+<p>docker 没有自己的内核，也没有硬件虚拟，是轻量级的虚拟化技术。docker 利用的是目前 Linux 内核本身支持的容器方式实现资源和环境隔离。简单的说，docker 利用 namespace 实现系统环境的隔离；利用 Cgroup 实现资源限制；利用镜像实现根目录环境的隔离。</p>
+<h1 id="Docker-基本概念"><a href="#Docker-基本概念" class="headerlink" title="Docker 基本概念"></a>Docker 基本概念</h1><p>Docker Client:</p>
 <ul>
-<li>Docker提供给用户的客户端。Docker Client提供给用户一个终端，用户输入Docker提供的命令来管理本地或者远程的服务器</li>
+<li>Docker 提供给用户的客户端。Docker Client 提供给用户一个终端，用户输入 Docker 提供的命令来管理本地或者远程的服务器</li>
 </ul>
-<p>Docker Daemon: </p>
+<p>Docker Daemon:</p>
 <ul>
-<li>Docker服务的守护进程。每台服务器（物理机或虚机）上只要安装了Docker的环境，基本上就跑了一个后台程序Docker Daemon，它会接收Docker Client发过来的指令，并对服务器的进行具体操作</li>
+<li>Docker 服务的守护进程。每台服务器（物理机或虚机）上只要安装了 Docker 的环境，基本上就跑了一个后台程序 Docker Daemon，它会接收 Docker Client 发过来的指令，并对服务器的进行具体操作</li>
 </ul>
 <p>Docker file:</p>
 <ul>
-<li>Dockerfile是用来build镜像的，镜像可以用来传播，镜像运行后生成容器<ul>
+<li>Dockerfile 是用来 build 镜像的，镜像可以用来传播，镜像运行后生成容器<ul>
 <li>(Dockerfile)build-&gt;(Image)ship-&gt;(Container&#x2F;VM)run</li>
 </ul>
 </li>
-<li>docker daemon在docker build阶段一行一行的执行Dockerfile中的指令，每一行指令执行完就commit一个镜像</li>
+<li>docker daemon 在 docker build 阶段一行一行的执行 Dockerfile 中的指令，每一行指令执行完就 commit 一个镜像</li>
 </ul>
-<p>Docker Images: </p>
+<p>Docker Images:</p>
 <ul>
-<li>俗称Docker的镜像，docker镜像是基础加应用，是一个软件从最顶层一直到最底层系统库的完整依赖栈</li>
-<li>Docker镜像是一个特殊的文件系统，除了提供容器运行时所需的程序、库、资源、配置等文件外，还包含了一些为运行时准备的一些配置参数（如匿名卷、环境变量、用户等）。镜像不包含任何动态数据，其内容在构建之后也不会被改变</li>
-<li>Docker镜像采用<code>分层存储结构</code>（AUFS）。每一层构建好后就不会在变，一层层构建，前一层是后一层的基础，由多层文件系统联合组成</li>
+<li>俗称 Docker 的镜像，docker 镜像是基础加应用，是一个软件从最顶层一直到最底层系统库的完整依赖栈</li>
+<li>Docker 镜像是一个特殊的文件系统，除了提供容器运行时所需的程序、库、资源、配置等文件外，还包含了一些为运行时准备的一些配置参数（如匿名卷、环境变量、用户等）。镜像不包含任何动态数据，其内容在构建之后也不会被改变</li>
+<li>Docker 镜像采用<code>分层存储结构</code>（AUFS）。每一层构建好后就不会在变，一层层构建，前一层是后一层的基础，由多层文件系统联合组成</li>
+<li>bootFS（bootloader+kernel，linux 不同发行版，底层 bootFS 共用）&amp;&amp; rootFS（不同 OS 发行版的文件系统），区别只是 rootFS，且镜像用的是极简版的，所以操作系统 docker 镜像大小，例如 CentOS，远小于实际 CentOS 镜像大小</li>
 </ul>
-<p>Docker Registry: </p>
+<p>Docker Registry:</p>
 <ul>
-<li>Docker Images的仓库，就像git的仓库一样，用来管理Docker镜像的，提供了Docker镜像的上传、下载和浏览等功能</li>
+<li>Docker Images 的仓库，就像 git 的仓库一样，用来管理 Docker 镜像的，提供了 Docker 镜像的上传、下载和浏览等功能</li>
 <li>每个仓库可以包含多个<code>标签</code>（Tag），每个标签对应一个镜像<ul>
-<li>例如集团使用的应用自动化构建发布平台aone，所有在aone构建的应用镜像都放在aone仓库里，标签用于区分不同镜像，一般命名为：appName_${环境名}，例如线上是：appName_production</li>
+<li>例如集团使用的应用自动化构建发布平台 aone，所有在 aone 构建的应用镜像都放在 aone 仓库里，标签用于区分不同镜像，一般命名为：appName_${环境名}，例如线上是：appName_production</li>
 </ul>
 </li>
 </ul>
-<p>Docker Container: </p>
+<p>Docker Container:</p>
 <ul>
-<li>俗称Docker的容器，是真正跑项目程序、消耗机器资源、提供服务的地方。Docker Container通过Docker Images启动，在Docker Images的基础上运行你需要的代码。你可以认为Docker Container提供了系统硬件环境，然后使用了Docker Images这些制作好的系统盘，再加上你的项目代码，跑起来就可以提供服务了</li>
+<li>俗称 Docker 的容器，是真正跑项目程序、消耗机器资源、提供服务的地方。Docker Container 通过 Docker Images 启动，在 Docker Images 的基础上运行你需要的代码。你可以认为 Docker Container 提供了系统硬件环境，然后使用了 Docker Images 这些制作好的系统盘，再加上你的项目代码，跑起来就可以提供服务了</li>
 </ul>
 <p><code>镜像（Image）和容器（Container）的关系，就像是面向对象程序设计中的类和实例一样，镜像是静态的定义，容器是镜像运行时的实体。容器可以被创建、启动、停止、删除、暂停等</code></p>
 <p><img src="/docker/docker%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B.png"></p>
-<h1 id="docker的优势"><a href="#docker的优势" class="headerlink" title="docker的优势"></a>docker的优势</h1><p>Docker在运维上的优势可以类比Java语言：</p>
+<h1 id="docker-实践"><a href="#docker-实践" class="headerlink" title="docker 实践"></a>docker 实践</h1><p>安装：<a target="_blank" rel="noopener" href="https://docs.docker.com/engine/install/centos/">https://docs.docker.com/engine/install/centos/</a></p>
 <ul>
-<li>Java可以一次编译到处运行，Docker实现了一次构建(镜像)，到处运行(整个应用及其依赖)</li>
-<li>Java的JVM屏蔽了不同OS的差异，Docker的Daemon屏蔽了不同OS发行版，不同机器的环境差异</li>
-<li>Java的字节码只要有JDK环境就能跑起来，且行为一致，Docker的镜像只要有Daemon环境就能跑起来，且行为一致。两者内部都有清晰定义的格式，且自成规范</li>
-<li>Java使得开发者不需要针对不同的OS编程和编译，只要在任意一个JDK环境中编程和编译，即可交付可运行于任意JDK环境的jar包；Docker使得开发者不需要针对不同的OS打不同的发行包，只要在任意一个Daemon环境中打包调试好，就可以交付可运行于任意Daemon环境的镜像</li>
+<li>注意国内要设置阿里云镜像地址，加速 docker 下载过程</li>
 </ul>
-<p>类比Java微服务架构，一个应用一个jar包，连tomcat都打包在jar中。只要有jdk环境就能一键跑起来。而不像之前除了jdk之外还要有web容器；开发者从交付一个war包，到交付一个包含web容器的jar，打包了jvm之上的所有依赖栈。这显然是在Java的世界里借鉴了Docker的思想，微服务的jar包就是jvm之上的镜像。Docker镜像更进一步是打包了内核之上的所有依赖栈，开发者从交付一个代码包到交付一个包括所有依赖栈的镜像。可见从部分交付到整体交付是一种趋势</p>
-<h1 id="Dockerfile中常用指令"><a href="#Dockerfile中常用指令" class="headerlink" title="Dockerfile中常用指令"></a>Dockerfile中常用指令</h1><ul>
+<p>docker 命令：<a target="_blank" rel="noopener" href="https://docs.docker.com/reference/">https://docs.docker.com/reference/</a></p>
+<p>搜索 docker 镜像：<a target="_blank" rel="noopener" href="https://hub.docker.com/">https://hub.docker.com/</a></p>
+<h1 id="docker-网络"><a href="#docker-网络" class="headerlink" title="docker 网络"></a>docker 网络</h1><h2 id="docker0-网关"><a href="#docker0-网关" class="headerlink" title="docker0 网关"></a>docker0 网关</h2><p>docker 会在安装 docker 的宿主机上自动创建一个 docker0 网关（ip&#x3D;x.x.0.1&#x2F;16），桥接到宿主机的物理网卡</p>
+<p>每次启动一个 docker 容器，docker 会使用 veth-pair 技术分配一对虚拟网络地址，一个给 docker 容器使用，一个给宿主机使用。给 docker 容器分配的虚拟网络是带 docker0 网关的子网 ip 的，给宿主机分配的虚拟网络只有 mac 地址</p>
+<p>宿主机分配的虚拟网络相当于宿主机在 docker0 网关内的一个虚拟地址。当宿主机需要和 docker 容器通信时，先通过 veth-pair 生成的虚拟网络和 docker0 网关通信，网关再转发给 veth-pair 配对的 docker 容器子网 ip</p>
+<ul>
+<li>veth-pair 技术用来实现虚拟网络间的通信，这个例子中就是宿主机和 docker 容器的通信</li>
+</ul>
+<p>docker 容器间也可以通信，这很好理解，docker0 网关内部的子网之间当然可以通过 docker0 网关的转发实现通信（桥接模式，docker0 网关相当于一个网桥）</p>
+<p>当 docker 容器删除后，veth-pair 分配的这一对虚拟网络也会删掉</p>
+<h2 id="自定义网络"><a href="#自定义网络" class="headerlink" title="自定义网络"></a>自定义网络</h2><p>创建 docker 容器默认使用 docker0 网关，但 docker0 网关有一个弊端，容器间不能通过容器名通信，只能通过 ip。这就导致容器一旦重启分配新的 ip，就 ping 不通了。为了实现基于容器名通信，可以创建自定义网络代替 docker0 网关：<code>docker network create --driver bridge --subnet 192.168.0.0/16 --gateway 192.168.0.1 mynet</code></p>
+<ul>
+<li>网络类型也是网桥（网关），和 docker0 一样</li>
+</ul>
+<p>启动容器时通过<code>--net mynet</code>指定容器加入自定义 docker 网络（默认 docker0）</p>
+<h2 id="网络连通"><a href="#网络连通" class="headerlink" title="网络连通"></a>网络连通</h2><p>假设有 2 个 docker 网络，因为网关不同，分属不同网段，理论上这两个网络内的 docker 容器之间是不能通信的</p>
+<p>不过如果要实现容器间跨 docker 网关通信，可以将容器 A 加入到另一个 docker 网络（网关），这样容器 A 就能和加入的 docker 网络内所有容器通信。原理很简单，容器加入另一个网络本质上就是给容器在另一个网络分配一个子网 ip</p>
+<p>命令：<code>docker network connect mynet mycontainer</code></p>
+<h1 id="docker-的优势"><a href="#docker-的优势" class="headerlink" title="docker 的优势"></a>docker 的优势</h1><p>Docker 在运维上的优势可以类比 Java 语言：</p>
+<ul>
+<li>Java 可以一次编译到处运行，Docker 实现了一次构建(镜像)，到处运行(整个应用及其依赖)</li>
+<li>Java 的 JVM 屏蔽了不同 OS 的差异，Docker 的 Daemon 屏蔽了不同 OS 发行版，不同机器的环境差异</li>
+<li>Java 的字节码只要有 JDK 环境就能跑起来，且行为一致，Docker 的镜像只要有 Daemon 环境就能跑起来，且行为一致。两者内部都有清晰定义的格式，且自成规范</li>
+<li>Java 使得开发者不需要针对不同的 OS 编程和编译，只要在任意一个 JDK 环境中编程和编译，即可交付可运行于任意 JDK 环境的 jar 包；Docker 使得开发者不需要针对不同的 OS 打不同的发行包，只要在任意一个 Daemon 环境中打包调试好，就可以交付可运行于任意 Daemon 环境的镜像</li>
+</ul>
+<p>类比 Java 微服务架构，一个应用一个 jar 包，连 tomcat 都打包在 jar 中。只要有 jdk 环境就能一键跑起来。而不像之前除了 jdk 之外还要有 web 容器；开发者从交付一个 war 包，到交付一个包含 web 容器的 jar，打包了 jvm 之上的所有依赖栈。这显然是在 Java 的世界里借鉴了 Docker 的思想，微服务的 jar 包就是 jvm 之上的镜像。Docker 镜像更进一步是打包了内核之上的所有依赖栈，开发者从交付一个代码包到交付一个包括所有依赖栈的镜像。可见从部分交付到整体交付是一种趋势</p>
+<h1 id="Dockerfile-中常用指令"><a href="#Dockerfile-中常用指令" class="headerlink" title="Dockerfile 中常用指令"></a>Dockerfile 中常用指令</h1><ul>
 <li>FROM：指定基础镜像，必须是第一个指令</li>
-<li>ENV：指定运行时的系统环境变量 </li>
-<li>COPY：可以从context中拷贝文件或目录到镜像中 <ul>
-<li>context即dockerFile所在路径下，一般存放一些应用的启动、自检脚本和环境配置</li>
+<li>ENV：指定运行时的系统环境变量</li>
+<li>COPY：可以从 context 中拷贝文件或目录到镜像中<ul>
+<li>context 即 dockerFile 所在路径下，一般存放一些应用的启动、自检脚本和环境配置</li>
 </ul>
 </li>
-<li>RUN：执行任意shell指令 </li>
+<li>RUN：执行任意 shell 指令</li>
 <li>ENTRYPOINT：容器启动时自动执行的脚本，我们一般会将应用启动脚本放在这里，相当于系统自启应用</li>
 <li>VOLUME：指定容器内的目录挂载到宿主机上面,为了能够保存（持久化）数据以及共享容器间的数据，为了实现数据共享，例如日志文件共享到宿主机或容器间共享数据</li>
 <li>USER：用指定用户执行这条指令后面的所有指令</li>
 </ul>
-<h1 id="docker-build的执行过程"><a href="#docker-build的执行过程" class="headerlink" title="docker build的执行过程"></a>docker build的执行过程</h1><p>docker build用于构建镜像：</p>
+<h1 id="docker-build-的执行过程"><a href="#docker-build-的执行过程" class="headerlink" title="docker build 的执行过程"></a>docker build 的执行过程</h1><p>docker build 用于构建镜像：</p>
 <ul>
-<li>读取 Dockerfile 文件发送到 docker daemon <ul>
-<li>docker是C&#x2F;S架构，docker客户端发送Dockerfile到服务端docker daemon</li>
+<li>读取 Dockerfile 文件发送到 docker daemon<ul>
+<li>docker 是 C&#x2F;S 架构，docker 客户端发送 Dockerfile 到服务端 docker daemon</li>
 </ul>
 </li>
-<li>读取当前目录的所有文件（docker build的context），打成tar包，发送到docker daemon<ul>
-<li>因此不要将Dockerfile放到你项目根目录</li>
+<li>读取当前目录的所有文件（docker build 的 context），打成 tar 包，发送到 docker daemon<ul>
+<li>因此不要将 Dockerfile 放到你项目根目录</li>
 </ul>
 </li>
 <li>对 Dockerfile 进行解析，处理成命令加上对应参数的结构</li>
 <li>按照顺序循环遍历所有的命令，对每个命令调用对应的处理函数进行处理<ul>
-<li>一定包含一个COPY命令，把构建出的应用主包（压缩的tgz包）复制到镜像指定目录下，所以在docker build前，应用需要先编译构建完成</li>
+<li>一定包含一个 COPY 命令，把构建出的应用主包（压缩的 tgz 包）复制到镜像指定目录下，所以在 docker build 前，应用需要先编译构建完成</li>
 </ul>
 </li>
 <li>每个命令（除了 FROM）都会在一个容器执行，执行的结果会生成一个新的镜像，为最后生成的镜像打上标签</li>
 </ul>
 <h2 id="加速构建镜像的技巧"><a href="#加速构建镜像的技巧" class="headerlink" title="加速构建镜像的技巧"></a>加速构建镜像的技巧</h2><ul>
-<li>把不常变化的部分打成一个基础镜像上传到仓库，然后其它的Dockerfile FROM这个基础镜像<ul>
-<li>构建机会从docker仓库pull基础镜像，当构建机上的基础镜像已是最新时，不会重拉基础镜像（类似git pull）。这样每次打包就只执行变化的部分，不需要把整个镜像都build一遍</li>
-<li>一般不变的部分是OS基础镜像，应用依赖的rpm包，应用容器配置，web服务器配置等，这些往往写在基础镜像的Dockerfile里</li>
-<li>变化的部分一般是应用主包这些，放在日常、预发、线上环境有各自的Dockerfile，它们都FROM共同的基础镜像，这样能加速各个环境下的镜像构建过程</li>
-<li>其实各个环境下的dockerFile即使不From基础镜像，在build时会通过命令的md5从缓存取镜像（镜像是分层存储的，每个命令执行完都对应一层镜像），也避免了重复构建<ul>
-<li>不过一旦从md5取不到缓存，后面的命令都用不到cache，因此需要保证将不变的镜像构建指令放到前面，把每次都变化的部分（例如应用主包复制）放到后面</li>
+<li>把不常变化的部分打成一个基础镜像上传到仓库，然后其它的 Dockerfile FROM 这个基础镜像<ul>
+<li>构建机会从 docker 仓库 pull 基础镜像，当构建机上的基础镜像已是最新时，不会重拉基础镜像（类似 git pull）。这样每次打包就只执行变化的部分，不需要把整个镜像都 build 一遍</li>
+<li>一般不变的部分是 OS 基础镜像，应用依赖的 rpm 包，应用容器配置，web 服务器配置等，这些往往写在基础镜像的 Dockerfile 里</li>
+<li>变化的部分一般是应用主包这些，放在日常、预发、线上环境有各自的 Dockerfile，它们都 FROM 共同的基础镜像，这样能加速各个环境下的镜像构建过程</li>
+<li>其实各个环境下的 dockerFile 即使不 From 基础镜像，在 build 时会通过命令的 md5 从缓存取镜像（镜像是分层存储的，每个命令执行完都对应一层镜像），也避免了重复构建<ul>
+<li>不过一旦从 md5 取不到缓存，后面的命令都用不到 cache，因此需要保证将不变的镜像构建指令放到前面，把每次都变化的部分（例如应用主包复制）放到后面</li>
 </ul>
 </li>
 </ul>
 </li>
-<li>dockerFile目录下增加.dockerignore文件<ul>
-<li>格式和.gitignore文件一样，排除不需要加入docker build context中的文件来加快build速度</li>
+<li>dockerFile 目录下增加.dockerignore 文件<ul>
+<li>格式和.gitignore 文件一样，排除不需要加入 docker build context 中的文件来加快 build 速度</li>
 </ul>
 </li>
 <li>避免安装不需要的包到镜像中<ul>
@@ -383,10 +406,10 @@
 </li>
 </ul>
 <h1 id="容器生命周期中用户的可定制点"><a href="#容器生命周期中用户的可定制点" class="headerlink" title="容器生命周期中用户的可定制点"></a>容器生命周期中用户的可定制点</h1><ul>
-<li>修改dockerFile</li>
+<li>修改 dockerFile</li>
 <li>指定应用启动、自检、停止时的执行脚本<ul>
-<li>脚本放在dockerFile上下文路径下</li>
-<li>dockerFile里重定向上下文路径里的启动、自检、停止脚本到docker镜像指定目录：<code>/home/admin/start.sh</code> <code>/home/admin/health.sh</code> <code>/home/admin/stop.sh</code></li>
+<li>脚本放在 dockerFile 上下文路径下</li>
+<li>dockerFile 里重定向上下文路径里的启动、自检、停止脚本到 docker 镜像指定目录</li>
 </ul>
 </li>
 </ul>
@@ -491,7 +514,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Docker%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">2.</span> <span class="nav-text">Docker基本概念</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker%E7%9A%84%E4%BC%98%E5%8A%BF"><span class="nav-number">3.</span> <span class="nav-text">docker的优势</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Dockerfile%E4%B8%AD%E5%B8%B8%E7%94%A8%E6%8C%87%E4%BB%A4"><span class="nav-number">4.</span> <span class="nav-text">Dockerfile中常用指令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker-build%E7%9A%84%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B"><span class="nav-number">5.</span> <span class="nav-text">docker build的执行过程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A0%E9%80%9F%E6%9E%84%E5%BB%BA%E9%95%9C%E5%83%8F%E7%9A%84%E6%8A%80%E5%B7%A7"><span class="nav-number">5.1.</span> <span class="nav-text">加速构建镜像的技巧</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%B9%E5%99%A8%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E4%B8%AD%E7%94%A8%E6%88%B7%E7%9A%84%E5%8F%AF%E5%AE%9A%E5%88%B6%E7%82%B9"><span class="nav-number">6.</span> <span class="nav-text">容器生命周期中用户的可定制点</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Docker-%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">2.</span> <span class="nav-text">Docker 基本概念</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker-%E5%AE%9E%E8%B7%B5"><span class="nav-number">3.</span> <span class="nav-text">docker 实践</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker-%E7%BD%91%E7%BB%9C"><span class="nav-number">4.</span> <span class="nav-text">docker 网络</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#docker0-%E7%BD%91%E5%85%B3"><span class="nav-number">4.1.</span> <span class="nav-text">docker0 网关</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E7%BD%91%E7%BB%9C"><span class="nav-number">4.2.</span> <span class="nav-text">自定义网络</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E8%BF%9E%E9%80%9A"><span class="nav-number">4.3.</span> <span class="nav-text">网络连通</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker-%E7%9A%84%E4%BC%98%E5%8A%BF"><span class="nav-number">5.</span> <span class="nav-text">docker 的优势</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Dockerfile-%E4%B8%AD%E5%B8%B8%E7%94%A8%E6%8C%87%E4%BB%A4"><span class="nav-number">6.</span> <span class="nav-text">Dockerfile 中常用指令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker-build-%E7%9A%84%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B"><span class="nav-number">7.</span> <span class="nav-text">docker build 的执行过程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A0%E9%80%9F%E6%9E%84%E5%BB%BA%E9%95%9C%E5%83%8F%E7%9A%84%E6%8A%80%E5%B7%A7"><span class="nav-number">7.1.</span> <span class="nav-text">加速构建镜像的技巧</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%B9%E5%99%A8%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E4%B8%AD%E7%94%A8%E6%88%B7%E7%9A%84%E5%8F%AF%E5%AE%9A%E5%88%B6%E7%82%B9"><span class="nav-number">8.</span> <span class="nav-text">容器生命周期中用户的可定制点</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -507,7 +530,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">121</span>
+          <span class="site-state-item-count">127</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -520,7 +543,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">3</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -558,7 +581,7 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2022</span>
+  <span itemprop="copyrightYear">2023</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -567,12 +590,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">297k</span>
+    <span title="站点总字数">338k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">8:15</span>
+    <span title="站点阅读时长">9:23</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>

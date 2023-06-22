@@ -31,8 +31,9 @@
 <meta property="og:description" content="系统学习Spring源码-bean注册">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://dcbupt.github.io/spring/xml%E6%96%B9%E5%BC%8Fbean%E8%A7%A3%E6%9E%90%E6%B3%A8%E5%86%8C%E6%B5%81%E7%A8%8B.png">
+<meta property="og:image" content="http://dcbupt.github.io/spring/xml%E6%96%B9%E5%BC%8Fbean%E6%B3%A8%E5%86%8C%E7%B1%BB%E5%9B%BE.png">
 <meta property="article:published_time" content="2020-04-23T03:57:00.000Z">
-<meta property="article:modified_time" content="2022-05-01T06:44:18.826Z">
+<meta property="article:modified_time" content="2023-06-10T12:43:15.055Z">
 <meta property="article:author" content="西米大人">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://dcbupt.github.io/spring/xml%E6%96%B9%E5%BC%8Fbean%E8%A7%A3%E6%9E%90%E6%B3%A8%E5%86%8C%E6%B5%81%E7%A8%8B.png">
@@ -223,7 +224,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-05-01 14:44:18" itemprop="dateModified" datetime="2022-05-01T14:44:18+08:00">2022-05-01</time>
+                <time title="修改时间：2023-06-10 20:43:15" itemprop="dateModified" datetime="2023-06-10T20:43:15+08:00">2023-06-10</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -262,14 +263,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">字数：</span>
-              <span>7.1k</span>
+              <span>5.5k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>12 分钟</span>
+              <span>9 分钟</span>
             </span>
             <div class="post-description"><blockquote class="blockquote-center">系统学习Spring源码-bean注册</blockquote></div>
 
@@ -282,150 +283,182 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>bean注册指bean定义的注册，bean加载的前置条件就是解析bean定义并注册到bean工厂</p>
-<p>bean定义有多种方式，本文以xml方式为例，介绍Spring如何解析bean定义并注册到bean工厂</p>
-<h1 id="ClassPathResource"><a href="#ClassPathResource" class="headerlink" title="ClassPathResource"></a>ClassPathResource</h1><p>Spring定义了统一的资源接口Resource。<code>ClassPathResource</code>是它的实现类，通过CL加载classpath下的资源文件，得到输入流</p>
-<p>构造函数：</p>
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>bean 定义分为两大类，一种是在资源文件里定义 bean，另一种是注解方式。<br>资源文件可以是 groovy 文件、properties 文件或者 xml 文件，本文介绍 Spring 是如何注册在 xml 里定义的 beanDefinition。</p>
+<h1 id="Resource"><a href="#Resource" class="headerlink" title="Resource"></a>Resource</h1><p>Spring 定义接口 Resource 来表示资源文件。通过 Resource 能拿到文件的输入流、File 对象等</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public interface Resource extends InputStreamSource &#123;</span><br><span class="line"></span><br><span class="line">	…</span><br><span class="line"></span><br><span class="line">	File getFile() throws IOException;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public interface InputStreamSource &#123;</span><br><span class="line"></span><br><span class="line">	InputStream getInputStream() throws IOException;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="ClassPathResource"><a href="#ClassPathResource" class="headerlink" title="ClassPathResource"></a>ClassPathResource</h1><p>ClassPathResource 表示从类路径 ClassPath 下加载的资源文件。看下它的构造函数。</p>
+<p>构造函数 1：</p>
+<ul>
+<li>第一个参数是资源文件在 classpath 下的路径<ul>
+<li>这里通常传入的就是 bean 定义的资源文件，例如 xml 文件</li>
+<li>不需要以”&#x2F;“开头</li>
+</ul>
+</li>
+<li>第二个参数是 CL，如果传 null，由 ClassUtils 取默认的<code>线程上下文加载器</code></li>
+</ul>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">   public ClassPathResource(String path, @Nullable ClassLoader classLoader) &#123;</span><br><span class="line">	Assert.notNull(path, &quot;Path must not be null&quot;);</span><br><span class="line">	String pathToUse = StringUtils.cleanPath(path);</span><br><span class="line">	if (pathToUse.startsWith(&quot;/&quot;)) &#123;</span><br><span class="line">		pathToUse = pathToUse.substring(1);</span><br><span class="line">	&#125;</span><br><span class="line">	this.path = pathToUse;</span><br><span class="line">	this.classLoader = (classLoader != null ? classLoader : ClassUtils.getDefaultClassLoader());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>构造函数第一个参数是资源文件路径，通常是bean的xml定义文件。第二个参数是CL，ClassUtils取的默认CL是<code>线程上下文加载器</code>，代码：<br><code>cl = Thread.currentThread().getContextClassLoader();</code></p>
-<p>加载资源文件得到输入流：</p>
+<p>构造函数 2：</p>
+<ul>
+<li>如果构造函数传入 Class，则资源文件必须在传入 Class 所在包路径下，path 是资源文件在 Class 所在包下的相对路径，也不用以”&#x2F;“开头</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">   public ClassPathResource(String path, @Nullable Class&lt;?&gt; clazz) &#123;</span><br><span class="line">	Assert.notNull(path, &quot;Path must not be null&quot;);</span><br><span class="line">	this.path = StringUtils.cleanPath(path);</span><br><span class="line">	this.clazz = clazz;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过 CL 加载得到类路径下的资源文件输入流</p>
+<ul>
+<li>如果构造 ClassPathResource 时传入了 Class，则加载资源文件输入流的是加载 Class 的 ClassLoader</li>
+</ul>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">   public InputStream getInputStream() throws IOException &#123;</span><br><span class="line">	InputStream is;</span><br><span class="line">	if (this.clazz != null) &#123;</span><br><span class="line">		is = this.clazz.getResourceAsStream(this.path);</span><br><span class="line">	&#125;</span><br><span class="line">	else if (this.classLoader != null) &#123;</span><br><span class="line">		is = this.classLoader.getResourceAsStream(this.path);</span><br><span class="line">	&#125;</span><br><span class="line">	else &#123;</span><br><span class="line">		is = ClassLoader.getSystemResourceAsStream(this.path);</span><br><span class="line">	&#125;</span><br><span class="line">	if (is == null) &#123;</span><br><span class="line">		throw new FileNotFoundException(getDescription() + &quot; cannot be opened because it does not exist&quot;);</span><br><span class="line">	&#125;</span><br><span class="line">	return is;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>Class和ClassLoader的getResourceAsStream差别不大</p>
+<p>测试代码：<br>beandefinition.BeanDefinitionTests#testClassPathResource</p>
+<h1 id="BeanDefinitionReader"><a href="#BeanDefinitionReader" class="headerlink" title="BeanDefinitionReader"></a>BeanDefinitionReader</h1><p>BeanDefinitionReader 是 beanDefinition 的解析注册器，负责读取资源文件 Resource 并解析得到 beanDefinition，然后注册到 bean 工厂</p>
 <ul>
-<li>Class的getResourceAsStream(String name)方法，参数不以”&#x2F;“开头则默认从此类对应的.class文件所在的packge下取资源，以”&#x2F;“开头则从CLASSPATH下获取</li>
-<li>ClassLoader的getResourceAsStream(String name)方法，默认就是从CLASSPATH下获取资源，参数不能以”&#x2F;“开头</li>
+<li>每种资源文件（xml、groovy、properties 类型）都有对应的 BeanDefinitionReader 实现类</li>
 </ul>
-<h1 id="XmlBeanDefinitionReader"><a href="#XmlBeanDefinitionReader" class="headerlink" title="XmlBeanDefinitionReader"></a>XmlBeanDefinitionReader</h1><h2 id="构造器"><a href="#构造器" class="headerlink" title="构造器"></a>构造器</h2><p><code>XmlBeanDefinitionReader</code>基于Resource提供的bean定义文件输入流，解析后得到beanDefinition并注册到bean工厂，先看下它的构造函数</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">   public XmlBeanDefinitionReader(BeanDefinitionRegistry registry) &#123;</span><br><span class="line">	super(registry);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><code>XmlBeanDefinitionReader</code>的通用基类是<code>AbstractBeanDefinitionReader</code>，它通过构造函数注入一个Bean定义注册中心<code>BeanDefinitionRegistry</code>，实际类型是<code>DefaultListableBeanFactory</code>，Spring默认的bean工厂，本身也是bean注册中心。<code>XmlBeanDefinitionReader</code>解析得到的<code>BeanDefinition</code>会注册到<code>DefaultListableBeanFactory</code></p>
-<h2 id="解析xml文件输入流"><a href="#解析xml文件输入流" class="headerlink" title="解析xml文件输入流"></a>解析xml文件输入流</h2><p>解析xml并注册bean的入口方法<code>loadBeanDefinitions</code>：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">   public int loadBeanDefinitions(Resource resource) throws BeanDefinitionStoreException &#123;</span><br><span class="line">	return loadBeanDefinitions(new EncodedResource(resource));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>Resource即代表bean定义文件的资源类，如果是CLASSPATH路径下获取的xml文件，则Resource的类型就是上面介绍的<code>ClassPathResource</code></p>
-<h3 id="SAX包装XML输入流"><a href="#SAX包装XML输入流" class="headerlink" title="SAX包装XML输入流"></a>SAX包装XML输入流</h3><p>使用SAX包装xml文件输入流</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public interface BeanDefinitionReader &#123;</span><br><span class="line"></span><br><span class="line">	BeanDefinitionRegistry getRegistry();</span><br><span class="line"></span><br><span class="line">	int loadBeanDefinitions(Resource resource) throws BeanDefinitionStoreException;</span><br><span class="line"></span><br><span class="line">	…</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="XmlBeanDefinitionReader"><a href="#XmlBeanDefinitionReader" class="headerlink" title="XmlBeanDefinitionReader"></a>XmlBeanDefinitionReader</h1><p>XmlBeanDefinitionReader 是 xml 方式定义 beanDefinition 的解析注册器，它会按 xml 格式解析 Resource 得到 beanDefinition</p>
 <ul>
-<li>SAX（simple API for XML）是xml最常用的解析工具<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">  InputStream inputStream = encodedResource.getResource().getInputStream();</span><br><span class="line">try &#123;</span><br><span class="line">	InputSource inputSource = new InputSource(inputStream);</span><br><span class="line">          ...</span><br></pre></td></tr></table></figure></li>
+<li>xml 文件一般放在 ClassPath 下，所以 Resource 的类型是 ClassPathResource</li>
 </ul>
-<h3 id="解析XML得到Document"><a href="#解析XML得到Document" class="headerlink" title="解析XML得到Document"></a>解析XML得到Document</h3><p>使用简单工厂模式创建一个<code>DocumentBuilder</code>来解析SAX包装的xml输入流，生成解析后的<code>Document</code>。通过<code>Document</code>可以方便获取xml的标签元素</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">   public Document loadDocument(InputSource inputSource, EntityResolver entityResolver,</span><br><span class="line">		ErrorHandler errorHandler, int validationMode, boolean namespaceAware) throws Exception &#123;</span><br><span class="line"></span><br><span class="line">	DocumentBuilderFactory factory = createDocumentBuilderFactory(validationMode, namespaceAware);</span><br><span class="line">	if (logger.isDebugEnabled()) &#123;</span><br><span class="line">		logger.debug(&quot;Using JAXP provider [&quot; + factory.getClass().getName() + &quot;]&quot;);</span><br><span class="line">	&#125;</span><br><span class="line">	DocumentBuilder builder = createDocumentBuilder(factory, entityResolver, errorHandler);</span><br><span class="line">	return builder.parse(inputSource);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public XmlBeanDefinitionReader(BeanDefinitionRegistry registry) &#123;</span><br><span class="line">    super(registry);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>工厂<code>DocumentBuilderFactory</code>在创建时可以自定义一些feature来影响创建的<code>DocumentBuilder</code>，例如validationMode决定DocumentBuilder按哪种规范校验xml文件格式。validationMode从xml头部声明里获取，DTD和XSD是两种常用的XML文档格式定义规范。例如使用XSD格式的头部这么声明：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;</span><br><span class="line">   xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span><br><span class="line">   xmlns:aop=&quot;http://www.springframework.org/schema/aop&quot;</span><br><span class="line">   xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans-2.0.xsd</span><br><span class="line">			http://www.springframework.org/schema/aop https://www.springframework.org/schema/aop/spring-aop-2.0.xsd&quot;&gt;</span><br></pre></td></tr></table></figure>
-
-<h2 id="读取Document注册BeanDefinition"><a href="#读取Document注册BeanDefinition" class="headerlink" title="读取Document注册BeanDefinition"></a>读取Document注册BeanDefinition</h2><p>创建一个<code>BeanDefinitionDocumentReader</code>读取<code>Document</code>里的bean定义信息，注册beanDefinition</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public int registerBeanDefinitions(Document doc, Resource resource) throws BeanDefinitionStoreException &#123;</span><br><span class="line">	BeanDefinitionDocumentReader documentReader = createBeanDefinitionDocumentReader();</span><br><span class="line">	int countBefore = getRegistry().getBeanDefinitionCount();</span><br><span class="line">	// 由DocumentReader负责读取Document并注册bd到beanFactory</span><br><span class="line">	documentReader.registerBeanDefinitions(doc, createReaderContext(resource));</span><br><span class="line">	return getRegistry().getBeanDefinitionCount() - countBefore;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="profile环境隔离"><a href="#profile环境隔离" class="headerlink" title="profile环境隔离"></a>profile环境隔离</h3><p>首先处理根标签。判断标签的命名空间是否为spring的beans命名空间（<a target="_blank" rel="noopener" href="http://www.springframework.org/schema/beans%EF%BC%89%E3%80%82%E5%A6%82%E6%9E%9C%E6%98%AF%EF%BC%8C%E8%AF%B4%E6%98%8E%E6%A0%B9%E6%A0%87%E7%AD%BE%E6%98%AFbeans%E6%A0%87%E7%AD%BE%EF%BC%8C%E5%88%A4%E6%96%ADbeans%E7%9A%84profile%E5%B1%9E%E6%80%A7%E6%8C%87%E5%AE%9A%E7%9A%84%E7%8E%AF%E5%A2%83%E6%A0%87%E6%98%AF%E5%90%A6%E6%BB%A1%E8%B6%B3%E5%BD%93%E5%89%8D%E7%8E%AF%E5%A2%83%EF%BC%8C%E4%B8%8D%E6%BB%A1%E8%B6%B3%E5%88%99%E4%B8%8D%E6%B3%A8%E5%86%8C%E8%BF%99%E4%BA%9Bbeans">http://www.springframework.org/schema/beans）。如果是，说明根标签是beans标签，判断beans的profile属性指定的环境标是否满足当前环境，不满足则不注册这些beans</a></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">      if (this.delegate.isDefaultNamespace(root)) &#123;</span><br><span class="line">	String profileSpec = root.getAttribute(PROFILE_ATTRIBUTE);</span><br><span class="line">	if (StringUtils.hasText(profileSpec)) &#123;</span><br><span class="line">		String[] specifiedProfiles = StringUtils.tokenizeToStringArray(</span><br><span class="line">				profileSpec, BeanDefinitionParserDelegate.MULTI_VALUE_ATTRIBUTE_DELIMITERS);</span><br><span class="line">		if (!getReaderContext().getEnvironment().acceptsProfiles(specifiedProfiles)) &#123;</span><br><span class="line">			if (logger.isInfoEnabled()) &#123;</span><br><span class="line">				logger.info(&quot;Skipped XML bean definition file due to specified profiles [&quot; + profileSpec +</span><br><span class="line">						&quot;] not matching: &quot; + getReaderContext().getResource());</span><br><span class="line">			&#125;</span><br><span class="line">			return;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>acceptsProfiles方法传入beans指定的所有profile环境标，isProfileActive方法判断环境标是否满足当前环境。优先判断ActiveProfiles，有activeProfiles，不满足则无法注册beans。没有activeProfiles，再去判断是否满足defaultProfiles</p>
+<p>调用 loadBeanDefinitions 方法开始 bd 的解析和注册流程。</p>
+<h2 id="解析-xml"><a href="#解析-xml" class="headerlink" title="解析 xml"></a>解析 xml</h2><p>解析 xml 直接使用 jdk 自带的工具类：</p>
 <ul>
-<li>ActiveProfiles集合是从系统变量或环境变量里，通过key&#x3D;<code>spring.profiles.active</code>拿到value，按”,”分隔后的集合。默认的ActiveProfiles为空，可以通过几种方式指定环境标： <ul>
+<li>把 xml 文件输入流包装为 InputSource 对象</li>
+<li>使用 DocumentBuilder 解析 InputSource 得到 Document 对象<ul>
+<li>通过 Document 可以方便获取 xml 的标签元素</li>
+<li>DTD 和 XSD 是两种常用的 XML 文档格式定义规范，在 xml 文件头部指定，目前主流的都使用 XSD 规范。构造 DocumentBuilder 时指定按哪种规范来校验和解析 xml</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">InputStream inputStream = encodedResource.getResource().getInputStream();</span><br><span class="line">    try &#123;</span><br><span class="line">        InputSource inputSource = new InputSource(inputStream);</span><br><span class="line">        ...</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">public Document loadDocument(InputSource inputSource, EntityResolver entityResolver,</span><br><span class="line">            ErrorHandler errorHandler, int validationMode, boolean namespaceAware) throws Exception &#123;</span><br><span class="line"></span><br><span class="line">    DocumentBuilderFactory factory = createDocumentBuilderFactory(validationMode, namespaceAware);</span><br><span class="line">    if (logger.isDebugEnabled()) &#123;</span><br><span class="line">        logger.debug(&quot;Using JAXP provider [&quot; + factory.getClass().getName() + &quot;]&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    DocumentBuilder builder = createDocumentBuilder(factory, entityResolver, errorHandler);</span><br><span class="line">    return builder.parse(inputSource);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>拿到 Document 对象说明 xml 解析完成。</p>
+<h2 id="构建-beanDefinition"><a href="#构建-beanDefinition" class="headerlink" title="构建 beanDefinition"></a>构建 beanDefinition</h2><p>调用 BeanDefinitionDocumentReader 的 registerBeanDefinitions 方法完成 beanDefinition 的构建和注册流程</p>
+<ul>
+<li>DefaultBeanDefinitionDocumentReader 是 BeanDefinitionDocumentReader 的默认实现</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public int registerBeanDefinitions(Document doc, Resource resource) throws BeanDefinitionStoreException &#123;</span><br><span class="line">        BeanDefinitionDocumentReader documentReader = createBeanDefinitionDocumentReader();</span><br><span class="line">        int countBefore = getRegistry().getBeanDefinitionCount();</span><br><span class="line">        // 由DocumentReader负责读取Document并注册bd到beanFactory</span><br><span class="line">        documentReader.registerBeanDefinitions(doc, createReaderContext(resource));</span><br><span class="line">        return getRegistry().getBeanDefinitionCount() - countBefore;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>构建 beanDefiniton 前，需要先从 document 拿到根 root 元素</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Element root = doc.getDocumentElement();</span><br><span class="line">doRegisterBeanDefinitions(root);</span><br></pre></td></tr></table></figure>
+
+<p>构建 beanDefinition 的过程拆解如下。</p>
+<h3 id="profile-环境隔离"><a href="#profile-环境隔离" class="headerlink" title="profile 环境隔离"></a>profile 环境隔离</h3><p>如果根标签是 Spring 的 beans 标签，读取 profile 属性指定的环境标，如果与当前环境标匹配，则注册 beans 标签内定义的 bean，否则忽略这些 bean</p>
+<ul>
+<li>根标签的命名空间是“<a target="_blank" rel="noopener" href="http://www.springframework.org/schema/beans%E2%80%9D%EF%BC%8C%E8%AF%B4%E6%98%8E%E6%A0%B9%E6%A0%87%E7%AD%BE%E6%98%AFSpring%E7%9A%84beans%E6%A0%87%E7%AD%BE">http://www.springframework.org/schema/beans”，说明根标签是Spring的beans标签</a></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">if (this.delegate.isDefaultNamespace(root)) &#123;</span><br><span class="line">	// 如果beans使用profile加载机制，则跳过不需要在当前环境加载的beans</span><br><span class="line">	String profileSpec = root.getAttribute(PROFILE_ATTRIBUTE);</span><br><span class="line">	if (StringUtils.hasText(profileSpec)) &#123;</span><br><span class="line">		String[] specifiedProfiles = StringUtils.tokenizeToStringArray(</span><br><span class="line">				profileSpec, BeanDefinitionParserDelegate.MULTI_VALUE_ATTRIBUTE_DELIMITERS);</span><br><span class="line">		if (!getReaderContext().getEnvironment().acceptsProfiles(specifiedProfiles)) &#123;</span><br><span class="line">			if (logger.isInfoEnabled()) &#123;</span><br><span class="line">				logger.info(&quot;Skipped XML bean definition file due to specified profiles [&quot; + profileSpec +</span><br><span class="line">						&quot;] not matching: &quot; + getReaderContext().getResource());</span><br><span class="line">			&#125;</span><br><span class="line">			return;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>acceptsProfiles 方法遍历所有 profile 属性指定的环境标，只要有一个 profile 环境标在当前环境标中，就认为匹配成功，可以注册 bean</p>
+<p>当前环境标有两部分组成：activeProfiles 和 defaultProfiles</p>
+<ul>
+<li>ActiveProfiles 集合是从系统变量或环境变量里，通过 key&#x3D;<code>spring.profiles.active</code>拿到 value，按”,”分隔后的集合。默认的 ActiveProfiles 为空，可以通过几种方式指定环境标：<ul>
 <li>显式添加到系统属性：<code>System.setProperty(&quot;spring.profiles.active&quot;, &quot;development&quot;);</code></li>
-<li>web.xml里配置spring.profiles.active到context-param</li>
+<li>web.xml 里配置 spring.profiles.active 到 context-param</li>
 <li>使用注解：@ActiveProfiles(“test”)</li>
 </ul>
 </li>
-<li>DefaultProfiles集合类似，只不过key&#x3D;<code>spring.profiles.default</code>。Spring默认有一个预留reserved的DefaultProfile&#x3D;”default”，如果用户有通过环境变量设置了，则替换</li>
+<li>DefaultProfiles 集合类似，只不过 key&#x3D;<code>spring.profiles.default</code>。Spring 默认有一个预留 reserved 的 DefaultProfile&#x3D;”default”，如果用户有通过环境变量设置了，则替换</li>
 </ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">   protected boolean isProfileActive(String profile) &#123;</span><br><span class="line">	validateProfile(profile);</span><br><span class="line">	Set&lt;String&gt; currentActiveProfiles = doGetActiveProfiles();</span><br><span class="line">	return (currentActiveProfiles.contains(profile) ||</span><br><span class="line">			(currentActiveProfiles.isEmpty() &amp;&amp; doGetDefaultProfiles().contains(profile)));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>profile 环境标和当前环境标匹配规则为：优先匹配 activeProfiles，如果 activeProfiles 为空，再匹配 defaultProfiles</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">public boolean acceptsProfiles(String... profiles) &#123;</span><br><span class="line">	Assert.notEmpty(profiles, &quot;Must specify at least one profile&quot;);</span><br><span class="line">	for (String profile : profiles) &#123;</span><br><span class="line">		if (StringUtils.hasLength(profile) &amp;&amp; profile.charAt(0) == &#x27;!&#x27;) &#123;</span><br><span class="line">			if (!isProfileActive(profile.substring(1))) &#123;</span><br><span class="line">				return true;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		else if (isProfileActive(profile)) &#123;</span><br><span class="line">			return true;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	return false;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">protected boolean isProfileActive(String profile) &#123;</span><br><span class="line">	validateProfile(profile);</span><br><span class="line">	Set&lt;String&gt; currentActiveProfiles = doGetActiveProfiles();</span><br><span class="line">	return (currentActiveProfiles.contains(profile) ||</span><br><span class="line">			(currentActiveProfiles.isEmpty() &amp;&amp; doGetDefaultProfiles().contains(profile)));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>测试代码：beandefinition.BeanDefinitionTests#testProfile</p>
-<h3 id="解析beans的子标签"><a href="#解析beans的子标签" class="headerlink" title="解析beans的子标签"></a>解析beans的子标签</h3><p>从根标签开始遍历孩子节点，如果是孩子节点是标签元素，判断是Spring的beans命名空间，则走beans子标签解析逻辑。否则走第三方自定义的标签解析逻辑</p>
+<h3 id="前置和后置钩子"><a href="#前置和后置钩子" class="headerlink" title="前置和后置钩子"></a>前置和后置钩子</h3><p>DefaultBeanDefinitionDocumentReader 提供了钩子函数，在 bd 注册前和注册后回调，用户可以继承<code>DefaultBeanDefinitionDocumentReader</code>来自定义逻辑</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">preProcessXml(root);</span><br><span class="line">parseBeanDefinitions(root, this.delegate);</span><br><span class="line">postProcessXml(root);</span><br></pre></td></tr></table></figure>
+
+<p>测试代码：beandefinition.BeanDefinitionTests#customDefaultBeanDefinitionDocumentReader</p>
+<h3 id="处理子标签"><a href="#处理子标签" class="headerlink" title="处理子标签"></a>处理子标签</h3><p>如果是 beans 命名空间，遍历 beans 的所有子标签，读取并构建 beanDefinition，然后注册<br>如果不是 beans 命名空间，说明是用户自定义的 xml，走自定义标签处理流程。不过目标也是读取并构建 beanDefinition，然后注册</p>
 <ul>
-<li>debug发现，孩子节点是行维度的，空行或者注释的行，也是一个孩子。但如果碰到标签，整体作为一个孩子节点。所以xml文件尽量写得紧凑些，避免产生一些无用的孩子节点<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">      if (delegate.isDefaultNamespace(root)) &#123;</span><br><span class="line">	// beans-&gt;bean-&gt;property</span><br><span class="line">	NodeList nl = root.getChildNodes();</span><br><span class="line">	for (int i = 0; i &lt; nl.getLength(); i++) &#123;</span><br><span class="line">		Node node = nl.item(i);</span><br><span class="line">		if (node instanceof Element) &#123;</span><br><span class="line">			Element ele = (Element) node;</span><br><span class="line">			if (delegate.isDefaultNamespace(ele)) &#123;</span><br><span class="line">				parseDefaultElement(ele, delegate);</span><br><span class="line">			&#125;</span><br><span class="line">			else &#123;</span><br><span class="line">				delegate.parseCustomElement(ele);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">else &#123;</span><br><span class="line">	delegate.parseCustomElement(root);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>debug 发现，孩子节点是行维度的，空行或者注释的行，也是一个孩子。所以 xml 文件尽量写得紧凑些，避免产生一些无用的孩子节点</li>
 </ul>
-<p>beans的子标签目前有四个：import、alias、bean、beans（嵌套方式），重点是解析bean标签</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">protected void parseBeanDefinitions(Element root, BeanDefinitionParserDelegate delegate) &#123;</span><br><span class="line">	if (delegate.isDefaultNamespace(root)) &#123;</span><br><span class="line">		// beans-&gt;bean-&gt;property</span><br><span class="line">		NodeList nl = root.getChildNodes();</span><br><span class="line">		for (int i = 0; i &lt; nl.getLength(); i++) &#123;</span><br><span class="line">			Node node = nl.item(i);</span><br><span class="line">			if (node instanceof Element) &#123;</span><br><span class="line">				Element ele = (Element) node;</span><br><span class="line">				if (delegate.isDefaultNamespace(ele)) &#123;</span><br><span class="line">					parseDefaultElement(ele, delegate);</span><br><span class="line">				&#125;</span><br><span class="line">				else &#123;</span><br><span class="line">					// 解析自定义标签，生成BeanDefinition并注册到beanFactory</span><br><span class="line">					// beans标签的解析由Spring完成，自定义标签的解析由用户自定义parser完成</span><br><span class="line">					// 例如&lt;myname:user .../&gt;，myname就是命名空间，Spring通过命名空间找到handler，通过handler找到标签user对应的parser完成自定义标签的解析和注册</span><br><span class="line">					delegate.parseCustomElement(ele);</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	else &#123;</span><br><span class="line">		delegate.parseCustomElement(root);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>beans 的子标签目前有四个：import、alias、bean、beans（嵌套方式），重点是解析 bean 标签</p>
 <ul>
-<li>对于import子标签，重新加载resource属性指定的资源文件，然后再重新调用<code>loadBeanDefinitions</code>方法，走一遍解析xml并注册bean</li>
-<li>对于alias子标签，别名与beanName的映射关系注册到beanFactory</li>
-<li>对于嵌套beans标签，当做根标签处理<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">   private void parseDefaultElement(Element ele, BeanDefinitionParserDelegate delegate) &#123;</span><br><span class="line">	// 加载import resource指定的bean定义文件，注册beanDefinition到beanFactory</span><br><span class="line">	if (delegate.nodeNameEquals(ele, IMPORT_ELEMENT)) &#123;</span><br><span class="line">		importBeanDefinitionResource(ele);</span><br><span class="line">	&#125;</span><br><span class="line">	// 别名与beanName的映射关系注册到beanFactory</span><br><span class="line">	else if (delegate.nodeNameEquals(ele, ALIAS_ELEMENT)) &#123;</span><br><span class="line">		processAliasRegistration(ele);</span><br><span class="line">	&#125;</span><br><span class="line">	// 注册beanDefinition到beanFactory</span><br><span class="line">	else if (delegate.nodeNameEquals(ele, BEAN_ELEMENT)) &#123;</span><br><span class="line">		processBeanDefinition(ele, delegate);</span><br><span class="line">	&#125;</span><br><span class="line">	// 注册嵌套式定义的beans到beanFactory。嵌套式即beans标签里还嵌套了beans标签</span><br><span class="line">	else if (delegate.nodeNameEquals(ele, NESTED_BEANS_ELEMENT)) &#123;</span><br><span class="line">		// recurse</span><br><span class="line">		doRegisterBeanDefinitions(ele);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>对于 import 子标签，加载 resource 属性指定的资源文件，然后再重新调用 xmlBeanDefinitionReader#loadBeanDefinitions 方法，走一遍解析 xml 并注册 bean</li>
+<li>对于 alias 子标签，别名与 beanName 的映射关系注册到 bf<ul>
+<li>测试代码：beandefinition.BeanDefinitionTests#testBeanNameAlias</li>
 </ul>
-<p>执行processBeanDefinition方法，开始解析bean标签，下面重点分析</p>
-<h3 id="解析bean标签"><a href="#解析bean标签" class="headerlink" title="解析bean标签"></a>解析bean标签</h3><h4 id="确定beanName"><a href="#确定beanName" class="headerlink" title="确定beanName"></a>确定beanName</h4><p>确定beanName。优先取id属性值作为beanName。如果为空，name属性按”,”或”;”分隔后，取第一个字符串作为beanName，剩下的每个字符串作为别名，最后会注册到bean工厂。如果id和name都为空，由spring生成BeanName，格式为：{类的全路径名}#0，别名为：类的全路径名</p>
-<ul>
-<li><p>注意，getBean方法可以传入别名，但getBeanDefinition方法只能传入beanName，不认别名。测试代码：beandefinition.BeanDefinitionTests#testBeanName</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">    String id = ele.getAttribute(ID_ATTRIBUTE);</span><br><span class="line">		String nameAttr = ele.getAttribute(NAME_ATTRIBUTE);</span><br><span class="line"></span><br><span class="line">		List&lt;String&gt; aliases = new ArrayList&lt;&gt;();</span><br><span class="line">		if (StringUtils.hasLength(nameAttr)) &#123;</span><br><span class="line">			String[] nameArr = StringUtils.tokenizeToStringArray(nameAttr, MULTI_VALUE_ATTRIBUTE_DELIMITERS);</span><br><span class="line">			aliases.addAll(Arrays.asList(nameArr));</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		String beanName = id;</span><br><span class="line">		// 如果bean的id为空，取第一个name作为beanName</span><br><span class="line">		if (!StringUtils.hasText(beanName) &amp;&amp; !aliases.isEmpty()) &#123;</span><br><span class="line">			beanName = aliases.remove(0);</span><br><span class="line">			if (logger.isDebugEnabled()) &#123;</span><br><span class="line">				logger.debug(&quot;No XML &#x27;id&#x27; specified - using &#x27;&quot; + beanName +</span><br><span class="line">						&quot;&#x27; as bean name and &quot; + aliases + &quot; as aliases&quot;);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">```    </span><br><span class="line"></span><br><span class="line">#### FactoryBean和factory-method</span><br><span class="line">确定beanName后，继续解析bean标签的属性和子标签，封装到BeanDefinition</span><br></pre></td></tr></table></figure>
-<p>  &#x2F;&#x2F; bd最基本的属性是CL加载的bean类对象<br>  AbstractBeanDefinition bd &#x3D; createBeanDefinition(className, parent);<br>  &#x2F;&#x2F; bean的各种框架属性封装到bd，例如scope、lazy-init(默认false)、autowire(默认no)、init-method、factory-method<br>  parseBeanDefinitionAttributes(ele, beanName, containingBean, bd);<br>  bd.setDescription(DomUtils.getChildElementValueByTagName(ele, DESCRIPTION_ELEMENT));<br>  &#x2F;&#x2F; 解析bean的meta子标签属性（bean属性之外的键值对）并添加到bd。通过bd的getAttribute可以获取meta属性<br>  parseMetaElements(ele, bd);<br>  &#x2F;&#x2F; 解析lookup-method。bean方法声明一个父类返回结果，实际返回bean在lookup-method中声明<br>  parseLookupOverrideSubElements(ele, bd.getMethodOverrides());<br>  &#x2F;&#x2F; 解析replaced-method。replaced-method用于完全替换bean方法的实现<br>  parseReplacedMethodSubElements(ele, bd.getMethodOverrides());<br>  &#x2F;&#x2F; 解析bean的constructor-arg子标签得到构造函数参数，添加到bd.constructorArgumentValues<br>  parseConstructorArgElements(ele, bd);<br>  &#x2F;&#x2F; 解析bean的property子标签得到业务属性，添加到bd.propertyValues。如果属性值是一个ref，封装成RuntimeBeanReference，如果是一个value，封装成TypedStringValue<br>  parsePropertyElements(ele, bd);<br>  &#x2F;&#x2F; 解析bean的qualifier子标签，添加到bd.qualifiers。qualifier的作用是按byName声明要注入的实际bean<br>  parseQualifierElements(ele, bd);</p>
-<p>  bd.setResource(this.readerContext.getResource());<br>  bd.setSource(extractSource(ele));</p>
-<p>  return bd;</p>
 </li>
+<li>对于嵌套 beans 标签，当做根标签处理</li>
 </ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">factoryBean和factoryMethod都使用工厂模式创建bean，但二者有一些区别</span><br><span class="line"></span><br><span class="line">factoryBean：</span><br><span class="line">- 实现了FactoryBean接口的bean称为工厂bean，只注册工厂bean的BD</span><br><span class="line">- 加载realBean的两种方式：byFactoryBeanName或者byRealBeanType，推荐byRealBeanType。这两种方式最终都是byFactoryBeanName加载，调用工厂bean的getObject方法返回realBean并缓存。realBean不参与bean后续的加载流程，包括依赖注入和初始化。如果想加载工厂bean，使用byName方式，name为&#x27;&amp;factoryBeanName&#x27;</span><br><span class="line"></span><br><span class="line">factory-method：</span><br><span class="line">- factory-method有两种方式：通过xml配置的方式指定，或者通过@Bean方式指定</span><br><span class="line">- xml方式和FactoryBean方式基本一致，区别是factory-method所在类不会成为bean，加载realBean时，通过反射调用工厂类的factory-method方法实例化bean，并参与后续bean依赖注入和初始化流程</span><br><span class="line">- @Bean方式会为配置类和@Bean方法都注册beanDefinition，因此要加载@Bean方式注册的bean和普通bean无区别，本质会反射调用配置类beanClass的factory-method方法（@Bean修饰的方法）实例化realBean，并参与后续bean依赖注入和初始化流程。</span><br><span class="line"></span><br><span class="line">测试代码：instantiation.ing.factorymethod.FactoryMethodTest、instantiation.before.factorybean.FactoryBeanTest</span><br><span class="line"></span><br><span class="line">#### 其他bean属性和子标签</span><br><span class="line">- autowire属性的作用：如果bean类里要依赖注入的对象没有用@Autowire或@Resource修饰，可以在xml里使用autowire属性统一指定依赖注入方式，一般为byName或byType</span><br><span class="line">- meta子标签的作用：额外定义一些bean的元属性KV，保存到BD。只能通过BD获取，不会作为bean实例的属性，因此是元属性的含义</span><br><span class="line">- lookup子标签的作用：通过xml配置，指定允许时注入的实际bean类型。相比于@Autowire和@Resource更灵活，不需要改动代码</span><br><span class="line"></span><br><span class="line">### 注册BD到bean工厂    </span><br><span class="line">注册即beanDefinition添加到beanFactory.beanDefinitionMap，key=beanName，别名注册到beanFactory.aliasMap，key=alias，value=beanName</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<pre><code>public static void registerBeanDefinition(BeanDefinitionHolder definitionHolder, BeanDefinitionRegistry registry)
-        throws BeanDefinitionStoreException &#123;
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">private void parseDefaultElement(Element ele, BeanDefinitionParserDelegate delegate) &#123;</span><br><span class="line">	// 加载import resource指定的bean定义文件，注册beanDefinition到beanFactory</span><br><span class="line">	if (delegate.nodeNameEquals(ele, IMPORT_ELEMENT)) &#123;</span><br><span class="line">		importBeanDefinitionResource(ele);</span><br><span class="line">	&#125;</span><br><span class="line">	// 别名与beanName的映射关系注册到beanFactory</span><br><span class="line">	else if (delegate.nodeNameEquals(ele, ALIAS_ELEMENT)) &#123;</span><br><span class="line">		processAliasRegistration(ele);</span><br><span class="line">	&#125;</span><br><span class="line">	// 注册beanDefinition到beanFactory</span><br><span class="line">	else if (delegate.nodeNameEquals(ele, BEAN_ELEMENT)) &#123;</span><br><span class="line">		processBeanDefinition(ele, delegate);</span><br><span class="line">	&#125;</span><br><span class="line">	// 注册嵌套式定义的beans到beanFactory。嵌套式即beans标签里还嵌套了beans标签</span><br><span class="line">	else if (delegate.nodeNameEquals(ele, NESTED_BEANS_ELEMENT)) &#123;</span><br><span class="line">		// recurse</span><br><span class="line">		doRegisterBeanDefinitions(ele);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-    // Register bean definition under primary name.
-    String beanName = definitionHolder.getBeanName();
-    registry.registerBeanDefinition(beanName, definitionHolder.getBeanDefinition());
-
-    // Register aliases for bean name, if any.
-    String[] aliases = definitionHolder.getAliases();
-    if (aliases != null) &#123;
-        for (String alias : aliases) &#123;
-            registry.registerAlias(beanName, alias);
-        &#125;
-    &#125;
-&#125;
-</code></pre>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">### 解析自定义标签</span><br><span class="line">所谓自定义标签，即标签的命名空间不是Spring的beans命名空间，下面介绍用户自定义标签的解析和注册beanDefinition</span><br><span class="line"></span><br><span class="line">获取自定义标签的命名空间，找到和它映射的`NamespaceHandler`，调用handler的parse方法解析自定义标签</span><br></pre></td></tr></table></figure>
-<pre><code>public BeanDefinition parseCustomElement(Element ele, @Nullable BeanDefinition containingBd) &#123;
-    // 获取自定义标签的命名空间，Spring默认命名空间是beans
-    String namespaceUri = getNamespaceURI(ele);
-    if (namespaceUri == null) &#123;
-        return null;
-    &#125;
-    // 找到该命名空间的自定义Handler
-    NamespaceHandler handler = this.readerContext.getNamespaceHandlerResolver().resolve(namespaceUri);
-    if (handler == null) &#123;
-        error(&quot;Unable to locate Spring NamespaceHandler for XML schema namespace [&quot; + namespaceUri + &quot;]&quot;, ele);
-        return null;
-    &#125;
-    // 通过handler找到自定义parser，解析自定义标签，生成beanDefinition注册到beanFactory
-    return handler.parse(ele, new ParserContext(this.readerContext, this, containingBd));
-&#125;
-</code></pre>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">第一次解析自定义标签时，会加载描述命名空间和`NamespaceHandler`映射关系的资源文件，默认是类路径下的`META-INF/spring.handlers`文件，然后反射实例化handler，再调用它的init方法内部注册该命名空间下的所有标签解析器`BeanDefinitionParser`，最后将命名空间和`NamespaceHandler`的映射关系放入map缓存</span><br></pre></td></tr></table></figure>
-<pre><code>// handlerMappingsLocation默认为：META-INF/spring.handlers，classLoader默认为ClassUtils.getDefaultClassLoader方法返回的线程上下文加载器
-Properties mappings = PropertiesLoaderUtils.loadAllProperties(this.handlerMappingsLocation, this.classLoader);
-... ...
-NamespaceHandler namespaceHandler = (NamespaceHandler) BeanUtils.instantiateClass(handlerClass);
-// 注册用于解析自定义标签的用户实现的BeanDefinitionParser
-namespaceHandler.init();
-handlerMappings.put(namespaceUri, namespaceHandler);
-</code></pre>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">META-INF/spring.handlers文件示例，`SimpleConstructorNamespaceHandler`支持所有&quot;&lt;c:xxx&gt;&quot;标签的解析，c是命名空间，xxx是标签名</span><br></pre></td></tr></table></figure>
-<p>http:&#x2F;&#x2F;<a target="_blank" rel="noopener" href="http://www.springframework.org/schema/c=org.springframework.beans.factory.xml.SimpleConstructorNamespaceHandler">www.springframework.org/schema/c=org.springframework.beans.factory.xml.SimpleConstructorNamespaceHandler</a></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">`NamespaceHandler`的parse方法，会通过标签名获取标签解析器`BeanDefinitionParser`，调用parse方法解析标签，生成BeanDefinition。通过ParserContext能拿到beanFactory，至于是否注册beanDefinition到beanFactory，由parse方法的实现决定</span><br></pre></td></tr></table></figure>
-<pre><code>private BeanDefinitionParser findParserForElement(Element element, ParserContext parserContext) &#123;
-    // 获取命名空间后面的标签名，例如&lt;mybean:user xxx/&gt;，标签名就是user
-    String localName = parserContext.getDelegate().getLocalName(element);
-    BeanDefinitionParser parser = this.parsers.get(localName);
-    if (parser == null) &#123;
-        parserContext.getReaderContext().fatal(
-                &quot;Cannot locate BeanDefinitionParser for element [&quot; + localName + &quot;]&quot;, element);
-    &#125;
-    return parser;
-&#125;
-</code></pre>
-<p>&#96;&#96;&#96;</p>
-<p>如果需要使用自定义标签，需要：</p>
+<h3 id="解析-bean-标签"><a href="#解析-bean-标签" class="headerlink" title="解析 bean 标签"></a>解析 bean 标签</h3><p>对于 bean 标签，需要解析得到 beanDefinition 并注册</p>
+<p>先确定 beanName 和别名</p>
 <ul>
-<li>写一个自定义命名空间下的XML文档协议规范XSD</li>
-<li>实现NamespaceHandler和标签解析器BeanDefinitionParser</li>
-<li>将命名空间和NamespaceHandler的映射关系写入<code>META-INF/spring.handlers</code>资源文件</li>
-<li>在xml文件中声明自定义的命名空间</li>
+<li>beanName 优先取 id 属性，为空再取 name 属性按”,”或”;”分隔后的第一个字符串。如果 name 属性也空，由 spring 生成 BeanName，格式为：{类的全路径名}#0，别名为：类的全路径名</li>
+<li>别名取 name 属性按”,”或”;”分隔后的多个字符串，如果 beanName 用了第一个字符串，则别名要把它排掉</li>
 </ul>
-<h1 id="XmlBeanFactory"><a href="#XmlBeanFactory" class="headerlink" title="XmlBeanFactory"></a>XmlBeanFactory</h1><p>bean工厂的主要职责是管理注册的beanDefinition以及加载bean，即实现所谓的IoC控制反转</p>
-<p><code>DefaultListableBeanFactory</code>是Spring最常用的bean工厂，<code>XmlBeanFactory</code>是它的子类，可以理解为<code>XML配置方式得到的bean工厂</code>，使用<code>XmlBeanDefinitionReader</code>解析XML配置文件、生成beanDefinition并注册到bean工厂</p>
+<p>注意，getBean 方法可以传入别名，但 getBeanDefinition 方法只能传入 beanName，不认别名。测试代码：beandefinition.BeanDefinitionTests#testBeanName</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">String id = ele.getAttribute(ID_ATTRIBUTE);</span><br><span class="line">String nameAttr = ele.getAttribute(NAME_ATTRIBUTE);</span><br><span class="line"></span><br><span class="line">List&lt;String&gt; aliases = new ArrayList&lt;&gt;();</span><br><span class="line">if (StringUtils.hasLength(nameAttr)) &#123;</span><br><span class="line">	String[] nameArr = StringUtils.tokenizeToStringArray(nameAttr, MULTI_VALUE_ATTRIBUTE_DELIMITERS);</span><br><span class="line">	aliases.addAll(Arrays.asList(nameArr));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">String beanName = id;</span><br><span class="line">// 如果bean的id为空，取第一个name作为beanName</span><br><span class="line">if (!StringUtils.hasText(beanName) &amp;&amp; !aliases.isEmpty()) &#123;</span><br><span class="line">	beanName = aliases.remove(0);</span><br><span class="line">	if (logger.isDebugEnabled()) &#123;</span><br><span class="line">		logger.debug(&quot;No XML &#x27;id&#x27; specified - using &#x27;&quot; + beanName +</span><br><span class="line">				&quot;&#x27; as bean name and &quot; + aliases + &quot; as aliases&quot;);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>解析 bean 标签的属性和子标签，封装到 BeanDefinition</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">// bd最基本的属性是CL加载的bean类对象</span><br><span class="line">AbstractBeanDefinition bd = createBeanDefinition(className, parent);</span><br><span class="line">// bean的各种框架属性封装到bd</span><br><span class="line">parseBeanDefinitionAttributes(ele, beanName, containingBean, bd);</span><br><span class="line">bd.setDescription(DomUtils.getChildElementValueByTagName(ele, DESCRIPTION_ELEMENT));</span><br><span class="line">// 解析bean的meta子标签属性（bean属性之外的键值对）并添加到bd。通过bd的getMetadataAttribute可以获取meta属性</span><br><span class="line">parseMetaElements(ele, bd);</span><br><span class="line">// 解析lookup-method。bean方法声明一个父类返回结果，实际返回bean在lookup-method中声明</span><br><span class="line">parseLookupOverrideSubElements(ele, bd.getMethodOverrides());</span><br><span class="line">// 解析replaced-method。replaced-method用于完全替换bean方法的实现</span><br><span class="line">parseReplacedMethodSubElements(ele, bd.getMethodOverrides());</span><br><span class="line">// 解析bean的constructor-arg子标签得到构造函数参数，添加到bd.constructorArgumentValues</span><br><span class="line">parseConstructorArgElements(ele, bd);</span><br><span class="line">// 解析bean的property子标签得到业务属性，添加到bd.propertyValues。如果属性值是一个ref，封装成RuntimeBeanReference，如果是一个value，封装成TypedStringValue</span><br><span class="line">parsePropertyElements(ele, bd);</span><br><span class="line">// 解析bean的qualifier子标签，添加到bd.qualifiers。qualifier的作用是按byName声明要注入的实际bean</span><br><span class="line">parseQualifierElements(ele, bd);</span><br><span class="line"></span><br><span class="line">bd.setResource(this.readerContext.getResource());</span><br><span class="line">bd.setSource(extractSource(ele));</span><br><span class="line"></span><br><span class="line">return bd;</span><br></pre></td></tr></table></figure>
+
+<p>一些比较重要的 bean 标签属性：</p>
+<ul>
+<li>autowire：如果 bean 的引用类型的属性没有用@Autowire 或@Resource 修饰，可以在 xml 里使用 autowire 属性统一指定依赖注入方式，一般为 byName 或 byType</li>
+<li>scope：bean 的作用域，一般为 singleton 或者 prototype</li>
+<li>lazy-init：如果想要 bean 懒加载，lazy-init 设为 true</li>
+<li>depends-on：指定当前 bean 前置依赖的一些 beanNames，用,或者;分割</li>
+<li>primary：为 true 表示当前 bean 是 primary 的，byType 加载到多个 bean 时，取 primary bean</li>
+<li>init-method：设置 bean 初始化阶段回调的 init 方法名</li>
+<li>destroy-method：设置 bean 销毁前回调的 destroy 方法名</li>
+</ul>
+<p>一些比较重要的 bean 子标签的：</p>
+<ul>
+<li>meta：额外定义一些 bean 的元属性 KV，保存到 BD。只能通过 BD#getAttribute 方法传入 K 获得 V，不会作为 bean 实例的属性，即元属性的含义<ul>
+<li>测试代码：beandefinition.BeanDefinitionTests#testMeta</li>
+</ul>
+</li>
+<li>lookup-method：指定 lookup-method 标签声明的方法的返回值（bean）<ul>
+<li>配置 lookup-method 的 bean，会被 CgLIB 代理，增强逻辑是从 bd.methodOverrides 获取 lookup-method 方法返回的 beanName，加载 bean 作为方法的返回值</li>
+<li>注意不是属性的依赖注入，只是用动态代理强制指定了方法返回的 bean</li>
+<li>测试代码：instantiation.before.lookup.LookupTest</li>
+</ul>
+</li>
+<li>property：指定依赖注入的值。如果是一个 ref，封装成 RuntimeBeanReference，加载得到注入的 bean。如果是一个 value，封装成 TypedStringValue，当做字符串注入</li>
+</ul>
+<h3 id="解析自定义标签"><a href="#解析自定义标签" class="headerlink" title="解析自定义标签"></a>解析自定义标签</h3><p>所谓自定义标签，即标签的命名空间不是 Spring 的 beans 命名空间<br>Spring 提供了基于自定义命名空间获取对应标签处理器<code>NamespaceHandler</code>的机制，由 NamespaceHandler 负责解析自定义标签，生成 BD 并注册</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">public BeanDefinition parseCustomElement(Element ele, @Nullable BeanDefinition containingBd) &#123;</span><br><span class="line">	// 获取自定义标签的命名空间，Spring默认命名空间是beans</span><br><span class="line">	String namespaceUri = getNamespaceURI(ele);</span><br><span class="line">	if (namespaceUri == null) &#123;</span><br><span class="line">		return null;</span><br><span class="line">	&#125;</span><br><span class="line">	// 找到该命名空间的自定义Handler</span><br><span class="line">	NamespaceHandler handler = this.readerContext.getNamespaceHandlerResolver().resolve(namespaceUri);</span><br><span class="line">	if (handler == null) &#123;</span><br><span class="line">		error(&quot;Unable to locate Spring NamespaceHandler for XML schema namespace [&quot; + namespaceUri + &quot;]&quot;, ele);</span><br><span class="line">		return null;</span><br><span class="line">	&#125;</span><br><span class="line">	// 通过handler找到自定义parser，解析自定义标签，生成beanDefinition注册到beanFactory</span><br><span class="line">	return handler.parse(ele, new ParserContext(this.readerContext, this, containingBd));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>第一次解析自定义标签时，会加载描述命名空间和<code>NamespaceHandler</code>映射关系的资源文件，默认是类路径下的<code>META-INF/spring.handlers</code>文件，然后反射实例化 handler，再调用它的 init 方法注册该命名空间下的所有标签解析器<code>BeanDefinitionParser</code>，最后将命名空间和<code>NamespaceHandler</code>的映射关系放入 map 缓存</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">   // handlerMappingsLocation默认为：META-INF/spring.handlers，classLoader默认为ClassUtils.getDefaultClassLoader方法返回的线程上下文加载器</span><br><span class="line">   Properties mappings = PropertiesLoaderUtils.loadAllProperties(this.handlerMappingsLocation, this.classLoader);</span><br><span class="line">   ... ...</span><br><span class="line">   NamespaceHandler namespaceHandler = (NamespaceHandler) BeanUtils.instantiateClass(handlerClass);</span><br><span class="line">// 注册用于解析自定义标签的用户实现的BeanDefinitionParser</span><br><span class="line">namespaceHandler.init();</span><br><span class="line">handlerMappings.put(namespaceUri, namespaceHandler);</span><br></pre></td></tr></table></figure>
+
+<p>示例：<br><code>SimpleConstructorNamespaceHandler</code>支持所有”&lt;c:xxx&gt;”标签的解析，c 是命名空间，xxx 是标签名</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http\://www.springframework.org/schema/c=org.springframework.beans.factory.xml.SimpleConstructorNamespaceHandler</span><br></pre></td></tr></table></figure>
+
+<p><code>NamespaceHandler</code>的 parse 方法，会通过标签名获取标签解析器<code>BeanDefinitionParser</code>，调用 parse 方法解析标签，生成 BeanDefinition。通过 ParserContext 能拿到 beanFactory，至于是否注册 beanDefinition 到 beanFactory，由 parse 方法的实现决定</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">   private BeanDefinitionParser findParserForElement(Element element, ParserContext parserContext) &#123;</span><br><span class="line">	// 获取命名空间后面的标签名，例如&lt;mybean:user xxx/&gt;，标签名就是user</span><br><span class="line">	String localName = parserContext.getDelegate().getLocalName(element);</span><br><span class="line">	BeanDefinitionParser parser = this.parsers.get(localName);</span><br><span class="line">	if (parser == null) &#123;</span><br><span class="line">		parserContext.getReaderContext().fatal(</span><br><span class="line">				&quot;Cannot locate BeanDefinitionParser for element [&quot; + localName + &quot;]&quot;, element);</span><br><span class="line">	&#125;</span><br><span class="line">	return parser;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果使用自定义标签，需要：</p>
+<ul>
+<li>写一个自定义命名空间下的 XML 文档协议规范 XSD</li>
+<li>实现 NamespaceHandler 和标签解析器 BeanDefinitionParser</li>
+<li>将命名空间和 NamespaceHandler 的映射关系写入<code>META-INF/spring.handlers</code>资源文件</li>
+<li>在 xml 文件中声明自定义的命名空间</li>
+</ul>
+<h3 id="BD-注册到-bean-工厂"><a href="#BD-注册到-bean-工厂" class="headerlink" title="BD 注册到 bean 工厂"></a>BD 注册到 bean 工厂</h3><p>注册即 beanDefinition 添加到 beanFactory.beanDefinitionMap，key&#x3D;beanName，别名注册到 beanFactory.aliasMap，key&#x3D;alias，value&#x3D;beanName</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">   public static void registerBeanDefinition(BeanDefinitionHolder definitionHolder, BeanDefinitionRegistry registry)</span><br><span class="line">		throws BeanDefinitionStoreException &#123;</span><br><span class="line"></span><br><span class="line">	// Register bean definition under primary name.</span><br><span class="line">	String beanName = definitionHolder.getBeanName();</span><br><span class="line">	registry.registerBeanDefinition(beanName, definitionHolder.getBeanDefinition());</span><br><span class="line"></span><br><span class="line">	// Register aliases for bean name, if any.</span><br><span class="line">	String[] aliases = definitionHolder.getAliases();</span><br><span class="line">	if (aliases != null) &#123;</span><br><span class="line">		for (String alias : aliases) &#123;</span><br><span class="line">			registry.registerAlias(beanName, alias);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="bean-工厂"><a href="#bean-工厂" class="headerlink" title="bean 工厂"></a>bean 工厂</h1><p>bean 工厂的主要职责是管理注册的 beanDefinition 以及加载 bean，即实现所谓的 IoC 控制反转</p>
+<p><code>DefaultListableBeanFactory</code>是 Spring 最常用的 bean 工厂，<code>XmlBeanFactory</code>是它的子类，可以理解为<code>XML配置方式得到的bean工厂</code>，使用<code>XmlBeanDefinitionReader</code>解析 XML 配置文件、生成 beanDefinition 并注册到 bean 工厂</p>
 <blockquote>
-<p>bean工厂本身并不负责解析各种方式（注解、XML）的bean定义并生成beanDefinition，它只是拿到beanDefinition执行后续bean注册、加载流程。bean定义的解析由各种<code>BeanDefinitionReader</code>完成，它持有bean工厂，生成beanDefinition后回调bean工厂的注册方法注册bean</p>
+<p>bean 工厂本身并不负责解析各种方式（注解、XML）的 bean 定义并生成 beanDefinition，它只是拿到 beanDefinition 执行后续 bean 注册、加载流程。bean 定义的解析注册由各种<code>BeanDefinitionReader</code>完成，它持有 bean 工厂，生成 beanDefinition 后回调 bean 工厂的注册方法注册 bean</p>
 </blockquote>
-<p>注意，XmlBeanFactory现在已经被Spring废弃，替代它的是<code>ClassPathXmlApplicationContext</code></p>
-<p><code>ClassPathXmlApplicationContext</code>本身是一个Spring容器<code>ApplicationContext</code>，在构造函数中创建好<code>DefaultListableBeanFactory</code>，其中xml解析和注册beanDefinition仍然通过<code>XmlBeanDefinitionReader</code></p>
-<p>Spring容器<code>ApplicationContext</code>具备bean工厂的全部能力，并提供给业务方对于bean工厂更对的定制和扩展能力，后文会详细介绍Spring容器</p>
-<h1 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h1><p><img src="/spring/xml%E6%96%B9%E5%BC%8Fbean%E8%A7%A3%E6%9E%90%E6%B3%A8%E5%86%8C%E6%B5%81%E7%A8%8B.png"></p>
+<p>注意，XmlBeanFactory 现在已经被 Spring 废弃，替代它的是<code>ClassPathXmlApplicationContext</code></p>
+<p><code>ClassPathXmlApplicationContext</code>本身是一个 Spring 容器<code>ApplicationContext</code>，在构造函数中创建好<code>DefaultListableBeanFactory</code>，其中 xml 解析和注册 beanDefinition 仍然通过<code>XmlBeanDefinitionReader</code></p>
+<p>Spring 容器<code>ApplicationContext</code>具备 bean 工厂的全部能力，并提供了对于 bean 工厂更多的定制和扩展能力，后文会详细介绍 Spring 容器</p>
+<h1 id="流程图"><a href="#流程图" class="headerlink" title="流程图"></a>流程图</h1><p><img src="/spring/xml%E6%96%B9%E5%BC%8Fbean%E8%A7%A3%E6%9E%90%E6%B3%A8%E5%86%8C%E6%B5%81%E7%A8%8B.png"></p>
+<h1 id="UML-类图"><a href="#UML-类图" class="headerlink" title="UML 类图"></a>UML 类图</h1><p><img src="/spring/xml%E6%96%B9%E5%BC%8Fbean%E6%B3%A8%E5%86%8C%E7%B1%BB%E5%9B%BE.png"></p>
 
     </div>
 
@@ -527,7 +560,7 @@ handlerMappings.put(namespaceUri, namespaceHandler);
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ClassPathResource"><span class="nav-number">2.</span> <span class="nav-text">ClassPathResource</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#XmlBeanDefinitionReader"><span class="nav-number">3.</span> <span class="nav-text">XmlBeanDefinitionReader</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E5%99%A8"><span class="nav-number">3.1.</span> <span class="nav-text">构造器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E6%9E%90xml%E6%96%87%E4%BB%B6%E8%BE%93%E5%85%A5%E6%B5%81"><span class="nav-number">3.2.</span> <span class="nav-text">解析xml文件输入流</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SAX%E5%8C%85%E8%A3%85XML%E8%BE%93%E5%85%A5%E6%B5%81"><span class="nav-number">3.2.1.</span> <span class="nav-text">SAX包装XML输入流</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E6%9E%90XML%E5%BE%97%E5%88%B0Document"><span class="nav-number">3.2.2.</span> <span class="nav-text">解析XML得到Document</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%BB%E5%8F%96Document%E6%B3%A8%E5%86%8CBeanDefinition"><span class="nav-number">3.3.</span> <span class="nav-text">读取Document注册BeanDefinition</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#profile%E7%8E%AF%E5%A2%83%E9%9A%94%E7%A6%BB"><span class="nav-number">3.3.1.</span> <span class="nav-text">profile环境隔离</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E6%9E%90beans%E7%9A%84%E5%AD%90%E6%A0%87%E7%AD%BE"><span class="nav-number">3.3.2.</span> <span class="nav-text">解析beans的子标签</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E6%9E%90bean%E6%A0%87%E7%AD%BE"><span class="nav-number">3.3.3.</span> <span class="nav-text">解析bean标签</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%A1%AE%E5%AE%9AbeanName"><span class="nav-number">3.3.3.1.</span> <span class="nav-text">确定beanName</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#XmlBeanFactory"><span class="nav-number">4.</span> <span class="nav-text">XmlBeanFactory</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">小结</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Resource"><span class="nav-number">2.</span> <span class="nav-text">Resource</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ClassPathResource"><span class="nav-number">3.</span> <span class="nav-text">ClassPathResource</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#BeanDefinitionReader"><span class="nav-number">4.</span> <span class="nav-text">BeanDefinitionReader</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#XmlBeanDefinitionReader"><span class="nav-number">5.</span> <span class="nav-text">XmlBeanDefinitionReader</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E6%9E%90-xml"><span class="nav-number">5.1.</span> <span class="nav-text">解析 xml</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%84%E5%BB%BA-beanDefinition"><span class="nav-number">5.2.</span> <span class="nav-text">构建 beanDefinition</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#profile-%E7%8E%AF%E5%A2%83%E9%9A%94%E7%A6%BB"><span class="nav-number">5.2.1.</span> <span class="nav-text">profile 环境隔离</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E7%BD%AE%E5%92%8C%E5%90%8E%E7%BD%AE%E9%92%A9%E5%AD%90"><span class="nav-number">5.2.2.</span> <span class="nav-text">前置和后置钩子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%84%E7%90%86%E5%AD%90%E6%A0%87%E7%AD%BE"><span class="nav-number">5.2.3.</span> <span class="nav-text">处理子标签</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E6%9E%90-bean-%E6%A0%87%E7%AD%BE"><span class="nav-number">5.2.4.</span> <span class="nav-text">解析 bean 标签</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E6%9E%90%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A0%87%E7%AD%BE"><span class="nav-number">5.2.5.</span> <span class="nav-text">解析自定义标签</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#BD-%E6%B3%A8%E5%86%8C%E5%88%B0-bean-%E5%B7%A5%E5%8E%82"><span class="nav-number">5.2.6.</span> <span class="nav-text">BD 注册到 bean 工厂</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#bean-%E5%B7%A5%E5%8E%82"><span class="nav-number">6.</span> <span class="nav-text">bean 工厂</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="nav-number">7.</span> <span class="nav-text">流程图</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#UML-%E7%B1%BB%E5%9B%BE"><span class="nav-number">8.</span> <span class="nav-text">UML 类图</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -543,7 +576,7 @@ handlerMappings.put(namespaceUri, namespaceHandler);
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">121</span>
+          <span class="site-state-item-count">127</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -556,7 +589,7 @@ handlerMappings.put(namespaceUri, namespaceHandler);
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">3</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -594,7 +627,7 @@ handlerMappings.put(namespaceUri, namespaceHandler);
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2022</span>
+  <span itemprop="copyrightYear">2023</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -603,12 +636,12 @@ handlerMappings.put(namespaceUri, namespaceHandler);
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">297k</span>
+    <span title="站点总字数">338k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">8:15</span>
+    <span title="站点阅读时长">9:23</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>

@@ -31,7 +31,7 @@
 <meta property="og:description" content="系统学习Spring源码-aop">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-04-23T03:57:00.000Z">
-<meta property="article:modified_time" content="2022-05-01T06:44:18.825Z">
+<meta property="article:modified_time" content="2023-06-10T12:43:15.054Z">
 <meta property="article:author" content="西米大人">
 <meta name="twitter:card" content="summary">
 
@@ -221,7 +221,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-05-01 14:44:18" itemprop="dateModified" datetime="2022-05-01T14:44:18+08:00">2022-05-01</time>
+                <time title="修改时间：2023-06-10 20:43:15" itemprop="dateModified" datetime="2023-06-10T20:43:15+08:00">2023-06-10</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -260,14 +260,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">字数：</span>
-              <span>10k</span>
+              <span>7.8k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>17 分钟</span>
+              <span>13 分钟</span>
             </span>
             <div class="post-description"><blockquote class="blockquote-center">系统学习Spring源码-aop</blockquote></div>
 
@@ -280,317 +280,223 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>为了避免一些公共代码每次都要在bean里单独添加，提出了aop的解决方案，使用面向切面编程的思想，统一处理bean中与业务逻辑无关的公共代码</p>
-<h1 id="注册APC的BD"><a href="#注册APC的BD" class="headerlink" title="注册APC的BD"></a>注册APC的BD</h1><p>xml方式通过配置<code>&lt;aop:aspectj-autoproxy/&gt;</code>启用AOP，在bean注册里介绍过，这属于Spring的自定义标签，命名空间是aop，标签是aspectj-autoproxy。Spring会通过aop命名空间Handler：<code>AopNamespaceHandler</code>，获取aspectj-autoproxy标签的解析器<code>AspectJAutoProxyBeanDefinitionParser</code>，执行parse方法解析标签，注册自动代理创建器（APC）的bd到beanFactory</p>
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>为了避免一些公共代码每次都要在 bean 里单独添加，提出了 aop 的解决方案，使用面向切面编程的思想，统一处理 bean 中与业务逻辑无关的公共代码</p>
+<h1 id="注册-APC-的-BD"><a href="#注册-APC-的-BD" class="headerlink" title="注册 APC 的 BD"></a>注册 APC 的 BD</h1><h2 id="xml-方式"><a href="#xml-方式" class="headerlink" title="xml 方式"></a>xml 方式</h2><p>xml 方式通过配置<code>&lt;aop:aspectj-autoproxy/&gt;</code>启用 AOP，在 bean 注册里介绍过，这属于 Spring 的自定义标签，命名空间是 aop，标签是 aspectj-autoproxy。Spring 会通过 aop 命名空间 Handler：<code>AopNamespaceHandler</code>，获取 aspectj-autoproxy 标签的解析器<code>AspectJAutoProxyBeanDefinitionParser</code>，执行 parse 方法解析标签，调用方法<code>AopNamespaceUtils.registerAspectJAnnotationAutoProxyCreatorIfNecessary</code>注册自动代理创建器（APC）的 bd 到 beanFactory</p>
 <ul>
-<li>默认注册的APC是<code>AnnotationAwareAspectJAutoProxyCreator</code>，Spring定义了三个自动代理APC，根据优先级来决定最终注册哪个APC的bd到beanFactory<ul>
+<li>这里注册的 APC 是<code>AnnotationAwareAspectJAutoProxyCreator</code><ul>
+<li>它是一个 <code>SmartInstantiationAwareBeanPostProcessor</code>，Spring 容器初始化阶段加载并注册到 beanFactory</li>
+</ul>
+</li>
+<li>Spring 定义了三个自动代理 APC，如果还注册了其他的 APC，根据优先级来决定最终注册哪个 APC 的 bd 到 beanFactory。不同的 APC，创建 aop 代理的过程有所差异<ul>
 <li>优先级：<code>AnnotationAwareAspectJAutoProxyCreator</code> &gt; <code>AspectJAwareAdvisorAutoProxyCreator</code> &gt; <code>InfrastructureAdvisorAutoProxyCreator</code></li>
 </ul>
 </li>
 </ul>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line">public BeanDefinition parse(Element element, ParserContext parserContext) &#123;</span><br><span class="line">	// 主要是注册APC的bd到beanFactory</span><br><span class="line">	AopNamespaceUtils.registerAspectJAnnotationAutoProxyCreatorIfNecessary(parserContext, element);</span><br><span class="line">	extendBeanDefinition(element, parserContext);</span><br><span class="line">	return null;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public static void registerAspectJAnnotationAutoProxyCreatorIfNecessary(</span><br><span class="line">		ParserContext parserContext, Element sourceElement) &#123;</span><br><span class="line"></span><br><span class="line">	// 注册自动代理创建器APC的bd到beanFactory</span><br><span class="line">	BeanDefinition beanDefinition = AopConfigUtils.registerAspectJAnnotationAutoProxyCreatorIfNecessary(</span><br><span class="line">			parserContext.getRegistry(), parserContext.extractSource(sourceElement));</span><br><span class="line">	// APC的bd增加一些自定义逻辑控制属性，包括是否强制使用CGLIB代理、是否暴露代理类给用户使用</span><br><span class="line">	useClassProxyingIfNecessary(parserContext.getRegistry(), sourceElement);</span><br><span class="line">	registerComponentIfNecessary(beanDefinition, parserContext);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public static BeanDefinition registerAspectJAnnotationAutoProxyCreatorIfNecessary(</span><br><span class="line">		BeanDefinitionRegistry registry, @Nullable Object source) &#123;</span><br><span class="line"></span><br><span class="line">	return registerOrEscalateApcAsRequired(AnnotationAwareAspectJAutoProxyCreator.class, registry, source);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private static BeanDefinition registerOrEscalateApcAsRequired(</span><br><span class="line">		Class&lt;?&gt; cls, BeanDefinitionRegistry registry, @Nullable Object source) &#123;</span><br><span class="line"></span><br><span class="line">	Assert.notNull(registry, &quot;BeanDefinitionRegistry must not be null&quot;);</span><br><span class="line"></span><br><span class="line">	// 如果已存在APC（自动代理创建器）的bd，按APC优先级决定最终使用的APC</span><br><span class="line">	if (registry.containsBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME)) &#123;</span><br><span class="line">		BeanDefinition apcDefinition = registry.getBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME);</span><br><span class="line">		if (!cls.getName().equals(apcDefinition.getBeanClassName())) &#123;</span><br><span class="line">			int currentPriority = findPriorityForClass(apcDefinition.getBeanClassName());</span><br><span class="line">			int requiredPriority = findPriorityForClass(cls);</span><br><span class="line">			if (currentPriority &lt; requiredPriority) &#123;</span><br><span class="line">				apcDefinition.setBeanClassName(cls.getName());</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		return null;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	RootBeanDefinition beanDefinition = new RootBeanDefinition(cls);</span><br><span class="line">	beanDefinition.setSource(source);</span><br><span class="line">	beanDefinition.getPropertyValues().add(&quot;order&quot;, Ordered.HIGHEST_PRECEDENCE);</span><br><span class="line">	beanDefinition.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);</span><br><span class="line">	registry.registerBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME, beanDefinition);</span><br><span class="line">	return beanDefinition;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private static int findPriorityForClass(@Nullable String className) &#123;</span><br><span class="line">	for (int i = 0; i &lt; APC_PRIORITY_LIST.size(); i++) &#123;</span><br><span class="line">		Class&lt;?&gt; clazz = APC_PRIORITY_LIST.get(i);</span><br><span class="line">		if (clazz.getName().equals(className)) &#123;</span><br><span class="line">			return i;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	... ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private static final List&lt;Class&lt;?&gt;&gt; APC_PRIORITY_LIST = new ArrayList&lt;&gt;(3);</span><br><span class="line"></span><br><span class="line">static &#123;</span><br><span class="line">	// Set up the escalation list...</span><br><span class="line">	APC_PRIORITY_LIST.add(InfrastructureAdvisorAutoProxyCreator.class);</span><br><span class="line">	APC_PRIORITY_LIST.add(AspectJAwareAdvisorAutoProxyCreator.class);</span><br><span class="line">	APC_PRIORITY_LIST.add(AnnotationAwareAspectJAutoProxyCreator.class);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>APC的bd.pv增加一些逻辑控制属性</p>
+<p>APC 的 bd.pv 增加一些逻辑控制属性</p>
 <ul>
-<li>是否强制使用CGLIB代理<ul>
-<li>如果aspectj-autoproxy标签的proxy-target-class属性为true，强制使用CGLIB为目标对象创建代理</li>
-<li>CGLIB是在运行期依赖ASM操作字节码生成目标类的子类来实现代理，能代理除final方法（不能被override）外的所有方法，且性能更好</li>
-<li>JDK动态代理是Spring默认使用的动态代理，在运行期创建接口实现类来代理目标类，因此只能代理接口方法</li>
+<li>是否强制使用 CGLIB 代理<ul>
+<li>如果 aspectj-autoproxy 标签的 proxy-target-class 属性为 true，强制使用 CGLIB 为目标对象创建代理</li>
+<li>CGLIB 是在运行期依赖 ASM 操作字节码生成目标类的子类来实现代理，能代理除 final 方法（不能被 override）外的所有方法，且性能更好</li>
+<li>JDK 动态代理是 Spring 默认使用的动态代理，在运行期创建接口实现类来代理目标类，因此只能代理接口方法</li>
 </ul>
 </li>
 <li>是否支持暴露代理类<ul>
-<li>如果aspectj-autoproxy标签的expose-proxy属性为true，支持暴露代理类</li>
-<li>目的是解决某些场景下无法代理方法的问题：例如被代理类方法a内部又调用了它的另一个方法b，该方法b的调用是无法被代理的，需要显式调用AopContext.currentProxy获取代理类来调用方法b</li>
+<li>如果 aspectj-autoproxy 标签的 expose-proxy 属性为 true，支持暴露代理类<ul>
+<li>目的是解决某些场景下无法代理方法的问题：例如被代理类方法 a 内部又调用了它的另一个方法 b，该方法 b 的调用是无法被代理的，需要显式调用 AopContext.currentProxy 获取代理类来调用方法 b</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">private static void useClassProxyingIfNecessary(BeanDefinitionRegistry registry, @Nullable Element sourceElement) &#123;</span><br><span class="line">	if (sourceElement != null) &#123;</span><br><span class="line">		boolean proxyTargetClass = Boolean.parseBoolean(sourceElement.getAttribute(PROXY_TARGET_CLASS_ATTRIBUTE));</span><br><span class="line">		if (proxyTargetClass) &#123;</span><br><span class="line">			AopConfigUtils.forceAutoProxyCreatorToUseClassProxying(registry);</span><br><span class="line">		&#125;</span><br><span class="line">		boolean exposeProxy = Boolean.parseBoolean(sourceElement.getAttribute(EXPOSE_PROXY_ATTRIBUTE));</span><br><span class="line">		if (exposeProxy) &#123;</span><br><span class="line">			AopConfigUtils.forceAutoProxyCreatorToExposeProxy(registry);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public static void forceAutoProxyCreatorToUseClassProxying(BeanDefinitionRegistry registry) &#123;</span><br><span class="line">	if (registry.containsBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME)) &#123;</span><br><span class="line">		BeanDefinition definition = registry.getBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME);</span><br><span class="line">		definition.getPropertyValues().add(&quot;proxyTargetClass&quot;, Boolean.TRUE);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public static void forceAutoProxyCreatorToExposeProxy(BeanDefinitionRegistry registry) &#123;</span><br><span class="line">	if (registry.containsBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME)) &#123;</span><br><span class="line">		BeanDefinition definition = registry.getBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME);</span><br><span class="line">		definition.getPropertyValues().add(&quot;exposeProxy&quot;, Boolean.TRUE);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
+<h2 id="注解方式"><a href="#注解方式" class="headerlink" title="注解方式"></a>注解方式</h2><p>注解方式开启 aop 需要使用注解：<code>@EnableAspectJAutoProxy</code>。它会 import 一个 bd 注册器：<code>AspectJAutoProxyRegistrar</code>，由它向 bf 注册 apc。和 xml 方式本质一样，都会通过调用方法<code>AopConfigUtils.registerAspectJAnnotationAutoProxyCreatorIfNecessary</code>来注册 apc。然后读取@EnableAspectJAutoProxy 注解的属性，填充到注册的 apc 的 bd</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">class AspectJAutoProxyRegistrar implements ImportBeanDefinitionRegistrar &#123;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">	 * Register, escalate, and configure the AspectJ auto proxy creator based on the value</span><br><span class="line">	 * of the @&#123;@link EnableAspectJAutoProxy#proxyTargetClass()&#125; attribute on the importing</span><br><span class="line">	 * &#123;@code @Configuration&#125; class.</span><br><span class="line">	 */</span><br><span class="line">    @Override public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) &#123;</span><br><span class="line"></span><br><span class="line">        AopConfigUtils.registerAspectJAnnotationAutoProxyCreatorIfNecessary(registry);</span><br><span class="line"></span><br><span class="line">        AnnotationAttributes enableAspectJAutoProxy = AnnotationConfigUtils.attributesFor(importingClassMetadata, EnableAspectJAutoProxy.class);</span><br><span class="line">        if (enableAspectJAutoProxy != null) &#123;</span><br><span class="line">            if (enableAspectJAutoProxy.getBoolean(&quot;proxyTargetClass&quot;)) &#123;</span><br><span class="line">                AopConfigUtils.forceAutoProxyCreatorToUseClassProxying(registry);</span><br><span class="line">            &#125;</span><br><span class="line">            if (enableAspectJAutoProxy.getBoolean(&quot;exposeProxy&quot;)) &#123;</span><br><span class="line">                AopConfigUtils.forceAutoProxyCreatorToExposeProxy(registry);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h2 id="AnnotationAwareAspectJAutoProxyCreator"><a href="#AnnotationAwareAspectJAutoProxyCreator" class="headerlink" title="AnnotationAwareAspectJAutoProxyCreator"></a>AnnotationAwareAspectJAutoProxyCreator</h2><p><code>AnnotationAwareAspectJAutoProxyCreator</code>的基类是<code>AbstractAutoProxyCreator</code>，它是一个<code>SmartInstantiationAwareBeanPostProcessor</code>，所以我们通过解析aop的自定义标签实际注册了一个bpp的bd</p>
-<p>如果你的应用使用的Spring容器是ApplicationContext，通过上面的分析可知，在Spring容器构建阶段就会加载所有bpp，并注册到beanFactory。所以Spring容器启动后，<code>AnnotationAwareAspectJAutoProxyCreator</code>作为bpp已经加载并注册到容器内部的beanFactory</p>
-<h1 id="AnnotationAwareAspectJAutoProxyCreator创建bean代理类"><a href="#AnnotationAwareAspectJAutoProxyCreator创建bean代理类" class="headerlink" title="AnnotationAwareAspectJAutoProxyCreator创建bean代理类"></a>AnnotationAwareAspectJAutoProxyCreator创建bean代理类</h1><p>通过上面的分析，对于<code>&lt;aop:aspectj-autoproxy/&gt;</code>这种xml方式启用AOP，默认使用的APC就是<code>AnnotationAwareAspectJAutoProxyCreator</code>，它是一个bpp，在bean加载过程中完成对目标bean的代理，下面重点看一下<code>AnnotationAwareAspectJAutoProxyCreator</code>在bean加载过程中如何对bean进行代理</p>
-<p>在分析源码前，先说一下预备知识：</p>
+<h1 id="APC-创建-bean-代理类"><a href="#APC-创建-bean-代理类" class="headerlink" title="APC 创建 bean 代理类"></a>APC 创建 bean 代理类</h1><p>通过上面的分析，使用<code>&lt;aop:aspectj-autoproxy/&gt;</code>或<code>@EnableAspectJAutoProxy</code>启用 AOP，默认使用的 APC 就是<code>AnnotationAwareAspectJAutoProxyCreator</code>，它是一个 bpp：<code>SmartInstantiationAwareBeanPostProcessor</code>，在 bean 加载过程中完成对目标 bean 的代理。<br>其实所有的 APC 都是 bpp：SmartInstantiationAwareBeanPostProcessor，基于 bpp 的回调钩子来为 bean 创建 aop 代理。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport</span><br><span class="line">		implements SmartInstantiationAwareBeanPostProcessor, BeanFactoryAware &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>下面会介绍 APC 在 bean 加载过程中如何为 bean 创建 aop 代理类。在分析源码前，先说一下预备知识：</p>
 <ul>
-<li>aop模块的核心bean是<code>Advisor</code>增强容器，它包括增强器<code>Advice</code>和切点<code>Pointcut</code>。增强器Advice实现具体的增强逻辑，切点PointCut用于判断是否与bean方法匹配，只有匹配上的bean才会被aop代理<ul>
+<li>aop 模块的核心 bean 是<code>Advisor</code>增强容器，它包括增强器<code>Advice</code>和切点<code>Pointcut</code>。增强器 Advice 实现具体的增强逻辑，切点 PointCut 用于判断是否与 bean 方法匹配，只有匹配上的 bean 才会被 aop 代理<ul>
 <li><code>Advisor</code>其实只包含<code>Advice</code>，它的子类<code>PointcutAdvisor</code>引入了<code>Pointcut</code>，所以增强容器真正指的是<code>PointcutAdvisor</code>，下文不区分<code>Advisor</code>和<code>PointcutAdvisor</code></li>
 </ul>
 </li>
-<li>aop使用APC为bean创建aop代理，如果用<code>&lt;aop:aspectj-autoproxy/&gt;</code>方式启用aop，APC是<code>AnnotationAwareAspectJAutoProxyCreator</code>，但aop还有其他的APC，例如<code>InfrastructureAdvisorAutoProxyCreator</code>，不同的APC在代理bean过程中有差异。且通过上面的分析可知，如果beanFactory要注册多个aop的apc beanDefinition时，实际注册的是优先级最高的apc，<code>AnnotationAwareAspectJAutoProxyCreator</code>优先级高于<code>InfrastructureAdvisorAutoProxyCreator</code>，下面分析<code>AnnotationAwareAspectJAutoProxyCreator</code>是如何代理bean的</li>
 </ul>
-<h2 id="bean前置实例化处理"><a href="#bean前置实例化处理" class="headerlink" title="bean前置实例化处理"></a>bean前置实例化处理</h2><p>bean前置实例化处理主要做了两件事：</p>
+<h2 id="bean-前置实例化处理"><a href="#bean-前置实例化处理" class="headerlink" title="bean 前置实例化处理"></a>bean 前置实例化处理</h2><p>入口：org.springframework.aop.framework.autoproxy.AbstractAutoProxyCreator#postProcessBeforeInstantiation</p>
+<p>bean 前置实例化处理主要做了两件事：</p>
 <ul>
-<li>缓存不需要被代理增强的bean<ul>
-<li>用于做aop代理的bean，包括Advisor、Advice、Pointcut的实现类</li>
-<li>使用@Aspect修饰的切面类</li>
+<li>缓存不需要被代理增强的 bean<ul>
+<li>用于做 aop 代理的 bean，包括 Advisor、Advice、Pointcut 的实现类</li>
+<li>使用@Aspect 修饰的切面类</li>
 </ul>
 </li>
-<li>为@Aspect切面类中每个增强方法创建增强容器advisor并缓存</li>
+<li>加载并筛选所有 advisor bean<ul>
+<li>特别的，AnnotationAwareAspectJAutoProxyCreator 会为@Aspect 切面类中每个增强方法创建增强容器 advisor</li>
+</ul>
+</li>
 </ul>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">if (isInfrastructureClass(beanClass) || shouldSkip(beanClass, beanName)) &#123;</span><br><span class="line">	// 缓存无需增强代理的bean</span><br><span class="line">	this.advisedBeans.put(cacheKey, Boolean.FALSE);</span><br><span class="line">	return null;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">protected boolean isInfrastructureClass(Class&lt;?&gt; beanClass) &#123;</span><br><span class="line">	boolean retVal = Advice.class.isAssignableFrom(beanClass) ||</span><br><span class="line">			Pointcut.class.isAssignableFrom(beanClass) ||</span><br><span class="line">			Advisor.class.isAssignableFrom(beanClass) ||</span><br><span class="line">			AopInfrastructureBean.class.isAssignableFrom(beanClass);</span><br><span class="line">	return retVal || hasAspectAnnotation(beanClass);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private boolean hasAspectAnnotation(Class&lt;?&gt; clazz) &#123;</span><br><span class="line">	return (AnnotationUtils.findAnnotation(clazz, Aspect.class) != null);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">protected boolean shouldSkip(Class&lt;?&gt; beanClass, String beanName) &#123;</span><br><span class="line">	List&lt;Advisor&gt; candidateAdvisors = findCandidateAdvisors();</span><br><span class="line">	for (Advisor advisor : candidateAdvisors) &#123;</span><br><span class="line">		if (advisor instanceof AspectJPointcutAdvisor &amp;&amp;</span><br><span class="line">				((AspectJPointcutAdvisor) advisor).getAspectName().equals(beanName)) &#123;</span><br><span class="line">			return true;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	return super.shouldSkip(beanClass, beanName);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>findCandidateAdvisors是aop的核心方法，它会返回当前APC下的所有候选advisor。<code>AbstractAdvisorAutoProxyCreator</code>里首次定义并给出了基础实现，它会加载所有Advisor bean，然后调用子类isEligibleBean方法，筛选advisor bean。<code>AnnotationAwareAspectJAutoProxyCreator</code>返回true，不过滤advisor bean。<code>InfrastructureAdvisorAutoProxyCreator</code>筛选的是role&#x3D;ROLE_INFRASTRUCTURE的基础设施advisor bean</p>
+<p>findCandidateAdvisors 是 aop 的核心方法，它会返回当前 APC 下的所有候选 advisor。<code>AbstractAdvisorAutoProxyCreator</code>里首次定义并给出了基础实现，它会加载所有 Advisor bean</p>
+<p><code>AnnotationAwareAspectJAutoProxyCreator</code>继承<code>AbstractAdvisorAutoProxyCreator</code>，并重写 findCandidateAdvisors 方法。它在父类的基础上，还会对@Aspect 修饰的切面 bean 的每个增强方法，创建对应的增强容器 Advisor，类型为<code>InstantiationModelAwarePointcutAdvisor</code>，作为候选 advisor。这些 advisor 只会创建一次，然后放到 map 缓存在 APC</p>
+<ul>
+<li>增强方法是@Around、@Before、@After、@AfterReturning、@AfterThrowing 其中之一的注解修饰的方法，实现具体的增强逻辑</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">public List&lt;Advisor&gt; buildAspectJAdvisors() &#123;</span><br><span class="line">	... ...</span><br><span class="line">	// 获取所有beanName</span><br><span class="line">	String[] beanNames = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(</span><br><span class="line">						this.beanFactory, Object.class, true, false);</span><br><span class="line">	for (String beanName : beanNames) &#123;</span><br><span class="line">		... ...</span><br><span class="line">		if (this.advisorFactory.isAspect(beanType)) &#123;</span><br><span class="line">			... ...</span><br><span class="line">			// 把切面中的每个增强方法（@Around、@Before、@After、@AfterReturning、@AfterThrowing之一的注解修饰）封装为一个增强容器advisor（advisor包括pointcut切点类、advice增强类）</span><br><span class="line">			for (Method method : getAdvisorMethods(aspectClass)) &#123;</span><br><span class="line">				... ...</span><br><span class="line">				Advisor advisor = new InstantiationModelAwarePointcutAdvisorImpl(expressionPointcut, candidateAdviceMethod, this, aspectInstanceFactory, declarationOrderInAspect, aspectName);</span><br><span class="line">				if (advisor != null) &#123;</span><br><span class="line">					advisors.add(advisor);</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			... ...</span><br><span class="line">			this.advisorsCache.put(beanName, advisors);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	... ...</span><br><span class="line">	return advisors;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>加载完候选 advisor bean 后，调用模板方法<code>isEligibleBean</code>，筛选 advisor bean。</p>
+<ul>
+<li><code>AnnotationAwareAspectJAutoProxyCreator</code>返回 true，不过滤 advisor bean。</li>
+<li><code>InfrastructureAdvisorAutoProxyCreator</code>筛选的是 role&#x3D;ROLE_INFRASTRUCTURE 的基础设施 advisor bean</li>
+</ul>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">protected List&lt;Advisor&gt; findCandidateAdvisors() &#123;</span><br><span class="line">	// 从beanFactory加载所有advisor类型增强器bean</span><br><span class="line">	... ...</span><br><span class="line">	advisorNames = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(</span><br><span class="line">				this.beanFactory, Advisor.class, true, false);</span><br><span class="line">	... ...</span><br><span class="line">	for (String name : advisorNames) &#123;</span><br><span class="line">		// 不同的APC实现类区分要返回哪些候选advisors，例如InfrastructureAdvisorAutoProxyCreator只会返回role=ROLE_INFRASTRUCTURE的基础设施advisor bean</span><br><span class="line">		if (isEligibleBean(name)) &#123;</span><br><span class="line">			advisors.add(this.beanFactory.getBean(name, Advisor.class));</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	... ...</span><br><span class="line">	return advisors;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p><code>AnnotationAwareAspectJAutoProxyCreator</code>继承<code>AbstractAdvisorAutoProxyCreator</code>，并重写findCandidateAdvisors方法。它在父类的基础上，还会对@Aspect修饰的切面bean的每个增强方法，创建对应的增强容器Advisor，类型为<code>InstantiationModelAwarePointcutAdvisor</code>，作为候选advisor。这些advisor只会创建一次，然后放到map缓存在APC</p>
+<h2 id="bean-后置初始化处理"><a href="#bean-后置初始化处理" class="headerlink" title="bean 后置初始化处理"></a>bean 后置初始化处理</h2><p>入口：org.springframework.aop.framework.autoproxy.AbstractAutoProxyCreator#postProcessAfterInitialization</p>
+<h3 id="跳过无需代理的-bean"><a href="#跳过无需代理的-bean" class="headerlink" title="跳过无需代理的 bean"></a>跳过无需代理的 bean</h3><p>读缓存，如果 bean 无需代理（说明是 aop 组件 bean），直接返回</p>
 <ul>
-<li>增强方法是@Around、@Before、@After、@AfterReturning、@AfterThrowing其中之一的注解修饰的方法，实现具体的增强逻辑</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">public List&lt;Advisor&gt; buildAspectJAdvisors() &#123;</span><br><span class="line">	... ...</span><br><span class="line">	// 获取所有beanName</span><br><span class="line">	String[] beanNames = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(</span><br><span class="line">						this.beanFactory, Object.class, true, false);</span><br><span class="line">	for (String beanName : beanNames) &#123;</span><br><span class="line">		... ...</span><br><span class="line">		if (this.advisorFactory.isAspect(beanType)) &#123;</span><br><span class="line">			... ...</span><br><span class="line">			// 把切面中的每个增强方法（@Around、@Before、@After、@AfterReturning、@AfterThrowing之一的注解修饰）封装为一个增强容器advisor（advisor包括pointcut切点类、advice增强类）</span><br><span class="line">			for (Method method : getAdvisorMethods(aspectClass)) &#123;</span><br><span class="line">				... ...</span><br><span class="line">				Advisor advisor = new InstantiationModelAwarePointcutAdvisorImpl(expressionPointcut, candidateAdviceMethod, this, aspectInstanceFactory, declarationOrderInAspect, aspectName);</span><br><span class="line">				if (advisor != null) &#123;</span><br><span class="line">					advisors.add(advisor);</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			... ...</span><br><span class="line">			this.advisorsCache.put(beanName, advisors);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	... ...</span><br><span class="line">	return advisors;			</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-<h2 id="bean后置初始化处理"><a href="#bean后置初始化处理" class="headerlink" title="bean后置初始化处理"></a>bean后置初始化处理</h2><h3 id="跳过无需代理的bean"><a href="#跳过无需代理的bean" class="headerlink" title="跳过无需代理的bean"></a>跳过无需代理的bean</h3><p>读缓存，如果bean无需代理（说明是aop组件bean），直接返回</p>
-<ul>
-<li>bean前置实例化处理时，已经将无需代理的bean加入缓存</li>
+<li>bean 前置实例化处理时，已经将无需代理的 bean 加入缓存</li>
 </ul>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// aop组件bean和@Aspect定义的切面类不需要被代理</span><br><span class="line">if (Boolean.FALSE.equals(this.advisedBeans.get(cacheKey))) &#123;</span><br><span class="line">	return bean;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h3 id="获取与当前bean匹配的增强容器advisor"><a href="#获取与当前bean匹配的增强容器advisor" class="headerlink" title="获取与当前bean匹配的增强容器advisor"></a>获取与当前bean匹配的增强容器advisor</h3><p>调用getAdvicesAndAdvisorsForBean方法获取与当前bean匹配的advisor。如果存在，则bean需要被代理，否则不用代理。缓存bean是否需要代理的结果</p>
+<h3 id="获取与当前-bean-匹配的增强容器-advisor"><a href="#获取与当前-bean-匹配的增强容器-advisor" class="headerlink" title="获取与当前 bean 匹配的增强容器 advisor"></a>获取与当前 bean 匹配的增强容器 advisor</h3><p>调用 getAdvicesAndAdvisorsForBean 方法获取与当前 bean 匹配的 advisor。如果存在，则 bean 需要被代理，否则不用代理。缓存 bean 是否需要代理的结果</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Object[] specificInterceptors = getAdvicesAndAdvisorsForBean(bean.getClass(), beanName, null);</span><br><span class="line">if (specificInterceptors != DO_NOT_PROXY) &#123;</span><br><span class="line">	// bean需要被代理</span><br><span class="line">	this.advisedBeans.put(cacheKey, Boolean.TRUE);</span><br><span class="line">	// 创建代理</span><br><span class="line">	Object proxy = createProxy(</span><br><span class="line">			bean.getClass(), beanName, specificInterceptors, new SingletonTargetSource(bean));</span><br><span class="line">	// 缓存代理类</span><br><span class="line">	this.proxyTypes.put(cacheKey, proxy.getClass());</span><br><span class="line">	return proxy;</span><br><span class="line">&#125;</span><br><span class="line">// bean无需代理</span><br><span class="line">this.advisedBeans.put(cacheKey, Boolean.FALSE);</span><br><span class="line">return bean;</span><br></pre></td></tr></table></figure>
 
-<p>getAdvicesAndAdvisorsForBean方法内部调用findEligibleAdvisors方法查找与bean匹配的advisors，主要逻辑为：</p>
+<p>getAdvicesAndAdvisorsForBean 方法内部调用 findEligibleAdvisors 方法查找与 bean 匹配的 advisors，主要逻辑为：</p>
 <ul>
-<li>findCandidateAdvisors方法获取所有增强容器advisor bean，包括配置的advisor和解析Aspect注解修饰的切面类生成的增强容器advisor，该方法上面重点介绍过</li>
-<li>逐个遍历advisor，筛选与bean方法匹配成功的增强容器advisor<ul>
-<li>基于增强容器advisor的切点<code>Pointcut</code>的方法匹配器<code>MethodMatcher</code>，逐一匹配bean的所有方法，匹配成功则advisor可用于代理bean</li>
+<li>findCandidateAdvisors 方法获取所有增强容器 advisor bean，<code>AnnotationAwareAspectJAutoProxyCreator</code>还会解析 Aspect 注解修饰的切面类生成的增强容器 advisor，然后调用模板方法<code>isEligibleBean</code>判断 advisor 是否符合条件，AnnotationAwareAspectJAutoProxyCreator 返回 true，InfrastructureAdvisorAutoProxyCreator 筛选的是 role&#x3D;ROLE_INFRASTRUCTURE 的基础设施 advisor bean。该方法上面重点介绍过</li>
+<li>逐个遍历 advisor，筛选与 bean 方法匹配成功的增强容器 advisor<ul>
+<li>基于增强容器 advisor 的切点<code>Pointcut</code>的方法匹配器<code>MethodMatcher</code>，逐一匹配 bean 的所有方法，匹配成功则 advisor 可用于代理 bean</li>
 </ul>
 </li>
-<li>如果存在基于Aspect切面类生成的增强器advisor：<code>InstantiationModelAwarePointcutAdvisor</code>，bean的增强器链表首部添加一个Spring自带的增强器<code>DefaultPointcutAdvisor</code></li>
+<li>如果存在基于 Aspect 切面类生成的增强器 advisor：<code>InstantiationModelAwarePointcutAdvisor</code>，bean 的增强器链表首部添加一个 Spring 自带的增强器<code>DefaultPointcutAdvisor</code></li>
 </ul>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">protected List&lt;Advisor&gt; findEligibleAdvisors(Class&lt;?&gt; beanClass, String beanName) &#123;</span><br><span class="line">	// 获取所有xml定义的增强容器advisor 和 解析Aspect注解修饰的切面类生成的增强容器advisor</span><br><span class="line">	List&lt;Advisor&gt; candidateAdvisors = findCandidateAdvisors();</span><br><span class="line">	// 筛选与bean方法匹配成功的增强容器advisor</span><br><span class="line">	// 基于增强容器advisor的切点pointCut的方法匹配器methodMatcher，逐一匹配bean的所有方法，匹配成功则advisor可用于代理bean</span><br><span class="line">	List&lt;Advisor&gt; eligibleAdvisors = findAdvisorsThatCanApply(candidateAdvisors, beanClass, beanName);</span><br><span class="line">	// 如果存在基于Aspect切面类生成的增强器advisor：`InstantiationModelAwarePointcutAdvisor`，bean的增强器链表首部添加一个Spring自带的增强器`DefaultPointcutAdvisor`</span><br><span class="line">	extendAdvisors(eligibleAdvisors);</span><br><span class="line">	if (!eligibleAdvisors.isEmpty()) &#123;</span><br><span class="line">		eligibleAdvisors = sortAdvisors(eligibleAdvisors);</span><br><span class="line">	&#125;</span><br><span class="line">	return eligibleAdvisors;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">public static boolean canApply(Pointcut pc, Class&lt;?&gt; targetClass, boolean hasIntroductions) &#123;</span><br><span class="line">	... ...</span><br><span class="line"></span><br><span class="line">	MethodMatcher methodMatcher = pc.getMethodMatcher();</span><br><span class="line">	// 切点匹配任何方法时</span><br><span class="line">	if (methodMatcher == MethodMatcher.TRUE) &#123;</span><br><span class="line">		return true;</span><br><span class="line">	&#125;</span><br><span class="line">	... ...</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * 获取bean的所有方法（包括实现的接口里定义的所有方法）</span><br><span class="line">	 * 基于切点PointCut的方法匹配器methodMatcher，对每个bean实现的方法做匹配，如果匹配上，说明当前增强器可以应用于这个bean</span><br><span class="line">	 */</span><br><span class="line">	... ...</span><br><span class="line">	classes.addAll(ClassUtils.getAllInterfacesForClassAsSet(targetClass));</span><br><span class="line"></span><br><span class="line">	for (Class&lt;?&gt; clazz : classes) &#123;</span><br><span class="line">		Method[] methods = ReflectionUtils.getAllDeclaredMethods(clazz);</span><br><span class="line">		for (Method method : methods) &#123;</span><br><span class="line">			if (introductionAwareMethodMatcher != null ?</span><br><span class="line">					introductionAwareMethodMatcher.matches(method, targetClass, hasIntroductions) :</span><br><span class="line">					methodMatcher.matches(method, targetClass)) &#123;</span><br><span class="line">				return true;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	return false;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">	for (Advisor advisor : advisors) &#123;</span><br><span class="line">		if (isAspectJAdvice(advisor)) &#123;</span><br><span class="line">			foundAspectJAdvice = true;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	if (foundAspectJAdvice &amp;&amp; !advisors.contains(ExposeInvocationInterceptor.ADVISOR)) &#123;</span><br><span class="line">		advisors.add(0, ExposeInvocationInterceptor.ADVISOR);</span><br><span class="line">		... ...</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	private static boolean isAspectJAdvice(Advisor advisor) &#123;</span><br><span class="line">		return (advisor instanceof InstantiationModelAwarePointcutAdvisor ||</span><br><span class="line">			advisor.getAdvice() instanceof AbstractAspectJAdvice ||</span><br><span class="line">			(advisor instanceof PointcutAdvisor &amp;&amp;</span><br><span class="line">			((PointcutAdvisor) advisor).getPointcut() instanceof AspectJExpressionPointcut));</span><br><span class="line">	&#125;</span><br><span class="line">```		</span><br><span class="line"></span><br><span class="line">### 创建aop代理类</span><br><span class="line">创建aop代理，作为bean初始化后置处理返回值</span><br></pre></td></tr></table></figure>
-<pre><code>// 创建代理
-Object proxy = createProxy(bean.getClass(), beanName, specificInterceptors, new SingletonTargetSource(bean));
-// 缓存代理类
-this.proxyTypes.put(cacheKey, proxy.getClass());
-return proxy;
-</code></pre>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">下面看下创建aop代理的具体实现</span><br><span class="line"></span><br><span class="line">创建代理工厂，从apc bean复制一些控制属性</span><br></pre></td></tr></table></figure>
-<pre><code>ProxyFactory proxyFactory = new ProxyFactory();
-proxyFactory.copyFrom(this);
-</code></pre>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
-<pre><code>public void copyFrom(ProxyConfig other) &#123;
-    Assert.notNull(other, &quot;Other ProxyConfig object must not be null&quot;);
-    this.proxyTargetClass = other.proxyTargetClass;
-    this.optimize = other.optimize;
-    this.exposeProxy = other.exposeProxy;
-    this.frozen = other.frozen;
-    this.opaque = other.opaque;
-&#125;
-</code></pre>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">如果proxyFactory.proxyTargetClass=false，动态决定是否设为true</span><br><span class="line">- 如果被代理bean的bd的preserveTargetClass=true，则proxyFactory.proxyTargetClass=true</span><br><span class="line">- 如果被代理的bean没有实现用户自定义接口，proxyFactory.proxyTargetClass=true。否则，将被代理bean实现的所有接口添加到proxyFactory</span><br></pre></td></tr></table></figure>
-<pre><code>if (!proxyFactory.isProxyTargetClass()) &#123;
-    // 如果被代理bean的bd的preserveTargetClass=true，则proxyFactory.proxyTargetClass=true
-    if (shouldProxyTargetClass(beanClass, beanName)) &#123;
-        proxyFactory.setProxyTargetClass(true);
-    &#125;
-    else &#123;
-        // 如果被代理的bean没有实现用户自定义接口，proxyFactory.proxyTargetClass=true。否则，将被代理bean实现的所有接口添加到proxyFactory
-        evaluateProxyInterfaces(beanClass, proxyFactory);
-    &#125;
-&#125;
-</code></pre>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
-<pre><code>public static boolean shouldProxyTargetClass(ConfigurableListableBeanFactory beanFactory, @Nullable String beanName) &#123;
-    if (beanName != null &amp;&amp; beanFactory.containsBeanDefinition(beanName)) &#123;
-        BeanDefinition bd = beanFactory.getBeanDefinition(beanName);
-        return Boolean.TRUE.equals(bd.getAttribute(PRESERVE_TARGET_CLASS_ATTRIBUTE));
-    &#125;
-    return false;
-&#125;
-</code></pre>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">		</span><br></pre></td></tr></table></figure>
-<pre><code>protected void evaluateProxyInterfaces(Class&lt;?&gt; beanClass, ProxyFactory proxyFactory) &#123;
-    Class&lt;?&gt;[] targetInterfaces = ClassUtils.getAllInterfacesForClass(beanClass, getProxyClassLoader());
-    boolean hasReasonableProxyInterface = false;
-    for (Class&lt;?&gt; ifc : targetInterfaces) &#123;
-        // 如果bean实现了用户自定义的接口，hasReasonableProxyInterface = true
-        // isConfigurationCallbackInterface=true说明interface是Spring提供的回调接口
-        if (!isConfigurationCallbackInterface(ifc) &amp;&amp; !isInternalLanguageInterface(ifc) &amp;&amp; ifc.getMethods().length &gt; 0) &#123;
-            hasReasonableProxyInterface = true;
-            break;
-        &#125;
-    &#125;
-    if (hasReasonableProxyInterface) &#123;
-        for (Class&lt;?&gt; ifc : targetInterfaces) &#123;
-            proxyFactory.addInterface(ifc);
-        &#125;
-    &#125;
-    else &#123;
-        proxyFactory.setProxyTargetClass(true);
-    &#125;
-&#125;
-</code></pre>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">上面筛选得到的匹配`Advisor`添加到proxyFactory &amp;&amp; 被代理bean添加到proxyFactory</span><br><span class="line">- 如果筛选得到的是`MethodInterceptor`（Advice的子接口），将`MethodInterceptor`包装成`DefaultPointcutAdvisor`</span><br><span class="line">	- aop表征增强逻辑的`Advice`，在真正执行时都被适配为它的子类`MethodInterceptor`</span><br><span class="line">	- `DefaultPointcutAdvisor`的`Pointcut`匹配所有方法</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<pre><code>Advisor[] advisors = buildAdvisors(beanName, specificInterceptors);
-proxyFactory.addAdvisors(advisors);
-proxyFactory.setTargetSource(targetSource);
-</code></pre>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
-<pre><code>protected Advisor[] buildAdvisors(@Nullable String beanName, @Nullable Object[] specificInterceptors) &#123;
-    ... ...
-    for (int i = 0; i &lt; allInterceptors.size(); i++) &#123;
-        // 如果是MethodInterceptor，包装成DefaultPointcutAdvisor
-        advisors[i] = this.advisorAdapterRegistry.wrap(allInterceptors.get(i));
-    &#125;
-    return advisors;
-&#125;
-</code></pre>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
-<pre><code>public Advisor wrap(Object adviceObject) throws UnknownAdviceTypeException &#123;
-    if (adviceObject instanceof Advisor) &#123;
-        return (Advisor) adviceObject;
-    &#125;
-    if (!(adviceObject instanceof Advice)) &#123;
-        throw new UnknownAdviceTypeException(adviceObject);
-    &#125;
-    Advice advice = (Advice) adviceObject;
-    if (advice instanceof MethodInterceptor) &#123;
-        // So well-known it doesn&#39;t even need an adapter.
-        return new DefaultPointcutAdvisor(advice);
-    &#125;
-    for (AdvisorAdapter adapter : this.adapters) &#123;
-        // Check that it is supported.
-        if (adapter.supportsAdvice(advice)) &#123;
-            return new DefaultPointcutAdvisor(advice);
-        &#125;
-    &#125;
-    throw new UnknownAdviceTypeException(advice);
-&#125;
-</code></pre>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">创建实际的aop代理类：JDK动态代理或CgLIB动态代理</span><br><span class="line">- `ProxyFactory`继承`AdvisedSupport`，封装了代理上下文（被代理类、增强容器、代理配置属性等），用于控制创建aop代理的逻辑</span><br><span class="line">- 无特殊配置下，如果bean实现了用户自定义接口，创建JDK动态代理，否则创建CgLIB动态代理</span><br><span class="line">		</span><br></pre></td></tr></table></figure>
-<pre><code>public AopProxy createAopProxy(AdvisedSupport config) throws AopConfigException &#123;
-    // 如果被代理bean没实现用户自定义接口 || 被代理bean的bd.preserveTargetClass=true || apc的bd.proxyTargetClass=true
-    if (config.isOptimize() || config.isProxyTargetClass() || hasNoUserSuppliedProxyInterfaces(config)) &#123;
-        Class&lt;?&gt; targetClass = config.getTargetClass();
-        if (targetClass == null) &#123;
-            throw new AopConfigException(&quot;TargetSource cannot determine target class: &quot; +
-                &quot;Either an interface or a target is required for proxy creation.&quot;);
-        &#125;
-        ... ...
-        return new ObjenesisCglibAopProxy(config);
-    &#125;
-    else &#123;
-        // 如果实现了用户自定义接口，创建JDK动态代理
-        return new JdkDynamicAopProxy(config);
-    &#125;
-&#125;
-</code></pre>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 代理类执行方法代理</span><br><span class="line">这里介绍的是JDK动态代理</span><br><span class="line">入口：org.springframework.aop.framework.JdkDynamicAopProxy#invoke</span><br><span class="line"></span><br><span class="line">## 获取方法的拦截器MethodInterceptor列表</span><br><span class="line">获取被代理方法的方法拦截器`MethodInterceptor`列表</span><br><span class="line">- 从bean匹配的所有增强容器中，通过切点的`MethodMatcher`筛选出与当前方法匹配的增强容器`Advisor`</span><br><span class="line">- 通过适配器模式，使用一个适配器类把增强`Advice`包装为方法拦截器`MethodInterceptor`</span><br><span class="line">	- aop的表征增强逻辑的`Advice`，在真正执行时都被适配为它的子类`MethodInterceptor`</span><br><span class="line">- 缓存被代理方法与拦截器`MethodInterceptor`列表的映射</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<pre><code>for (Advisor advisor : config.getAdvisors()) &#123;
-    if (advisor instanceof PointcutAdvisor) &#123;
-        // Add it conditionally.
-        PointcutAdvisor pointcutAdvisor = (PointcutAdvisor) advisor;
-        if (config.isPreFiltered() || pointcutAdvisor.getPointcut().getClassFilter().matches(actualClass)) &#123;
-            MethodMatcher mm = pointcutAdvisor.getPointcut().getMethodMatcher();
-            // 在原始bean匹配的所有增强器advisor里筛选与当前调用方法匹配的advisor
-            // 然后取出advice，适配成MethodInterceptor
-            if (MethodMatchers.matches(mm, method, actualClass, hasIntroductions)) &#123;
-                MethodInterceptor[] interceptors = registry.getInterceptors(advisor);
-                if (mm.isRuntime()) &#123;
-                    // Creating a new object instance in the getInterceptors() method
-                    // isn&#39;t a problem as we normally cache created chains.
-                    for (MethodInterceptor interceptor : interceptors) &#123;
-                        interceptorList.add(new InterceptorAndDynamicMethodMatcher(interceptor, mm));
-                    &#125;
-                &#125;
-                else &#123;
-                    interceptorList.addAll(Arrays.asList(interceptors));
-                &#125;
-            &#125;
-        &#125;
-    &#125;
-    ...
-&#125;
-</code></pre>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
-<pre><code>public MethodInterceptor[] getInterceptors(Advisor advisor) throws UnknownAdviceTypeException &#123;
-    List&lt;MethodInterceptor&gt; interceptors = new ArrayList&lt;&gt;(3);
-    Advice advice = advisor.getAdvice();
-    if (advice instanceof MethodInterceptor) &#123;
-        interceptors.add((MethodInterceptor) advice);
-    &#125;
-    // 部分类型的增强advice本身不是拦截器methodInterceptor类型
-    // 通过适配器将advice包装为拦截器
-    for (AdvisorAdapter adapter : this.adapters) &#123;
-        if (adapter.supportsAdvice(advice)) &#123;
-            interceptors.add(adapter.getInterceptor(advisor));
-        &#125;
-    &#125;
-    if (interceptors.isEmpty()) &#123;
-        throw new UnknownAdviceTypeException(advisor.getAdvice());
-    &#125;
-    return interceptors.toArray(new MethodInterceptor[0]);
-&#125;
-</code></pre>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
-<pre><code>public List&lt;Object&gt; getInterceptorsAndDynamicInterceptionAdvice(Method method, @Nullable Class&lt;?&gt; targetClass) &#123;
-    MethodCacheKey cacheKey = new MethodCacheKey(method);
-    List&lt;Object&gt; cached = this.methodCache.get(cacheKey);
-    if (cached == null) &#123;
-        // 获取被代理方法的拦截器列表
-        cached = this.advisorChainFactory.getInterceptorsAndDynamicInterceptionAdvice(
-                this, method, targetClass);
-        // 缓存代理方法与拦截器列表的映射
-        this.methodCache.put(cacheKey, cached);
-    &#125;
-    return cached;
-&#125;
-</code></pre>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">## 创建代理方法上下文</span><br><span class="line">创建一个代理方法上下文`MethodInvocation`</span><br><span class="line">- 封装执行被代理方法的上下文，包括原始bean、被代理方法、入参，以及上一步获取的方法拦截器列表（用于执行代理逻辑）</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<pre><code>// 创建一个代理方法调用上下文
-MethodInvocation invocation = new ReflectiveMethodInvocation(proxy, target, method, args, targetClass, chain);
-</code></pre>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">## 执行方法代理</span><br><span class="line">调用代理方法上下文MethodInvocation的proceed方法执行方法代理，实际调用：org.springframework.aop.framework.ReflectiveMethodInvocation#proceed。回调拦截器增强方法的过程是通过`递归`实现的，下面具体分析。</span><br><span class="line"></span><br><span class="line">顺序回调方法拦截器列表里每个`MethodInterceptor`的invoke方法，传入代理方法上下文。</span><br></pre></td></tr></table></figure>
-<pre><code>...
-Object interceptorOrInterceptionAdvice =
-            this.interceptorsAndDynamicMethodMatchers.get(++this.currentInterceptorIndex);
-...
-return ((MethodInterceptor) interceptorOrInterceptionAdvice).invoke(this);
-</code></pre>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">注意，`MethodInvocation`的proceed方法是一个递归调用，`MethodInterceptor`的实现类会在合适的时机执行增强逻辑以及继续递归调用MethodInvocation的proceed方法，以此保证了所有方法拦截器的增强逻辑都会被执行到</span><br><span class="line">- 所谓“拦截方法在合适时机执行增强逻辑”，例如前置@Before增强对应的拦截器`MethodBeforeAdviceInterceptor`就会在回调代理方法前执行增强逻辑。@After增强对应的拦截器`AspectJAfterAdvice`就会先回调代理方法，返回后再执行增强逻辑</span><br><span class="line"></span><br><span class="line">MethodBeforeAdviceInterceptor：</span><br></pre></td></tr></table></figure>
-<pre><code>@Override
-public Object invoke(MethodInvocation mi) throws Throwable &#123;
-    this.advice.before(mi.getMethod(), mi.getArguments(), mi.getThis());
-    return mi.proceed();
-&#125;
-</code></pre>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">AspectJAfterAdvice：</span><br></pre></td></tr></table></figure>
-<pre><code>@Override
-public Object invoke(MethodInvocation mi) throws Throwable &#123;
-    try &#123;
-        return mi.proceed();
-    &#125;
-    finally &#123;
-        invokeAdviceMethod(getJoinPointMatch(), null, null);
-    &#125;
-&#125;
-</code></pre>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">如果所有方法拦截器的invoke方法都被调用了，则反射调用被代理方法。注意，因为`MethodInvocation`的proceed方法是递归调用的，所以会逆序从每个方法拦截器向上return，回溯过程中可能有些拦截器的增强逻辑才被调用，例如上面介绍的`AspectJAfterAdvice`</span><br></pre></td></tr></table></figure>
-<pre><code>if (this.currentInterceptorIndex == this.interceptorsAndDynamicMethodMatchers.size() - 1) &#123;
-    return invokeJoinpoint();
-&#125;
-</code></pre>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">前面提到，APC在初始化后置处理为bean创建动态代理的过程中，会寻找与当前bean匹配的增强容器advisor，如果存在来自Aspect切面类生成的增强容器，会为bean的增强容器链表首部添加一个通配的增强容器`DefaultPointcutAdvisor`。该advisor的增强advice是`ExposeInvocationInterceptor`（interceptor是advice的子接口），它的执行逻辑是将当前代理方法调用上下文写ThreadLocal，方便在该方法拦截器链上的其他拦截器通过其获取调用上下文，所以要放在拦截器链首部第一个执行</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<pre><code>@Override
-// 将当前代理方法调用上下文写ThreadLocal，方便在该方法拦截器链上的其他拦截器获取当前代理方法调用上下文
-public Object invoke(MethodInvocation mi) throws Throwable &#123;
-    MethodInvocation oldInvocation = invocation.get();
-    invocation.set(mi);
-    try &#123;
-        return mi.proceed();
-    &#125;
-    finally &#123;
-        invocation.set(oldInvocation);
-    &#125;
-&#125;
-</code></pre>
-<pre><code>
-</code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">for (Advisor advisor : advisors) &#123;</span><br><span class="line">	if (isAspectJAdvice(advisor)) &#123;</span><br><span class="line">		foundAspectJAdvice = true;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">if (foundAspectJAdvice &amp;&amp; !advisors.contains(ExposeInvocationInterceptor.ADVISOR)) &#123;</span><br><span class="line">	advisors.add(0, ExposeInvocationInterceptor.ADVISOR);</span><br><span class="line">	... ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private static boolean isAspectJAdvice(Advisor advisor) &#123;</span><br><span class="line">	return (advisor instanceof InstantiationModelAwarePointcutAdvisor ||</span><br><span class="line">		advisor.getAdvice() instanceof AbstractAspectJAdvice ||</span><br><span class="line">		(advisor instanceof PointcutAdvisor &amp;&amp;</span><br><span class="line">		((PointcutAdvisor) advisor).getPointcut() instanceof AspectJExpressionPointcut));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="创建-aop-代理类"><a href="#创建-aop-代理类" class="headerlink" title="创建 aop 代理类"></a>创建 aop 代理类</h3><p>创建 aop 代理，作为 bean 初始化后置处理返回值</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// 创建代理</span><br><span class="line">Object proxy = createProxy(bean.getClass(), beanName, specificInterceptors, new SingletonTargetSource(bean));</span><br><span class="line">// 缓存代理类</span><br><span class="line">this.proxyTypes.put(cacheKey, proxy.getClass());</span><br><span class="line">return proxy;</span><br></pre></td></tr></table></figure>
+
+<p>下面看下创建 aop 代理的具体实现</p>
+<p>创建代理工厂，从 apc bean 复制一些控制属性</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ProxyFactory proxyFactory = new ProxyFactory();</span><br><span class="line">proxyFactory.copyFrom(this);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">public void copyFrom(ProxyConfig other) &#123;</span><br><span class="line">	Assert.notNull(other, &quot;Other ProxyConfig object must not be null&quot;);</span><br><span class="line">	this.proxyTargetClass = other.proxyTargetClass;</span><br><span class="line">	this.optimize = other.optimize;</span><br><span class="line">	this.exposeProxy = other.exposeProxy;</span><br><span class="line">	this.frozen = other.frozen;</span><br><span class="line">	this.opaque = other.opaque;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果 proxyFactory.proxyTargetClass&#x3D;false，动态决定是否设为 true</p>
+<ul>
+<li>如果被代理 bean 的 bd 的 preserveTargetClass&#x3D;true，则 proxyFactory.proxyTargetClass&#x3D;true</li>
+<li>如果被代理的 bean 没有实现用户自定义接口，proxyFactory.proxyTargetClass&#x3D;true。否则，将被代理 bean 实现的所有接口添加到 proxyFactory</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">if (!proxyFactory.isProxyTargetClass()) &#123;</span><br><span class="line">	// 如果被代理bean的bd的preserveTargetClass=true，则proxyFactory.proxyTargetClass=true</span><br><span class="line">	if (shouldProxyTargetClass(beanClass, beanName)) &#123;</span><br><span class="line">		proxyFactory.setProxyTargetClass(true);</span><br><span class="line">	&#125;</span><br><span class="line">	else &#123;</span><br><span class="line">		// 如果被代理的bean没有实现用户自定义接口，proxyFactory.proxyTargetClass=true。否则，将被代理bean实现的所有接口添加到proxyFactory</span><br><span class="line">		evaluateProxyInterfaces(beanClass, proxyFactory);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public static boolean shouldProxyTargetClass(ConfigurableListableBeanFactory beanFactory, @Nullable String beanName) &#123;</span><br><span class="line">	if (beanName != null &amp;&amp; beanFactory.containsBeanDefinition(beanName)) &#123;</span><br><span class="line">		BeanDefinition bd = beanFactory.getBeanDefinition(beanName);</span><br><span class="line">		return Boolean.TRUE.equals(bd.getAttribute(PRESERVE_TARGET_CLASS_ATTRIBUTE));</span><br><span class="line">	&#125;</span><br><span class="line">	return false;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">protected void evaluateProxyInterfaces(Class&lt;?&gt; beanClass, ProxyFactory proxyFactory) &#123;</span><br><span class="line">	Class&lt;?&gt;[] targetInterfaces = ClassUtils.getAllInterfacesForClass(beanClass, getProxyClassLoader());</span><br><span class="line">	boolean hasReasonableProxyInterface = false;</span><br><span class="line">	for (Class&lt;?&gt; ifc : targetInterfaces) &#123;</span><br><span class="line">		// 如果bean实现了用户自定义的接口，hasReasonableProxyInterface = true</span><br><span class="line">		// isConfigurationCallbackInterface=true说明interface是Spring提供的回调接口</span><br><span class="line">		if (!isConfigurationCallbackInterface(ifc) &amp;&amp; !isInternalLanguageInterface(ifc) &amp;&amp; ifc.getMethods().length &gt; 0) &#123;</span><br><span class="line">			hasReasonableProxyInterface = true;</span><br><span class="line">			break;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	if (hasReasonableProxyInterface) &#123;</span><br><span class="line">		for (Class&lt;?&gt; ifc : targetInterfaces) &#123;</span><br><span class="line">			proxyFactory.addInterface(ifc);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	else &#123;</span><br><span class="line">		proxyFactory.setProxyTargetClass(true);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面筛选得到的匹配<code>Advisor</code>添加到 proxyFactory &amp;&amp; 被代理 bean 添加到 proxyFactory</p>
+<ul>
+<li>如果筛选得到的是<code>MethodInterceptor</code>（Advice 的子接口），将<code>MethodInterceptor</code>包装成<code>DefaultPointcutAdvisor</code><ul>
+<li>aop 表征增强逻辑的<code>Advice</code>，在真正执行时都被适配为它的子类<code>MethodInterceptor</code></li>
+<li><code>DefaultPointcutAdvisor</code>的<code>Pointcut</code>匹配所有方法</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Advisor[] advisors = buildAdvisors(beanName, specificInterceptors);</span><br><span class="line">proxyFactory.addAdvisors(advisors);</span><br><span class="line">proxyFactory.setTargetSource(targetSource);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">protected Advisor[] buildAdvisors(@Nullable String beanName, @Nullable Object[] specificInterceptors) &#123;</span><br><span class="line">	... ...</span><br><span class="line">	for (int i = 0; i &lt; allInterceptors.size(); i++) &#123;</span><br><span class="line">		// 如果是MethodInterceptor，包装成DefaultPointcutAdvisor</span><br><span class="line">		advisors[i] = this.advisorAdapterRegistry.wrap(allInterceptors.get(i));</span><br><span class="line">	&#125;</span><br><span class="line">	return advisors;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">public Advisor wrap(Object adviceObject) throws UnknownAdviceTypeException &#123;</span><br><span class="line">	if (adviceObject instanceof Advisor) &#123;</span><br><span class="line">		return (Advisor) adviceObject;</span><br><span class="line">	&#125;</span><br><span class="line">	if (!(adviceObject instanceof Advice)) &#123;</span><br><span class="line">		throw new UnknownAdviceTypeException(adviceObject);</span><br><span class="line">	&#125;</span><br><span class="line">	Advice advice = (Advice) adviceObject;</span><br><span class="line">	if (advice instanceof MethodInterceptor) &#123;</span><br><span class="line">		// So well-known it doesn&#x27;t even need an adapter.</span><br><span class="line">		return new DefaultPointcutAdvisor(advice);</span><br><span class="line">	&#125;</span><br><span class="line">	for (AdvisorAdapter adapter : this.adapters) &#123;</span><br><span class="line">		// Check that it is supported.</span><br><span class="line">		if (adapter.supportsAdvice(advice)) &#123;</span><br><span class="line">			return new DefaultPointcutAdvisor(advice);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	throw new UnknownAdviceTypeException(advice);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>创建实际的 aop 代理类：JDK 动态代理或 CgLIB 动态代理</p>
+<ul>
+<li><code>ProxyFactory</code>继承<code>AdvisedSupport</code>，封装了代理上下文（被代理类、增强容器、代理配置属性等），用于控制创建 aop 代理的逻辑</li>
+<li>无特殊配置下，如果 bean 实现了用户自定义接口，创建 JDK 动态代理，否则创建 CgLIB 动态代理</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">public AopProxy createAopProxy(AdvisedSupport config) throws AopConfigException &#123;</span><br><span class="line">	// 如果被代理bean没实现用户自定义接口 || 被代理bean的bd.preserveTargetClass=true || apc的bd.proxyTargetClass=true</span><br><span class="line">	if (config.isOptimize() || config.isProxyTargetClass() || hasNoUserSuppliedProxyInterfaces(config)) &#123;</span><br><span class="line">		Class&lt;?&gt; targetClass = config.getTargetClass();</span><br><span class="line">		if (targetClass == null) &#123;</span><br><span class="line">			throw new AopConfigException(&quot;TargetSource cannot determine target class: &quot; +</span><br><span class="line">				&quot;Either an interface or a target is required for proxy creation.&quot;);</span><br><span class="line">		&#125;</span><br><span class="line">		... ...</span><br><span class="line">		return new ObjenesisCglibAopProxy(config);</span><br><span class="line">	&#125;</span><br><span class="line">	else &#123;</span><br><span class="line">		// 如果实现了用户自定义接口，创建JDK动态代理</span><br><span class="line">		return new JdkDynamicAopProxy(config);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="代理类执行方法代理"><a href="#代理类执行方法代理" class="headerlink" title="代理类执行方法代理"></a>代理类执行方法代理</h1><p>这里介绍的是 JDK 动态代理<br>入口：org.springframework.aop.framework.JdkDynamicAopProxy#invoke</p>
+<h2 id="获取方法的拦截器-MethodInterceptor-列表"><a href="#获取方法的拦截器-MethodInterceptor-列表" class="headerlink" title="获取方法的拦截器 MethodInterceptor 列表"></a>获取方法的拦截器 MethodInterceptor 列表</h2><p>获取被代理方法的方法拦截器<code>MethodInterceptor</code>列表</p>
+<ul>
+<li>从 bean 匹配的所有增强容器中，通过切点的<code>MethodMatcher</code>筛选出与当前方法匹配的增强容器<code>Advisor</code></li>
+<li>通过适配器模式，使用一个适配器类把增强<code>Advice</code>包装为方法拦截器<code>MethodInterceptor</code><ul>
+<li>aop 的表征增强逻辑的<code>Advice</code>，在真正执行时都被适配为它的子类<code>MethodInterceptor</code></li>
+</ul>
+</li>
+<li>缓存被代理方法与拦截器<code>MethodInterceptor</code>列表的映射</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">for (Advisor advisor : config.getAdvisors()) &#123;</span><br><span class="line">	if (advisor instanceof PointcutAdvisor) &#123;</span><br><span class="line">		// Add it conditionally.</span><br><span class="line">		PointcutAdvisor pointcutAdvisor = (PointcutAdvisor) advisor;</span><br><span class="line">		if (config.isPreFiltered() || pointcutAdvisor.getPointcut().getClassFilter().matches(actualClass)) &#123;</span><br><span class="line">			MethodMatcher mm = pointcutAdvisor.getPointcut().getMethodMatcher();</span><br><span class="line">			// 在原始bean匹配的所有增强器advisor里筛选与当前调用方法匹配的advisor</span><br><span class="line">			// 然后取出advice，适配成MethodInterceptor</span><br><span class="line">			if (MethodMatchers.matches(mm, method, actualClass, hasIntroductions)) &#123;</span><br><span class="line">				MethodInterceptor[] interceptors = registry.getInterceptors(advisor);</span><br><span class="line">				if (mm.isRuntime()) &#123;</span><br><span class="line">					// Creating a new object instance in the getInterceptors() method</span><br><span class="line">					// isn&#x27;t a problem as we normally cache created chains.</span><br><span class="line">					for (MethodInterceptor interceptor : interceptors) &#123;</span><br><span class="line">						interceptorList.add(new InterceptorAndDynamicMethodMatcher(interceptor, mm));</span><br><span class="line">					&#125;</span><br><span class="line">				&#125;</span><br><span class="line">				else &#123;</span><br><span class="line">					interceptorList.addAll(Arrays.asList(interceptors));</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">public MethodInterceptor[] getInterceptors(Advisor advisor) throws UnknownAdviceTypeException &#123;</span><br><span class="line">	List&lt;MethodInterceptor&gt; interceptors = new ArrayList&lt;&gt;(3);</span><br><span class="line">	Advice advice = advisor.getAdvice();</span><br><span class="line">	if (advice instanceof MethodInterceptor) &#123;</span><br><span class="line">		interceptors.add((MethodInterceptor) advice);</span><br><span class="line">	&#125;</span><br><span class="line">	// 部分类型的增强advice本身不是拦截器methodInterceptor类型</span><br><span class="line">	// 通过适配器将advice包装为拦截器</span><br><span class="line">	for (AdvisorAdapter adapter : this.adapters) &#123;</span><br><span class="line">		if (adapter.supportsAdvice(advice)) &#123;</span><br><span class="line">			interceptors.add(adapter.getInterceptor(advisor));</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	if (interceptors.isEmpty()) &#123;</span><br><span class="line">		throw new UnknownAdviceTypeException(advisor.getAdvice());</span><br><span class="line">	&#125;</span><br><span class="line">	return interceptors.toArray(new MethodInterceptor[0]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public List&lt;Object&gt; getInterceptorsAndDynamicInterceptionAdvice(Method method, @Nullable Class&lt;?&gt; targetClass) &#123;</span><br><span class="line">	MethodCacheKey cacheKey = new MethodCacheKey(method);</span><br><span class="line">	List&lt;Object&gt; cached = this.methodCache.get(cacheKey);</span><br><span class="line">	if (cached == null) &#123;</span><br><span class="line">		// 获取被代理方法的拦截器列表</span><br><span class="line">		cached = this.advisorChainFactory.getInterceptorsAndDynamicInterceptionAdvice(</span><br><span class="line">				this, method, targetClass);</span><br><span class="line">		// 缓存代理方法与拦截器列表的映射</span><br><span class="line">		this.methodCache.put(cacheKey, cached);</span><br><span class="line">	&#125;</span><br><span class="line">	return cached;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="创建代理方法上下文"><a href="#创建代理方法上下文" class="headerlink" title="创建代理方法上下文"></a>创建代理方法上下文</h2><p>创建一个代理方法上下文<code>MethodInvocation</code></p>
+<ul>
+<li>封装执行被代理方法的上下文，包括原始 bean、被代理方法、入参，以及上一步获取的方法拦截器列表（用于执行代理逻辑）</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 创建一个代理方法调用上下文</span><br><span class="line">MethodInvocation invocation = new ReflectiveMethodInvocation(proxy, target, method, args, targetClass, chain);</span><br></pre></td></tr></table></figure>
+
+<h2 id="执行方法代理"><a href="#执行方法代理" class="headerlink" title="执行方法代理"></a>执行方法代理</h2><p>调用代理方法上下文 MethodInvocation 的 proceed 方法执行方法代理，实际调用：org.springframework.aop.framework.ReflectiveMethodInvocation#proceed。回调拦截器增强方法的过程是通过<code>递归</code>实现的，下面具体分析。</p>
+<p>顺序回调方法拦截器列表里每个<code>MethodInterceptor</code>的 invoke 方法，传入代理方法上下文。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">Object interceptorOrInterceptionAdvice =</span><br><span class="line">			this.interceptorsAndDynamicMethodMatchers.get(++this.currentInterceptorIndex);</span><br><span class="line">...</span><br><span class="line">return ((MethodInterceptor) interceptorOrInterceptionAdvice).invoke(this);</span><br></pre></td></tr></table></figure>
+
+<p>注意，<code>MethodInvocation</code>的 proceed 方法是一个递归调用，<code>MethodInterceptor</code>的实现类会在合适的时机执行增强逻辑以及继续递归调用 MethodInvocation 的 proceed 方法，以此保证了所有方法拦截器的增强逻辑都会被执行到</p>
+<ul>
+<li>所谓“拦截方法在合适时机执行增强逻辑”，例如前置@Before 增强对应的拦截器<code>MethodBeforeAdviceInterceptor</code>就会在回调代理方法前执行增强逻辑。@After 增强对应的拦截器<code>AspectJAfterAdvice</code>就会先回调代理方法，返回后再执行增强逻辑</li>
+</ul>
+<p>MethodBeforeAdviceInterceptor：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">public Object invoke(MethodInvocation mi) throws Throwable &#123;</span><br><span class="line">	this.advice.before(mi.getMethod(), mi.getArguments(), mi.getThis());</span><br><span class="line">	return mi.proceed();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>AspectJAfterAdvice：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">public Object invoke(MethodInvocation mi) throws Throwable &#123;</span><br><span class="line">	try &#123;</span><br><span class="line">		return mi.proceed();</span><br><span class="line">	&#125;</span><br><span class="line">	finally &#123;</span><br><span class="line">		invokeAdviceMethod(getJoinPointMatch(), null, null);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果所有方法拦截器的 invoke 方法都被调用了，则反射调用被代理方法。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">if (this.currentInterceptorIndex == this.interceptorsAndDynamicMethodMatchers.size() - 1) &#123;</span><br><span class="line">	return invokeJoinpoint();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注意，因为<code>MethodInvocation</code>的 proceed 方法是递归调用的，所以会逆序从每个方法拦截器向上 return，回溯过程中可能有些拦截器的增强逻辑才被调用，例如上面介绍的<code>AspectJAfterAdvice</code></p>
+<p>前面提到，APC 在初始化后置处理为 bean 创建动态代理的过程中，会寻找与当前 bean 匹配的增强容器 advisor，如果存在来自 Aspect 切面类生成的增强容器，会为 bean 的增强容器链表首部添加一个通配的增强容器<code>DefaultPointcutAdvisor</code>。该 advisor 的增强 advice 是<code>ExposeInvocationInterceptor</code>（interceptor 是 advice 的子接口），它的执行逻辑是将当前代理方法调用上下文 MethodInvocation 写 ThreadLocal，方便在该方法拦截器链上的其他拦截器通过其获取调用上下文，所以要放在拦截器链首部第一个执行</p>
+<ul>
+<li>@Aspect 切面类，其增强方法的入参是拿不到 MethodInvocation 的。入参是<code>ProceedingJoinPoint</code>、<code>JoinPoint</code>，所以如果要拿到 MethodInvocation 需要调用<code>org.springframework.aop.interceptor.ExposeInvocationInterceptor#currentInvocation</code></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">// 将当前代理方法调用上下文写ThreadLocal，方便在该方法拦截器链上的其他拦截器获取当前代理方法调用上下文</span><br><span class="line">public Object invoke(MethodInvocation mi) throws Throwable &#123;</span><br><span class="line">    MethodInvocation oldInvocation = invocation.get();</span><br><span class="line">    invocation.set(mi);</span><br><span class="line">    try &#123;</span><br><span class="line">        return mi.proceed();</span><br><span class="line">    &#125; finally &#123;</span><br><span class="line">        invocation.set(oldInvocation);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">public static MethodInvocation currentInvocation() throws IllegalStateException &#123;</span><br><span class="line">    MethodInvocation mi = (MethodInvocation) invocation.get();</span><br><span class="line">    if (mi == null) &#123;</span><br><span class="line">        throw new IllegalStateException(&quot;No MethodInvocation found: Check that an AOP invocation is in progress, and that the ExposeInvocationInterceptor is upfront in the interceptor chain. Specifically, note that advices with order HIGHEST_PRECEDENCE will execute before ExposeInvocationInterceptor!&quot;);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        return mi;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="创建-aop-的几种姿势"><a href="#创建-aop-的几种姿势" class="headerlink" title="创建 aop 的几种姿势"></a>创建 aop 的几种姿势</h1><p>上面说了 aop 是如何注册自己最重要的组件 bean：apc，以及 apc 是如何为 bean 创建 aop 代理类的。接下来介绍我们在自己的应用中如何创建 aop。一般有两种方式</p>
+<h2 id="Aspect-方式"><a href="#Aspect-方式" class="headerlink" title="@Aspect 方式"></a>@Aspect 方式</h2><p>如果使用这种 AspectJ 注解方式，通过上面的分析，我们知道需要依赖 APC：AnnotationAwareAspectJAutoProxyCreator，来解析@Aspect 修饰的切面类，动态注册 advisor。因此需要引入这个 apc，xml 通过<code>&lt;aop:aspectj-autoproxy/&gt;</code>，注解方式使用<code>@EnableAspectJAutoProxy</code></p>
+<h2 id="注册自定义的-advisor-bean"><a href="#注册自定义的-advisor-bean" class="headerlink" title="注册自定义的 advisor bean"></a>注册自定义的 advisor bean</h2><p>我们也可以自己注册自定义的 advisor bean，当然这也需要 bf 里有 apc 来把这些 advisor bean 搂出来。<br>如果我们依然使用<code>&lt;aop:aspectj-autoproxy/&gt;</code>或<code>@EnableAspectJAutoProxy</code>来注册 APC：AnnotationAwareAspectJAutoProxyCreator，那么我们的 advisor bean 会被搂出来，因为他不会做任何过滤。<br>如果我们不想使用 AnnotationAwareAspectJAutoProxyCreator，而是 InfrastructureAdvisorAutoProxyCreator，那么可以通过 Import 的方式导入 bd 注册器：<code>AutoProxyRegistrar</code>，且配置类的注解里必须包含参数 mode（值为 AdviceMode.PROXY） 和 proxyTargetClass（Boolean 类型），则 AutoProxyRegistrar 会向 bf 注册 InfrastructureAdvisorAutoProxyCreator。<br>此时我们在配置 advisor bean 时，需要增加注解：<code>@Role(BeanDefinition.ROLE_INFRASTRUCTURE)</code>，来标识我们的 advisor bean 是基础设施 bean，否则不会被搂出来。</p>
+<p>advisor 的基类我们一般选择<code>PointcutAdvisor</code>，它包含两部分：advice 和 pointCut</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">public interface Advisor &#123;</span><br><span class="line">    Advice getAdvice();</span><br><span class="line"></span><br><span class="line">    boolean isPerInstance();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public interface PointcutAdvisor extends Advisor &#123;</span><br><span class="line">    Pointcut getPointcut();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们自定义的 advisor 一般继承<code>AbstractPointcutAdvisor</code>，它实现了 Ordered，我们可以给自定义的 advisor 指定 order 来决定 advisor 在代理方法里执行的先后顺序</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">public abstract class AbstractPointcutAdvisor implements PointcutAdvisor, Ordered, Serializable &#123;</span><br><span class="line">    private Integer order;</span><br><span class="line"></span><br><span class="line">    public AbstractPointcutAdvisor() &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setOrder(int order) &#123;</span><br><span class="line">        this.order = order;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public int getOrder() &#123;</span><br><span class="line">        if (this.order != null) &#123;</span><br><span class="line">            return this.order;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            Advice advice = this.getAdvice();</span><br><span class="line">            return advice instanceof Ordered ? ((Ordered)advice).getOrder() : 2147483647;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    ... ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Pointcut"><a href="#Pointcut" class="headerlink" title="Pointcut"></a>Pointcut</h3><p>先看 PointCut 的定义，可以发现切的规则分为两部分：按类型切和按方法切</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public interface Pointcut &#123;</span><br><span class="line">    Pointcut TRUE = TruePointcut.INSTANCE;</span><br><span class="line"></span><br><span class="line">    ClassFilter getClassFilter();</span><br><span class="line"></span><br><span class="line">    MethodMatcher getMethodMatcher();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Spring 提供了一些好用的 PointCut 抽象类我们可以直接继承来用</p>
+<h4 id="StaticMethodMatcherPointcut"><a href="#StaticMethodMatcherPointcut" class="headerlink" title="StaticMethodMatcherPointcut"></a>StaticMethodMatcherPointcut</h4><p>如果我们只关心按方法切，类型不 care。可以继承<code>StaticMethodMatcherPointcut</code>，它默认的 ClassFilter 为 true（不过你也可以指定 ClassFilter），即不过滤 class。我们继承并重写 matches 方法来过滤出要切的方法即可。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">public abstract class StaticMethodMatcherPointcut extends StaticMethodMatcher implements Pointcut &#123;</span><br><span class="line">    private ClassFilter classFilter;</span><br><span class="line"></span><br><span class="line">    public StaticMethodMatcherPointcut() &#123;</span><br><span class="line">        this.classFilter = ClassFilter.TRUE;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setClassFilter(ClassFilter classFilter) &#123;</span><br><span class="line">        this.classFilter = classFilter;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public ClassFilter getClassFilter() &#123;</span><br><span class="line">        return this.classFilter;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public final MethodMatcher getMethodMatcher() &#123;</span><br><span class="line">        return this;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="NameMatchMethodPointcut"><a href="#NameMatchMethodPointcut" class="headerlink" title="NameMatchMethodPointcut"></a>NameMatchMethodPointcut</h4><p>NameMatchMethodPointcut 是 StaticMethodMatcherPointcut 的子类，它维护一组注册给它的方法名 List，只要方法名在维护的 List 里，就切方法</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">public class NameMatchMethodPointcut extends StaticMethodMatcherPointcut implements Serializable &#123;</span><br><span class="line">    ... ...</span><br><span class="line"></span><br><span class="line">    public boolean matches(Method method, Class&lt;?&gt; targetClass) &#123;</span><br><span class="line">        Iterator var3 = this.mappedNames.iterator();</span><br><span class="line"></span><br><span class="line">        String mappedName;</span><br><span class="line">        do &#123;</span><br><span class="line">            if (!var3.hasNext()) &#123;</span><br><span class="line">                return false;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            mappedName = (String)var3.next();</span><br><span class="line">        &#125; while(!mappedName.equals(method.getName()) &amp;&amp; !this.isMatch(method.getName(), mappedName));</span><br><span class="line"></span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    protected boolean isMatch(String methodName, String mappedName) &#123;</span><br><span class="line">        return PatternMatchUtils.simpleMatch(mappedName, methodName);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="AnnotationMatchingPointcut"><a href="#AnnotationMatchingPointcut" class="headerlink" title="AnnotationMatchingPointcut"></a>AnnotationMatchingPointcut</h4><p>如果我们想要切被特定注解修饰的 class 或 method，可以使用<code>AnnotationMatchingPointcut</code>，通过构造函数指定类上、方法上需要的注解 class 即可</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">public class AnnotationMatchingPointcut implements Pointcut &#123;</span><br><span class="line">    private final ClassFilter classFilter;</span><br><span class="line">    private final MethodMatcher methodMatcher;</span><br><span class="line"></span><br><span class="line">    public AnnotationMatchingPointcut(Class&lt;? extends Annotation&gt; classAnnotationType) &#123;</span><br><span class="line">        this.classFilter = new AnnotationClassFilter(classAnnotationType);</span><br><span class="line">        this.methodMatcher = MethodMatcher.TRUE;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public AnnotationMatchingPointcut(Class&lt;? extends Annotation&gt; classAnnotationType, Class&lt;? extends Annotation&gt; methodAnnotationType) &#123;</span><br><span class="line">        Assert.isTrue(classAnnotationType != null || methodAnnotationType != null, &quot;Either Class annotation type or Method annotation type needs to be specified (or both)&quot;);</span><br><span class="line">        if (classAnnotationType != null) &#123;</span><br><span class="line">            this.classFilter = new AnnotationClassFilter(classAnnotationType);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            this.classFilter = ClassFilter.TRUE;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        if (methodAnnotationType != null) &#123;</span><br><span class="line">            this.methodMatcher = new AnnotationMethodMatcher(methodAnnotationType);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            this.methodMatcher = MethodMatcher.TRUE;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    ... ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Advice"><a href="#Advice" class="headerlink" title="Advice"></a>Advice</h3><p>Advice 表示代理的增强逻辑，但它是个空接口，我们的 advice 一般都实现<code>MethodInterceptor</code>这个子接口</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public interface MethodInterceptor extends Interceptor &#123;</span><br><span class="line">    Object invoke(MethodInvocation var1) throws Throwable;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="SpringBoot-方式"><a href="#SpringBoot-方式" class="headerlink" title="SpringBoot 方式"></a>SpringBoot 方式</h2><p>SpringBoot 引入 jar 包：spring-boot-autoconfigure，该 jar 包下定义了很多 SpringBoot 应用需要的配置类，在 Spring 容器初始化过程中，会自动注册配置类：<code>AopAutoConfiguration</code>。这就是 SpringBoot 的 starter 机制，另一篇里有详细介绍。<br>AopAutoConfiguration 会引入注解 EnableAspectJAutoProxy，所以 SpringBoot 应用自带 APC：AnnotationAwareAspectJAutoProxyCreator，因此无论是@Aspect 声明的切面类或者我们自定义的 advisor 都会生效</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">@Configuration</span><br><span class="line">@ConditionalOnClass(&#123;EnableAspectJAutoProxy.class, Aspect.class, Advice.class, AnnotatedElement.class&#125;)</span><br><span class="line">@ConditionalOnProperty(</span><br><span class="line">    prefix = &quot;spring.aop&quot;,</span><br><span class="line">    name = &#123;&quot;auto&quot;&#125;,</span><br><span class="line">    havingValue = &quot;true&quot;,</span><br><span class="line">    matchIfMissing = true</span><br><span class="line">)</span><br><span class="line">public class AopAutoConfiguration &#123;</span><br><span class="line">    public AopAutoConfiguration() &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Configuration</span><br><span class="line">    @EnableAspectJAutoProxy(</span><br><span class="line">        proxyTargetClass = true</span><br><span class="line">    )</span><br><span class="line">    @ConditionalOnProperty(</span><br><span class="line">        prefix = &quot;spring.aop&quot;,</span><br><span class="line">        name = &#123;&quot;proxy-target-class&quot;&#125;,</span><br><span class="line">        havingValue = &quot;true&quot;,</span><br><span class="line">        matchIfMissing = true</span><br><span class="line">    )</span><br><span class="line">    public static class CglibAutoProxyConfiguration &#123;</span><br><span class="line">        public CglibAutoProxyConfiguration() &#123;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Configuration</span><br><span class="line">    @EnableAspectJAutoProxy(</span><br><span class="line">        proxyTargetClass = false</span><br><span class="line">    )</span><br><span class="line">    @ConditionalOnProperty(</span><br><span class="line">        prefix = &quot;spring.aop&quot;,</span><br><span class="line">        name = &#123;&quot;proxy-target-class&quot;&#125;,</span><br><span class="line">        havingValue = &quot;false&quot;,</span><br><span class="line">        matchIfMissing = false</span><br><span class="line">    )</span><br><span class="line">    public static class JdkDynamicAutoProxyConfiguration &#123;</span><br><span class="line">        public JdkDynamicAutoProxyConfiguration() &#123;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
     </div>
 
@@ -626,12 +532,12 @@ public Object invoke(MethodInvocation mi) throws Throwable &#123;
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/04/23/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Spring%E6%BA%90%E7%A0%81-Spring%E5%AE%B9%E5%99%A8/" rel="prev" title="系统学习Spring源码-Spring容器">
-      <i class="fa fa-chevron-left"></i> 系统学习Spring源码-Spring容器
+    <a href="/2020/04/23/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Spring%E6%BA%90%E7%A0%81-bean%E5%8A%A0%E8%BD%BD/" rel="prev" title="系统学习Spring源码-bean加载">
+      <i class="fa fa-chevron-left"></i> 系统学习Spring源码-bean加载
     </a></div>
       <div class="post-nav-item">
-    <a href="/2020/04/23/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Spring%E6%BA%90%E7%A0%81-SpringBoot%20Starter%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/" rel="next" title="系统学习Spring源码-SpringBoot Starter实现原理">
-      系统学习Spring源码-SpringBoot Starter实现原理 <i class="fa fa-chevron-right"></i>
+    <a href="/2020/04/23/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Spring%E6%BA%90%E7%A0%81-Spring%E5%AE%B9%E5%99%A8/" rel="next" title="系统学习Spring源码-Spring容器">
+      系统学习Spring源码-Spring容器 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -692,7 +598,7 @@ public Object invoke(MethodInvocation mi) throws Throwable &#123;
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B3%A8%E5%86%8CAPC%E7%9A%84BD"><span class="nav-number">2.</span> <span class="nav-text">注册APC的BD</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#AnnotationAwareAspectJAutoProxyCreator"><span class="nav-number">2.1.</span> <span class="nav-text">AnnotationAwareAspectJAutoProxyCreator</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#AnnotationAwareAspectJAutoProxyCreator%E5%88%9B%E5%BB%BAbean%E4%BB%A3%E7%90%86%E7%B1%BB"><span class="nav-number">3.</span> <span class="nav-text">AnnotationAwareAspectJAutoProxyCreator创建bean代理类</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#bean%E5%89%8D%E7%BD%AE%E5%AE%9E%E4%BE%8B%E5%8C%96%E5%A4%84%E7%90%86"><span class="nav-number">3.1.</span> <span class="nav-text">bean前置实例化处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bean%E5%90%8E%E7%BD%AE%E5%88%9D%E5%A7%8B%E5%8C%96%E5%A4%84%E7%90%86"><span class="nav-number">3.2.</span> <span class="nav-text">bean后置初始化处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%B3%E8%BF%87%E6%97%A0%E9%9C%80%E4%BB%A3%E7%90%86%E7%9A%84bean"><span class="nav-number">3.2.1.</span> <span class="nav-text">跳过无需代理的bean</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E4%B8%8E%E5%BD%93%E5%89%8Dbean%E5%8C%B9%E9%85%8D%E7%9A%84%E5%A2%9E%E5%BC%BA%E5%AE%B9%E5%99%A8advisor"><span class="nav-number">3.2.2.</span> <span class="nav-text">获取与当前bean匹配的增强容器advisor</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B3%A8%E5%86%8C-APC-%E7%9A%84-BD"><span class="nav-number">2.</span> <span class="nav-text">注册 APC 的 BD</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#xml-%E6%96%B9%E5%BC%8F"><span class="nav-number">2.1.</span> <span class="nav-text">xml 方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%A8%E8%A7%A3%E6%96%B9%E5%BC%8F"><span class="nav-number">2.2.</span> <span class="nav-text">注解方式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#APC-%E5%88%9B%E5%BB%BA-bean-%E4%BB%A3%E7%90%86%E7%B1%BB"><span class="nav-number">3.</span> <span class="nav-text">APC 创建 bean 代理类</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#bean-%E5%89%8D%E7%BD%AE%E5%AE%9E%E4%BE%8B%E5%8C%96%E5%A4%84%E7%90%86"><span class="nav-number">3.1.</span> <span class="nav-text">bean 前置实例化处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bean-%E5%90%8E%E7%BD%AE%E5%88%9D%E5%A7%8B%E5%8C%96%E5%A4%84%E7%90%86"><span class="nav-number">3.2.</span> <span class="nav-text">bean 后置初始化处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%B3%E8%BF%87%E6%97%A0%E9%9C%80%E4%BB%A3%E7%90%86%E7%9A%84-bean"><span class="nav-number">3.2.1.</span> <span class="nav-text">跳过无需代理的 bean</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E4%B8%8E%E5%BD%93%E5%89%8D-bean-%E5%8C%B9%E9%85%8D%E7%9A%84%E5%A2%9E%E5%BC%BA%E5%AE%B9%E5%99%A8-advisor"><span class="nav-number">3.2.2.</span> <span class="nav-text">获取与当前 bean 匹配的增强容器 advisor</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA-aop-%E4%BB%A3%E7%90%86%E7%B1%BB"><span class="nav-number">3.2.3.</span> <span class="nav-text">创建 aop 代理类</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%A3%E7%90%86%E7%B1%BB%E6%89%A7%E8%A1%8C%E6%96%B9%E6%B3%95%E4%BB%A3%E7%90%86"><span class="nav-number">4.</span> <span class="nav-text">代理类执行方法代理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E6%96%B9%E6%B3%95%E7%9A%84%E6%8B%A6%E6%88%AA%E5%99%A8-MethodInterceptor-%E5%88%97%E8%A1%A8"><span class="nav-number">4.1.</span> <span class="nav-text">获取方法的拦截器 MethodInterceptor 列表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E4%BB%A3%E7%90%86%E6%96%B9%E6%B3%95%E4%B8%8A%E4%B8%8B%E6%96%87"><span class="nav-number">4.2.</span> <span class="nav-text">创建代理方法上下文</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E6%96%B9%E6%B3%95%E4%BB%A3%E7%90%86"><span class="nav-number">4.3.</span> <span class="nav-text">执行方法代理</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA-aop-%E7%9A%84%E5%87%A0%E7%A7%8D%E5%A7%BF%E5%8A%BF"><span class="nav-number">5.</span> <span class="nav-text">创建 aop 的几种姿势</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Aspect-%E6%96%B9%E5%BC%8F"><span class="nav-number">5.1.</span> <span class="nav-text">@Aspect 方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%A8%E5%86%8C%E8%87%AA%E5%AE%9A%E4%B9%89%E7%9A%84-advisor-bean"><span class="nav-number">5.2.</span> <span class="nav-text">注册自定义的 advisor bean</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Pointcut"><span class="nav-number">5.2.1.</span> <span class="nav-text">Pointcut</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#StaticMethodMatcherPointcut"><span class="nav-number">5.2.1.1.</span> <span class="nav-text">StaticMethodMatcherPointcut</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#NameMatchMethodPointcut"><span class="nav-number">5.2.1.2.</span> <span class="nav-text">NameMatchMethodPointcut</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#AnnotationMatchingPointcut"><span class="nav-number">5.2.1.3.</span> <span class="nav-text">AnnotationMatchingPointcut</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Advice"><span class="nav-number">5.2.2.</span> <span class="nav-text">Advice</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SpringBoot-%E6%96%B9%E5%BC%8F"><span class="nav-number">5.3.</span> <span class="nav-text">SpringBoot 方式</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -708,7 +614,7 @@ public Object invoke(MethodInvocation mi) throws Throwable &#123;
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">121</span>
+          <span class="site-state-item-count">127</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -721,7 +627,7 @@ public Object invoke(MethodInvocation mi) throws Throwable &#123;
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">3</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -759,7 +665,7 @@ public Object invoke(MethodInvocation mi) throws Throwable &#123;
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2022</span>
+  <span itemprop="copyrightYear">2023</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -768,12 +674,12 @@ public Object invoke(MethodInvocation mi) throws Throwable &#123;
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">297k</span>
+    <span title="站点总字数">338k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">8:15</span>
+    <span title="站点阅读时长">9:23</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>

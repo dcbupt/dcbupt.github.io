@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-mac-osx.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"dcbupt.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="系统学习DDD实践篇">
+<meta property="og:type" content="article">
+<meta property="og:title" content="系统学习DDD实践篇">
+<meta property="og:url" content="http://dcbupt.github.io/2023/03/31/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0DDD%E5%AE%9E%E8%B7%B5%E7%AF%87/index.html">
+<meta property="og:site_name" content="dcddc">
+<meta property="og:description" content="系统学习DDD实践篇">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-03-31T03:10:00.000Z">
+<meta property="article:modified_time" content="2023-06-10T12:43:15.049Z">
+<meta property="article:author" content="西米大人">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://dcbupt.github.io/2023/03/31/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0DDD%E5%AE%9E%E8%B7%B5%E7%AF%87/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+  <title>系统学习DDD实践篇 | dcddc</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">dcddc</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">西米大人的博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dcbupt.github.io/2023/03/31/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0DDD%E5%AE%9E%E8%B7%B5%E7%AF%87/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/me.png">
+      <meta itemprop="name" content="西米大人">
+      <meta itemprop="description" content="<blockquote class="blockquote-center">优秀的人，不是不合群，而是他们合群的人里面没有你</blockquote>">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="dcddc">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          系统学习DDD实践篇
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-03-31 11:10:00" itemprop="dateCreated datePublished" datetime="2023-03-31T11:10:00+08:00">2023-03-31</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-06-10 20:43:15" itemprop="dateModified" datetime="2023-06-10T20:43:15+08:00">2023-06-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/" itemprop="url" rel="index"><span itemprop="name">系统学习系列</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2023/03/31/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0DDD%E5%AE%9E%E8%B7%B5%E7%AF%87/" class="post-meta-item leancloud_visitors" data-flag-title="系统学习DDD实践篇" title="热度">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">热度:</span>
+              <span class="leancloud-visitors-count"></span>℃
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">评论:</span>
+    
+    <a title="valine" href="/2023/03/31/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0DDD%E5%AE%9E%E8%B7%B5%E7%AF%87/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2023/03/31/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0DDD%E5%AE%9E%E8%B7%B5%E7%AF%87/" itemprop="commentCount"></span>℃
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">字数：</span>
+              <span>4.5k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>7 分钟</span>
+            </span>
+            <div class="post-description"><blockquote class="blockquote-center">系统学习DDD实践篇</blockquote></div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="事务脚本"><a href="#事务脚本" class="headerlink" title="事务脚本"></a>事务脚本</h1><p>将所有业务功能堆砌在一个大接口里，这样的代码也称为<code>事务脚本</code>，且存在以下问题：</p>
+<p>× 可维护性（依赖变化时要改多少代码）</p>
+<ul>
+<li>DB 数据结构经常变</li>
+<li>依赖框架、中间件升级或替换<ul>
+<li>不满足依赖倒置，业务层依赖的还是具体实现</li>
+</ul>
+</li>
+<li>三方服务不确定性，例如要接口签名变更、替换或直接断流了<ul>
+<li>不满足依赖倒置，业务层依赖的还是具体实现</li>
+</ul>
+</li>
+</ul>
+<p>× 可扩展性（新需求要改多少代码）</p>
+<ul>
+<li>数据格式不兼容：接新的服务，新的数据结构，导致老代码逻辑不能复用</li>
+<li>大量分支逻辑：大量的 if-else 语句带来多分支逻辑，造成分析代码非常困难，容易错过边界情况造成 bug</li>
+</ul>
+<p>× 可测性（新需求要增加的测试用例数乘以跑每个用例的时间）</p>
+<ul>
+<li>测试环境搭建困难（数据库、中间件、三方依赖）</li>
+<li>运行时间长（启动 Spring、IO 密集型调用）</li>
+<li>逻辑高度耦合，导致用例数目呈现指数级增长</li>
+</ul>
+<h1 id="DDD"><a href="#DDD" class="headerlink" title="DDD"></a>DDD</h1><blockquote>
+<p>DDD 是一套服务于应用内部的架构设计思想，旨在为领域划分的微服务应用提供最大化的代码可读性、可维护性、可扩展性、可测试性</p>
+</blockquote>
+<p>可读性 &#x3D; 接口参数含义明确、接口实现只专注于最核心的业务逻辑编排<br>可维护性 &#x3D; 当依赖变化时，有多少代码需要随之改变<br>可扩展性 &#x3D; 做新需求或改逻辑时，需要新增&#x2F;修改多少代码<br>可测试性 &#x3D; 运行每个测试用例所花费的时间 * 每个需求所需要增加的测试用例数量</p>
+<h1 id="DDD-的指导思想"><a href="#DDD-的指导思想" class="headerlink" title="DDD 的指导思想"></a>DDD 的指导思想</h1><h2 id="贫血模式-VS-充血模式"><a href="#贫血模式-VS-充血模式" class="headerlink" title="贫血模式 VS 充血模式"></a>贫血模式 VS 充血模式</h2><p>贫血模式的缺点：</p>
+<ul>
+<li>由于接口直接访问和修改对象的任意业务属性，无法保证对象的数据一致性，容易出 bug</li>
+<li>大量重复的对象属性校验、计算逻辑，代码可复用性低</li>
+</ul>
+<p>为什么那么多贫血模式？</p>
+<ul>
+<li>面向数据模型编程的思维，所有的业务逻辑都只是对数据库的 CRUD</li>
+<li>门槛低，写业务类似写脚本，瀑布式代码将各种逻辑铺满即可</li>
+</ul>
+<p>充血模式是怎么做的？</p>
+<ul>
+<li>对象的业务属性不能随意访问和修改，只能通过对象提供的行为方法来操作，每个行为方法都代表了一个业务领域知识，是一系列属性计算逻辑的聚合</li>
+</ul>
+<h2 id="数据模型-VS-领域模型"><a href="#数据模型-VS-领域模型" class="headerlink" title="数据模型 VS 领域模型"></a>数据模型 VS 领域模型</h2><p>数据模型指直接和数据库表结构映射的持久化 DO 对象，它的作用域只能在数据层</p>
+<p>领域模型是能准确描述业务域核心概念的数据结构，在 DDD 中称为 Entity 实体，是业务逻辑的集中式体现</p>
+<p>因此在业务逻辑层，我们应该避免直接使用贫血模式面向数据模型编程，而应该使用充血模式面向领域模型编程，这其实就是 DDD 领域驱动思想的最本质体现</p>
+<p>面向领域模型编程的另一个好处是业务逻辑与数据存储的解耦，即使底层更换了数据库，表结构发生很大改变，也不会被业务逻辑层感知，当然中间还要有一层转化适配，这是防腐层和基础设施层做的事情</p>
+<h1 id="DDD-的实践"><a href="#DDD-的实践" class="headerlink" title="DDD 的实践"></a>DDD 的实践</h1><h2 id="无处不在的-DP"><a href="#无处不在的-DP" class="headerlink" title="无处不在的 DP"></a>无处不在的 DP</h2><blockquote>
+<p>DP 主要提升代码可读性、可测试性</p>
+</blockquote>
+<p>什么是 DP（DomainPrimitive，原始领域对象）</p>
+<ul>
+<li>是特定领域中，概念明确、职能清晰、无状态的“值对象”，是领域的最小组成部分<ul>
+<li>所谓无状态，指属性一旦赋值不会再发生变化，可以认为 DP 中的数据都是静态的</li>
+</ul>
+</li>
+</ul>
+<p>使用 DP 能解决什么问题？</p>
+<ul>
+<li>避免接口中定义基本类型的出入参导致语义不清晰，使用 DP 类型取而代之<ul>
+<li>应用层的业务接口、领域层接口和防腐层接口都可以使用 DP 作为参数</li>
+</ul>
+</li>
+<li>避免业务接口的实现里耦合参数校验逻辑，转而在 DP 对象构造时完成参数校验</li>
+<li>避免写出“胶水代码”，而是将其改造为 DP 对象内部的一个属性计算逻辑，通过 get 方法对外暴露<ul>
+<li>业务方法中调用外部服务时，需要从参数中提取一部分属性，实现参数提取的代码称为胶水代码</li>
+<li>在复杂度很高的业务接口中，会充斥大量胶水代码，影响代码可读性、增加接口单测复杂度</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>其实这些问题的本质原因是我们习惯将业务接口实现为“事务脚本”，导致业务接口做了太多“非强相关”的事情。引入 DP 可以让业务接口只专注于最核心的业务逻辑编排，将其他的衍生逻辑提取到 DP 内部处理</p>
+</blockquote>
+<p>如何编写 DP</p>
+<ul>
+<li>深入思考 DP 在业务中的隐性属性，以成员变量的方式显性化定义在 DP 对象内部</li>
+<li>构造函数里完成属性初始化和自检</li>
+<li>使用充血模型实现无状态的业务行为<ul>
+<li>业务行为指收敛在这个 DP 对象内部的业务计算逻辑</li>
+<li>DP 对象也可以封装多个其他 DP 对象，实现更复杂的业务计算逻辑</li>
+</ul>
+</li>
+</ul>
+<p>常见的 DP 使用场景：</p>
+<ul>
+<li>有格式限制的 String：比如 Name，PhoneNumber，OrderNumber，ZipCode，Address 等</li>
+<li>有限制的 Integer：比如 OrderId，Percentage，Quantity 等</li>
+<li>可枚举的 int：比如 Status（一般不用 Enum 因为反序列化问题）</li>
+<li>Double 或 BigDecimal：一般用到的 Double 或 BigDecimal 都是有业务含义的，比如 Temperature、Money、Amount、ExchangeRate、等</li>
+<li>复杂的数据结构：比如 Map&lt;String, List<Integer>&gt;等，尽量能把 Map 的所有操作包装掉，仅暴露必要行为</li>
+</ul>
+<h2 id="领域的核心-Entity"><a href="#领域的核心-Entity" class="headerlink" title="领域的核心 - Entity"></a>领域的核心 - Entity</h2><blockquote>
+<p>Entity 主要提升代码可扩展性、可测试性</p>
+</blockquote>
+<p>什么是 Entity（实体）？</p>
+<ul>
+<li>领域主体对象<ul>
+<li>带有 ID 属性，有可以相互映射的持久化 DO 对象</li>
+<li>状态可变，或叫有状态</li>
+</ul>
+</li>
+</ul>
+<p>使用 Entity 能解决什么问题？</p>
+<ul>
+<li>核心的领域知识（业务计算逻辑）内聚在 Entity 的行为接口内部，新需求只需要改造 Entity 的领域知识即可，扩展性强</li>
+<li>Entity 包含所有的业务逻辑，且它本身只是一个内存中的对象，易于对业务逻辑做完整的覆盖测试，提高可测性</li>
+</ul>
+<p>如何编写 Entity？</p>
+<ul>
+<li>构造函数里必须初始化所有必要属性并强校验，保证对 Entity 的所有操作（创建、业务行为）都能保证数据一致性<ul>
+<li>推荐使用 Builder 模式来实例化 Entity</li>
+</ul>
+</li>
+<li>成员变量和持久化 DO 对象没有必然联系，尽可能将 DO 对象的列属性转换成 DP</li>
+<li>使用充血模型实现有状态的业务行为<ul>
+<li>业务行为指收敛在这个 Entity 对象内部的业务计算逻辑</li>
+<li>只能通过业务行为改变 Entity 属性，不能直接用 set 方法修改属性，保证逻辑和数据一致性</li>
+</ul>
+</li>
+<li>不能直接将外部实体作为成员变量，否则外部实体的行为可能产生“副作用”，但可以将其他实体的 ID 作为成员变量<ul>
+<li>所谓副作用，指无法保证外部实体的行为变更后不会影响本实体，由此可能产生 bug。本质问题是这种依赖关系破坏了实体的职能边界</li>
+</ul>
+</li>
+<li>实体自身的业务行为如果依赖外部实体或外部 DP 等参数，可以将相关逻辑写到领域服务的方法实现里，然后将领域服务作为参数一并传入，在业务行为里调用领域服务<ul>
+<li>注意，如果涉及到多个实体的修改，必须通过领域服务实现，不能在任何一个实体的行为里实现</li>
+</ul>
+</li>
+<li>复杂业务里，会存在主实体和子实体，这时主实体就充当<code>聚合根</code>的作用，子实体的所有业务行为都只能通过主实体的业务行为暴露，且外部无法单独拿到子实体<ul>
+<li>例如交易场景中的主子订单</li>
+</ul>
+</li>
+</ul>
+<h2 id="防腐层-ACL"><a href="#防腐层-ACL" class="headerlink" title="防腐层 - ACL"></a>防腐层 - ACL</h2><blockquote>
+<p>防腐层主要提升代码可维护性、可测试性</p>
+</blockquote>
+<p>什么是防腐层？</p>
+<ul>
+<li>防腐层是业务系统和外部服务之间的隔离带，防腐层通过依赖倒置原则使得业务系统不直接依赖外部服务，而是依赖防腐层提供的抽象 ACL 接口<ul>
+<li>业务系统指应用层。应用层主要指业务接口</li>
+<li>外部服务指 RPC 服务、中间件、ORM 框架提供的 dao 层服务等</li>
+<li>由基础设施层实现防腐层接口，对外部服务做适配封装</li>
+</ul>
+</li>
+</ul>
+<p>使用防腐层能解决什么问题？</p>
+<ul>
+<li>外部服务变化时，业务系统代码相对稳定，提高可维护性</li>
+<li>防腐层接口易于 Mock，提高可测试性</li>
+<li>防腐层接口的实现里可以对外部服务做统一的技术优化，例如缓存、降级等，真正做到技术实现和业务逻辑分离</li>
+</ul>
+<p>如何实现防腐层？</p>
+<ul>
+<li>在领域层的一个 package 里定义所依赖外部服务的抽象 ACL 接口</li>
+<li>接口的入参、出参使用域对象 Entity 和 DP，保证业务系统内部只会操作域对象，使得业务逻辑高度内聚，提高可维护性</li>
+<li>基础设施层实现 ACL 接口，适配（包装）所有的外部服务，包括外部对象到域对象（Entity、DP）的转换</li>
+</ul>
+<h2 id="领域服务-DomainService"><a href="#领域服务-DomainService" class="headerlink" title="领域服务 - DomainService"></a>领域服务 - DomainService</h2><blockquote>
+<p>领域服务主要提升代码可维护性、可扩展性</p>
+</blockquote>
+<p>什么是领域服务？</p>
+<ul>
+<li>领域服务是比单个实体的业务行为更复杂的业务逻辑，通常用来编排多实体间的业务行为或单实体的多个业务行为，起到跨对象事务的作用，保证整体的逻辑和数据一致性</li>
+</ul>
+<p>如何实现领域服务？</p>
+<ul>
+<li>入参出参使用 DP、Entity</li>
+<li>对 DP、Entity 暴露的业务行为做编排调用</li>
+</ul>
+<p>使用领域服务解决什么问题？</p>
+<ul>
+<li>业务接口的计算逻辑（或者说领域知识）完全不依赖任何外部服务，收敛在领域层内，提高可维护性、可扩展性<ul>
+<li>因此领域层其实没有任何外部依赖</li>
+</ul>
+</li>
+</ul>
+<h2 id="业务接口（也称应用服务、系统服务）"><a href="#业务接口（也称应用服务、系统服务）" class="headerlink" title="业务接口（也称应用服务、系统服务）"></a>业务接口（也称应用服务、系统服务）</h2><p>在上面提到的 DP、Entity、ACL、DomainService 的基础上，业务接口只需要对领域服务和外部服务做编排调用即可</p>
+<h1 id="DDD-的应用架构"><a href="#DDD-的应用架构" class="headerlink" title="DDD 的应用架构"></a>DDD 的应用架构</h1><h2 id="对象模型"><a href="#对象模型" class="headerlink" title="对象模型"></a>对象模型</h2><p>Command&#x2F;Query:</p>
+<ul>
+<li>接口层入参，对应读写服务</li>
+</ul>
+<p>VO：</p>
+<ul>
+<li>接口层出参</li>
+<li>转换器：VoAssembler<ul>
+<li>实现 DTO 到 VO 的转换</li>
+</ul>
+</li>
+</ul>
+<p>DP：</p>
+<ul>
+<li>应用层入参，接口层调用应用层系统服务时转成 DP</li>
+<li>Spi 接口出入参</li>
+<li>领域层领域服务出入参</li>
+<li>ACL 接口的出入参</li>
+<li>Entity 的成员变量</li>
+<li>命名：Xxx</li>
+<li>不需要序列化，内存对象</li>
+</ul>
+<p>DTO：</p>
+<ul>
+<li>应用层出参</li>
+<li>转化器：DtoAssembler<ul>
+<li>实现 Entity 到 Dto 的转换，推荐使用 MapStruct 作为实现</li>
+</ul>
+</li>
+</ul>
+<p>Entity：</p>
+<ul>
+<li>Spi 接口出入参</li>
+<li>领域层领域服务出入参</li>
+<li>ACL 接口的出入参</li>
+<li>命名：XxxEntity</li>
+<li>不需要序列化，内存对象</li>
+</ul>
+<p>DO：</p>
+<ul>
+<li>基础设施层</li>
+<li>ORM 框架操作的数据对象</li>
+<li>转化器：DataConverter<ul>
+<li>实现 DO 和 Entity 之间的转换，推荐使用 MapStruct 作为实现</li>
+</ul>
+</li>
+</ul>
+<h2 id="分层模型"><a href="#分层模型" class="headerlink" title="分层模型"></a>分层模型</h2><p>业务系统的分层和依赖关系：</p>
+<ul>
+<li><p>Client 层</p>
+<ul>
+<li>放对外提供的应用服务接口定义</li>
+<li>入参：Command&#x2F;Query</li>
+<li>出参：VO</li>
+</ul>
+</li>
+<li><p>接口层（网关层）</p>
+<ul>
+<li>对各种通信协议框架（HTTP、RPC、消息队列、任务调度、socket 通信等）的包装</li>
+<li>session 管理、鉴权、日志、异常处理、前置缓存、限流</li>
+<li>依赖应用层的系统服务，调用系统服务需要将 Command&#x2F;Query 转为 DP 对象</li>
+<li>转换器：VoAssembler，实现 应用层出参 DTO 到 VO 的转换，VO 做脱敏处理</li>
+</ul>
+</li>
+<li><p>应用层</p>
+<ul>
+<li>实现领域对外提供的系统服务</li>
+<li>依赖领域层（通过 Spi 层间接依赖）、Spi 层、Plugins（三方 Spi 实现类）</li>
+<li>定义防腐层（ACL）接口，包括外部服务和仓储服务，不做具体实现，通过 Spring 依赖注入做依赖反转</li>
+<li>只负责业务流程编排但不实现任何具体的业务计算逻辑<ul>
+<li>编排：调用领域服务和 ACL 代理接口，调用 spi 接口做业务隔离定制</li>
+</ul>
+</li>
+<li>入参 DP，出参 DTO</li>
+<li>依赖 Spi 加载框架做业务扩展点注入，如 COLA-Extension</li>
+<li>依赖 Spring 做依赖注入</li>
+</ul>
+</li>
+<li><p>Spi 层</p>
+<ul>
+<li>定义为三方提供业务定制能力的 Spi 接口，依赖 Domain 层（DP、Entity）</li>
+</ul>
+</li>
+<li><p>领域层</p>
+<ul>
+<li>定义 Entity、DP，实现 DomainService</li>
+</ul>
+</li>
+<li><p>基础设施层</p>
+<ul>
+<li>防腐层的 ACL 接口实现，依赖应用层，适配业务系统依赖的所有外部服务</li>
+<li>依赖三方服务、中间件服务、dao 层 ORM 框架<ul>
+<li>dao 层实现推荐 CQRS 架构</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>DDD 的一般开发模式：</p>
+<ul>
+<li>先实现领域层和 ACL 防腐层，定义好域对象 Entity 和 DP，定义好 ACL 接口，通过 DomainService 实现领域知识，即业务计算逻辑</li>
+<li>再实现应用层，对领域服务和适配外部服务的 ACL 接口做编排调用实现业务接口</li>
+<li>最后实现基础设施层</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>西米大人
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://dcbupt.github.io/2023/03/31/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0DDD%E5%AE%9E%E8%B7%B5%E7%AF%87/" title="系统学习DDD实践篇">http://dcbupt.github.io/2023/03/31/blog_article/系统学习系列/系统学习DDD实践篇/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+
+        
+
+<blockquote class="blockquote-center" style="color: #f0ad4e">完 ♥ 结</blockquote>
+
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/11/21/blog_article/%E5%B7%A5%E7%A8%8B%E6%8A%80%E6%9C%AF/redis%E5%AE%9E%E8%B7%B5/" rel="prev" title="redis实践">
+      <i class="fa fa-chevron-left"></i> redis实践
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/06/10/blog_article/%E7%94%9F%E6%B4%BB/log/" rel="next" title="">
+       <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8B%E5%8A%A1%E8%84%9A%E6%9C%AC"><span class="nav-number">1.</span> <span class="nav-text">事务脚本</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DDD"><span class="nav-number">2.</span> <span class="nav-text">DDD</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DDD-%E7%9A%84%E6%8C%87%E5%AF%BC%E6%80%9D%E6%83%B3"><span class="nav-number">3.</span> <span class="nav-text">DDD 的指导思想</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B4%AB%E8%A1%80%E6%A8%A1%E5%BC%8F-VS-%E5%85%85%E8%A1%80%E6%A8%A1%E5%BC%8F"><span class="nav-number">3.1.</span> <span class="nav-text">贫血模式 VS 充血模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E6%A8%A1%E5%9E%8B-VS-%E9%A2%86%E5%9F%9F%E6%A8%A1%E5%9E%8B"><span class="nav-number">3.2.</span> <span class="nav-text">数据模型 VS 领域模型</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DDD-%E7%9A%84%E5%AE%9E%E8%B7%B5"><span class="nav-number">4.</span> <span class="nav-text">DDD 的实践</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%A0%E5%A4%84%E4%B8%8D%E5%9C%A8%E7%9A%84-DP"><span class="nav-number">4.1.</span> <span class="nav-text">无处不在的 DP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%86%E5%9F%9F%E7%9A%84%E6%A0%B8%E5%BF%83-Entity"><span class="nav-number">4.2.</span> <span class="nav-text">领域的核心 - Entity</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%98%B2%E8%85%90%E5%B1%82-ACL"><span class="nav-number">4.3.</span> <span class="nav-text">防腐层 - ACL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%86%E5%9F%9F%E6%9C%8D%E5%8A%A1-DomainService"><span class="nav-number">4.4.</span> <span class="nav-text">领域服务 - DomainService</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%9A%E5%8A%A1%E6%8E%A5%E5%8F%A3%EF%BC%88%E4%B9%9F%E7%A7%B0%E5%BA%94%E7%94%A8%E6%9C%8D%E5%8A%A1%E3%80%81%E7%B3%BB%E7%BB%9F%E6%9C%8D%E5%8A%A1%EF%BC%89"><span class="nav-number">4.5.</span> <span class="nav-text">业务接口（也称应用服务、系统服务）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DDD-%E7%9A%84%E5%BA%94%E7%94%A8%E6%9E%B6%E6%9E%84"><span class="nav-number">5.</span> <span class="nav-text">DDD 的应用架构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B"><span class="nav-number">5.1.</span> <span class="nav-text">对象模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E5%B1%82%E6%A8%A1%E5%9E%8B"><span class="nav-number">5.2.</span> <span class="nav-text">分层模型</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="西米大人"
+      src="/images/me.png">
+  <p class="site-author-name" itemprop="name">西米大人</p>
+  <div class="site-description" itemprop="description"><blockquote class="blockquote-center">优秀的人，不是不合群，而是他们合群的人里面没有你</blockquote></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">127</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dcbupt" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;dcbupt" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:byrddc@hotmail.com" title="E-Mail → mailto:byrddc@hotmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">西米大人</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">338k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">9:23</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.id);
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            let target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    let { app_id, app_key, server_url } = {"enable":true,"app_id":"OBdFsOOtfIDcNnWdzkGbICmj-gzGzoHsz","app_key":"89LmL4tP7hkyChAmEleq2MdO","server_url":null,"security":true};
+    function fetchData(api_server) {
+      var Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    let api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+<script src="/js/love.js"></script>
+
+<script src="/js/particle.js"></script>
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('https://cdn.jsdelivr.net/npm/valine@1.4.18/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'OBdFsOOtfIDcNnWdzkGbICmj-gzGzoHsz',
+      appKey     : '89LmL4tP7hkyChAmEleq2MdO',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

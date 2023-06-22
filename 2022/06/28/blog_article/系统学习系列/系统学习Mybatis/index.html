@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-mac-osx.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"dcbupt.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="系统学习Mybatis">
+<meta property="og:type" content="article">
+<meta property="og:title" content="系统学习Mybatis">
+<meta property="og:url" content="http://dcbupt.github.io/2022/06/28/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Mybatis/index.html">
+<meta property="og:site_name" content="dcddc">
+<meta property="og:description" content="系统学习Mybatis">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-06-28T03:18:00.000Z">
+<meta property="article:modified_time" content="2023-06-10T12:43:15.051Z">
+<meta property="article:author" content="西米大人">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://dcbupt.github.io/2022/06/28/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Mybatis/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+  <title>系统学习Mybatis | dcddc</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">dcddc</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">西米大人的博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dcbupt.github.io/2022/06/28/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Mybatis/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/me.png">
+      <meta itemprop="name" content="西米大人">
+      <meta itemprop="description" content="<blockquote class="blockquote-center">优秀的人，不是不合群，而是他们合群的人里面没有你</blockquote>">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="dcddc">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          系统学习Mybatis
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-06-28 11:18:00" itemprop="dateCreated datePublished" datetime="2022-06-28T11:18:00+08:00">2022-06-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-06-10 20:43:15" itemprop="dateModified" datetime="2023-06-10T20:43:15+08:00">2023-06-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/" itemprop="url" rel="index"><span itemprop="name">系统学习系列</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2022/06/28/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Mybatis/" class="post-meta-item leancloud_visitors" data-flag-title="系统学习Mybatis" title="热度">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">热度:</span>
+              <span class="leancloud-visitors-count"></span>℃
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">评论:</span>
+    
+    <a title="valine" href="/2022/06/28/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Mybatis/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/06/28/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Mybatis/" itemprop="commentCount"></span>℃
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">字数：</span>
+              <span>2.9k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>5 分钟</span>
+            </span>
+            <div class="post-description"><blockquote class="blockquote-center">系统学习Mybatis</blockquote></div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Mybatis-的工作流程"><a href="#Mybatis-的工作流程" class="headerlink" title="Mybatis 的工作流程"></a>Mybatis 的工作流程</h1><p>1、创建全局配置文件，包含数据库连接信息、Mapper 映射文件路径等</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span><br><span class="line">&lt;!DOCTYPE configuration PUBLIC &quot;-//mybatis.org//DTD Config 3.0//EN&quot;</span><br><span class="line">&quot;http://mybatis.org/dtd/mybatis-3-config.dtd&quot;&gt;</span><br><span class="line"></span><br><span class="line">&lt;configuration&gt;</span><br><span class="line">	&lt;!-- 加载类路径下的属性文件 --&gt;</span><br><span class="line">	&lt;properties resource=&quot;db.properties&quot;/&gt;</span><br><span class="line"></span><br><span class="line">	&lt;!-- 设置一个默认的连接环境信息 --&gt;</span><br><span class="line">	&lt;environments default=&quot;mysql_developer&quot;&gt;</span><br><span class="line">		&lt;!-- 连接环境信息，取一个任意唯一的名字 --&gt;</span><br><span class="line">		&lt;environment id=&quot;mysql_developer&quot;&gt;</span><br><span class="line">			&lt;!-- mybatis使用jdbc事务管理方式 --&gt;</span><br><span class="line">			&lt;transactionManager type=&quot;jdbc&quot;/&gt;</span><br><span class="line">			&lt;!-- mybatis使用连接池方式来获取连接 --&gt;</span><br><span class="line">			&lt;dataSource type=&quot;pooled&quot;&gt;</span><br><span class="line">				&lt;!-- 配置与数据库交互的4个必要属性 --&gt;</span><br><span class="line">				&lt;property name=&quot;driver&quot; value=&quot;$&#123;mysql.driver&#125;&quot;/&gt;</span><br><span class="line">				&lt;property name=&quot;url&quot; value=&quot;$&#123;mysql.url&#125;&quot;/&gt;</span><br><span class="line">				&lt;property name=&quot;username&quot; value=&quot;$&#123;mysql.username&#125;&quot;/&gt;</span><br><span class="line">				&lt;property name=&quot;password&quot; value=&quot;$&#123;mysql.password&#125;&quot;/&gt;</span><br><span class="line">			&lt;/dataSource&gt;</span><br><span class="line">		&lt;/environment&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">		&lt;!-- 连接环境信息，取一个任意唯一的名字 --&gt;</span><br><span class="line">		&lt;environment id=&quot;oracle_developer&quot;&gt;</span><br><span class="line">			&lt;!-- mybatis使用jdbc事务管理方式 --&gt;</span><br><span class="line">			&lt;transactionManager type=&quot;jdbc&quot;/&gt;</span><br><span class="line">			&lt;!-- mybatis使用连接池方式来获取连接 --&gt;</span><br><span class="line">			&lt;dataSource type=&quot;pooled&quot;&gt;</span><br><span class="line">				&lt;!-- 配置与数据库交互的4个必要属性 --&gt;</span><br><span class="line">				&lt;property name=&quot;driver&quot; value=&quot;$&#123;oracle.driver&#125;&quot;/&gt;</span><br><span class="line">				&lt;property name=&quot;url&quot; value=&quot;$&#123;oracle.url&#125;&quot;/&gt;</span><br><span class="line">				&lt;property name=&quot;username&quot; value=&quot;$&#123;oracle.username&#125;&quot;/&gt;</span><br><span class="line">				&lt;property name=&quot;password&quot; value=&quot;$&#123;oracle.password&#125;&quot;/&gt;</span><br><span class="line">			&lt;/dataSource&gt;</span><br><span class="line">		&lt;/environment&gt;</span><br><span class="line">	&lt;/environments&gt;</span><br><span class="line">	&lt;mappers&gt;</span><br><span class="line">		&lt;mapper resource=&quot;zhongfucheng/StudentMapper.xml&quot;/&gt;</span><br><span class="line">	&lt;/mappers&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br></pre></td></tr></table></figure>
+
+<p>2、读取配置文件，构建全局 SqlSessionFactory</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">   private static SqlSessionFactory sqlSessionFactory;</span><br><span class="line">/**</span><br><span class="line"> * 加载位于src/mybatis.xml配置文件</span><br><span class="line"> */</span><br><span class="line">static&#123;</span><br><span class="line">	try &#123;</span><br><span class="line">		Reader reader = Resources.getResourceAsReader(&quot;mybatis.xml&quot;);</span><br><span class="line">		sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);</span><br><span class="line">	&#125; catch (IOException e) &#123;</span><br><span class="line">		e.printStackTrace();</span><br><span class="line">		throw new RuntimeException(e);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>3、获取当前线程的 SQLSession（事务默认开启）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">   private static ThreadLocal&lt;SqlSession&gt; threadLocal = new ThreadLocal&lt;SqlSession&gt;();</span><br><span class="line">   public static SqlSession getSqlSession()&#123;</span><br><span class="line">	//从当前线程中获取SqlSession对象</span><br><span class="line">	SqlSession sqlSession = threadLocal.get();</span><br><span class="line">	//如果SqlSession对象为空</span><br><span class="line">	if(sqlSession == null)&#123;</span><br><span class="line">		//在SqlSessionFactory非空的情况下，获取SqlSession对象</span><br><span class="line">		sqlSession = sqlSessionFactory.openSession();</span><br><span class="line">		//将SqlSession对象与当前线程绑定在一起</span><br><span class="line">		threadLocal.set(sqlSession);</span><br><span class="line">	&#125;</span><br><span class="line">	//返回SqlSession对象</span><br><span class="line">	return sqlSession;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>4、通过 SQLSession 读取 namdspace 对应的 Mapper 映射文件中的操作编号 id，从而读取并执行 SQL 语句，提交事务，最后关闭连接</p>
+<ul>
+<li>每个 Mapper 映射文件里都定义了唯一的 namespace 标识</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">try&#123;</span><br><span class="line">    //映射文件的命名空间.SQL片段的ID，就可以调用对应的映射文件中的SQL</span><br><span class="line">    sqlSession.insert(&quot;StudentID.add&quot;, student);</span><br><span class="line">    sqlSession.commit();</span><br><span class="line">&#125;catch(Exception e)&#123;</span><br><span class="line">    e.printStackTrace();</span><br><span class="line">    sqlSession.rollback();</span><br><span class="line">    throw e;</span><br><span class="line">&#125;finally&#123;</span><br><span class="line">    MybatisUtil.closeSqlSession();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Mapper 映射文件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- namespace属性是名称空间，必须唯一 --&gt;</span><br><span class="line">&lt;mapper namespace=&quot;StudentID&quot;&gt;</span><br><span class="line"></span><br><span class="line">	&lt;!-- resultMap标签:映射实体与表</span><br><span class="line">		 type属性：表示实体全路径名</span><br><span class="line">		 id属性：为实体与表的映射取一个任意的唯一的名字</span><br><span class="line">	--&gt;</span><br><span class="line">	&lt;resultMap type=&quot;zhongfucheng.Student&quot; id=&quot;studentMap&quot;&gt;</span><br><span class="line">		&lt;!-- id标签:映射主键属性</span><br><span class="line">			 result标签：映射非主键属性</span><br><span class="line">		     property属性:实体的属性名</span><br><span class="line">		     column属性：表的字段名</span><br><span class="line">		--&gt;</span><br><span class="line">		&lt;id property=&quot;id&quot; column=&quot;id&quot;/&gt;</span><br><span class="line">		&lt;result property=&quot;name&quot; column=&quot;name&quot;/&gt;</span><br><span class="line">		&lt;result property=&quot;sal&quot; column=&quot;sal&quot;/&gt;</span><br><span class="line">	&lt;/resultMap&gt;</span><br><span class="line"></span><br><span class="line">	&lt;insert id=&quot;add&quot; parameterType=&quot;zhongfucheng.Student&quot;&gt;</span><br><span class="line">		INSERT INTO ZHONGFUCHENG.STUDENTS (ID, NAME, SAL) VALUES (#&#123;id&#125;,#&#123;name&#125;,#&#123;sal&#125;);</span><br><span class="line">	&lt;/insert&gt;</span><br><span class="line"></span><br><span class="line">&lt;/mapper&gt;</span><br></pre></td></tr></table></figure>
+
+<p>关闭连接：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">   /**</span><br><span class="line"> * 关闭SqlSession与当前线程分开</span><br><span class="line"> */</span><br><span class="line">public static void closeSqlSession()&#123;</span><br><span class="line">	//从当前线程中获取SqlSession对象</span><br><span class="line">	SqlSession sqlSession = threadLocal.get();</span><br><span class="line">	//如果SqlSession对象非空</span><br><span class="line">	if(sqlSession != null)&#123;</span><br><span class="line">		//关闭SqlSession对象</span><br><span class="line">		sqlSession.close();</span><br><span class="line">		//分开当前线程与SqlSession对象的关系，目的是让GC尽早回收</span><br><span class="line">		threadLocal.remove();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="延迟加载"><a href="#延迟加载" class="headerlink" title="延迟加载"></a>延迟加载</h1><p>如果查询单表就可以满足需求，一开始先查询单表，当需要关联信息时，再关联查询，当需要关联信息再查询这个叫延迟加载。<br>延迟加载能提高数据库查询性能，因为单表查询比多表关联查询速度要快。</p>
+<p>在全局配置文件中开启懒加载</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">   &lt;settings&gt;</span><br><span class="line">	&lt;!-- 延迟加载总开关，默认false --&gt;</span><br><span class="line">	&lt;setting name=&quot;lazyLoadingEnabled&quot; value=&quot;true&quot; /&gt;</span><br><span class="line">	&lt;!-- 设置按需加载，默认true --&gt;</span><br><span class="line">	&lt;setting name=&quot;aggressiveLazyLoading&quot; value=&quot;false&quot; /&gt;</span><br><span class="line">&lt;/settings&gt;</span><br></pre></td></tr></table></figure>
+
+<p>在 Mybatis 中延迟加载就是在 resultMap 中配置具体的延迟加载</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">   &lt;!-- 一对一查询延迟加载 的配置 --&gt;</span><br><span class="line">&lt;resultMap type=&quot;orders&quot; id=&quot;orderCustomLazyLoading&quot;&gt;</span><br><span class="line">	&lt;!-- 完成了订单信息的映射配置 --&gt;</span><br><span class="line">	&lt;!-- id：订单关联用户查询的唯 一 标识 --&gt;</span><br><span class="line">	&lt;id column=&quot;id&quot; property=&quot;id&quot; /&gt;</span><br><span class="line">	&lt;result column=&quot;user_id&quot; property=&quot;userId&quot; /&gt;</span><br><span class="line">	&lt;result column=&quot;number&quot; property=&quot;number&quot; /&gt;</span><br><span class="line">	&lt;result column=&quot;createtime&quot; property=&quot;createtime&quot; /&gt;</span><br><span class="line">	&lt;result column=&quot;note&quot; property=&quot;note&quot; /&gt;</span><br><span class="line">	&lt;!--</span><br><span class="line"></span><br><span class="line">	配置用户信息的延迟加载</span><br><span class="line">	 	select：延迟加载执行的sql所在的statement的id，如果不在同一个namespace需要加namespace</span><br><span class="line">		sql：根据用户id查询用户信息【column就是参数】</span><br><span class="line">		column：关联查询的列</span><br><span class="line">		property:将关联查询的用户信息设置到Orders的哪个属性 --&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	&lt;!--当需要user数据的时候，它就会把column所指定的user_id传递过去给cn.itcast.mybatis.mapper.UserMapper.findUserById作为参数来查询数据--&gt;</span><br><span class="line">	&lt;association property=&quot;user&quot;</span><br><span class="line">		select=&quot;cn.itcast.mybatis.mapper.UserMapper.findUserById&quot; column=&quot;user_id&quot;&gt;&lt;/association&gt;</span><br><span class="line"></span><br><span class="line">       &lt;!--</span><br><span class="line">           在association和collection标签中都有⼀个fetchType属性，通过修改它的值，可以修改局部的加载策略</span><br><span class="line">           局部的加载策略的优先级高于全局的加载策略</span><br><span class="line">           fetchType=&quot;lazy&quot; 懒加载策略</span><br><span class="line">           fetchType=&quot;eager&quot; ⽴即加载策略</span><br><span class="line">       --&gt;</span><br><span class="line">       &lt;collection property=&quot;orderList&quot; ofType=&quot;order&quot; column=&quot;id&quot;</span><br><span class="line">           select=&quot;com.lagou.dao.OrderMapper.findByUid&quot; fetchType=&quot;lazy&quot;&gt;</span><br><span class="line">       &lt;/collection&gt;</span><br><span class="line"></span><br><span class="line">&lt;/resultMap&gt;</span><br></pre></td></tr></table></figure>
+
+<p>懒加载基本原理：<br>使⽤ CGLIB 或 Javassist( 默认 ) 创建⽬标对象的代理对象<br>当调⽤代理对象的延迟加载属性的 getting ⽅法时，拦截器发现需要延迟加载时，那么就会执行事先保存好的查询关联懒加载对象的 SQL，并赋值给代理对象</p>
+<h1 id="Mapper-接口的工作原理"><a href="#Mapper-接口的工作原理" class="headerlink" title="Mapper 接口的工作原理"></a>Mapper 接口的工作原理</h1><p>通常一个 Mapper 映射文件都会写一个 Mapper 接口与之对应，接口的全限名，就是映射文件中的 namespace 的值，接口的方法名，就是映射文件中 MappedStatement 的 id 值，接口方法内的参数，就是传递给 sql 的参数。<br>Mapper 接口是没有实现类的，当调用接口方法时，接口全限名+方法名拼接字符串作为 key 值，可唯一定位一个 MappedStatement。因此 Mapper 接口的方法不能重载<br>SqlSession 执行 sql 时会使用 JDK 动态代理为 Mapper 接口生成代理 proxy 对象，代理对象 proxy 会拦截接口方法，转而执行 MappedStatement 所代表的 sql，然后将 sql 执行结果返回。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SqlSession sqlSession = sqlSessionFactory.openSession();</span><br><span class="line">UserMapper userMapper = sqlSession.getMapper(UserMapper.class);</span><br><span class="line">List&lt;User&gt; byPaging = userMapper.selectUser();</span><br></pre></td></tr></table></figure>
+
+<h1 id="Mybatis-四大组件"><a href="#Mybatis-四大组件" class="headerlink" title="Mybatis 四大组件"></a>Mybatis 四大组件</h1><h1 id="Mybatis-插件"><a href="#Mybatis-插件" class="headerlink" title="Mybatis 插件"></a>Mybatis 插件</h1><p>mybatis 在一次 sqlSession 中对持久层的操作，底层依赖四大组件，分别是：</p>
+<ul>
+<li>ParameterHandler 参数处理器</li>
+<li>StatementHandler SQL 语法构建器</li>
+<li>Executor 执行器</li>
+<li>ResultSetHandler 结果集处理器</li>
+</ul>
+<p>mybatis 提供插件机制，允许业务自定义插件，基于 JDK 动态代理对四大组件做代理，在持久化过程中嵌入定制逻辑。mybatis 插件的基本原理是：</p>
+<ul>
+<li>实现自定义插件（需要实现 org.apache.ibatis.plugin.Interceptor 接口）</li>
+<li>mybatis 启动过程中插件注册给 SqlSessionFactory 的 InterceptorChain<ul>
+<li>注册方式 1：在 SqlSessionFactory 读取的全局配置文件中添加分页插件</li>
+<li>注册方式 2：配置 SqlSessionFactory 的 Bean 时进行添加。可以在@Bean 或 xml 配置里直接添加</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;plugins&gt;</span><br><span class="line">        &lt;!-- com.github.pagehelper为PageHelper类所在包名 --&gt;</span><br><span class="line">        &lt;plugin interceptor=&quot;com.github.pagehelper.PageInterceptor&quot;&gt;</span><br><span class="line">            &lt;!-- 使用MySQL方言的分页 --&gt;</span><br><span class="line">            &lt;property name=&quot;helperDialect&quot; value=&quot;sqlserver&quot;/&gt;&lt;!--如果使用mysql，这里value为mysql--&gt;</span><br><span class="line">            &lt;property name=&quot;pageSizeZero&quot; value=&quot;true&quot;/&gt;</span><br><span class="line">        &lt;/plugin&gt;</span><br><span class="line"> &lt;/plugins&gt;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>执行 SQL 的不同阶段，会创建对应的四大组件，创建组件时会遍历 InterceptorChain 里所有的 mybatis 插件，如果插件匹配这个组件，就用 JDK 动态代理包装组件<ul>
+<li>创建插件时通过注解指定要匹配的组件类型、方法名和方法参数，如果组件存在对应的方法，则插件和组件匹配</li>
+</ul>
+</li>
+<li>如果组件被动态代理，调用方法前会判断该方法是否在插件的注解里配置了，如果是，先执行插件的增强逻辑，再执行方法</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">@Intercepts(&#123;@Signature(</span><br><span class="line">    type = Executor.class,</span><br><span class="line">    method = &quot;query&quot;,</span><br><span class="line">    args = &#123;MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class&#125;</span><br><span class="line">), @Signature(</span><br><span class="line">    type = Executor.class,</span><br><span class="line">    method = &quot;query&quot;,</span><br><span class="line">    args = &#123;MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class, CacheKey.class, BoundSql.class&#125;</span><br><span class="line">)&#125;)</span><br><span class="line">public class PageInterceptor implements Interceptor &#123;</span><br><span class="line">    // 省略</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="分页插件"><a href="#分页插件" class="headerlink" title="分页插件"></a>分页插件</h2><p>分页插件是 mybatis 自己提供的，提供便捷的分页查询能力<br>分页插件的实现类：com.github.pagehelper.PageInterceptor</p>
+<p>分页插件的使用：</p>
+<ul>
+<li>通过工具类 PageHelper 将分页参数存到 threadLocal</li>
+<li>Executor 组件执行 query 方法时，执行 PageInterceptor 的增强逻辑，重写 sql，添加从 threadLocal 拿到的分页参数</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PageHelper.startPage(1, 10);</span><br></pre></td></tr></table></figure>
+
+<p>分页插件推荐使用 spring-boot-starter 的方式注册，直接引入依赖</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;com.github.pagehelper&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;pagehelper-spring-boot-starter&lt;/artifactId&gt;</span><br><span class="line">    &lt;version&gt;1.2.5&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+
+<p>它会帮你间接引入 mybatis 框架和分页插件所需要的依赖，然后在配置类中直接给应用中的 SqlSessionFactory bean 注册 PageInterceptor 插件</p>
+<h1 id="Mybatis-缓存"><a href="#Mybatis-缓存" class="headerlink" title="Mybatis 缓存"></a>Mybatis 缓存</h1><p>Mybatis 针对相同的查询 sql，提供了缓存机制。</p>
+<h2 id="一级缓存"><a href="#一级缓存" class="headerlink" title="一级缓存"></a>一级缓存</h2><p>一级缓存：SqlSession 级别，同一个 SqlSession 中的相同 sql 会命中一级缓存。默认开启。关闭的方法是：设置 local-cache-scope 的值为 statement（默认 session）</p>
+<ul>
+<li>由于使用了数据库连接池，默认是每次执行完 sql 后自动 commit 并关闭 SqlSession，这就导致两次查询不是同一个 SqlSession，所以一级缓存其实是失效的。为了使得一级缓存生效，需要把这些 sql 操作放在同一个事务里</li>
+<li>只要发生了写操作，都会将作用域中的所有缓存全部清空！与写操作是否操作的是已缓存记录毫无关系！所以如果是作用域内频繁执行写操作，那么缓存基本没效果</li>
+<li>因为一级缓存只能感知到 Session 内的写操作，所以容易缓存脏数据，生产环境建议设置为 statement 级别来关闭一级缓存</li>
+</ul>
+<h2 id="二级缓存"><a href="#二级缓存" class="headerlink" title="二级缓存"></a>二级缓存</h2><p>二级缓存：Mapper 级别，需要在 Mapper 映射文件中增加标签：<code>&lt;cache&gt;&lt;/cache&gt;</code>才能生效</p>
+<ul>
+<li>对于一些写操作频繁的数据的查询操作，可以单独禁用查询语句的二级缓存功能，在 mapper 映射文件的 select 查询中设置<code>useCache=&quot;false&quot;</code></li>
+<li>如果涉及到多表级联查询，想要二级缓存生效，需要两个 mapper 映射文件都开启缓存，且通过 cache-ref 标签建连关联，制造一个更大范围的二级缓存。否则关联查询的表如果更新了，缓存不会失效</li>
+<li>只要发生了写操作，都会将作用域中的所有缓存全部清空！与写操作是否操作的是已缓存记录毫无关系！所以如果是作用域内频繁执行写操作，那么缓存基本没效果</li>
+<li>在分布式环境中，二级缓存因为只缓存在本地，所以依然容易缓存脏数据，不建议开启</li>
+</ul>
+<p>缓存优先级：二级缓存 &gt; 一级缓存 &gt; 数据库</p>
+<h3 id="主动刷新缓存"><a href="#主动刷新缓存" class="headerlink" title="主动刷新缓存"></a>主动刷新缓存</h3><p>因为缓存作用域内的写操作导致全部缓存失效的机制，所以如果写频繁的数据，使用二级缓存其实作用不大。但如果对于查询数据的时效性要求不高，二级缓存就有用武之地，这里推荐使用它的主动刷新缓存机制</p>
+<p>1、mapper 映射文件中的写操作 sql，把刷新缓存开关关闭（默认开启）。<code>flushCache=&quot;false&quot;</code></p>
+<p>2、mapper 映射文件配置主动刷新缓存。<code>&lt;cache eviction=&quot;FIFO&quot; flushInterval=&quot;1000 size=&quot;512&quot; readOnly=&quot;true&quot;&quot;&gt;&lt;/cache&gt;</code></p>
+<ul>
+<li>flushInterval：刷新间隔，单位毫秒</li>
+<li>size：缓存队列大小，默认 1024</li>
+<li>eviction：缓存在队列空间不够时的淘汰策略。FIFO 即先入先出，常用的还有 LRU 最近最少使用</li>
+<li>readOnly：true 表示只读，查询到的 DO 对象不能做写操作。底层返回给调用者的只是 DO 对象的引用，因此有性能优势</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>西米大人
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://dcbupt.github.io/2022/06/28/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Mybatis/" title="系统学习Mybatis">http://dcbupt.github.io/2022/06/28/blog_article/系统学习系列/系统学习Mybatis/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+
+        
+
+<blockquote class="blockquote-center" style="color: #f0ad4e">完 ♥ 结</blockquote>
+
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/05/30/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0JAVA%E6%B3%A8%E8%A7%A3/" rel="prev" title="系统学习JAVA注解">
+      <i class="fa fa-chevron-left"></i> 系统学习JAVA注解
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/07/23/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0TCP/" rel="next" title="系统学习TCP">
+      系统学习TCP <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Mybatis-%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text">Mybatis 的工作流程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BB%B6%E8%BF%9F%E5%8A%A0%E8%BD%BD"><span class="nav-number">2.</span> <span class="nav-text">延迟加载</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Mapper-%E6%8E%A5%E5%8F%A3%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="nav-number">3.</span> <span class="nav-text">Mapper 接口的工作原理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Mybatis-%E5%9B%9B%E5%A4%A7%E7%BB%84%E4%BB%B6"><span class="nav-number">4.</span> <span class="nav-text">Mybatis 四大组件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Mybatis-%E6%8F%92%E4%BB%B6"><span class="nav-number">5.</span> <span class="nav-text">Mybatis 插件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E9%A1%B5%E6%8F%92%E4%BB%B6"><span class="nav-number">5.1.</span> <span class="nav-text">分页插件</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Mybatis-%E7%BC%93%E5%AD%98"><span class="nav-number">6.</span> <span class="nav-text">Mybatis 缓存</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E7%BA%A7%E7%BC%93%E5%AD%98"><span class="nav-number">6.1.</span> <span class="nav-text">一级缓存</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E7%BA%A7%E7%BC%93%E5%AD%98"><span class="nav-number">6.2.</span> <span class="nav-text">二级缓存</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BB%E5%8A%A8%E5%88%B7%E6%96%B0%E7%BC%93%E5%AD%98"><span class="nav-number">6.2.1.</span> <span class="nav-text">主动刷新缓存</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="西米大人"
+      src="/images/me.png">
+  <p class="site-author-name" itemprop="name">西米大人</p>
+  <div class="site-description" itemprop="description"><blockquote class="blockquote-center">优秀的人，不是不合群，而是他们合群的人里面没有你</blockquote></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">127</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dcbupt" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;dcbupt" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:byrddc@hotmail.com" title="E-Mail → mailto:byrddc@hotmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">西米大人</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">338k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">9:23</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.id);
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            let target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    let { app_id, app_key, server_url } = {"enable":true,"app_id":"OBdFsOOtfIDcNnWdzkGbICmj-gzGzoHsz","app_key":"89LmL4tP7hkyChAmEleq2MdO","server_url":null,"security":true};
+    function fetchData(api_server) {
+      var Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    let api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+<script src="/js/love.js"></script>
+
+<script src="/js/particle.js"></script>
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('https://cdn.jsdelivr.net/npm/valine@1.4.18/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'OBdFsOOtfIDcNnWdzkGbICmj-gzGzoHsz',
+      appKey     : '89LmL4tP7hkyChAmEleq2MdO',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

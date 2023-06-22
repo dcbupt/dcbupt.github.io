@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.cat.net/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-mac-osx.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"dcbupt.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="唯一随机数映射算法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="唯一随机数映射算法">
+<meta property="og:url" content="http://dcbupt.github.io/2023/06/10/blog_article/%E5%B7%A5%E7%A8%8B%E6%8A%80%E6%9C%AF/%E5%94%AF%E4%B8%80%E9%9A%8F%E6%9C%BA%E6%95%B0%E6%98%A0%E5%B0%84%E7%AE%97%E6%B3%95/index.html">
+<meta property="og:site_name" content="dcddc">
+<meta property="og:description" content="唯一随机数映射算法">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://dcbupt.github.io/images/randnum.png">
+<meta property="article:published_time" content="2023-06-10T12:43:15.039Z">
+<meta property="article:modified_time" content="2023-06-10T12:43:15.039Z">
+<meta property="article:author" content="西米大人">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://dcbupt.github.io/images/randnum.png">
+
+<link rel="canonical" href="http://dcbupt.github.io/2023/06/10/blog_article/%E5%B7%A5%E7%A8%8B%E6%8A%80%E6%9C%AF/%E5%94%AF%E4%B8%80%E9%9A%8F%E6%9C%BA%E6%95%B0%E6%98%A0%E5%B0%84%E7%AE%97%E6%B3%95/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+  <title>唯一随机数映射算法 | dcddc</title><meta name="robots" content="noindex">
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">dcddc</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">西米大人的博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dcbupt.github.io/2023/06/10/blog_article/%E5%B7%A5%E7%A8%8B%E6%8A%80%E6%9C%AF/%E5%94%AF%E4%B8%80%E9%9A%8F%E6%9C%BA%E6%95%B0%E6%98%A0%E5%B0%84%E7%AE%97%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/me.png">
+      <meta itemprop="name" content="西米大人">
+      <meta itemprop="description" content="<blockquote class="blockquote-center">优秀的人，不是不合群，而是他们合群的人里面没有你</blockquote>">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="dcddc">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          唯一随机数映射算法
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-06-10 20:43:15" itemprop="dateCreated datePublished" datetime="2023-06-10T20:43:15+08:00">2023-06-10</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%B7%A5%E7%A8%8B%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">工程技术</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2023/06/10/blog_article/%E5%B7%A5%E7%A8%8B%E6%8A%80%E6%9C%AF/%E5%94%AF%E4%B8%80%E9%9A%8F%E6%9C%BA%E6%95%B0%E6%98%A0%E5%B0%84%E7%AE%97%E6%B3%95/" class="post-meta-item leancloud_visitors" data-flag-title="唯一随机数映射算法" title="热度">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">热度:</span>
+              <span class="leancloud-visitors-count"></span>℃
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">评论:</span>
+    
+    <a title="valine" href="/2023/06/10/blog_article/%E5%B7%A5%E7%A8%8B%E6%8A%80%E6%9C%AF/%E5%94%AF%E4%B8%80%E9%9A%8F%E6%9C%BA%E6%95%B0%E6%98%A0%E5%B0%84%E7%AE%97%E6%B3%95/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2023/06/10/blog_article/%E5%B7%A5%E7%A8%8B%E6%8A%80%E6%9C%AF/%E5%94%AF%E4%B8%80%E9%9A%8F%E6%9C%BA%E6%95%B0%E6%98%A0%E5%B0%84%E7%AE%97%E6%B3%95/" itemprop="commentCount"></span>℃
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">字数：</span>
+              <span>2.8k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>5 分钟</span>
+            </span>
+            <div class="post-description"><blockquote class="blockquote-center">唯一随机数映射算法</blockquote></div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>通常我们将主键 id 设置为自增，且在一些接口中会对外透出，于是外部可以直接拿到代表业务量的主键 id，从中估计出业务规模。为了避免这种情况，需要设计一套随机数生成算法，将主键 id 映射为随机数，使得外部无法从中窥探出业务规模</p>
+<p>随机数生成算法需要具备如下特性：</p>
+<ul>
+<li>唯一性。原数可映射成唯一的随机数，不能存在碰撞<ul>
+<li>原数往往对应一个医生主键 id、问诊单号、处方单号、病历单号等，都是有实际的业务含义且独立的，因此映射后的随机数不能存在碰撞</li>
+</ul>
+</li>
+<li>随机性。映射后的随机数不能轻易看出生成规则</li>
+<li>高效性。算法不能过于复杂，消耗过多系统资源</li>
+<li>可逆性。算法最好可逆，通过随机数反推回原数</li>
+</ul>
+<p>下面以主键 id 在 6 位数范围内为例</p>
+<h1 id="方案"><a href="#方案" class="headerlink" title="方案"></a>方案</h1><h2 id="确定映射后的六位数范围"><a href="#确定映射后的六位数范围" class="headerlink" title="确定映射后的六位数范围"></a>确定映射后的六位数范围</h2><p>999999 的二进制： 1111 0100 0010 0011 1111<br>so 映射后的二进制一定要比 1111 0100 0010 0100 0000 小，否则就映射到 7 位数了</p>
+<h2 id="唯一随机数生成方案"><a href="#唯一随机数生成方案" class="headerlink" title="唯一随机数生成方案"></a>唯一随机数生成方案</h2><blockquote>
+<p>种子异或+二进制的乱序移位</p>
+</blockquote>
+<p>异或的优点</p>
+<ul>
+<li>异或可将原数唯一映射成另一个数。唯一性是指，不同时存在 a 和 a’，满足 a^b&#x3D;c，a’^b&#x3D;c</li>
+<li>异或是可逆的。即，a^b&#x3D;c，知道 b 和异或结果 c，可以反推出 a&#x3D;b^c。利用这一点可以实现算法可逆，通过随机数反推回原数</li>
+</ul>
+<p>异或的缺点</p>
+<ul>
+<li>种子相同，异或后的结果相同，因此只做异或运算还是容易被逆的，随机性不够</li>
+<li>种子选取不慎，异或后的结果可能远大于原数<ul>
+<li>在这个需求中，可能一个 6 位数异或得到一个 7 位数甚至更大，是完全有可能的。7 位数截取 6 位，很容易造成随机数碰撞</li>
+</ul>
+</li>
+</ul>
+<p>对于缺点 1，增加异或随机性的解法是；</p>
+<ul>
+<li>多次异或，每次异或使用的种子不同</li>
+<li>异或前，对原数的二进制做乱序移位，增加原数随机性<ul>
+<li>需要保证乱序移位后，不超过一个预设的极大值。对于要生成随机 6 位数，就要保证异或后的随机数不超过 999999</li>
+</ul>
+</li>
+</ul>
+<p>对于缺点 2，需要通过分析推理出适合的种子集合，使得集合中的每个种子都能保证原数异或后在一个极大值范围内，对于要生成随机 6 位数，就要保证异或后的随机数不超过 999999</p>
+<h2 id="确定异或种子和可乱序移位的位置"><a href="#确定异或种子和可乱序移位的位置" class="headerlink" title="确定异或种子和可乱序移位的位置"></a>确定异或种子和可乱序移位的位置</h2><p>这里就要具体问题具体分析了</p>
+<p>因为我们要生成 6 位随机数，所以 999999 是映射后的极大值，对它的二进制<code>1111 0100 0010 0011 1111</code>（共二十位）做如下推算</p>
+<ul>
+<li>高四位全 1，所以对高四位做移位操作不会改变原数范围</li>
+<li>高四位全 1，所以在高四位不全是 1 时，低十六位的范围必然是完整的全集。如果种子异或后高四位改变，必然存在原数高四位非全 1，映射后全 1 的场景，而原数低 16 位是全集，种子异或后必然存在比 999999 的低 16 位<code>0100 0010 0011 1111</code>大的情况，所以推得种子高四位不能改变原数高四位，因此种子高四位只能全 0</li>
+<li>因为种子高四位全 0，不改变原数高四位，所以在原数高四位是<code>1111</code>时，原数的高 5<del>14 位与种子的高 5</del>14 位异或后不能超过 999999 的高 5<del>14 位<code>0100 0010 00</code>。换句话说，<code>0000 0000 00</code></del><code>0100 0010 00</code>与种子的高 5<del>14 位<code>xxxx xxxx xx</code>异或后，最大只能为<code>0100 0010 00</code>。由此推得，种子的 5</del>14 位只能是全 0。推送过程可以从高位到低位用反证法，过程不详述</li>
+<li>低 6 位全 1，所以对低 6 位做移位操作不会改变原数范围</li>
+<li>低 6 位全 1，所以种子的低 6 位对原数低 6 位异或运算后，不会导致生成的随机数超过 999999，因此种子的低 6 位可任意</li>
+</ul>
+<p>结论：</p>
+<ul>
+<li>原数高 4 位和低 6 位可做乱序移位操作，共（4<em>3</em>2<em>1）</em>（6<em>5</em>4<em>3</em>2*1）&#x3D; 17280 种选择</li>
+<li>种子低 6 位可取任意的 0 或 1，高 14 位全 0，因此种子的个数为 2<em>2</em>2<em>2</em>2*2&#x3D;64 种选择</li>
+</ul>
+<p>因此，基于不同的移位操作和不同的种子，一共可衍生出<code>17280*64=1105920</code>种唯一 6 位随机数映射结果集。如果对生成的随机数再使用该算法递归一次，就会生成 1105920 的二次方种随机数映射结果集，因此该算法可以实现完全无碰撞的六位唯一随机数，且每种随机数生成方式有三个可选变量来定制属于自己的一套随机化方案：</p>
+<ul>
+<li>选择不同的种子</li>
+<li>不同的乱序移位方式</li>
+<li>不同的递归次数</li>
+</ul>
+<h2 id="通用性"><a href="#通用性" class="headerlink" title="通用性"></a>通用性</h2><p>如果我想实现 7 位、8 位甚至更高的唯一随机数，这套算法通用吗？答案是肯定的，因为算法的核心就是要确定两点：</p>
+<ul>
+<li>种子集，需要保证异或后的结果不超过位数的极大值（6 位是 999999，七位是 9999999，以此类推…）</li>
+<li>原数的二进制中，哪些位置可做乱序移位操作</li>
+</ul>
+<p>这两点，可以借鉴我上述对于 6 位随机数的推演过程，不难得到其他位的随机数生成算法，这里我给出一般规律：</p>
+<ul>
+<li>如果想异或后不超过极大值 a，种子可任意 0 或 1 的位数需要与 a 的低位连续为 1 的位数严格对应，其余位必须全为 0</li>
+<li>a 的高位和低位连续 1 的位数，可做乱序移位操作来增加原数随机性，因为这不会改变原数的范围</li>
+</ul>
+<h2 id="算法流程图"><a href="#算法流程图" class="headerlink" title="算法流程图"></a>算法流程图</h2><p><img src="/images/randnum.png"></p>
+<h1 id="基于唯一随机数的扩展能力"><a href="#基于唯一随机数的扩展能力" class="headerlink" title="基于唯一随机数的扩展能力"></a>基于唯一随机数的扩展能力</h1><h2 id="唯一随机码"><a href="#唯一随机码" class="headerlink" title="唯一随机码"></a>唯一随机码</h2><p>如果能设计一套算法，保证六位唯一随机数可以唯一映射到一个固定位数的唯一随机码，既然我们已经实现了唯一随机数算法，那么就自然可以组合成唯一随机码的生成算法</p>
+<p>数字转字符最常见的就是 Base64 算法，将二进制转成长串字符串，核心是维护一个字符集数组，将分隔后的每个二进制转为十进制，作为数组下标，得到映射的字符</p>
+<p>因此，我们的随机数映射随机码可以借鉴 Base64 算法的思路，维护一个字符集数组，包含所有随机码的字符。问题的关键是如何处理六位数才能得到一组唯一映射的数组下标</p>
+<p>假设字符集数组的长度为 n，可以用六位数对 n<code>不断做取模运算</code>：先取模，再做除运算去除小数，不断重复，直到六位数除尽。这么做的效果等同于将六位数<code>转换成一个n进制数</code>。对于两个不同的数，转换成的 n 进制数一定不同，且 n 进制数的每一位，必然在字符集数组的下标范围内（0~n-1）。因此，不同的数，一定能映射成不同的字符串</p>
+<p>但这也带来一个问题，转换后的 n 进制数位数不同造成字符串长度不同。以 32 进制为例，像 0~31，转为 32 进制的数与十进制相同，因此只能映射一个字符，如果是最大的六位数 999999，可以映射四个字符</p>
+<p>所以，当映射后字符串长度小于随机码的位数时，需要在映射后的字符串后面继续补充字符。补全需要的字符可以从字符集数组中随机取，因为不同的数映射的字符串已经不会相同了，所以补全需要的字符随机取是不会产生碰撞的</p>
+<p>当然，这种数字映射唯一字符串的算法如果是可逆的，就可以反推出原数，适配更多的业务场景。不难发现，上述这种进制转换算法本身就是可逆的，不过如果存在随机补全的字符，就不可逆了。因此可以用一种取巧的办法，设置一个不在字符集里的<code>哨兵字符</code>，如果需要补位，先补哨兵字符。</p>
+<blockquote>
+<p>以哨兵字符作为分界，左边的字符串就是类 Base64 算法映射的结果，转换为 n 进制数后，做逆运算（n 进制数转为十进制数）即可反推出原数</p>
+</blockquote>
+<p>因此，随机码生成策略可以总结为</p>
+<blockquote>
+<p>将原数转为字符集长度 n 对应的 n 进制数，将它的每一位作为下标映射到字符集数组，得到映射后的字符串。如果长度不够，先补哨兵，再从字符集中随机取字符来补充到指定长度</p>
+</blockquote>
+<!-- flag of hidden posts -->
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>西米大人
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://dcbupt.github.io/2023/06/10/blog_article/%E5%B7%A5%E7%A8%8B%E6%8A%80%E6%9C%AF/%E5%94%AF%E4%B8%80%E9%9A%8F%E6%9C%BA%E6%95%B0%E6%98%A0%E5%B0%84%E7%AE%97%E6%B3%95/" title="唯一随机数映射算法">http://dcbupt.github.io/2023/06/10/blog_article/工程技术/唯一随机数映射算法/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+
+        
+
+<blockquote class="blockquote-center" style="color: #f0ad4e">完 ♥ 结</blockquote>
+
+
+
+        
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%96%B9%E6%A1%88"><span class="nav-number">2.</span> <span class="nav-text">方案</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A1%AE%E5%AE%9A%E6%98%A0%E5%B0%84%E5%90%8E%E7%9A%84%E5%85%AD%E4%BD%8D%E6%95%B0%E8%8C%83%E5%9B%B4"><span class="nav-number">2.1.</span> <span class="nav-text">确定映射后的六位数范围</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%94%AF%E4%B8%80%E9%9A%8F%E6%9C%BA%E6%95%B0%E7%94%9F%E6%88%90%E6%96%B9%E6%A1%88"><span class="nav-number">2.2.</span> <span class="nav-text">唯一随机数生成方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A1%AE%E5%AE%9A%E5%BC%82%E6%88%96%E7%A7%8D%E5%AD%90%E5%92%8C%E5%8F%AF%E4%B9%B1%E5%BA%8F%E7%A7%BB%E4%BD%8D%E7%9A%84%E4%BD%8D%E7%BD%AE"><span class="nav-number">2.3.</span> <span class="nav-text">确定异或种子和可乱序移位的位置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%9A%E7%94%A8%E6%80%A7"><span class="nav-number">2.4.</span> <span class="nav-text">通用性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%97%E6%B3%95%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="nav-number">2.5.</span> <span class="nav-text">算法流程图</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E5%94%AF%E4%B8%80%E9%9A%8F%E6%9C%BA%E6%95%B0%E7%9A%84%E6%89%A9%E5%B1%95%E8%83%BD%E5%8A%9B"><span class="nav-number">3.</span> <span class="nav-text">基于唯一随机数的扩展能力</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%94%AF%E4%B8%80%E9%9A%8F%E6%9C%BA%E7%A0%81"><span class="nav-number">3.1.</span> <span class="nav-text">唯一随机码</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="西米大人"
+      src="/images/me.png">
+  <p class="site-author-name" itemprop="name">西米大人</p>
+  <div class="site-description" itemprop="description"><blockquote class="blockquote-center">优秀的人，不是不合群，而是他们合群的人里面没有你</blockquote></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">127</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dcbupt" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;dcbupt" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:byrddc@hotmail.com" title="E-Mail → mailto:byrddc@hotmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">西米大人</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">338k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">9:23</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.id);
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            let target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    let { app_id, app_key, server_url } = {"enable":true,"app_id":"OBdFsOOtfIDcNnWdzkGbICmj-gzGzoHsz","app_key":"89LmL4tP7hkyChAmEleq2MdO","server_url":null,"security":true};
+    function fetchData(api_server) {
+      var Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    let api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+<script src="/js/love.js"></script>
+
+<script src="/js/particle.js"></script>
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('https://cdn.jsdelivr.net/npm/valine@1.4.18/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'OBdFsOOtfIDcNnWdzkGbICmj-gzGzoHsz',
+      appKey     : '89LmL4tP7hkyChAmEleq2MdO',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

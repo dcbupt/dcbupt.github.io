@@ -37,7 +37,7 @@
 <meta property="og:image" content="http://dcbupt.github.io/Netty/Netty%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B1.png">
 <meta property="og:image" content="http://dcbupt.github.io/Netty/Netty%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B.png">
 <meta property="article:published_time" content="2020-05-26T06:55:00.000Z">
-<meta property="article:modified_time" content="2022-05-01T06:44:18.823Z">
+<meta property="article:modified_time" content="2023-06-10T12:43:15.052Z">
 <meta property="article:author" content="西米大人">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://dcbupt.github.io/Netty/IO%E6%A8%A1%E5%9E%8B.jpg">
@@ -228,7 +228,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-05-01 14:44:18" itemprop="dateModified" datetime="2022-05-01T14:44:18+08:00">2022-05-01</time>
+                <time title="修改时间：2023-06-10 20:43:15" itemprop="dateModified" datetime="2023-06-10T20:43:15+08:00">2023-06-10</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -267,14 +267,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">字数：</span>
-              <span>9.7k</span>
+              <span>20k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>16 分钟</span>
+              <span>33 分钟</span>
             </span>
             <div class="post-description"><blockquote class="blockquote-center">系统学习Netty</blockquote></div>
 
@@ -289,51 +289,51 @@
       
         <h1 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h1><h2 id="TCP-vs-UDP"><a href="#TCP-vs-UDP" class="headerlink" title="TCP vs UDP"></a>TCP vs UDP</h2><p>TCP：传输控制协议<br>UDP：用户数据协议</p>
 <ul>
-<li>TCP是面向连接的（在客户端和服务器之间传输数据之前要先建立连接），UDP是无连接的（发送数据之前不需要先建立连接）</li>
-<li>TCP提供可靠的服务（通过TCP传输的数据。无差错，不丢失，不重复，且按序到达）；UDP提供面向事务的简单的不可靠的传输。</li>
-<li>UDP具有较好的实时性，工作效率比TCP高，适用于对高速传输和实时性比较高的通讯或广播通信。随着网速的提高，UDP使用越来越多。</li>
-<li>每一条TCP连接只能是点到点的，UDP支持一对一，一对多和多对多的交互通信。</li>
-<li>TCP对系统资源要求比较多，UDP对系统资源要求比较少</li>
-<li>UDP程序结构更加简单</li>
-<li>TCP是流模式，UDP是数据报模式</li>
+<li>TCP 是面向连接的（在客户端和服务器之间传输数据之前要先建立连接），UDP 是无连接的（发送数据之前不需要先建立连接）</li>
+<li>TCP 提供可靠的服务（通过 TCP 传输的数据。无差错，不丢失，不重复，且按序到达）；UDP 提供面向事务的简单的不可靠的传输。</li>
+<li>UDP 具有较好的实时性，工作效率比 TCP 高，适用于对高速传输和实时性比较高的通讯或广播通信。随着网速的提高，UDP 使用越来越多。</li>
+<li>每一条 TCP 连接只能是点到点的，UDP 支持一对一，一对多和多对多的交互通信。</li>
+<li>TCP 对系统资源要求比较多，UDP 对系统资源要求比较少</li>
+<li>UDP 程序结构更加简单</li>
+<li>TCP 是流模式，UDP 是数据报模式</li>
 </ul>
-<p>UDP应用场景</p>
+<p>UDP 应用场景</p>
 <ul>
-<li>数据包总量比较少的通信，比如DNS、SNMP</li>
+<li>数据包总量比较少的通信，比如 DNS、SNMP</li>
 <li>视频、音频等对实时性要求比较高的多媒体通信</li>
 <li>广播通信、多播通信</li>
 </ul>
-<p>TCP如果保证高可靠传输？</p>
+<p>TCP 如果保证高可靠传输？</p>
 <ul>
-<li>序列号：TCP给发送的每一个包进行编号，接收方对数据包进行排序，把有序数据传送给应用层。</li>
-<li>校验和：TCP将保存它首部和数据的检验和。这是一个端到端的检验和，目的是检测数据在传输过程中的任何变化。如果接收端的检验和有差错，TCP将丢弃这个报文段和不确认收到此报文段。</li>
-<li>流量控制：控制发送速率。TCP连接的每一方都有固定大小的缓冲空间（窗口）。通过可变大小的滑动窗口协议，发送方根据确认消息里接收方窗口的大小，控制发送速率，防止丢数据。</li>
+<li>序列号：TCP 给发送的每一个包进行编号，接收方对数据包进行排序，把有序数据传送给应用层。</li>
+<li>校验和：TCP 将保存它首部和数据的检验和。这是一个端到端的检验和，目的是检测数据在传输过程中的任何变化。如果接收端的检验和有差错，TCP 将丢弃这个报文段和不确认收到此报文段。</li>
+<li>流量控制：控制发送速率。TCP 连接的每一方都有固定大小的缓冲空间（窗口）。通过可变大小的滑动窗口协议，发送方根据确认消息里接收方窗口的大小，控制发送速率，防止丢数据。</li>
 <li>拥塞控制：发送方还有一个拥塞窗口，窗口大小基于一定的策略（慢开始、快重传、快恢复）动态调整。目的是当网络拥塞时，减少数据的发送。<ul>
 <li>发送方的发送窗口取的是拥塞窗口和接收方接收窗口的最小值。</li>
 </ul>
 </li>
-<li>自动重传ARQ协议：每发完一个分组就启动一个定时器，并停止发送，等待对方确认。在收到确认后再发下一个分组。如果超时未收到对方确认，将重发这个报文段。这种方式信道利用率低，一般采取连续ARQ协议，即位于发送窗口内的分组可以连续发送而不用等确认，接收方对按序到达的最后一个分组发送确认。缺点是如果出现消息丢失，发送方需要回退N重发。</li>
+<li>自动重传 ARQ 协议：每发完一个分组就启动一个定时器，并停止发送，等待对方确认。在收到确认后再发下一个分组。如果超时未收到对方确认，将重发这个报文段。这种方式信道利用率低，一般采取连续 ARQ 协议，即位于发送窗口内的分组可以连续发送而不用等确认，接收方对按序到达的最后一个分组发送确认。缺点是如果出现消息丢失，发送方需要回退 N 重发。</li>
 </ul>
-<p>TCP建联的三次握手机制：</p>
+<p>TCP 建联的三次握手机制：</p>
 <ul>
-<li>第一次握手：主机A发送位码syn＝1，随机产生seq number&#x3D;1234567的数据包到服务器，主机B由syn&#x3D;1知道，A要求建立联机；</li>
-<li>第二次握手：主机B收到请求后要确认联机信息，向A发送ack number&#x3D;(主机A的seq+1)，syn&#x3D;1，ack&#x3D;1，随机产生seq&#x3D;7654321的包</li>
-<li>第三次握手：主机A收到后检查ack number是否正确，即第一次发送的seq number+1，以及位码ack是否为1。若正确，主机A会再发送ack number&#x3D;(主机B的seq+1)，ack&#x3D;1。主机B收到后确认seq值与ack&#x3D;1则连接建立成功</li>
+<li>第一次握手：主机 A 发送位码 syn ＝ 1，随机产生 seq number&#x3D;1234567 的数据包到服务器，主机 B 由 syn&#x3D;1 知道，A 要求建立联机；</li>
+<li>第二次握手：主机 B 收到请求后要确认联机信息，向 A 发送 ack number&#x3D;(主机 A 的 seq+1)，syn&#x3D;1，ack&#x3D;1，随机产生 seq&#x3D;7654321 的包</li>
+<li>第三次握手：主机 A 收到后检查 ack number 是否正确，即第一次发送的 seq number+1，以及位码 ack 是否为 1。若正确，主机 A 会再发送 ack number&#x3D;(主机 B 的 seq+1)，ack&#x3D;1。主机 B 收到后确认 seq 值与 ack&#x3D;1 则连接建立成功</li>
 </ul>
-<p>TCP断连的四次挥手机制(假设C端发起断连)：</p>
+<p>TCP 断连的四次挥手机制(假设 C 端发起断连)：</p>
 <ul>
-<li>C端发送FIN报文</li>
-<li>S端发送ACK报文，然后把剩余数据发完</li>
-<li>S端发送FIN报文</li>
-<li>C端发送ACK报文，S端收到ACK后，关闭连接。C端超过一定时长后没收到消息（担心C端发送的ACK丢失），证明S端已经断开，则关闭连接</li>
+<li>C 端发送 FIN 报文</li>
+<li>S 端发送 ACK 报文，然后把剩余数据发完</li>
+<li>S 端发送 FIN 报文</li>
+<li>C 端发送 ACK 报文，S 端收到 ACK 后，关闭连接。C 端超过一定时长后没收到消息（担心 C 端发送的 ACK 丢失），证明 S 端已经断开，则关闭连接</li>
 </ul>
-<p>为什么建联三次握手，断连四次握手？<br>因为建联时，接收端可以ACK和SYN一起发送。断连时，被断开方收到FIN消息后，还可能有需要发送的数据，所以只能先ACK，等发完数据后再发送FIN。</p>
-<p>什么是TCP拆包、粘包？<br>拆包：将应用层下发的一个大数据包拆成多个数据包<br>粘包：将应用层下发的多个小数据包合成一个数据包</p>
-<p>TCP为什么存在拆包、粘包？</p>
+<p>为什么建联三次握手，断连四次握手？<br>因为建联时，接收端可以 ACK 和 SYN 一起发送。断连时，被断开方收到 FIN 消息后，还可能有需要发送的数据，所以只能先 ACK，等发完数据后再发送 FIN。</p>
+<p>什么是 TCP 拆包、粘包？<br>拆包：将应用层下发的一个大数据包拆成多个数据包<br>粘包：将应用层下发的多个小数据包合成一个数据包</p>
+<p>TCP 为什么存在拆包、粘包？</p>
 <ul>
-<li>TCP基于字节流，对应用层下发的数据看成一连串无边界的字节流</li>
-<li>TCP的数据帧结构没有标识数据长度的字段</li>
-<li>TCP基于发送窗口大小来发送数据包，且发送窗口存在动态调整，所以存在拆包、粘包</li>
+<li>TCP 基于字节流，对应用层下发的数据看成一连串无边界的字节流</li>
+<li>TCP 的数据帧结构没有标识数据长度的字段</li>
+<li>TCP 基于发送窗口大小来发送数据包，且发送窗口存在动态调整，所以存在拆包、粘包</li>
 </ul>
 <p>如何解决拆包、粘包？<br>只能通过在应用层定制协议来实现。一般有三种方式：</p>
 <ul>
@@ -341,225 +341,372 @@
 <li>每条报文尾部增加特殊字符来标识</li>
 <li>应用层定制协议字段，消息头增加字段标识数据长度</li>
 </ul>
-<h2 id="Socket套接字"><a href="#Socket套接字" class="headerlink" title="Socket套接字"></a>Socket套接字</h2><p>在传输层上做的一层抽象编程接口，不同编程语言都有对应的Socket服务端和客户端的库。<br>Socket在设计之初就希望也能适应其他网络协议，不局限于TCP&#x2F;IP协议，<code>但一般用到的Socket都是基于TCP/IP协议的实现</code>，且Socket在传输层既可以基于TCP协议，也可以基于UDP协议做实现。</p>
-<h3 id="长连接-amp-短链接"><a href="#长连接-amp-短链接" class="headerlink" title="长连接 &amp; 短链接"></a>长连接 &amp; 短链接</h3><p>所谓长连接，指在一个TCP连接上可以连续发送多个数据包，在TCP连接保持期间，如果没有数据包发送，需要双方发检测包以维持此连接(心跳包)。基于TCP的Socket连接就是长连接（三次握手建联后，除非一方主动发起断连，否则连接通道不会断开）。数据库连接就用的长连接。<br>短连接是指通信双方有数据交互时，就建立一个TCP连接，数据发送完成后，则断开此TCP连接。比如一次HTTP连接，只是TCP建连、发送请求、接收响应、断连。<br>HTTP&#x2F;1.1已经默认开启长连接：把Connection头写进标准，除非请求中写明Connection: close，否则浏览器和服务器之间是会<code>维持一段时间</code>的TCP连接，不会一个请求结束就断掉。</p>
+<h2 id="Socket-套接字"><a href="#Socket-套接字" class="headerlink" title="Socket 套接字"></a>Socket 套接字</h2><p>在传输层上做的一层抽象编程接口，不同编程语言都有对应的 Socket 服务端和客户端的库。<br>Socket 在设计之初就希望也能适应其他网络协议，不局限于 TCP&#x2F;IP 协议，<code>但一般用到的Socket都是基于TCP/IP协议的实现</code>，且 Socket 在传输层既可以基于 TCP 协议，也可以基于 UDP 协议做实现。</p>
+<h3 id="长连接-amp-短链接"><a href="#长连接-amp-短链接" class="headerlink" title="长连接 &amp; 短链接"></a>长连接 &amp; 短链接</h3><p>所谓长连接，指在一个 TCP 连接上可以连续发送多个数据包，在 TCP 连接保持期间，如果没有数据包发送，需要双方发检测包以维持此连接(心跳包)。基于 TCP 的 Socket 连接就是长连接（三次握手建联后，除非一方主动发起断连，否则连接通道不会断开）。数据库连接就用的长连接。<br>短连接是指通信双方有数据交互时，就建立一个 TCP 连接，数据发送完成后，则断开此 TCP 连接。比如一次 HTTP 连接，只是 TCP 建连、发送请求、接收响应、断连。<br>HTTP&#x2F;1.1 已经默认开启长连接：把 Connection 头写进标准，除非请求中写明 Connection: close，否则浏览器和服务器之间是会<code>维持一段时间</code>的 TCP 连接，不会一个请求结束就断掉。</p>
 <blockquote>
-<p>延伸：Http&#x2F;1.1除了默认开启长连接来减少TCP建连的开销，还有什么提效的方法？</p>
+<p>延伸：Http&#x2F;1.1 除了默认开启长连接来减少 TCP 建连的开销，还有什么提效的方法？</p>
 </blockquote>
-<p>答案在Http2，其提供了multiplexing多路传输特性，可以在一个TCP链接建立后，并行完成多个Http请求，以提高页面加载效率。<br>Http&#x2F;1.1时代是采用上面说的默认开启长连接和同时建立多个TCP连接来提高页面加载效率</p>
-<h2 id="用户空间与内核空间"><a href="#用户空间与内核空间" class="headerlink" title="用户空间与内核空间"></a>用户空间与内核空间</h2><p>操作系统的核心是内核，独立于普通的应用程序，有访问底层硬件设备的所有权限。为了保证用户进程不能直接操作内核（kernel），保证内核的安全，操心系统将内存划分为两部分，一部分为内核空间，一部分为用户空间。对32位操作系统而言，虚拟存储空间为2^32&#x3D;4G。针对linux操作系统，将最高的1G字节（从虚拟地址0xC0000000到0xFFFFFFFF），供内核使用，称为内核空间，而将较低的3G字节（从虚拟地址0x00000000到0xBFFFFFFF），供各个进程使用，称为用户空间</p>
-<h2 id="文件描述符fd"><a href="#文件描述符fd" class="headerlink" title="文件描述符fd"></a>文件描述符fd</h2><p>文件描述符（File descriptor）是计算机科学中的一个术语，是一个用于表述指向文件的引用的抽象化概念。当程序打开一个现有文件或者创建一个新文件时，内核向进程返回一个文件描述符（socket也是一种文件描述符，因为需要IO操作）。在程序设计中，一些涉及底层的程序编写往往会围绕着文件描述符展开。但是文件描述符这一概念往往只适用于UNIX、Linux这样的操作系统。<br><code>网络IO里，fd可以简单理解为socket连接</code></p>
-<h2 id="缓存I-x2F-O"><a href="#缓存I-x2F-O" class="headerlink" title="缓存I&#x2F;O"></a>缓存I&#x2F;O</h2><p>缓存 I&#x2F;O 又被称作标准 I&#x2F;O，大多数文件系统的默认 I&#x2F;O 操作都是缓存 I&#x2F;O。在 Linux 的缓存 I&#x2F;O 机制中，操作系统会将 I&#x2F;O 的数据缓存在文件系统的页缓存（ page cache ）中，也就是说，数据会先被拷贝到操作系统内核的缓冲区中，然后才会从操作系统内核的缓冲区拷贝到应用程序的地址空间。</p>
-<h2 id="IO模型"><a href="#IO模型" class="headerlink" title="IO模型"></a>IO模型</h2><p>以IO的读操作为例，它可以细分为两个阶段：</p>
+<p>答案在 Http2，其提供了 multiplexing 多路传输特性，可以在一个 TCP 链接建立后，并行完成多个 Http 请求，以提高页面加载效率。<br>Http&#x2F;1.1 时代是采用上面说的默认开启长连接和同时建立多个 TCP 连接来提高页面加载效率</p>
+<h2 id="用户空间与内核空间"><a href="#用户空间与内核空间" class="headerlink" title="用户空间与内核空间"></a>用户空间与内核空间</h2><p>操作系统的核心是内核，独立于普通的应用程序，有访问底层硬件设备的所有权限。为了保证用户进程不能直接操作内核（kernel），保证内核的安全，操心系统将内存划分为两部分，一部分为内核空间，一部分为用户空间。对 32 位操作系统而言，虚拟存储空间为 2^32&#x3D;4G。针对 linux 操作系统，将最高的 1G 字节（从虚拟地址 0xC0000000 到 0xFFFFFFFF），供内核使用，称为内核空间，而将较低的 3G 字节（从虚拟地址 0x00000000 到 0xBFFFFFFF），供各个进程使用，称为用户空间</p>
+<h2 id="文件描述符-fd"><a href="#文件描述符-fd" class="headerlink" title="文件描述符 fd"></a>文件描述符 fd</h2><p>文件描述符（File descriptor）是计算机科学中的一个术语，是一个用于表述指向文件的引用的抽象化概念。当程序打开一个现有文件或者创建一个新文件时，内核向进程返回一个文件描述符（socket 也是一种文件描述符，因为需要 IO 操作）。在程序设计中，一些涉及底层的程序编写往往会围绕着文件描述符展开。但是文件描述符这一概念往往只适用于 UNIX、Linux 这样的操作系统。<br><code>网络IO里，fd可以简单理解为socket连接</code></p>
+<h2 id="缓存-I-x2F-O"><a href="#缓存-I-x2F-O" class="headerlink" title="缓存 I&#x2F;O"></a>缓存 I&#x2F;O</h2><p>缓存 I&#x2F;O 又被称作标准 I&#x2F;O，大多数文件系统的默认 I&#x2F;O 操作都是缓存 I&#x2F;O。在 Linux 的缓存 I&#x2F;O 机制中，操作系统会将 I&#x2F;O 的数据缓存在文件系统的页缓存（ page cache ）中，也就是说，数据会先被拷贝到操作系统内核的缓冲区中，然后才会从操作系统内核的缓冲区拷贝到应用程序的地址空间。</p>
+<h2 id="零拷贝"><a href="#零拷贝" class="headerlink" title="零拷贝"></a>零拷贝</h2><p>Java 调用 channel（文件 channel、网络连接 socketChannel 等）的数据读取 api 时，会经历以下步骤：</p>
 <ul>
-<li>等待数据到达（耗时长，阻塞IO一般指用户线程阻塞在这里）</li>
-<li>将数据从内核空间拷贝到用户空间（内存拷贝，带宽高，耗时短）</li>
-</ul>
-<p>针对这两个阶段，IO又可以细分为阻塞、非阻塞IO，同步、异步IO</p>
-<p>阻塞IO or 非阻塞IO：</p>
-<ul>
-<li>阻塞IO表示用户线程阻塞在<code>等待数据到达</code></li>
-<li>非阻塞IO表示用户线程不阻塞在<code>等待数据到达</code></li>
-</ul>
-<p>同步IO or 异步IO：</p>
-<ul>
-<li>同步IO表示发起IO请求后，必须完成IO操作才能继续执行</li>
-<li>异步IO表示发起IO请求后，不用完成IO操作就能继续执行</li>
-</ul>
-<p>IO的几种模型</p>
-<ul>
-<li>同步阻塞IO<ul>
-<li>线程发起IO请求后，阻塞在等待数据到达（<code>BIO模式</code>）</li>
+<li>用户态（java 内存空间）切换到内核态<ul>
+<li>因为 java 无法直接操作系统资源，需要调用操作系统内核来完成</li>
 </ul>
 </li>
-<li>同步非阻塞IO    <ul>
-<li>轮询IO数据是否到达内核。数据到达后，用户线程copy数据到用户空间（<code>NIO模式</code>）  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NIO的非阻塞特性，使其可以让服务器端使用一个或有限几个线程来同时处理连接到服务器端的所有客户端</span><br></pre></td></tr></table></figure></li>
+<li>等待数据到来</li>
+<li>（磁盘、网卡上的）数据复制到内核缓冲区</li>
+<li>内核态切换回用户态</li>
+<li>内核缓冲区数据复制到用户空间（java 堆内存空间）</li>
 </ul>
-</li>
-<li>异步非阻塞IO<ul>
-<li>线程发起IO请求后继续执行（异步）。当线程接到通知时，数据已经拷贝到用户空间（<code>AIO模式</code>）</li>
-</ul>
-</li>
-</ul>
+<p>可以看到，一次数据读（写一样）经历了两次用户态内核态切换、两次数据复制，性能不高。针对这一问题，linux 内核做了优化，提供所谓<code>直接内存</code>给 java nio 的 ByteBuffer 使用，直接内存物理上指内核缓冲区，java 使用直接内存可以直接读写内核缓冲区上的数据，少了一次数据复制的性能损耗，且内核缓冲区的地址固定，不会受 java 垃圾回收导致堆数据地址偏移的影响，IO 读写性能更高。我们把这种使用直接内存解决读写数据时在内核缓冲区和 java 堆内存相互复制数据的技术，称为零拷贝。</p>
+<p>在零拷贝技术的基础上，针对一种使用频率较高的复合操作：读取磁盘文件数据再写入网卡进行发送，Linux 内核进一步优化。完成该复合操作本来需要涉及到三次用户态到内核态的切换才能完成，但现在只需要由用户态切换一次到内核态，由内核将磁盘数据复制到内核缓冲区后，直接复制到网卡，性能进一步提升。目前 java nio 已支持对该类复合操作的性能优化。<br><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1py4y1E7oA?p=51">https://www.bilibili.com/video/BV1py4y1E7oA?p=51</a></p>
+<h2 id="IO-模型"><a href="#IO-模型" class="headerlink" title="IO 模型"></a>IO 模型</h2><p><img src="/Netty/IO%E6%A8%A1%E5%9E%8B.jpg"></p>
+<h3 id="BIO"><a href="#BIO" class="headerlink" title="BIO"></a>BIO</h3><p>阻塞 IO（BIO）指用户线程在“等待数据和数据拷贝这两个阶段”都阻塞。<br><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1py4y1E7oA?p=48">https://www.bilibili.com/video/BV1py4y1E7oA?p=48</a></p>
+<p>BIO 模式下，线程执行所有网络 IO 的 api 都是阻塞的，例如接受 socket 连接、读取网络数据。因此服务端会为每个 Socket 连接分配一个独立的线程来负责该连接所有的 IO 读写操作，问题是高并发下内存占用率高、线程上下文切换成本高。即使使用线程池，因为线程大部分时间是阻塞在 IO 上的，利用率不高，只适合 http 短连接场景，通过请求执行后快速断开连接来提高线程利用率。早期的 tomcat 设计就是采取 BIO+线程池+http 短连接来做的。<br><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1py4y1E7oA?p=4">https://www.bilibili.com/video/BV1py4y1E7oA?p=4</a></p>
+<h3 id="NIO"><a href="#NIO" class="headerlink" title="NIO"></a>NIO</h3><p>非阻塞 IO（NIO）指如果没有数据直接返回，否则阻塞在数据拷贝。<br><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1py4y1E7oA?p=48">https://www.bilibili.com/video/BV1py4y1E7oA?p=48</a></p>
 <p><code>BIO里用户最关心“我要读”，NIO里用户最关心&quot;我可以读了&quot;，在AIO模型里用户更需要关注的是“读完了”</code></p>
-<p><img src="/Netty/IO%E6%A8%A1%E5%9E%8B.jpg"></p>
-<h2 id="NIO"><a href="#NIO" class="headerlink" title="NIO"></a>NIO</h2><p>讲解NIO前，首先需要了解它的前辈BIO(同步阻塞IO)，其工作模式为：<br>Server端监听端口获得Client端发起的Socket链接，为每个Socket链接创建线程来处理Client端应用层发送的数据，典型的<code>一请求一应答模型</code>。<br>这里Server端的线程会有两处阻塞：</p>
+<p>NIO 编程的三大组件：</p>
 <ul>
-<li>监听端口的线程阻塞在获取Socket链接</li>
-<li>消费Socket的线程阻塞在等待并获取Client端应用层发送的数据</li>
+<li>Channel</li>
+<li>Selector</li>
+<li>Buffer</li>
 </ul>
-<p>因此弊端是：</p>
+<h4 id="Channel"><a href="#Channel" class="headerlink" title="Channel"></a>Channel</h4><p>Channel 可以理解为 fd，是一个底层的数据传输双向通道模型，与传统 Stream 的区别，channel 是双向的，Stream 是单向的。在网络 IO 中使用 SocketChannel 表示 socket 连接。区别于 BIO，NIO 中的 channel 可以设置为非阻塞模式，没有 IO 事件到来时也不会阻塞线程，因此可以在单线程里使用 while 循环来轮训多个客户端 socket 连接，但这带来的问题就是大量的空转，浪费 CPU 资源。后面介绍的 Selector 可以解决这个问题</p>
+<h4 id="Buffer"><a href="#Buffer" class="headerlink" title="Buffer"></a>Buffer</h4><p>Buffer 是数据的内存缓冲区。当数据到来时 Channel 将数据写到 Buffer，程序从 Buffer 读取数据。当程序要写（发送）数据时，将数据写到 Buffer，Channel 负责将 Buffer 里的数据发送出去。因此读写不会直接操作 channel，而是操作 buffer，由 buffer 再和 channel 进行数据互通<br><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1py4y1E7oA?p=2">https://www.bilibili.com/video/BV1py4y1E7oA?p=2</a><br><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1py4y1E7oA?p=25">https://www.bilibili.com/video/BV1py4y1E7oA?p=25</a></p>
+<p>读取数据到 ByteBuffer<br><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1py4y1E7oA?p=6">https://www.bilibili.com/video/BV1py4y1E7oA?p=6</a></p>
+<p>Buffer 每次读写时需要先调 api 切换到对应模式，原因是读写操作都是操作的同一片内存空间，Buffer 使用三个属性来控制读写行为，分别是 position（当前读或写的起始位置）、limit（读取或写入的终止位置）、capacity（buffer 分配的内存空间大小）<br><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1py4y1E7oA?p=7">https://www.bilibili.com/video/BV1py4y1E7oA?p=7</a></p>
+<p>对于应用层下发的数据，在传输层会出于网络传输效率考虑，对数据包做拆分或合并，因此服务端从 Channel 的 Buffer 读取数据后，需要解决产生的半包或黏包问题，根据一些协议字段重新对数据做拆分或合并<br><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1py4y1E7oA?p=14">https://www.bilibili.com/video/BV1py4y1E7oA?p=14</a></p>
+<h4 id="Selector"><a href="#Selector" class="headerlink" title="Selector"></a>Selector</h4><p>多路复用是一种可以同时阻塞监听多个通道上的 IO 事件的技术。注意虽然是阻塞监听，但本质还是利用了 NIO，所以每个通道都必须工作在非阻塞 IO。<br>当 IO 事件到来时返回有事件的通道和相应的 IO 事件，业务线程拿到通道后再执行阻塞式的数据拷贝。虽然多路复用和阻塞 IO 很类似，但因为可以同时监听多个通道，所以效率有很大提升。<br><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1py4y1E7oA?p=49">https://www.bilibili.com/video/BV1py4y1E7oA?p=49</a></p>
+<p>Selector 是一个实现了非阻塞 IO 的多路复用器，可以通过一个持有 Selector 的线程来监听多个注册在它上的 Channel 指定的 IO 事件，当没有 IO 事件时线程阻塞在 selector 的 select 方法，当 IO 事件到来时唤醒线程，处理有 IO 事件的 channel 连接。因此使用 Selector 来处理多个客户端连接有两个好处：</p>
 <ul>
-<li><code>不具备弹性伸缩能力</code>，当存在大量客户端连接时，服务端也会存在大量处理线程，线程切换效率低</li>
-<li>大量线程处于阻塞状态，浪费系统资源</li>
+<li>提高了 CPU 利用率</li>
+<li>节省了服务端线程数目，降低了线程上下文切换成本<br><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1py4y1E7oA?p=5">https://www.bilibili.com/video/BV1py4y1E7oA?p=5</a><br><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1py4y1E7oA?p=27">https://www.bilibili.com/video/BV1py4y1E7oA?p=27</a></li>
 </ul>
-<p>为了解决传统网络IO编程的弊端，jdk1.4之后推出了NIO编程模型。</p>
-<p><code>NIO(non-blocking IO)即非阻塞IO。传统的BIO中，单个线程阻塞在单次IO操作（读\写）。NIO使用多路复用模式，使得单个线程可以轮询（epoll模式是回调）监听多个IO事件（IO操作的是fd，底层是获取fd事件）。实现单线程同时处理多个客户端请求。拿到IO事件后再执行IO操作，减少了服务端线程数。</code></p>
-<p>NIO的非阻塞怎么理解？<br>阻塞IO模式下，线程阻塞在等待IO数据到达。NIO模式中，线程可以立刻获取IO数据是否到达的结果，所以这里是非阻塞的。然后通过轮询的方式不断请求，直到IO数据到达（Selector.select方法做的事情）。<br>基于非阻塞特性，单个线程可以管理一批IO，因此适合高并发IO的场景，节省线程数、系统资源</p>
-<p>NIO编程规范：<br><code>Channel</code><br>fd抽象为Channel，例如网络IO中的SocketChannel和ServerSocketChannel。与传统Stream的区别，channel是双向的，Stream是单向的<br><code>Selector</code><br>channel调用register方法注册到选择器selector，并指定该channel需要监听的IO事件类型（网络IO中，分为accept、read、write）<br>selector调用select方法获取有IO事件发生的所有channel<br><code>Buffer</code><br>buffer的作用是增加数据操作的灵活性。读操作从channel读取到buffer，写操作从buffer写入到channel，因此读写不会直接操作channel，而是操作buffer，由buffer再和channel进行数据互通</p>
-<h3 id="多路复用IO"><a href="#多路复用IO" class="headerlink" title="多路复用IO"></a>多路复用IO</h3><p>NIO的核心是选择器Selector的select方法，获取发生了IO事件的所有channel，底层使用多路复用实现。</p>
-<p>多路复用IO的实现方式有三种：select、poll和epoll模式，可以理解为epoll是改进版，JDK1.6之后使用的是epoll模式，极大提升了NIO的性能。</p>
-<p>select模式(<code>两次拷贝+轮询+遍历=性能低</code>)：<br>用户线程里将要监控的文件描述符添加到fd_set数组中，用户空间需要维护这个数组，然后<code>拷贝</code>到内核进行监控。因为数组存储文件描述符，所以能监控的文件描述符数量受限，一般最大为1024。<br>内核需要<code>轮询</code>fd_set数组检测这些文件描述符是否发生了事件，当事件发生后，将fd_set数组同步<code>拷贝</code>回用户空间的数组<br>用户线程需要<code>遍历</code>用户空间的数组才知道哪个文件描述符发生了事件。<br>缺点：</p>
+<p>Netty 使用多线程来最大化利用 Selector 的多路复用能力，boss 线程的 selector 只负责监听服务端 socketChannel 的 accept 事件，worker 线程的 selector 只负责监听已经建立连接的客户端 socketChannel 的读写事件<br><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1py4y1E7oA?p=40">https://www.bilibili.com/video/BV1py4y1E7oA?p=40</a></p>
+<p>需要注意，worker 线程的 selector 没有 IO 事件时阻塞在 select 方法，此时 boss 线程拿到客户端 socketChannel 调用 worker 线程的 selector 注册时也会阻塞，产生死锁。解法是将注册操作封装为一个 runnable 任务添加到 worker 线程的任务队列，然后唤醒 worker 线程的 selector，worker 线程接着遍历任务队列执行添加的注册操作。<br><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1py4y1E7oA?p=44">https://www.bilibili.com/video/BV1py4y1E7oA?p=44</a></p>
+<p>Selector 将注册给它的 channel 映射为一个 SelectionKey，添加到集合 a 里，每次 channel 有 IO 事件到来，将 channel 对应的 selectionKey 添加到另一个集合 b 里交给业务处理。这里需要注意：</p>
+<ul>
+<li>集合 b 只进不出，所以每次业务处理完事件后需要手动从集合 b 里删除 selectionKey</li>
+<li>如果客户端连接强制断开时，服务端会收到一个读 IO 事件，但从 ByteBuffer 读数据会抛出 IO 异常，这时需要捕获 IO 异常，然后将客户端 channel 对应的 selectionKey 从集合 a 里删除</li>
+<li>如果客户端正常断开连接，服务端会收到一个读 IO 事件，通过读取数据长度为-1 判断是正常断开连接，然后将客户端 channel 对应的 selectionKey 从集合 a 里删除</li>
+<li>如果数据没读完，下次调用 select 还会返回该 selectionKey 的读事件<br><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1py4y1E7oA?p=30">https://www.bilibili.com/video/BV1py4y1E7oA?p=30</a><br><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1py4y1E7oA?p=31">https://www.bilibili.com/video/BV1py4y1E7oA?p=31</a></li>
+</ul>
+<p>服务端接收到客户端 socketChannel 时，如果需要给客户端发送数据，可以给 socketChannel 的 selectionKey 添加一个监听可写事件。当发送数据量很大时，一次写操作把网络缓冲区沾满了，还有剩余没写完的数据在 ByteBuffer 里，selector 会在下次网络缓冲区有空间时监听到这个 selectionKey 的写事件，交给服务端继续执行剩余数据的写操作<br><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1py4y1E7oA?p=38">https://www.bilibili.com/video/BV1py4y1E7oA?p=38</a></p>
+<p>使用 selectionKey 的附件 attachment 机制解决半包、黏包问题。附件是 Channel 注册给 Selector 时指定的一个附加对象。可以将 ByteBuffer 作为附件，存储未处理完的数据。下次处理 IO 读事件时，可以通过附件取出上次的 ByteBuffer，然后将后面的数据继续写入 ByteBuffer<br><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1py4y1E7oA?p=35">https://www.bilibili.com/video/BV1py4y1E7oA?p=35</a></p>
+<h3 id="多路复用-IO"><a href="#多路复用-IO" class="headerlink" title="多路复用 IO"></a>多路复用 IO</h3><p>NIO 的核心是选择器 Selector 的 select 方法，获取发生了 IO 事件的所有 channel，底层使用多路复用实现。</p>
+<p>多路复用 IO 的实现方式有三种：select、poll 和 epoll 模式，可以理解为 epoll 是改进版，JDK1.6 之后使用的是 epoll 模式，极大提升了 NIO 的性能。</p>
+<p>select 模式(<code>两次拷贝+轮询+遍历=性能低</code>)：<br>用户线程里将要监控的文件描述符添加到 fd_set 数组中，用户空间需要维护这个数组，然后<code>拷贝</code>到内核进行监控。因为数组存储文件描述符，所以能监控的文件描述符数量受限，一般最大为 1024。<br>内核需要<code>轮询</code>fd_set 数组检测这些文件描述符是否发生了事件，当事件发生后，将 fd_set 数组同步<code>拷贝</code>回用户空间的数组<br>用户线程需要<code>遍历</code>用户空间的数组才知道哪个文件描述符发生了事件。</p>
+<p>缺点：</p>
 <ul>
 <li>存在大量的内核和用户空间的内存拷贝，系统开销大</li>
-<li>内核轮询fd数组获取事件 &amp; 用户线程需要遍历fd数组判断哪些fd有事件到达，效率低</li>
+<li>内核轮询 fd 数组获取事件 &amp; 用户线程需要遍历 fd 数组判断哪些 fd 有事件到达，效率低</li>
 </ul>
-<p>poll模式：<br>存储文件描述符的结构从数组改为链表，因此监听文件描述符的数量不受限，其他地方和select模式相同</p>
-<p>epoll模式把select调用分为了三部分：</p>
+<p>poll 模式：<br>存储文件描述符的结构从数组改为链表，因此监听文件描述符的数量不受限，其他地方和 select 模式相同</p>
+<p>epoll 模式把 select 调用分为了三部分：</p>
 <ul>
-<li>调用epoll_create建立一个epoll对象，这个对象包含了一个红黑树和一个双向链表。并与底层建立回调机制。</li>
-<li>调用epoll_ctl向epoll对象中添加所有fd（网络IO中就是socket句柄）</li>
-<li>调用epoll_wait收集发生事件的socket连接。</li>
+<li>调用 epoll_create 建立一个 epoll 对象，这个对象包含了一个红黑树和一个双向链表。并与底层建立回调机制。</li>
+<li>调用 epoll_ctl 向 epoll 对象中添加所有 fd（网络 IO 中就是 socket 句柄）</li>
+<li>调用 epoll_wait 收集发生事件的 socket 连接。</li>
 </ul>
 <p>性能上有哪些提升呢？</p>
 <ul>
-<li>用户空间拷贝全量fds到内核？No!<ul>
-<li>内核里使用<code>红黑树</code>存储所有文件描述符，高效添加和删除文件描述符（网络IO里是socket连接），<code>省去</code>从用户空间往内核拷贝全量文件描述符的性能消耗</li>
+<li>用户空间拷贝全量 fds 到内核？No!<ul>
+<li>内核里使用<code>红黑树</code>存储所有文件描述符，高效添加和删除文件描述符（网络 IO 里是 socket 连接），省去从用户空间往内核拷贝全量文件描述符的性能消耗</li>
 </ul>
 </li>
-<li>轮询fds获取fd事件？No!<ul>
-<li><code>回调而非轮询</code>的方式获取事件（socket数据到达）</li>
+<li>轮询 fds 获取 fd 事件？No!<ul>
+<li><code>回调而非轮询</code>的方式获取事件（socket 数据到达）</li>
 </ul>
 </li>
-<li>内核拷贝全量fds到用户空间？No!<ul>
-<li>使用双向链表存储发生事件的socket，只需要从内核拷贝<code>发生事件的fd</code>到用户空间</li>
+<li>内核拷贝全量 fds 到用户空间？No!<ul>
+<li>使用双向链表存储发生事件的 socket，只需要从内核拷贝<code>发生事件的fd</code>到用户空间</li>
 </ul>
 </li>
 </ul>
-<p>总结：<br>一颗红黑树，一张准备就绪句柄（fd）双向链表，少量的内核cache（存储红黑树），就帮我们解决了大并发下的socket处理问题。执行epoll_create时，创建了红黑树和fd双向链表，执行epoll_ctl时，如果增加socket句柄，则检查在红黑树中是否存在，存在立即返回，不存在则添加到树干上，然后向内核注册回调函数，用于当中断事件来临时向fd双向链表中插入数据。执行epoll_wait时立刻返回链表里的数据即可。<br><img src="/Netty/epoll%E5%AE%9E%E7%8E%B0.png"></p>
+<p>总结：<br>一颗红黑树，一张准备就绪句柄（fd）双向链表，少量的内核 cache（存储红黑树），就帮我们解决了大并发下的 socket 处理问题。执行 epoll_create 时，创建了红黑树和 fd 双向链表，执行 epoll_ctl 时，如果增加 socket 句柄，则检查在红黑树中是否存在，存在立即返回，不存在则添加到树干上，然后向内核注册回调函数，用于当中断事件来临时向 fd 双向链表中插入数据。执行 epoll_wait 时立刻返回链表里的数据即可。<br><img src="/Netty/epoll%E5%AE%9E%E7%8E%B0.png"></p>
+<h3 id="AIO"><a href="#AIO" class="headerlink" title="AIO"></a>AIO</h3><p>异步 IO（AIO）指用户线程发起 IO 请求后可以继续执行，由另一个线程在数据复制完成后通过回调将数据传递给用户线程。因此异步 IO 一定是非阻塞的<br><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1py4y1E7oA?p=50">https://www.bilibili.com/video/BV1py4y1E7oA?p=50</a></p>
 <h1 id="Netty"><a href="#Netty" class="headerlink" title="Netty"></a>Netty</h1><blockquote>
-<p>Netty 封装了JDK的NIO，是一个事件驱动的网络通信框架</p>
+<p>Netty 是一个基于 JavaNIO 的网络通信框架，屏蔽了底层 IO 通信的技术细节，封装了很多常用的网络通信协议，通过责任链模式保证了程序的扩展性。用户只需要专注于处理半包黏包问题、网络协议的编解码和业务逻辑的处理。</p>
 </blockquote>
-<p>Netty用到了这些技术：</p>
+<p>Netty 用到了这些技术：</p>
 <ul>
-<li>Epoll模式的多路复用技术</li>
-<li>Reactor设计模式</li>
+<li>Epoll 模式的多路复用技术</li>
+<li>Reactor 设计模式</li>
 <li>主从多线程模型</li>
 </ul>
-<h2 id="Netty核心组件"><a href="#Netty核心组件" class="headerlink" title="Netty核心组件"></a>Netty核心组件</h2><p>Netty的核心组件：Bootstrap、NioSocketChannel、ChannelPipeline、NioEventLoopGroup、NioEventLoop</p>
-<p>Bootstrap：</p>
+<h2 id="通信流程"><a href="#通信流程" class="headerlink" title="通信流程"></a>通信流程</h2><p>基于 Netty 编写 C&#x2F;S 端，一次 C—&gt;S 通信流程可以拆分为这么几个步骤：</p>
 <ul>
-<li>客户端Netty引导类，负责在客户端初始化和启动netty组件</li>
+<li>客户端向服务器端发起 tcp 连接建立请求</li>
+<li>服务器端 bossEventLoop 线程的 selector 监听到 accept 事件，调用 ChannelInitializer 的回调方法初始化客户端 SocketChannel，往 channel 的 pipeline 上添加自定义的 Handler</li>
+<li>将 socketChannel 注册给 workerEventLoop 线程的 selector，监听该连接上后续的读写事件</li>
+<li>客户端在连接建立后，调用 ChannelInitializer 的回调方法初始化该连接 socketChannel，往 channel 的 pipeline 上添加自定义的 Handler</li>
+<li>客户端使用该 socketChannel 向服务端发送数据</li>
+<li>服务端 workerEventLoop 线程的 selector 监听到 read 事件，调用 socketChannel 的 pipeline 上的 handler 处理请求，这会回调到业务之前添加的自定义 handler 执行业务逻辑</li>
 </ul>
-<p>ServerBootstrap：</p>
+<h2 id="Netty-核心组件"><a href="#Netty-核心组件" class="headerlink" title="Netty 核心组件"></a>Netty 核心组件</h2><h3 id="Bootstrap"><a href="#Bootstrap" class="headerlink" title="Bootstrap"></a>Bootstrap</h3><p>客户端 Netty 引导类，负责在客户端初始化和启动 netty 组件</p>
+<h3 id="ServerBootstrap"><a href="#ServerBootstrap" class="headerlink" title="ServerBootstrap"></a>ServerBootstrap</h3><p>服务端 Netty 引导类，负责在服务端初始化和启动 netty 组件</p>
+<h3 id="NioXxxChannel"><a href="#NioXxxChannel" class="headerlink" title="NioXxxChannel"></a>NioXxxChannel</h3><p>netty 里的 channel，对应 nio 里的 Channel，表示一个网络连接，包括 NioSocketChannel，NioServerSocketChannel</p>
+<h3 id="ChannelPipeline"><a href="#ChannelPipeline" class="headerlink" title="ChannelPipeline"></a>ChannelPipeline</h3><p>每个 channel 都有自己的 pipeLine 责任链，它维护一个双向链表，channel 的 io 事件会根据事件类型（in\out）交给链表里匹配的 channelHandler 处理</p>
+<h3 id="ChannelHandler"><a href="#ChannelHandler" class="headerlink" title="ChannelHandler"></a>ChannelHandler</h3><p>channel 的 IO 事件处理器，作为双向链表的节点挂载在 channelPipeLine 上</p>
+<h3 id="NioEventLoop"><a href="#NioEventLoop" class="headerlink" title="NioEventLoop"></a>NioEventLoop</h3><p>NioEventLoop 内部维护一个工作线程和一个 Selector，可以监听和执行绑定在 Selector 上的 channel 的 IO 事件，也可以执行普通任务和定时任务</p>
+<p>与 NioEventLoop 类似的是<code>DefaultEventLoop</code>，区别是它不能监听 IO 事件（没有 Selector），只能执行普通和定时任务。可以把一些 socketChannel 的 pipeline 上比较耗时的 handler 处理指定给 DefaultEventLoop 执行（通过给 handler 指定 DefaultEventLoopGroup，默认 handler 指定的是 NioEventLoopGroup），避免占用 NioEventLoop 的线程时间导致其他 socketChannel 的 IO 处理受影响。</p>
 <ul>
-<li>服务端Netty引导类，负责在服务端初始化和启动netty组件</li>
+<li>pipeLine 的 handlers 在链式处理 IO 事件过程中，判断当前线程与下一个 handler 绑定的 eventLoop 所在线程，如果一致，则继续调下一个 handler 处理，如果不一致，则提交任务到下一个 handler 绑定的 eventLoop 所在线程，从而实现执行 handler 线程的切换。</li>
+<li>需要注意，其实每个请求的整体响应时间并没有缩短，反而因为线程切换的开销有所延长，但总比直接把线程打满导致后面的请求得不到响应要好很多！即，异步的作用是提升吞吐量而非提升性能！</li>
 </ul>
-<p>NioXxxChannel：</p>
+<p>NioEventLoop 逻辑上可以分为 BossNioEventLoop 和 WorkerNioEventLoop，前者只负责监听服务端 SocketChannel 的 accept 事件，后者只负责监听客户端 socketChannel 的读写事件。这么划分的目的是利用了异步多线程的优势，将建立连接和读写客户端连接分开在不同线程处理，避免性能相互影响，从而让 accept 的 nioEventLoop 线程尽快空闲下来执行新的建立连接事件，进而能提升系统的吞吐量（qps）</p>
 <ul>
-<li>netty里的channel，对应nio里的Channel，表示一个网络连接，包括NioSocketChannel，NioServerSocketChannel</li>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1py4y1E7oA?p=70">https://www.bilibili.com/video/BV1py4y1E7oA?p=70</a></li>
 </ul>
-<p>ChannelPipeline：</p>
+<h3 id="NioEventLoopGroup"><a href="#NioEventLoopGroup" class="headerlink" title="NioEventLoopGroup"></a>NioEventLoopGroup</h3><p>管理一组 NioEventLoop 线程。提供一个自定义线程池 ThreadPerTaskExecutor，为每个 NioEventLoop 创建独立的线程。默认会创建 2 倍当前机器 CPU 核数的 EventLoop</p>
+<p>它的作用主要是负载均衡，将 channel 均分给 Loop 线程来监听和执行 IO 事件</p>
+<p>逻辑上 NioEventLoopGroup 又分为两类，BossNioEventLoopGroup 管理 BossNioEventLoop，WorkerNioEventLoopGroup 管理 WorkerNioEventLoop。服务端 BossNioEventLoopGroup 在接收到客户端 socket 连接后，会负载均衡地将客户端连接均分注册到 WorkerNioEventLoopGroup 内部的 WorkerNioEventLoop 的 Selector 上，后续该客户端连接上的 IO 事件都会在分配的 WorkerNioEventLoop 线程上处理</p>
+<h3 id="ChannelFuture"><a href="#ChannelFuture" class="headerlink" title="ChannelFuture"></a>ChannelFuture</h3><p>客户端 NioSocketChannel 调用 connect 请求建立连接或 close 断开连接后，返回一个异步凭证 ChannelFuture。可以调用它的 sync 方法让当前线程阻塞直到连接建立&#x2F;断开，再从 ChannelFuture 拿到建连&#x2F;断开后的 Channel。也可以给 ChannelFuture 添加一个 Listener 方法，在连接建立&#x2F;断开后异步回调该方法，拿到建连&#x2F;断开后的 channel。</p>
 <ul>
-<li>每个channel都有自己的pipeLine责任链，它维护一个双向链表，channel的io事件会根据事件类型（in\out）交给链表里匹配的channelHandler处理</li>
+<li>注意，执行建连&#x2F;断开的线程实际为 NioEventLoop，所以执行 listener 方法也默认会在该线程执行，而非原发起调用 connect&#x2F;close 的线程。</li>
+<li>异步：发起调用的线程和执行调用的线程是两个线程，发起调用的线程非阻塞。可以通过添加 listener 回调执行异步计算后的逻辑，也可以通过异步凭证 Future 同步阻塞获取结果，执行后续逻辑。</li>
 </ul>
-<p>ChannelHandler：</p>
+<h3 id="ByteBuf"><a href="#ByteBuf" class="headerlink" title="ByteBuf"></a>ByteBuf</h3><p>Netty 的 ByteBuf 可以理解为 nio 里的 ByteBuffer，默认创建返回的是<code>直接内存</code>，读写性能更好（不过创建时不如使用 java 的堆内存快）</p>
+<p>ByteBuf 相对于 ByteBuffer 做了这些优化：</p>
 <ul>
-<li>channel的IO事件处理器，作为双向链表的节点挂载在channelPipeLine上</li>
+<li>自动扩容<ul>
+<li>当写入的字节数超过预设大小时会自动扩容</li>
 </ul>
-<p>NioEventLoopGroup：</p>
+</li>
+<li>池化，避免高并发下重复创建 ByteBuf<ul>
+<li>默认创建直接内存的代价较高</li>
+</ul>
+</li>
+<li>读写模式切换时不需要调 api<ul>
+<li>ByteBuf 将读写用两个指针表示，ByteBuffer 的读写是共用指针的，所以要调 api 来切换模式</li>
+</ul>
+</li>
+<li>支持切片 slice，即对 ByteBuf 做切分，单独处理其中某一部分空间<ul>
+<li>底层也是通过读写指针实现</li>
+<li>不需要将分片数据单独复制到另一个 ByteBuf 上，是“零拷贝”的思想</li>
+</ul>
+</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1py4y1E7oA?p=81">https://www.bilibili.com/video/BV1py4y1E7oA?p=81</a><br><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1py4y1E7oA?p=86">https://www.bilibili.com/video/BV1py4y1E7oA?p=86</a></p>
+<h2 id="Netty-组件架构图"><a href="#Netty-组件架构图" class="headerlink" title="Netty 组件架构图"></a>Netty 组件架构图</h2><p><img src="/Netty/Netty%E7%BB%84%E4%BB%B6%E8%A7%86%E5%9B%BE.png"></p>
+<h2 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h2><h3 id="服务端启动-netty"><a href="#服务端启动-netty" class="headerlink" title="服务端启动 netty"></a>服务端启动 netty</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">public class SimpleServer &#123;</span><br><span class="line">    private int port;</span><br><span class="line"></span><br><span class="line">    public SimpleServer(int port) &#123;</span><br><span class="line">        this.port = port;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void run() throws Exception &#123;</span><br><span class="line">        //EventLoopGroup是用来处理IO操作的多线程事件循环器</span><br><span class="line">        //bossGroup 用来接收进来的连接</span><br><span class="line">        EventLoopGroup bossGroup = new NioEventLoopGroup();</span><br><span class="line">        //workerGroup 用来处理已经被接收的连接</span><br><span class="line">        EventLoopGroup workerGroup = new NioEventLoopGroup();</span><br><span class="line">        try &#123;</span><br><span class="line">            //启动 NIO 服务的辅助启动类</span><br><span class="line">            ServerBootstrap b = new ServerBootstrap();</span><br><span class="line">            b.group(bossGroup, workerGroup)</span><br><span class="line">                //配置 Channel</span><br><span class="line">                .channel(NioServerSocketChannel.class)</span><br><span class="line">                .childHandler(new ChannelInitializer&lt;SocketChannel&gt;() &#123;</span><br><span class="line">                    @Override</span><br><span class="line">                    public void initChannel(SocketChannel ch) throws Exception &#123;</span><br><span class="line">                        // 注册handler</span><br><span class="line">                        ch.pipeline().addLast(new SimpleServerHandler());</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;)</span><br><span class="line">                .option(ChannelOption.SO_BACKLOG, 128)</span><br><span class="line">                .childOption(ChannelOption.SO_KEEPALIVE, true);</span><br><span class="line"></span><br><span class="line">            // 绑定端口，开始接收进来的连接</span><br><span class="line">            ChannelFuture f = b.bind(port).sync();</span><br><span class="line">            // 等待服务器 socket 关闭 。</span><br><span class="line">            f.channel().closeFuture().sync();</span><br><span class="line">        &#125; finally &#123;</span><br><span class="line">            workerGroup.shutdownGracefully();</span><br><span class="line">            bossGroup.shutdownGracefully();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) throws Exception &#123;</span><br><span class="line">        new SimpleServer(9999).run();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>服务端 Netty 程序启动入口：io.netty.bootstrap.AbstractBootstrap#bind(int)</p>
+<p>总体分为 init-&gt;register-&gt;bind 三个阶段。</p>
+<p>init 阶段构建 NioServerSocketChannel，在用户线程执行：</p>
 <ul>
-<li>管理一组NioEventLoop线程。提供一个自定义线程池ThreadPerTaskExecutor，为每个NioEventLoop创建独立的线程。默认会初始化16个NioEventLoop</li>
-<li>它的作用主要是负载均衡，将channel均分给Loop线程来监听和执行IO事件</li>
+<li>创建 Netty 的 NioServerSocketChannel<ul>
+<li>内部会创建 jdk 的 nio 包下的 ServerSocketChannel 作为成员变量</li>
 </ul>
-<p>NioEventLoop：</p>
+</li>
+<li>将 ChannelInitializer（本质是一个 Handler，和其他 handler 的区别是它的 initChannel 方法只会执行一次）添加到 NioServerSocketChannel 的 pipeLine</li>
+<li>将注册任务提交到 NioEventLoop 执行，返回异步注册结果 Promise 对象给用户线程</li>
+<li>注册结果 Promise 对象添加回调方法（在用户线程执行注册后回调）</li>
+</ul>
+<p>register 阶段将 NioServerSocketChannel 注册到 selector，在 NioEventLoop 的线程异步执行：</p>
 <ul>
-<li>可以理解为一个Loop线程，每个NioEventLoop内部都有一个Selector。在loop线程里监听已注册到内部Selector上的所有channel的IO事件，并调用channel责任链pipeLine上的channelHandlers执行IO事件</li>
+<li>把 NioServerSocketChannel 里 jdk 原生的 ServerSocketChannel 注册到 NioEventLoop 线程的 selector 上，且 NioServerSocketChannel 作为附件，目的是通过附件的 channel 拿到 pipeLine 处理 IO 事件</li>
+<li>执行上面的 ChannelInitializer 的 initChannel 方法，向 pipeLine 添加一个 accept 事件 Handler</li>
+<li>触发 register 事件让 pipeLine 上的 inHandler 执行<ul>
+<li>因为我们无法给 NioServerSocketChannel 的 pipeLine 添加自己的 handler，所以也感知不到</li>
 </ul>
-<p><img src="/Netty/Netty%E7%BB%84%E4%BB%B6%E8%A7%86%E5%9B%BE.png"></p>
-<h2 id="启动流程"><a href="#启动流程" class="headerlink" title="启动流程"></a>启动流程</h2><p>先附上客户端和服务端Netty启动程序Demo</p>
-<p>客户端：</p>
+</li>
+</ul>
+<p>bind 阶段完成端口绑定，在用户线程调用注册后回调时执行，它又会将任务提交到 NioServerSocketChannel 关联的 eventLoop 线程执行</p>
+<ul>
+<li>触发 bind 事件让 pipeLine 上的 outHandler 执行，最后由 headHandler 给 jdk 原生的 ServerSocketChannel 绑定端口号</li>
+<li>触发 active 事件让 pipeLine 上的 inHandler 执行，headHandler 在 readIfIsAutoRead 方法里会设置 NioServerSocketChannel 关注的 IO 事件为 Accept 事件</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public void channelActive(ChannelHandlerContext ctx) throws Exception &#123;</span><br><span class="line">    ctx.fireChannelActive();</span><br><span class="line">    this.readIfIsAutoRead();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">protected void doBeginRead() throws Exception &#123;</span><br><span class="line">    SelectionKey selectionKey = this.selectionKey;</span><br><span class="line">    if (selectionKey.isValid()) &#123;</span><br><span class="line">        this.readPending = true;</span><br><span class="line">        int interestOps = selectionKey.interestOps();</span><br><span class="line">        if ((interestOps &amp; this.readInterestOp) == 0) &#123;</span><br><span class="line">            selectionKey.interestOps(interestOps | this.readInterestOp);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="客户端启动-netty"><a href="#客户端启动-netty" class="headerlink" title="客户端启动 netty"></a>客户端启动 netty</h3><p>客户端启动 demo：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">public class SimpleClient &#123;</span><br><span class="line"></span><br><span class="line">    public void connect(String host, int port) throws Exception &#123;</span><br><span class="line">        EventLoopGroup workerGroup = new NioEventLoopGroup();</span><br><span class="line"></span><br><span class="line">        try &#123;</span><br><span class="line">            Bootstrap b = new Bootstrap();</span><br><span class="line">            b.group(workerGroup);</span><br><span class="line">            b.channel(NioSocketChannel.class);</span><br><span class="line">            b.option(ChannelOption.SO_KEEPALIVE, true);</span><br><span class="line">            b.handler(new ChannelInitializer&lt;SocketChannel&gt;() &#123;</span><br><span class="line">                @Override</span><br><span class="line">                public void initChannel(SocketChannel ch) throws Exception &#123;</span><br><span class="line">                    ch.pipeline().addLast(new SimpleClientHandler());</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line"></span><br><span class="line">            // Start the client.</span><br><span class="line">            ChannelFuture f = b.connect(host, port).sync();</span><br><span class="line"></span><br><span class="line">            // Wait until the connection is closed.</span><br><span class="line">            f.channel().closeFuture().sync();</span><br><span class="line">        &#125; finally &#123;</span><br><span class="line">            workerGroup.shutdownGracefully();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) throws Exception &#123;</span><br><span class="line">        SimpleClient client=new SimpleClient();</span><br><span class="line">        client.connect(&quot;127.0.0.1&quot;, 9999);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>服务端：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">public class SimpleServer &#123;</span><br><span class="line">    private int port;</span><br><span class="line"></span><br><span class="line">    public SimpleServer(int port) &#123;</span><br><span class="line">        this.port = port;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void run() throws Exception &#123;</span><br><span class="line">        //EventLoopGroup是用来处理IO操作的多线程事件循环器</span><br><span class="line">        //bossGroup 用来接收进来的连接</span><br><span class="line">        EventLoopGroup bossGroup = new NioEventLoopGroup();</span><br><span class="line">        //workerGroup 用来处理已经被接收的连接</span><br><span class="line">        EventLoopGroup workerGroup = new NioEventLoopGroup();</span><br><span class="line">        try &#123;</span><br><span class="line">            //启动 NIO 服务的辅助启动类</span><br><span class="line">            ServerBootstrap b = new ServerBootstrap();</span><br><span class="line">            b.group(bossGroup, workerGroup)</span><br><span class="line">                //配置 Channel</span><br><span class="line">                .channel(NioServerSocketChannel.class)</span><br><span class="line">                .childHandler(new ChannelInitializer&lt;SocketChannel&gt;() &#123;</span><br><span class="line">                    @Override</span><br><span class="line">                    public void initChannel(SocketChannel ch) throws Exception &#123;</span><br><span class="line">                        // 注册handler</span><br><span class="line">                        ch.pipeline().addLast(new SimpleServerHandler());</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;)</span><br><span class="line">                .option(ChannelOption.SO_BACKLOG, 128)</span><br><span class="line">                .childOption(ChannelOption.SO_KEEPALIVE, true);</span><br><span class="line"></span><br><span class="line">            // 绑定端口，开始接收进来的连接</span><br><span class="line">            ChannelFuture f = b.bind(port).sync();</span><br><span class="line">            // 等待服务器 socket 关闭 。</span><br><span class="line">            f.channel().closeFuture().sync();</span><br><span class="line">        &#125; finally &#123;</span><br><span class="line">            workerGroup.shutdownGracefully();</span><br><span class="line">            bossGroup.shutdownGracefully();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) throws Exception &#123;</span><br><span class="line">        new SimpleServer(9999).run();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>客户端Netty程序启动入口：io.netty.bootstrap.Bootstrap#connect(java.lang.String, int)</p>
+<p>客户端 Netty 程序启动入口：io.netty.bootstrap.Bootstrap#connect(java.lang.String, int)<br>总体分为 init-&gt;register-&gt;connect 三个阶段，和 Server 端存在一些区别：</p>
 <ul>
-<li>与指定ip:port建立连接，创建相应的客户端NioSocketChannel，并注册到NioEventLoopGroup分配的一个NioEventLoop线程的Selector上，监听和执行（责任链模式）READ事件</li>
+<li><p>注册阶段向 Channel 的 pipeLine 加入自定义 handler 的区别</p>
+<ul>
+<li>服务端 Channel 不能加入用户定义的 handler，加入的是 Netty 自带的<code>ServerBootstrapAcceptor</code>，它的作用是在 channelRead 方法里专门处理 Accept 事件。用户定义的 handler 是在服务端接到客户端请求后，加到该客户端 channel 的 pipeLine 上</li>
+<li>客户端 Channel 能加入用户定义的 handler</li>
 </ul>
-<p>服务端Netty程序启动入口：io.netty.bootstrap.AbstractBootstrap#bind(int)</p>
+</li>
+<li><p>绑定阶段替换为连接阶段</p>
 <ul>
-<li>创建NioServerSocketChannel绑定到Server的一个port，并注册NioServerSocketChannel到parentNioEventLoopGroup分配的一个NioEventLoop线程的Selector上，监听和执行（责任链模式）Accept事件<ul>
-<li>执行Accept事件，将客户端Channel注册到childNioEventLoopGroup分配的一个NioEventLoop线程，监听和执行READ事件</li>
+<li>bind 阶段变成 connect 阶段，也是提交任务在 nioEventLoop 线程执行，调用 channel 的 pipeLine 上的 outHandlers 处理 connect 事件，向服务度发起 tcp 连接</li>
+<li>连接完成（建立 tcp 连接成功）后，触发 active 事件交给 channel 的 pipeLine 上的 inHandlers 处理，headHandler 在 readIfIsAutoRead 方法里会设置 NioSocketChannel 关注的 IO 事件为 READ 事件</li>
 </ul>
 </li>
 </ul>
-<p>以客户端为例来分析下Netty启动程序源码，整体流程图如下：<br><img src="/Netty/Netty%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B.png"></p>
+<h4 id="流程图"><a href="#流程图" class="headerlink" title="流程图"></a>流程图</h4><p><img src="/Netty/Netty%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B.png"></p>
 <p>有些细节需要特别说明：</p>
 <ul>
-<li>DefaultChannelPipeline是一个双向链表，初始化后有head和tail节点（head节点本身是out类型节点，是in类型IO事件的入口，tail节点相反）</li>
-<li>如果想将自定义的channelHandler添加到PipeLine，通过将add逻辑写到ChannelInitializer的initChannel方法来实现。该方法在channel注册到selector的流程中被回调执行，执行后channelInitializer会从pipeLine双向链表里remove。因此channelInitializer的使命就是将自定义channelHandler添加到pipeLine</li>
-<li>NioEventLoopGroup的默认chooser通过一个原子计数器，每次choose的时候计数器+1后对NioEventLoop个数取模得到选取的下标，可以理解为顺序选取NioEventLoop，每个NioEventLoop线程均匀承接channel，达到负载均衡</li>
-<li>nioEventLoopGroup负责为nioEventLoop创建线程，而loop线程里主要做两件事<ul>
-<li>轮询获取注册到nioEventLoop内部selector上的所有channel的IO事件，调用channel的责任链pipeline上handlers处理</li>
-<li>执行提交到nioEventLoop队列的所有任务（包括定时任务）<ul>
-<li>channel注册流程就是作为任务提交到nioEventLoop的任务队列，在loop线程里执行</li>
+<li>DefaultChannelPipeline 是一个双向链表，初始化后有 head 和 tail 节点（head 节点本身是 out 类型节点，是 in 类型 IO 事件的入口，tail 节点相反）</li>
+<li>如果想将自定义的 channelHandler 添加到 PipeLine，通过将 add 逻辑写到 ChannelInitializer 的 initChannel 方法来实现。该方法在 channel 注册到 selector 的流程中被回调执行，执行后 channelInitializer 会从 pipeLine 双向链表里 remove。因此 channelInitializer 的使命就是将自定义 channelHandler 添加到 pipeLine</li>
+<li>NioEventLoopGroup 的默认 chooser 通过一个原子计数器，每次 choose 的时候计数器+1 后对 NioEventLoop 个数取模得到选取的下标，可以理解为顺序选取 NioEventLoop，每个 NioEventLoop 线程均匀承接 channel，达到负载均衡</li>
+<li>nioEventLoopGroup 负责为 nioEventLoop 创建线程，而 loop 线程里主要做两件事<ul>
+<li>轮询获取注册到 nioEventLoop 内部 selector 上的所有 channel 的 IO 事件，调用 channel 的责任链 pipeline 上 handlers 处理</li>
+<li>执行提交到 nioEventLoop 队列的所有任务（包括定时任务）<ul>
+<li>channel 注册流程就是作为任务提交到 nioEventLoop 的任务队列，在 loop 线程里执行</li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
-<p>服务端启动Netty进程与客户端的区别：</p>
+<h3 id="accept-流程"><a href="#accept-流程" class="headerlink" title="accept 流程"></a>accept 流程</h3><p>selector 监听到 NioServerSocketChannel 的客户端建连请求 accept 事件（从全连接队列取出客户端连接）后，在 bossNioEventLoop 线程上执行 accept 流程</p>
 <ul>
-<li>服务端初始化NioServerSocketChannel<ul>
-<li>加入的channelHandler是Netty自带的<code>ServerBootstrapAcceptor</code>，而非用户定义的ChannelInitializer，它的作用是在channelRead方法里专门处理Accept事件<ul>
-<li>把用户自定义的ChannelInitializer加入接收到的客户端Channel的pipeLine的尾部，并注册客户端Channel到childNioEventLoopGroup选择的一个NioEventLoop。即，parentNioEventLoopGroup维护的NioEventLoop负责监听和处理客户端Socket的ACCEPT事件，childNioEventLoopGroup维护的NioEventLoop负责监听和处理客户端Socket读写请求事件</li>
+<li>为客户端连接创建好 NioSocketChannel，封装 nio 原生的客户端 socketChannel</li>
+<li>调用 NioServerSocketChannel 的 pipeLine 上的 handlers 处理该 NioSocketChannel，核心在 acceptorHandler 上，它向 workerNioEventLoopGroup 上某个 NioEventLoop 提交一个异步注册任务<ul>
+<li>把 NioSocketChannel 注册到该 NioEventLoop 的 selector 上</li>
+<li>回调 Server 端用户定义的 ChannelInitializer，把和客户端打交道的 handler 添加到 NioSocketChannel 的 pipeLine 上</li>
+<li>在 NioSocketChannel 的 pipeLine 上执行 Active 事件，设置 selector 关心该 NioSocketChannel 的 READ 事件</li>
 </ul>
 </li>
 </ul>
-</li>
-<li>客户端connect vs 服务端bind<ul>
-<li>channel在initAndRegister后，客户端通过pipeLine责任链由handlers处理connect事件，建立与服务端的tcp连接。服务端通过pipeLine责任链由handlers处理bind事件，绑定端口开启监听</li>
-</ul>
-</li>
-</ul>
-<h2 id="Netty解决NIO空轮询bug"><a href="#Netty解决NIO空轮询bug" class="headerlink" title="Netty解决NIO空轮询bug"></a>Netty解决NIO空轮询bug</h2><p>所谓NIO空轮询bug，指调用Selector.select轮询方法等待channel事件到来，但这个阻塞方法有时在没有channel事件到来时也可能直接返回，即出现了空轮询，然后再次回到while循环不断空轮询，最终导致CPU利用率飙到100%，程序崩溃。</p>
-<p>Netty在io.netty.channel.nio.NioEventLoop#select方法里解决了空轮询bug，具体做法是：</p>
+<h3 id="Netty-的通用设计"><a href="#Netty-的通用设计" class="headerlink" title="Netty 的通用设计"></a>Netty 的通用设计</h3><p>通过上述客户端、服务端启动流程和服务端 accept 流程的分析，不难发现一些 Netty 的通用设计。</p>
 <ul>
-<li>检测到while死循环里空轮询次数达到阈值（默认512）时，重建nioEventLoop的selector，然后将注册到老selector的channel重新注册到新selector</li>
+<li>都是通过提交一个注册任务到 NioEventLoop，异步完成注册流程<ul>
+<li>服务端 NioServerSocketChannel 注册、客户端 NioSocketChannel 注册、服务端 accept 客户端连接并注册 NioSocketChannel</li>
 </ul>
-<h2 id="Netty线程模型"><a href="#Netty线程模型" class="headerlink" title="Netty线程模型"></a>Netty线程模型</h2><blockquote>
-<p>reactor设计模式</p>
+</li>
+<li>注册完成后会再提交一个异步任务到 NioEventLoop 执行，任务的核心是触发一个 IO 事件在 Channel 的 pipeLine 上传递处理<ul>
+<li>服务端 NioServerSocketChannel 注册完成后触发 bind 事件来绑定端口，绑定成功后再触发 active 事件让 NioServerSocketChannel 关注 ACCEPT 事件</li>
+<li>客户端 NioSocketChannel 注册完成后触发 connect 事件来建立和服务端 tcp 连接，建立成功后再触发 active 事件让 NioSocketChannel 关注 READ 事件</li>
+<li>accept 的客户端连接注册完成后触发 active 事件让 NioSocketChannel 关注 READ 事件</li>
+</ul>
+</li>
+</ul>
+<h3 id="NioEventLoop-1"><a href="#NioEventLoop-1" class="headerlink" title="NioEventLoop"></a>NioEventLoop</h3><p>NioEventLoop 内部有三个核心成员变量：Selector、线程、任务队列。</p>
+<p>Selector：<br>netty 针对 nioEventLoop 的 selector 做了性能优化。当 io 事件发生时，nio 原生的 selector 使用哈希表存储这些 selectionKeys，因此遍历这些代表 io 事件的 selectionKeys 的效率不高。netty 包装了 nio 原生的 selector，使用数组来存储 selectionKeys，因此遍历的性能有所提升。</p>
+<p>线程：<br>nioEventLoop 内部维护了一个单线程，<code>首次</code>提交任务给 nioEventLoop 时启动线程。<br>该线程会死循环执行提交到 nioEventLoop 的任务、定时任务和注册到 selector 上的 channel 产生的 io 事件。逻辑为：</p>
+<ul>
+<li>判断任务队列是否有任务<ul>
+<li>有任务，调用 selector.selectNow 获取 IO 事件，然后执行 IO 事件和任务队列里的任务</li>
+<li>没有任务，调用 selector.select 带超时参数的方法，阻塞一定时间等待 IO 事件<ul>
+<li>当其他线程提交任务给 nioEventLoop 时，会唤醒 Selector 的阻塞方法 select，开始执行 io 事件和任务</li>
+<li>在 Linux 环境下，select 方法偶现不阻塞的情况，这会导致线程在死循环里一直运行，CPU 空转。这就是 netty 著名的<code>空轮训bug</code>。Netty 的解法是引入一个循环计数器，超过阈值（默认 512）就认为产生了空轮训 bug，然后重建一个 selector 替换之前的</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>可以通过 ioRatio 参数来控制执行 io 事件和任务的时间占比。例如设为 80，则执行任务的时间为 IO 事件时间的 1&#x2F;4。不过如果设置为 100，并非只执行 IO 事件，而是 IO 事件执行完接着把任务队列里的任务也都执行完</p>
+<h2 id="黏包半包与帧解码器"><a href="#黏包半包与帧解码器" class="headerlink" title="黏包半包与帧解码器"></a>黏包半包与帧解码器</h2><p>黏包半包产生的本质原因是 tcp 协议为流式协议，消息无边界。具体原因有下面几种：</p>
+<ul>
+<li>tcp 提供可靠传输，需要对端的 ack 才能继续发送下一条数据，为了提高通信效率以及控制流量，tcp 协议的发端使用“滑动窗口”的思想，提供一个发送缓冲区，缓冲区内的每条应用层数据可以不等对端的 ack 就直接发送，当接收到某条消息的 ack 后，窗口才可以继续向下滑动，发送后面的数据。因此，当网络拥塞时，就可能产生半包现象，后面的数据还没发送过来。当网络顺畅时，就可能产生黏包现象，多条应用层数据同时发过来。</li>
+<li>tcp 和 ip 层的协议头各占 20 字节，如果应用层一次发送数据的字节过少，会因为协议字段的数据白白浪费带宽，因此对于这种情况也会把多条数据合并在一起发送，产生黏包现象</li>
+<li>netty 的 ByteBuf 默认 1024 字节</li>
+</ul>
+<p>Netty 通过提供一些通用的帧（一条完整的消息数据）解码器来解决黏包半包问题：</p>
+<ul>
+<li>提供一个定长帧解码器 handler，无论该 socketChannel 的 ByteBuf 上缓存了多少字节，他都按照设置的固定长度拆分后交给后面的 handler 处理，所以只要客户端和服务器端约定好每次发送数据的长度就不会出现黏包半包问题。为了满足所有场景，定长的字节数会比较大，对于一些字节数少的消息比较浪费空间</li>
+<li>提供一个指定字符串作为分隔符的帧解码器 handler，当匹配到该字符串即认为一条消息结束，将该消息截取后发送给下游 handler 处理。注意，需要给该解码器指定消息的最大长度，如果读取了最大长度都没匹配到分隔符，会抛出异常。该解法因为要匹配分隔符，所以效率不高</li>
+<li>提供一个基于解析长度字段的帧解码器 handler，创建该 handler 时通过构造参数指定长度字段从协议消息数据的几个字节偏移量开始占据几个字节，以及后面的消息内容从几个字节偏移量后开始读取</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1py4y1E7oA?p=97">https://www.bilibili.com/video/BV1py4y1E7oA?p=97</a><br><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1py4y1E7oA?p=98">https://www.bilibili.com/video/BV1py4y1E7oA?p=98</a></p>
+<h2 id="通信协议"><a href="#通信协议" class="headerlink" title="通信协议"></a>通信协议</h2><p>所谓通信协议，即一套数据传输字节流的约定格式，哪些字节表达哪些特定含义。发送端按照协议将应用层数据转成 Byte 数组写入 ByteBuf，这一过程称为协议编码，接收端按照协议格式解析 ByteBuf 里收到的字节数组，转成业务对象，这一过程称为协议解码。<br>对于 netty 而言，实现基于协议的双端通信，需要提供协议编码器 handler 和解码器 handler。不过，netty 已经封装好了一些常用协议的编解码器（codec）handler，如 http、https、redis、websocket 等。如果需要自定义一套通信协议，需要提供该协议的编解码器（codec）handler<br><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1py4y1E7oA?p=99">https://www.bilibili.com/video/BV1py4y1E7oA?p=99</a><br><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1py4y1E7oA?p=100">https://www.bilibili.com/video/BV1py4y1E7oA?p=100</a></p>
+<p>注意，消息接收端在协议解析前仍然需要添加帧解码器 handler（通常是基于解析长度字段的帧解码器 handler），否则仍然会出现半包黏包问题造成协议被错误解析<br><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1py4y1E7oA?p=104">https://www.bilibili.com/video/BV1py4y1E7oA?p=104</a><br><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1py4y1E7oA?p=105">https://www.bilibili.com/video/BV1py4y1E7oA?p=105</a></p>
+<h2 id="连接状态监测"><a href="#连接状态监测" class="headerlink" title="连接状态监测"></a>连接状态监测</h2><p>Netty 提供了一个 Channel 的读写事件空闲检测器 handler。服务端可以使用该 handler 监测已建立连接的 socketChannel 是否读空闲，即超过一定时间没有读事件到来。客户端可以使用该 handler 监测自身有多久没有给服务器写（发送）数据了。当发生读空闲、写空闲时，Netty 会发送相应的事件交给 pipeLine 处理。这时会用到 Netty 提供的另一个 ChannelDuplexHandler，处理空闲读、空闲写事件。服务端处理读空闲事件可以简单地断开连接，客户端处理写空闲事件可以发送心跳包。采用这种策略需要注意，读空闲判定的时长阈值一定要大于写空闲判定的时长阈值，否则客户端还没发心跳包，就会被服务端强制断开连接<br><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1py4y1E7oA?p=117">https://www.bilibili.com/video/BV1py4y1E7oA?p=117</a></p>
+<h2 id="可配置参数"><a href="#可配置参数" class="headerlink" title="可配置参数"></a>可配置参数</h2><p>Netty 提供了一些服务端和客户端的配置参数，可由用户在构建 Netty 程序时动态指定参数值</p>
+<ul>
+<li>客户端最大连接超时时间<ul>
+<li>只作用于客户端，Netty 底层会创建一个延时任务，延时时长就是这里指定的超时时间。如果客户端和服务器在超时时间内连接建立完成就会取消该延时任务，否则执行延时任务，给连接建立 Future（Netty 的连接建立是异步的）设置异常，原线程获取建连的 Future 结果会抛出异常</li>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1py4y1E7oA?p=123">https://www.bilibili.com/video/BV1py4y1E7oA?p=123</a></li>
+</ul>
+</li>
+<li>全连接队列大小<ul>
+<li>客户端和服务器建连要经过 TCP 三次握手，第一次服务端收到客户端发的 SYN 消息后，会将客户端连接放入半连接队列。第二次服务端收到客户端的 ACK 消息后，会将客户端连接放入全连接队列。服务端执行 ACCEPT 事件会从全连接队列取走客户端连接</li>
+<li>Netty 提供配置参数来设置全连接队列大小。注意，Linux 系统在配置文件里也指定了全连接队列的大小，这时会取二者的最小值</li>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1py4y1E7oA?p=125">https://www.bilibili.com/video/BV1py4y1E7oA?p=125</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="Netty-解决-NIO-空轮询-bug"><a href="#Netty-解决-NIO-空轮询-bug" class="headerlink" title="Netty 解决 NIO 空轮询 bug"></a>Netty 解决 NIO 空轮询 bug</h2><p>所谓 NIO 空轮询 bug，指调用 Selector.select 轮询方法等待 channel 事件到来，但这个阻塞方法有时在没有 channel 事件到来时也可能直接返回，即出现了空轮询，然后再次回到 while 循环不断空轮询，最终导致 CPU 利用率飙到 100%，程序崩溃。</p>
+<p>Netty 在 io.netty.channel.nio.NioEventLoop#select 方法里解决了空轮询 bug，具体做法是：</p>
+<ul>
+<li>检测到 while 死循环里空轮询次数达到阈值（默认 512）时，重建 nioEventLoop 的 selector，然后将注册到老 selector 的 channel 重新注册到新 selector</li>
+</ul>
+<h2 id="Netty-线程模型"><a href="#Netty-线程模型" class="headerlink" title="Netty 线程模型"></a>Netty 线程模型</h2><blockquote>
+<p>reactor 设计模式</p>
 </blockquote>
-<p>Reactor模式是处理并发I&#x2F;O比较常见的一种模式，中心思想是将所有要处理的I&#x2F;O事件注册到一个中心I&#x2F;O多路复用器上，主线程阻塞监听注册在多路复用器上的I&#x2F;O事件；一旦有I&#x2F;O事件到来或是准备就绪，多路复用器返回并将相应I&#x2F;O事件分发到对应的处理器中处理。</p>
+<p>Reactor 模式是处理并发 I&#x2F;O 比较常见的一种模式，中心思想是将所有要处理的 I&#x2F;O 事件注册到一个中心 I&#x2F;O 多路复用器上，主线程阻塞监听注册在多路复用器上的 I&#x2F;O 事件；一旦有 I&#x2F;O 事件到来或是准备就绪，多路复用器返回并将相应 I&#x2F;O 事件分发到对应的处理器中处理。</p>
 <p>优点：</p>
 <ul>
 <li>多路复用技术节省了服务端线程数，避免了多线程切换带来的性能问题</li>
 <li>可水平扩展。灵活增加多路复用器来处理高并发请求</li>
 </ul>
-<p>基于Reactor模式，Netty线程模型分为三种：</p>
+<p>基于 Reactor 模式，Netty 线程模型分为三种：</p>
 <ul>
-<li>单线程模型：所有IO事件（ACCEPT、读写事件）都在一个线程里监听和处理，适合并发极低的场景</li>
-<li>多线程模型：ACCEPT事件单线程，和客户端的读写事件多线程。对于登录、认证耗时的场景，也存在性能问题。</li>
-<li>主从多线程模型：ACCEPT事件在主线程池里分配线程处理，和客户端的读写事件在从线程池里分配线程处理。<code>Netty推荐使用这种线程模型</code></li>
+<li>单线程模型：所有 IO 事件（ACCEPT、读写事件）都在一个线程里监听和处理，适合并发极低的场景</li>
+<li>多线程模型：ACCEPT 事件单线程，和客户端的读写事件多线程。对于登录、认证耗时的场景，也存在性能问题。</li>
+<li>主从多线程模型：ACCEPT 事件在主线程池里分配线程处理，和客户端的读写事件在从线程池里分配线程处理。<code>Netty推荐使用这种线程模型</code></li>
 </ul>
 <p>主从多线程模型的优势：</p>
 <ul>
 <li>多线程方式解决了单点性能问题</li>
-<li>主从线程池解决了ACCEPT事件中可能出现的一些耗时操作（登录、认证）带来的性能问题</li>
-<li>每个SocketChannel都在唯一一个NioEventLoop线程里执行IO，确保了这些操作都是线程安全的</li>
+<li>主从线程池解决了 ACCEPT 事件中可能出现的一些耗时操作（登录、认证）带来的性能问题</li>
+<li>每个 SocketChannel 都在唯一一个 NioEventLoop 线程里执行 IO，确保了这些操作都是线程安全的</li>
 </ul>
-<p>在Netty组件中，NioEventLoopGroup扮演了线程池角色，主从线程模型中分别有一个主NioEventLoopGroup，用线程池并发处理多个NioServerSocketChannel（多个服务端的ip:port）上的ACCEPT事件。从NioEventLoopGroup负责多线程并发处理所有Server接收到的客户端NioSocketChannel的读写事件。NioEventLoop扮演执行线程角色，监听注册在它内部的多路复用器Selector上的所有channel的IO事件并调用channel的handlers链式处理。</p>
+<p>在 Netty 组件中，NioEventLoopGroup 扮演了线程池角色，主从线程模型中分别有一个主 NioEventLoopGroup，用线程池并发处理多个 NioServerSocketChannel（多个服务端的 ip:port）上的 ACCEPT 事件。从 NioEventLoopGroup 负责多线程并发处理所有 Server 接收到的客户端 NioSocketChannel 的读写事件。NioEventLoop 扮演执行线程角色，监听注册在它内部的多路复用器 Selector 上的所有 channel 的 IO 事件并调用 channel 的 handlers 链式处理。</p>
 <p><img src="/Netty/Netty%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B1.png"></p>
 <p><img src="/Netty/Netty%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B.png"></p>
-<h2 id="编解码器"><a href="#编解码器" class="headerlink" title="编解码器"></a>编解码器</h2><p>Netty的编解码器分为两大类</p>
+<h1 id="基于-Netty-实现聊天工具-x2F-RPC-框架"><a href="#基于-Netty-实现聊天工具-x2F-RPC-框架" class="headerlink" title="基于 Netty 实现聊天工具&#x2F;RPC 框架"></a>基于 Netty 实现聊天工具&#x2F;RPC 框架</h1><p>基于 TCP&#x2F;IP 的网络编程应用必须考虑上面提到的黏包半包问题和通信协议，因此如果基于 Netty 实现，必备的就是帧解码器 handler 和协议编解码器 codecHandler，以及一些业务 handler。</p>
+<p>服务端 Handler（顺序从 head 到 tail，即读事件 handler 执行顺序）：</p>
 <ul>
-<li>Byte &lt;–&gt; Message</li>
-<li>Message &lt;–&gt; Message</li>
+<li>基于解析长度字段的帧解码器 handler<ul>
+<li>处理黏包半包</li>
 </ul>
-<p>Encoder和Decoder都是ChannelHandler，在pipeLine责任链里被调用执行编码和解码操作</p>
-<p>解码器Decoder主要用于解决TCP粘包、拆包问题，常用的解码器有：</p>
+</li>
+<li>协议编解码器 codecHandler<ul>
+<li>返回解码后的业务对象或者将业务对象编码后写入 ByteBuf</li>
+</ul>
+</li>
+<li>Inbound 类型的业务 handler<ul>
+<li>【聊天工具】用户登录验证</li>
+<li>【聊天工具】处理发送聊天消息请求</li>
+<li>【rpc 框架】处理 rpcRequest，反射调用接口，将结果写到 rpcResponse 并 write 回 socketChannel</li>
+</ul>
+</li>
+</ul>
+<p>客户端 Handler（顺序从 head 到 tail，即读事件 handler 执行顺序）：</p>
 <ul>
-<li>DelimiterBasedFrameDecoder：执行消息分隔符的解码器</li>
-<li>LineBasedFrameDecoder：以换行符为结束标志的解码器</li>
-<li>FixedLengthFrameDecoder：固定长度的解码器</li>
+<li>基于解析长度字段的帧解码器 handler<ul>
+<li>处理黏包半包</li>
 </ul>
-<p>还有一个常用的解码器StringDecoder，一般会与上面的几种进行组合，将字节流转为字符串</p>
-<h2 id="todo"><a href="#todo" class="headerlink" title="todo"></a>todo</h2><ul>
-<li>ChannelOption</li>
-<li>ChannelHandlerContext</li>
-<li>ChannelFuture</li>
+</li>
+<li>协议编解码器 codecHandler<ul>
+<li>返回解码后的业务对象或者将业务对象编码后写入 ByteBuf</li>
+</ul>
+</li>
+<li>Inbound 类型的业务 handler<ul>
+<li>【聊天工具】读取连接建立事件，发送登录请求</li>
+<li>【聊天工具】读取服务端登录响应，发送消息</li>
+<li>【rpc 框架】读取 rpcResponse</li>
+</ul>
+</li>
+</ul>
+<p>对于聊天工具，客户端只需要维护当前聊天者自己的 socketChannel，持有它来发送消息，而从服务端接收到的消息一定是发给自己的，这可以由服务端保证。<br>服务端维护每个登陆用户和 socketChannel 的映射关系，在处理发送聊天消息请求时读取到接收人，调用他的 socketChannel 发送消息数据到客户端。</p>
+<p>对于 RPC 框架，客户端（调用方）需要<code>将rpc服务使用动态代理进行包装</code>，用户线程在发起 rpc 调用时走到动态代理的增强逻辑，先封装 rpcRequest，然后拿到与 rpc 服务端建立好的 socketChannel（如果请求的是同一个 rpc 服务端，socketChannel 可以复用）发送 rpcRequest。</p>
+<p>注意，发送 rpcRequest 是在 nioEventLoop 线程执行的，而接收 rpcResponse 也是在 nioEventLoop 线程执行的，所以用户线程在发起 rpc 调用到接收到响应是异步的（不同线程间执行操作）。那么用户线程如何拿到 rpcResponse，即异步线程间如何通信呢？</p>
+<p>Netty 使用 Promise 来实现异步线程间结果通信（可以理解为 jdk 里的 Future）</p>
+<ul>
+<li>用户线程使用 socketChannel 发起 rpc 网络请求</li>
+<li>需要创建用于接收 rpcResponse 的 Promise 对象，为 Promise 指定执行线程</li>
+<li>将 rpcRequest 里的 sequenceId 和 Promise 对象通过全局 Map 做映射</li>
+<li>调用 Promise 对象的 await 阻塞等待异步返回的 rpcResponse</li>
+</ul>
+<p>这样，客户端收到 rpcResponse 后：</p>
+<ul>
+<li>通过 rpcResponse 里的 sequenceId 拿到 Promise</li>
+<li>将结果 set 给 Promise<ul>
+<li>在 Promise 指定的线程里执行</li>
+</ul>
+</li>
+<li>用户线程结束阻塞，拿到结果作为动态代理的结果返回给调用方，完成一次 rpc 请求。<br><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1py4y1E7oA?p=136">https://www.bilibili.com/video/BV1py4y1E7oA?p=136</a></li>
 </ul>
 <h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/cj2580/java/article/details/78087101">https://blog.csdn.net/cj2580/java/article/details/78087101</a><br><a target="_blank" rel="noopener" href="https://blog.csdn.net/zgege/java/article/details/81632990">https://blog.csdn.net/zgege/java/article/details/81632990</a><br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/23488863">https://zhuanlan.zhihu.com/p/23488863</a><br><a target="_blank" rel="noopener" href="https://wenjie.store/archives/netty-nioeventloop-boot-2">https://wenjie.store/archives/netty-nioeventloop-boot-2</a><br><a target="_blank" rel="noopener" href="https://blog.csdn.net/eric_sunah/article/details/80437025?utm_medium=distribute.pc_relevant.none-task-blog-baidujs-1">https://blog.csdn.net/eric_sunah/article/details/80437025?utm_medium=distribute.pc_relevant.none-task-blog-baidujs-1</a></p>
 
@@ -663,7 +810,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80"><span class="nav-number">1.</span> <span class="nav-text">基础</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#TCP-vs-UDP"><span class="nav-number">1.1.</span> <span class="nav-text">TCP vs UDP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Socket%E5%A5%97%E6%8E%A5%E5%AD%97"><span class="nav-number">1.2.</span> <span class="nav-text">Socket套接字</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%95%BF%E8%BF%9E%E6%8E%A5-amp-%E7%9F%AD%E9%93%BE%E6%8E%A5"><span class="nav-number">1.2.1.</span> <span class="nav-text">长连接 &amp; 短链接</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E7%A9%BA%E9%97%B4%E4%B8%8E%E5%86%85%E6%A0%B8%E7%A9%BA%E9%97%B4"><span class="nav-number">1.3.</span> <span class="nav-text">用户空间与内核空间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6fd"><span class="nav-number">1.4.</span> <span class="nav-text">文件描述符fd</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%93%E5%AD%98I-x2F-O"><span class="nav-number">1.5.</span> <span class="nav-text">缓存I&#x2F;O</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IO%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.6.</span> <span class="nav-text">IO模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NIO"><span class="nav-number">1.7.</span> <span class="nav-text">NIO</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8IO"><span class="nav-number">1.7.1.</span> <span class="nav-text">多路复用IO</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Netty"><span class="nav-number">2.</span> <span class="nav-text">Netty</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Netty%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6"><span class="nav-number">2.1.</span> <span class="nav-text">Netty核心组件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B"><span class="nav-number">2.2.</span> <span class="nav-text">启动流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Netty%E8%A7%A3%E5%86%B3NIO%E7%A9%BA%E8%BD%AE%E8%AF%A2bug"><span class="nav-number">2.3.</span> <span class="nav-text">Netty解决NIO空轮询bug</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Netty%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B"><span class="nav-number">2.4.</span> <span class="nav-text">Netty线程模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%96%E8%A7%A3%E7%A0%81%E5%99%A8"><span class="nav-number">2.5.</span> <span class="nav-text">编解码器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#todo"><span class="nav-number">2.6.</span> <span class="nav-text">todo</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">3.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80"><span class="nav-number">1.</span> <span class="nav-text">基础</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#TCP-vs-UDP"><span class="nav-number">1.1.</span> <span class="nav-text">TCP vs UDP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Socket-%E5%A5%97%E6%8E%A5%E5%AD%97"><span class="nav-number">1.2.</span> <span class="nav-text">Socket 套接字</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%95%BF%E8%BF%9E%E6%8E%A5-amp-%E7%9F%AD%E9%93%BE%E6%8E%A5"><span class="nav-number">1.2.1.</span> <span class="nav-text">长连接 &amp; 短链接</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E7%A9%BA%E9%97%B4%E4%B8%8E%E5%86%85%E6%A0%B8%E7%A9%BA%E9%97%B4"><span class="nav-number">1.3.</span> <span class="nav-text">用户空间与内核空间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6-fd"><span class="nav-number">1.4.</span> <span class="nav-text">文件描述符 fd</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%93%E5%AD%98-I-x2F-O"><span class="nav-number">1.5.</span> <span class="nav-text">缓存 I&#x2F;O</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9B%B6%E6%8B%B7%E8%B4%9D"><span class="nav-number">1.6.</span> <span class="nav-text">零拷贝</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IO-%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.7.</span> <span class="nav-text">IO 模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#BIO"><span class="nav-number">1.7.1.</span> <span class="nav-text">BIO</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NIO"><span class="nav-number">1.7.2.</span> <span class="nav-text">NIO</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Channel"><span class="nav-number">1.7.2.1.</span> <span class="nav-text">Channel</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Buffer"><span class="nav-number">1.7.2.2.</span> <span class="nav-text">Buffer</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Selector"><span class="nav-number">1.7.2.3.</span> <span class="nav-text">Selector</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8-IO"><span class="nav-number">1.7.3.</span> <span class="nav-text">多路复用 IO</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AIO"><span class="nav-number">1.7.4.</span> <span class="nav-text">AIO</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Netty"><span class="nav-number">2.</span> <span class="nav-text">Netty</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%9A%E4%BF%A1%E6%B5%81%E7%A8%8B"><span class="nav-number">2.1.</span> <span class="nav-text">通信流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Netty-%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6"><span class="nav-number">2.2.</span> <span class="nav-text">Netty 核心组件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Bootstrap"><span class="nav-number">2.2.1.</span> <span class="nav-text">Bootstrap</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ServerBootstrap"><span class="nav-number">2.2.2.</span> <span class="nav-text">ServerBootstrap</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NioXxxChannel"><span class="nav-number">2.2.3.</span> <span class="nav-text">NioXxxChannel</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ChannelPipeline"><span class="nav-number">2.2.4.</span> <span class="nav-text">ChannelPipeline</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ChannelHandler"><span class="nav-number">2.2.5.</span> <span class="nav-text">ChannelHandler</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NioEventLoop"><span class="nav-number">2.2.6.</span> <span class="nav-text">NioEventLoop</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NioEventLoopGroup"><span class="nav-number">2.2.7.</span> <span class="nav-text">NioEventLoopGroup</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ChannelFuture"><span class="nav-number">2.2.8.</span> <span class="nav-text">ChannelFuture</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ByteBuf"><span class="nav-number">2.2.9.</span> <span class="nav-text">ByteBuf</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Netty-%E7%BB%84%E4%BB%B6%E6%9E%B6%E6%9E%84%E5%9B%BE"><span class="nav-number">2.3.</span> <span class="nav-text">Netty 组件架构图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90"><span class="nav-number">2.4.</span> <span class="nav-text">源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%90%AF%E5%8A%A8-netty"><span class="nav-number">2.4.1.</span> <span class="nav-text">服务端启动 netty</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%90%AF%E5%8A%A8-netty"><span class="nav-number">2.4.2.</span> <span class="nav-text">客户端启动 netty</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="nav-number">2.4.2.1.</span> <span class="nav-text">流程图</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#accept-%E6%B5%81%E7%A8%8B"><span class="nav-number">2.4.3.</span> <span class="nav-text">accept 流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Netty-%E7%9A%84%E9%80%9A%E7%94%A8%E8%AE%BE%E8%AE%A1"><span class="nav-number">2.4.4.</span> <span class="nav-text">Netty 的通用设计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NioEventLoop-1"><span class="nav-number">2.4.5.</span> <span class="nav-text">NioEventLoop</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%BB%8F%E5%8C%85%E5%8D%8A%E5%8C%85%E4%B8%8E%E5%B8%A7%E8%A7%A3%E7%A0%81%E5%99%A8"><span class="nav-number">2.5.</span> <span class="nav-text">黏包半包与帧解码器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%9A%E4%BF%A1%E5%8D%8F%E8%AE%AE"><span class="nav-number">2.6.</span> <span class="nav-text">通信协议</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9E%E6%8E%A5%E7%8A%B6%E6%80%81%E7%9B%91%E6%B5%8B"><span class="nav-number">2.7.</span> <span class="nav-text">连接状态监测</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AF%E9%85%8D%E7%BD%AE%E5%8F%82%E6%95%B0"><span class="nav-number">2.8.</span> <span class="nav-text">可配置参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Netty-%E8%A7%A3%E5%86%B3-NIO-%E7%A9%BA%E8%BD%AE%E8%AF%A2-bug"><span class="nav-number">2.9.</span> <span class="nav-text">Netty 解决 NIO 空轮询 bug</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Netty-%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B"><span class="nav-number">2.10.</span> <span class="nav-text">Netty 线程模型</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E-Netty-%E5%AE%9E%E7%8E%B0%E8%81%8A%E5%A4%A9%E5%B7%A5%E5%85%B7-x2F-RPC-%E6%A1%86%E6%9E%B6"><span class="nav-number">3.</span> <span class="nav-text">基于 Netty 实现聊天工具&#x2F;RPC 框架</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">4.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -679,7 +826,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">121</span>
+          <span class="site-state-item-count">127</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -692,7 +839,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">3</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -730,7 +877,7 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2022</span>
+  <span itemprop="copyrightYear">2023</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -739,12 +886,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">297k</span>
+    <span title="站点总字数">338k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">8:15</span>
+    <span title="站点阅读时长">9:23</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>

@@ -36,7 +36,7 @@
 <meta property="og:image" content="http://dcbupt.github.io/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/adapter%E6%A8%A1%E5%BC%8F.png">
 <meta property="og:image" content="http://dcbupt.github.io/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/bridge%E6%A8%A1%E5%BC%8F.png">
 <meta property="article:published_time" content="2017-03-14T13:32:00.000Z">
-<meta property="article:modified_time" content="2022-05-01T06:44:18.828Z">
+<meta property="article:modified_time" content="2023-06-10T12:43:15.059Z">
 <meta property="article:author" content="西米大人">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://dcbupt.github.io/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/command%E6%A8%A1%E5%BC%8F.png">
@@ -227,7 +227,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-05-01 14:44:18" itemprop="dateModified" datetime="2022-05-01T14:44:18+08:00">2022-05-01</time>
+                <time title="修改时间：2023-06-10 20:43:15" itemprop="dateModified" datetime="2023-06-10T20:43:15+08:00">2023-06-10</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -266,7 +266,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">字数：</span>
-              <span>3.7k</span>
+              <span>3.8k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -320,21 +320,21 @@
 </ul>
 <p>工厂包</p>
 <ul>
-<li>使用Builder构建（不可更改的）产品实例的方式定义工厂</li>
-<li>Builder与工厂是分离的，由业务方使用Builder构建工厂的产品实例</li>
-<li>实现方案使用JAVA8的函数式接口：Consumer、Supplier<ul>
-<li>Consumer是消费者，专注于处理Consumer的泛型入参</li>
-<li>使用Builder接口作为Consumer的泛型入参，业务方实现Consumer，调用Builder的add方法向工厂添加产品实例</li>
-<li>工厂提供Builder的实现类，获取业务方提供的产品实例并添加到工厂，简单的实现方式就是一个Map</li>
-<li>Supplier是提供者，专注于提供产品</li>
-<li>Builder的接口方法参数使用Supplier，业务方在调用Builder的add方法时，实现Supplier，自定义产品实例的创建逻辑</li>
+<li>使用 Builder 构建（不可更改的）产品实例的方式定义工厂</li>
+<li>Builder 与工厂是分离的，由业务方使用 Builder 构建工厂的产品实例</li>
+<li>实现方案使用 JAVA8 的函数式接口：Consumer、Supplier<ul>
+<li>Consumer 是消费者，专注于处理 Consumer 的泛型入参</li>
+<li>使用 Builder 接口作为 Consumer 的泛型入参，业务方实现 Consumer，调用 Builder 的 add 方法向工厂添加产品实例</li>
+<li>工厂提供 Builder 的实现类，获取业务方提供的产品实例并添加到工厂，简单的实现方式就是一个 Map</li>
+<li>Supplier 是提供者，专注于提供产品</li>
+<li>Builder 的接口方法参数使用 Supplier，业务方在调用 Builder 的 add 方法时，实现 Supplier，自定义产品实例的创建逻辑</li>
 </ul>
 </li>
 </ul>
 <p>工厂包的应用场景：</p>
 <ul>
 <li>工厂无法预期它必须创建的产品实例类型</li>
-<li>业务方自定义Builder来灵活构建自适应工厂，而非依赖全局工厂</li>
+<li>业务方自定义 Builder 来灵活构建自适应工厂，而非依赖全局工厂</li>
 <li>明确知道工厂需要产出的产品实例类型</li>
 </ul>
 <h2 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h2><blockquote>
@@ -342,67 +342,67 @@
 </blockquote>
 <p>单例模式的几种实现：</p>
 <ul>
-<li>eagerly方式<ul>
+<li>饿汉式<ul>
 <li>单例实例作为类属，在类加载时被实例化</li>
 </ul>
 </li>
-<li>加互斥锁的lazy方式<ul>
+<li>简单懒汉式<ul>
 <li>单例实例作为类属，在第一次被访问时加锁实例化</li>
 </ul>
 </li>
-<li>利用volatile的lazy方式<ul>
-<li>单例实例作为类属并用volatile修饰，在第一次被访问时先利用可见性判断是否已实例化，如果没有才加锁实例化，加锁后再二次判断是否实例化。适合高并发场景</li>
+<li>DCL 懒汉式<ul>
+<li>单例实例作为类属并用 volatile 修饰，在第一次被访问时先利用可见性判断是否已实例化，如果没有才加锁，加锁后再二次判断是否已实例化，没有再实例化。适合高并发场景 - 加 volatile 关键字保证可见性，防止指令重排序在并发时出现问题，导致没有初始化的单例对象被业务线程拿到</li>
 </ul>
 </li>
-<li>利用静态内部类的lazy方式<ul>
-<li>单例实例作为静态内部类的类属，在第一次被访问时通过加载静态内部类完成实例化，而静态内部类只有在被访问时加载，所以也是lazy方式，且是线程安全的</li>
+<li>静态内部类的懒汉式<ul>
+<li>单例实例作为静态内部类的类属，在第一次被访问时通过加载静态内部类完成实例化，而静态内部类只有在被访问时加载，所以也是 lazy 方式，且是线程安全的</li>
 </ul>
 </li>
 </ul>
-<h2 id="builder模式"><a href="#builder模式" class="headerlink" title="builder模式"></a>builder模式</h2><blockquote>
+<h2 id="builder-模式"><a href="#builder-模式" class="headerlink" title="builder 模式"></a>builder 模式</h2><blockquote>
 <p>建造者模式提供一套复杂对象的通用构造流程，优雅地创建同一类对象的不同呈现</p>
 </blockquote>
-<p>builder模式的实现：</p>
+<p>builder 模式的实现：</p>
 <ul>
-<li>target类里创建一个静态类Builder，属性是需要通过build模式构建的属性</li>
-<li>builder提供方法为builder实例填充属性</li>
-<li>builder提供build方法，内部调用target的构造器创建target实例，传入builder实例完成属性传递</li>
+<li>target 类里创建一个静态类 Builder，属性是需要通过 build 模式构建的属性</li>
+<li>builder 提供方法为 builder 实例填充属性</li>
+<li>builder 提供 build 方法，内部调用 target 的构造器创建 target 实例，传入 builder 实例完成属性传递</li>
 </ul>
-<h1 id="行为模式"><a href="#行为模式" class="headerlink" title="行为模式"></a>行为模式</h1><h2 id="command模式"><a href="#command模式" class="headerlink" title="command模式"></a>command模式</h2><p><img src="/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/command%E6%A8%A1%E5%BC%8F.png"></p>
-<p>命令模式将面向对象里执行命令的函数对象化为执行者Command，Command只负责执行命令逻辑，不关心目标对象Target是谁，而Target也不知道被什么Command执行命令。业务方Client使用Invoker来发号施令，提供给Invoker实际的执行者和目标，Invoker发号施令的同时还提供命令的撤回和重做能力</p>
+<h1 id="行为模式"><a href="#行为模式" class="headerlink" title="行为模式"></a>行为模式</h1><h2 id="command-模式"><a href="#command-模式" class="headerlink" title="command 模式"></a>command 模式</h2><p><img src="/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/command%E6%A8%A1%E5%BC%8F.png"></p>
+<p>命令模式将面向对象里执行命令的函数对象化为执行者 Command，Command 只负责执行命令逻辑，不关心目标对象 Target 是谁，而 Target 也不知道被什么 Command 执行命令。业务方 Client 使用 Invoker 来发号施令，提供给 Invoker 实际的执行者和目标，Invoker 发号施令的同时还提供命令的撤回和重做能力</p>
 <p>命令模式：</p>
 <ul>
 <li>命令模式包含四类元素：Command、Target、Invoker、Client</li>
-<li>执行者Command专注于执行对目标Target的命令，而不关心Target具体是谁</li>
-<li>Invoker负责发号施令，不关心实际的执行者Command和目标Target是谁<ul>
-<li>Invoker内部通过维护执行者Command的undo和redo队列，回调command的undo&#x2F;redo方法实现命令的撤销和重做</li>
+<li>执行者 Command 专注于执行对目标 Target 的命令，而不关心 Target 具体是谁</li>
+<li>Invoker 负责发号施令，不关心实际的执行者 Command 和目标 Target 是谁<ul>
+<li>Invoker 内部通过维护执行者 Command 的 undo 和 redo 队列，回调 command 的 undo&#x2F;redo 方法实现命令的撤销和重做</li>
 </ul>
 </li>
-<li>Client操作Invoker来发号施令，指定实际的执行者Command和目标Target</li>
+<li>Client 操作 Invoker 来发号施令，指定实际的执行者 Command 和目标 Target</li>
 </ul>
-<p>Command模式的应用场景</p>
+<p>Command 模式的应用场景</p>
 <ul>
 <li>回调函数建模<ul>
-<li>回调函数对象化为命令Command</li>
+<li>回调函数对象化为命令 Command</li>
 </ul>
 </li>
-<li>多级回退Undo操作</li>
+<li>多级回退 Undo 操作</li>
 <li>事务建模<ul>
-<li>事务建模为Command，当事务失败时，回退到事务前的状态</li>
-<li>Command具有公共接口，可让您以相同的方式调用所有事务</li>
+<li>事务建模为 Command，当事务失败时，回退到事务前的状态</li>
+<li>Command 具有公共接口，可让您以相同的方式调用所有事务</li>
 </ul>
 </li>
 </ul>
-<h2 id="observer模式"><a href="#observer模式" class="headerlink" title="observer模式"></a>observer模式</h2><p><img src="/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/observer%E6%A8%A1%E5%BC%8F.png"></p>
+<h2 id="observer-模式"><a href="#observer-模式" class="headerlink" title="observer 模式"></a>observer 模式</h2><p><img src="/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/observer%E6%A8%A1%E5%BC%8F.png"></p>
 <blockquote>
 <p>定义被依赖方和依赖方之间一对多的关联关系，当被依赖方的状态改变时，可以通知多个依赖方自动更新状态</p>
 </blockquote>
 <p>观察者模式</p>
 <ul>
-<li>三个核心元素：观察者Observer、被观察者Observable、回调上下文Argument</li>
-<li>被观察者Observable维护一组观察者Observer，提供基本的添加和删除观察者能力，以及notify能力，通知它的所有观察者，回调观察者的update接口消费事件</li>
-<li>Argument是被观察者Observable在执行事件后用于回调所有观察者的上下文参数</li>
-<li>Observable是观察者模式的顶级抽象类，Observer是顶级接口。它们都适合使用泛型，由业务方继承时指定实际的Observable、Observer、Argument</li>
+<li>三个核心元素：观察者 Observer、被观察者 Observable、回调上下文 Argument</li>
+<li>被观察者 Observable 维护一组观察者 Observer，提供基本的添加和删除观察者能力，以及 notify 能力，通知它的所有观察者，回调观察者的 update 接口消费事件</li>
+<li>Argument 是被观察者 Observable 在执行事件后用于回调所有观察者的上下文参数</li>
+<li>Observable 是观察者模式的顶级抽象类，Observer 是顶级接口。它们都适合使用泛型，由业务方继承时指定实际的 Observable、Observer、Argument</li>
 </ul>
 <p>使用场景</p>
 <ul>
@@ -412,13 +412,13 @@
 </ul>
 </li>
 </ul>
-<h2 id="strategy模式"><a href="#strategy模式" class="headerlink" title="strategy模式"></a>strategy模式</h2><p><img src="/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/strategy%E6%A8%A1%E5%BC%8F.png"></p>
+<h2 id="strategy-模式"><a href="#strategy-模式" class="headerlink" title="strategy 模式"></a>strategy 模式</h2><p><img src="/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/strategy%E6%A8%A1%E5%BC%8F.png"></p>
 <blockquote>
 <p>策略模式提供一组策略，帮助业务在运行时动态选择和执行决策，使得业务行为具备动态性</p>
 </blockquote>
 <p>策略模式的实现：</p>
 <ul>
-<li>定义顶层Strategy策略接口，并提供一组策略的实现类</li>
+<li>定义顶层 Strategy 策略接口，并提供一组策略的实现类</li>
 <li>提供策略上下文类，实现方式可以是简单工厂，或者是枚举，帮助业务在运行时动态选择策略<ul>
 <li>枚举方式代码可读性更好，更符合开闭原则</li>
 </ul>
@@ -428,9 +428,9 @@
 <p>使用场景：</p>
 <ul>
 <li>许多相似的类仅仅在行为上有不同的表现，可以使用策略模式统一这些相似的类</li>
-<li>类的行为包含很多if-else条件，可以将类的行为抽象为策略，相关的条件分支移到策略类里实现</li>
+<li>类的行为包含很多 if-else 条件，可以将类的行为抽象为策略，相关的条件分支移到策略类里实现</li>
 </ul>
-<h1 id="结构模式"><a href="#结构模式" class="headerlink" title="结构模式"></a>结构模式</h1><h2 id="Composite模式"><a href="#Composite模式" class="headerlink" title="Composite模式"></a>Composite模式</h2><blockquote>
+<h1 id="结构模式"><a href="#结构模式" class="headerlink" title="结构模式"></a>结构模式</h1><h2 id="Composite-模式"><a href="#Composite-模式" class="headerlink" title="Composite 模式"></a>Composite 模式</h2><blockquote>
 <p>组合模式将不同组件按树状结构组合在一起，表示部分和整体的层级结构。作用是使得业务方只需统一处理父级组件，就能达到处理整个层级结构的效果</p>
 </blockquote>
 <p>组件间需要满足：</p>
@@ -441,26 +441,25 @@
 <p>举例：</p>
 <ul>
 <li>一句话、一个词、一个字都是相同类型的组件，因为这些组件都有相同的打印行为，且这些组件间满足树形结构，一句话包含多个词，一个词包含多个字。所以在打印这些组件时，可以使用组合模式</li>
-<li>商品、购物车也是相同类型的组件，都具备计算价格的行为，且Box是父节点，Product是叶子节点。所以在计算这类组件的价格时，可以使用组合模式</li>
+<li>商品、购物车也是相同类型的组件，都具备计算价格的行为，且 Box 是父节点，Product 是叶子节点。所以在计算这类组件的价格时，可以使用组合模式</li>
 </ul>
 <p>应用场景：</p>
 <ul>
 <li>你想要构建”部分-整体”的对象间层级结构</li>
 <li>你想要业务方无需关心父级对象和它内部的组成结构，只需要统一处理父级对象</li>
 </ul>
-<h2 id="decorator模式"><a href="#decorator模式" class="headerlink" title="decorator模式"></a>decorator模式</h2><blockquote>
+<h2 id="decorator-模式"><a href="#decorator-模式" class="headerlink" title="decorator 模式"></a>decorator 模式</h2><blockquote>
 <p>装饰者模式能实现动态地将额外功能附加到对象，不需要通过子类来实现，灵活性更强</p>
 </blockquote>
-<p>装饰者模式包含的元素有装饰者decorator和被装饰者decorated</p>
-<p>装饰者decorator需要满足：</p>
+<p>装饰者模式包含的元素有装饰者 decorator 和被装饰者 decorated</p>
+<p>装饰者 decorator 需要满足：</p>
 <ul>
-<li>与被装饰者decorated实现同一接口，否则不能装饰<ul>
+<li>与被装饰者 decorated 实现同一接口，否则不能装饰<ul>
 <li>这里装饰就像是被代理</li>
 </ul>
 </li>
-<li>聚合被装饰者decorated的实例</li>
+<li>聚合被装饰者 decorated 的实例</li>
 </ul>
-<p>	</p>
 <p>应用场景：</p>
 <ul>
 <li>动态透明地为对象附加功能<ul>
@@ -479,22 +478,22 @@
 </ul>
 </li>
 </ul>
-<h2 id="adapter模式"><a href="#adapter模式" class="headerlink" title="adapter模式"></a>adapter模式</h2><p><img src="/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/adapter%E6%A8%A1%E5%BC%8F.png"></p>
+<h2 id="adapter-模式"><a href="#adapter-模式" class="headerlink" title="adapter 模式"></a>adapter 模式</h2><p><img src="/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/adapter%E6%A8%A1%E5%BC%8F.png"></p>
 <blockquote>
 <p>适配器模式的作用是适配业务方期望的接口类型，实现在接口不兼容时也能协同工作</p>
 </blockquote>
-<p>Adapter模式包含两个元素：Adapter和Adaptee</p>
+<p>Adapter 模式包含两个元素：Adapter 和 Adaptee</p>
 <ul>
-<li>Adapter是适配器，Adaptee是被适配者</li>
-<li>Adapter通过注入Adaptee来复用Adaptee的能力</li>
-<li>Adapter实现业务方期望的接口来达到适配的效果</li>
+<li>Adapter 是适配器，Adaptee 是被适配者</li>
+<li>Adapter 通过注入 Adaptee 来复用 Adaptee 的能力</li>
+<li>Adapter 实现业务方期望的接口来达到适配的效果</li>
 </ul>
 <p>使用场景：</p>
 <ul>
 <li>您要使用现有的类，并且其接口与您需要的接口不匹配</li>
 <li>使用第三方类库时，使用适配器作为中间层使应用程序与三方类库分离</li>
 </ul>
-<h2 id="bridge模式"><a href="#bridge模式" class="headerlink" title="bridge模式"></a>bridge模式</h2><p><img src="/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/bridge%E6%A8%A1%E5%BC%8F.png"></p>
+<h2 id="bridge-模式"><a href="#bridge-模式" class="headerlink" title="bridge 模式"></a>bridge 模式</h2><p><img src="/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/bridge%E6%A8%A1%E5%BC%8F.png"></p>
 <blockquote>
 <p>桥接模式可以认为是<code>两层抽象</code>，业务方可以使用桥接模式将两种类型的实现类自由结合起来实现功能，而不是创建深层次的等级体系</p>
 </blockquote>
@@ -604,7 +603,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text">创建模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.1.</span> <span class="nav-text">工厂模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.2.</span> <span class="nav-text">单例模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#builder%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.3.</span> <span class="nav-text">builder模式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A1%8C%E4%B8%BA%E6%A8%A1%E5%BC%8F"><span class="nav-number">3.</span> <span class="nav-text">行为模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#command%E6%A8%A1%E5%BC%8F"><span class="nav-number">3.1.</span> <span class="nav-text">command模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#observer%E6%A8%A1%E5%BC%8F"><span class="nav-number">3.2.</span> <span class="nav-text">observer模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#strategy%E6%A8%A1%E5%BC%8F"><span class="nav-number">3.3.</span> <span class="nav-text">strategy模式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BB%93%E6%9E%84%E6%A8%A1%E5%BC%8F"><span class="nav-number">4.</span> <span class="nav-text">结构模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Composite%E6%A8%A1%E5%BC%8F"><span class="nav-number">4.1.</span> <span class="nav-text">Composite模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#decorator%E6%A8%A1%E5%BC%8F"><span class="nav-number">4.2.</span> <span class="nav-text">decorator模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#adapter%E6%A8%A1%E5%BC%8F"><span class="nav-number">4.3.</span> <span class="nav-text">adapter模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bridge%E6%A8%A1%E5%BC%8F"><span class="nav-number">4.4.</span> <span class="nav-text">bridge模式</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text">创建模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.1.</span> <span class="nav-text">工厂模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.2.</span> <span class="nav-text">单例模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#builder-%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.3.</span> <span class="nav-text">builder 模式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A1%8C%E4%B8%BA%E6%A8%A1%E5%BC%8F"><span class="nav-number">3.</span> <span class="nav-text">行为模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#command-%E6%A8%A1%E5%BC%8F"><span class="nav-number">3.1.</span> <span class="nav-text">command 模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#observer-%E6%A8%A1%E5%BC%8F"><span class="nav-number">3.2.</span> <span class="nav-text">observer 模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#strategy-%E6%A8%A1%E5%BC%8F"><span class="nav-number">3.3.</span> <span class="nav-text">strategy 模式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BB%93%E6%9E%84%E6%A8%A1%E5%BC%8F"><span class="nav-number">4.</span> <span class="nav-text">结构模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Composite-%E6%A8%A1%E5%BC%8F"><span class="nav-number">4.1.</span> <span class="nav-text">Composite 模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#decorator-%E6%A8%A1%E5%BC%8F"><span class="nav-number">4.2.</span> <span class="nav-text">decorator 模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#adapter-%E6%A8%A1%E5%BC%8F"><span class="nav-number">4.3.</span> <span class="nav-text">adapter 模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bridge-%E6%A8%A1%E5%BC%8F"><span class="nav-number">4.4.</span> <span class="nav-text">bridge 模式</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -620,7 +619,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">121</span>
+          <span class="site-state-item-count">127</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -633,7 +632,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">3</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -671,7 +670,7 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2022</span>
+  <span itemprop="copyrightYear">2023</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -680,12 +679,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">297k</span>
+    <span title="站点总字数">338k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">8:15</span>
+    <span title="站点阅读时长">9:23</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>

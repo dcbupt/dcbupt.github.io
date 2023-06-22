@@ -32,7 +32,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://dcbupt.github.io/spring/ApplicationContext%E7%B1%BB%E5%9B%BE.jpg">
 <meta property="article:published_time" content="2020-04-23T03:57:00.000Z">
-<meta property="article:modified_time" content="2022-05-01T06:44:18.825Z">
+<meta property="article:modified_time" content="2023-06-10T12:43:15.053Z">
 <meta property="article:author" content="西米大人">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://dcbupt.github.io/spring/ApplicationContext%E7%B1%BB%E5%9B%BE.jpg">
@@ -223,7 +223,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-05-01 14:44:18" itemprop="dateModified" datetime="2022-05-01T14:44:18+08:00">2022-05-01</time>
+                <time title="修改时间：2023-06-10 20:43:15" itemprop="dateModified" datetime="2023-06-10T20:43:15+08:00">2023-06-10</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -262,14 +262,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">字数：</span>
-              <span>12k</span>
+              <span>9.7k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>20 分钟</span>
+              <span>16 分钟</span>
             </span>
             <div class="post-description"><blockquote class="blockquote-center">系统学习Spring源码-Spring容器</blockquote></div>
 
@@ -282,385 +282,278 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p><code>DefaultListableBeanFactory</code>是Spring的bean工厂，实现IoC控制反转，集中管理bean之间的依赖，实现依赖注入。但Spring框架不仅有bean工厂，还有许多其他特性，因此Spring提供核心接口<code>ApplicationContext</code>来描述一个可配置的Spring容器，一个ApplicationContext需要具备如下能力：</p>
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在讲 beanFactory 架构时说过，接口<code>ConfigurableBeanFactory</code>表明 bean 工厂是可配置的，为了让用户能方便的配置 bean 工厂，Spring 设计了代表 Spring 容器的顶级接口<code>ApplicationContext</code>。如果说 bean 工厂负责管理 bean 的生命周期，提供的扩展能力是对 bean 的定制，那么 Spring 容器则站在更高的维度，提供对 bean 工厂的定制能力以及应用维度的事件发布和消费能力等：</p>
 <ul>
-<li>可配置的beanFactory</li>
-<li>支持多种Spring配置方式</li>
-<li>支持应用事件广播和消费</li>
+<li>支持多种 Spring 配置方式来构建 beanFactory</li>
+<li>轻松定制 beanFactory</li>
+<li>支持应用事件广播和监听</li>
 </ul>
-<h1 id="ApplicationContext架构"><a href="#ApplicationContext架构" class="headerlink" title="ApplicationContext架构"></a>ApplicationContext架构</h1><h2 id="基础类"><a href="#基础类" class="headerlink" title="基础类"></a>基础类</h2><p><code>ApplicationContext</code></p>
+<h1 id="ApplicationContext-架构"><a href="#ApplicationContext-架构" class="headerlink" title="ApplicationContext 架构"></a>ApplicationContext 架构</h1><h2 id="基础类"><a href="#基础类" class="headerlink" title="基础类"></a>基础类</h2><h3 id="ApplicationContext"><a href="#ApplicationContext" class="headerlink" title="ApplicationContext"></a>ApplicationContext</h3><p>顶层接口，用来指代一个 Spring 容器，<code>getAutowireCapableBeanFactory</code>方法用来获取一个可依赖注入的 bean 工厂，可见 Spring 容器的核心就是包了一个基础的 bean 工厂</p>
+<h3 id="ConfigurableApplicationContext"><a href="#ConfigurableApplicationContext" class="headerlink" title="ConfigurableApplicationContext"></a>ConfigurableApplicationContext</h3><p>继承<code>ApplicationContext</code>，描述一个可配置 beanFactory 的 Spring 容器，定义配置方法，例如添加 bfpp<code>addBeanFactoryPostProcessor</code>、添加应用事件监听器<code>addApplicationListener</code></p>
 <ul>
-<li>顶层接口，用来指代一个Spring容器，<code>getAutowireCapableBeanFactory</code>方法用来获取一个可配置可依赖注入的bean工厂，可见Spring容器的核心就是包了一个基础的bean工厂</li>
+<li>类比<code>ConfigurableBeanFactory</code>，描述的是可配置的 bean 工厂，实现对 bean 加载过程的定制，例如给 bean 工厂配置 bpp。对于 Spring 容器而言，它的可配置体现在对 bean 工厂本身的定制化，因此提供的扩展是 bean 工厂处理器 bfpp。需要说明的是，bfpp 虽然定制的是 bean 工厂，但最终还是通过 bean 工厂影响 bean，本质上还是对 bean 加载过程的定制</li>
 </ul>
-<p><code>ConfigurableApplicationContext</code></p>
+<p>定义核心方法<code>refresh</code>，用来刷新（初始化）Spring 容器。大部分具体的 Spring 容器实现类都会在构造函数里调用该方法实现容器的初始化<br>定义核心方法<code>close</code>，关闭 Spring 容器时调用</p>
+<h3 id="AbstractApplicationContext"><a href="#AbstractApplicationContext" class="headerlink" title="AbstractApplicationContext"></a>AbstractApplicationContext</h3><p><code>ConfigurableApplicationContext</code>的实现类，描述了一个可配置的 Spring 容器，它做到了这些事情：</p>
 <ul>
-<li>继承<code>ApplicationContext</code>，描述一个可配置的Spring容器，提供配置方法，例如添加bfpp<code>addBeanFactoryPostProcessor</code>、添加应用事件监听器<code>addApplicationListener</code><ul>
-<li>类比<code>ConfigurableBeanFactory</code>，描述的是可配置的bean工厂，实现对bean加载过程的定制，例如给bean工厂配置bpp。对于Spring容器而言，它的可配置体现在对bean工厂本身的定制化，因此提供的扩展是bean工厂处理器bfpp。需要说明的是，bfpp虽然定制的是bean工厂，但有些bfpp也是调用的bean工厂的配置接口，本质上还是对bean加载过程的定制</li>
+<li>可添加 bfpp、应用事件监听器</li>
+<li>实现了<code>refresh</code>方法，框定了 Spring 容器初始化的流程，该方法的实现后面会详细介绍</li>
+<li>实现了<code>close</code>方法，框定了 Spring 容器关闭的流程，执行所有单例 bean 的销毁生命周期</li>
+</ul>
+<p>ConfigurableApplicationContext 在 refresh 方法里定义了一些模板方法，需要子类在容器初始化过程中做这些事情：</p>
+<ul>
+<li>实现模板方法<code>refreshBeanFactory</code>，构建一个 DefaultListableBeanFactory。根据对该方法的不同实现方式，可以将子类容器分为两大类，<code>Refreshable 的容器和 Generic 的容器</code>，区别是 Refreshable 容器真正实现了该模板方法，所以每次调用 refresh 方法，都会重新构建 bf，而 Generic 容器做了个空实现，实际在构造函数里先构建好 bf，所以调用 refresh 方法不会再重新构建 bf</li>
+<li>实现模板方法<code>closeBeanFactory</code>，Spring 容器关闭时调用。这个目前子类容器也没有特殊的实现</li>
+<li>实现模板方法<code>postProcessBeanFactory</code>，容器初始化过程中后置处理构建好的 bf</li>
+</ul>
+<h2 id="核心类"><a href="#核心类" class="headerlink" title="核心类"></a>核心类</h2><h3 id="ClassPathXmlApplicationContext"><a href="#ClassPathXmlApplicationContext" class="headerlink" title="ClassPathXmlApplicationContext"></a>ClassPathXmlApplicationContext</h3><p>基于 XML 构建 bf 的 refreshable 的 Spring 容器，实现 refreshBeanFactory 方法，每次调用 refresh 都会基于 xml 构建 bf</p>
+<h3 id="AnnotationConfigWebApplicationContext"><a href="#AnnotationConfigWebApplicationContext" class="headerlink" title="AnnotationConfigWebApplicationContext"></a>AnnotationConfigWebApplicationContext</h3><p>基于注解构建 bf 的 refreshable 的 Spring 容器，实现 refreshBeanFactory 方法，每次调用 refresh 都会基于 配置类 构建 bf</p>
+<h3 id="GenericXmlApplicationContext"><a href="#GenericXmlApplicationContext" class="headerlink" title="GenericXmlApplicationContext"></a>GenericXmlApplicationContext</h3><p>基于 XML 构建 bf 的 generic 的 Spring 容器，refreshBeanFactory 方法做空实现，构造函数里基于 xml 构建 bf，调用 refresh 不会再次构建 bf</p>
+<h3 id="AnnotationConfigApplicationContext"><a href="#AnnotationConfigApplicationContext" class="headerlink" title="AnnotationConfigApplicationContext"></a>AnnotationConfigApplicationContext</h3><p>基于 注解 构建 bf 的 generic 的 Spring 容器，refreshBeanFactory 方法做空实现，构造函数里基于 配置类 构建 bf，调用 refresh 不会再次构建 bf</p>
+<h2 id="基于注解构建-bf-的说明"><a href="#基于注解构建-bf-的说明" class="headerlink" title="基于注解构建 bf 的说明"></a>基于注解构建 bf 的说明</h2><p>如果是基于注解的 Spring 容器，无论是 refreshable 的还是 generic 的，注册业务 bean 的 bd 前，都会提前向 bf 注册支持注解驱动的一些内部 bean 的 bd，重点有这么几个 bean：</p>
+<ul>
+<li>ConfigurationClassPostProcessor<ul>
+<li>负责注册通过配置类 bean（@Configuration 修饰）间接定义的所有 bd 到 bf</li>
 </ul>
 </li>
-<li>定义核心方法<code>refresh</code>，该方法在<code>ApplicationContext</code>的构造函数里调用来刷新（初始化）Spring容器</li>
-</ul>
-<h2 id="核心类"><a href="#核心类" class="headerlink" title="核心类"></a>核心类</h2><p><code>AbstractApplicationContext</code></p>
-<ul>
-<li><code>ConfigurableApplicationContext</code>的基础实现，实现了<code>refresh</code>方法，框定了Spring容器刷新的主流程，该方法的实现后面会详细介绍<ul>
-<li>提供模板方法<code>refreshBeanFactory</code>，子类实现来创建beanFactory</li>
+<li>AutowiredAnnotationBeanPostProcessor<ul>
+<li>bpp，依赖注入阶段加载并注入@Autowired 修饰的 bean，解析得到@Value 的实际值并注入到成员变量</li>
 </ul>
 </li>
-</ul>
-<p><code>AbstractRefreshableApplicationContext</code></p>
-<ul>
-<li><code>AbstractApplicationContext</code>的子类，实现了<code>refreshBeanFactory</code>方法，new一个bean工厂<code>DefaultListableBeanFactory</code>提供给它的子类去解析和注册beanDefinition<ul>
-<li>读取Spring容器的配置属性来定制bean工厂，包括是否支持循环依赖、是否支持相同beanName的beanDefinition覆盖</li>
-<li>提供模板方法<code>loadBeanDefinitions</code>，由子类负责加载bean配置定义、解析生成beanDefinition并注册到beanFactory<ul>
-<li><code>AnnotationConfigWebApplicationContext</code>实现<code>loadBeanDefinitions</code>，将注解配置的beanDefinition注册到beanFactory</li>
-<li><code>AbstractXmlApplicationContext</code>实现<code>loadBeanDefinitions</code>，将xml配置的beanDefinition注册到beanFactory</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><code>GenericApplicationContext</code>和<code>AbstractRefreshableApplicationContext</code>平级，也实现了<code>refreshBeanFactory</code>方法，但可以理解为一个空实现，实际是在无参构造函数里new一个bean工厂<code>DefaultListableBeanFactory</code>，子类在自己的构造函数里完成特定配置方式加载和注册beanDefinition<ul>
-<li><code>AnnotationConfigApplicationContext</code>是注解方式的spring容器</li>
-<li><code>GenericXmlApplicationContext</code>是xml方式的spring容器</li>
-</ul>
-</li>
-</ul>
-<p><code>AbstractRefreshableConfigApplicationContext</code></p>
-<ul>
-<li><code>AbstractRefreshableApplicationContext</code>的子类，提供对bean配置文件路径解析的能力<ul>
-<li>将占位符替换为实际的系统环境变量</li>
+<li>CommonAnnotationBeanPostProcessor<ul>
+<li>bpp，依赖注入阶段加载并注入@Resource 修饰的 bean</li>
 </ul>
 </li>
 </ul>
-<p><code>AbstractXmlApplicationContext</code></p>
-<ul>
-<li><code>AbstractRefreshableConfigApplicationContext</code>的子类，实现方法<code>loadBeanDefinitions</code>，完成xml方式beanDefinition解析和注册<ul>
-<li>使用辅助类<code>XmlBeanDefinitionReader</code>完成xml配置文件的解析和beanDefinition的注册</li>
-<li>提供模板方法<code>getConfigResources</code>，由子类负责加载Spring配置文件</li>
-</ul>
-</li>
-<li><code>AnnotationConfigWebApplicationContext</code>和<code>AbstractXmlApplicationContext</code>平级，也实现了<code>loadBeanDefinitions</code>，完成注解方式的beanDefinition解析和注册</li>
-</ul>
-<p><code>ClassPathXmlApplicationContext</code></p>
-<ul>
-<li>xml配置方式的Spring容器</li>
-<li><code>AbstractXmlApplicationContext</code>的子类，实现了<code>getConfigResources</code>方法，使用辅助类<code>ClassPathResource</code>加载xml配置文件</li>
-</ul>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>ApplicationContext架构的UML类图：<br><img src="/spring/ApplicationContext%E7%B1%BB%E5%9B%BE.jpg"></p>
+<p>see：org.springframework.context.annotation.AnnotationConfigUtils#registerAnnotationConfigProcessors(org.springframework.beans.factory.support.BeanDefinitionRegistry, java.lang.Object)</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>ApplicationContext 架构的 UML 类图：<br><img src="/spring/ApplicationContext%E7%B1%BB%E5%9B%BE.jpg"></p>
 <p>综上，<code>ApplicationContext</code>架构主要使用了<code>适配器模式</code>、<code>模板模式</code></p>
 <ul>
-<li><code>ApplicationContext</code>通过在内部持有一个<code>DefaultListableBeanFactory</code>，适配了BeanFactory接口</li>
-<li>Spring容器的刷新主流程在上层抽象类的refresh方法中实现。同时定义创建bean工厂的模板方法<code>refreshBeanFactory</code>，有两套bean工厂创建流程，分别由子类<code>AbstractRefreshableApplicationContext</code>和<code>GenericApplicationContext</code>实现<ul>
-<li><code>AbstractRefreshableApplicationContext</code>类和<code>GenericApplicationContext</code>类都有自己的子类，分别支持xml方式和注解方式的beanDefinition注册</li>
+<li><code>ApplicationContext</code>通过在内部持有一个<code>DefaultListableBeanFactory</code>，适配了 BeanFactory 接口</li>
+<li>Spring 容器的刷新主流程在上层抽象类的 refresh 方法中实现。同时定义创建 bean 工厂的模板方法<code>refreshBeanFactory</code>，有两套 bean 工厂创建流程，分别由子类<code>AbstractRefreshableApplicationContext</code>和<code>GenericApplicationContext</code>实现<ul>
+<li><code>AbstractRefreshableApplicationContext</code>类和<code>GenericApplicationContext</code>类都有自己的子类，分别支持 xml 方式和注解方式的 beanDefinition 注册</li>
 </ul>
 </li>
 </ul>
-<h1 id="刷新Spring容器"><a href="#刷新Spring容器" class="headerlink" title="刷新Spring容器"></a>刷新Spring容器</h1><p>刷新（初始化）Spring容器的入口在<code>org.springframework.context.support.AbstractApplicationContext#refresh</code>，构造函数里调用</p>
-<p>下面详述refresh方法的实现逻辑</p>
+<h1 id="初始化-Spring-容器"><a href="#初始化-Spring-容器" class="headerlink" title="初始化 Spring 容器"></a>初始化 Spring 容器</h1><p>容器在实例化完成后，一般会接着调用 refresh 方法初始化，或者直接在构造函数里就调用 refresh 方法，下面详述容器初始化流程</p>
 <h2 id="定制系统变量"><a href="#定制系统变量" class="headerlink" title="定制系统变量"></a>定制系统变量</h2><p>回调模板方法<code>initPropertySources</code>，由三方实现，可以添加系统变量、设置哪些系统变量是必须的（不存在直接抛异常）</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// Initialize any placeholder property sources in the context environment.</span><br><span class="line">initPropertySources();</span><br><span class="line"></span><br><span class="line">// Validate that all properties marked as required are resolvable:</span><br><span class="line">// see ConfigurablePropertyResolver#setRequiredProperties</span><br><span class="line">getEnvironment().validateRequiredProperties();</span><br></pre></td></tr></table></figure>
 
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public void validateRequiredProperties() &#123;</span><br><span class="line">	MissingRequiredPropertiesException ex = new MissingRequiredPropertiesException();</span><br><span class="line">	for (String key : this.requiredProperties) &#123;</span><br><span class="line">		if (this.getProperty(key) == null) &#123;</span><br><span class="line">			ex.addMissingRequiredProperty(key);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	if (!ex.getMissingRequiredProperties().isEmpty()) &#123;</span><br><span class="line">		throw ex;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>测试代码：applicationcontext.RequiredPropertyTest</p>
-<h2 id="构建DefaultListableBeanFactory"><a href="#构建DefaultListableBeanFactory" class="headerlink" title="构建DefaultListableBeanFactory"></a>构建DefaultListableBeanFactory</h2><p>构建Spring容器的DefaultListableBeanFactory，提供<code>refreshBeanFactory</code>模板方法，由子类实现，创建一个已经完成beanDefinition解析和注册的bean工厂</p>
+<h2 id="构建-DefaultListableBeanFactory"><a href="#构建-DefaultListableBeanFactory" class="headerlink" title="构建 DefaultListableBeanFactory"></a>构建 DefaultListableBeanFactory</h2><p>构建 Spring 容器的 DefaultListableBeanFactory，提供<code>refreshBeanFactory</code>模板方法，由子类实现，创建一个已经完成 beanDefinition 解析和注册的 bean 工厂。上面说过，只有 refreshable 的 Spring 容器在这里构建 bf</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">protected ConfigurableListableBeanFactory obtainFreshBeanFactory() &#123;</span><br><span class="line">	refreshBeanFactory();</span><br><span class="line">	ConfigurableListableBeanFactory beanFactory = getBeanFactory();</span><br><span class="line">	if (logger.isDebugEnabled()) &#123;</span><br><span class="line">		logger.debug(&quot;Bean factory for &quot; + getDisplayName() + &quot;: &quot; + beanFactory);</span><br><span class="line">	&#125;</span><br><span class="line">	return beanFactory;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h2 id="显式配置DefaultListableBeanFactory"><a href="#显式配置DefaultListableBeanFactory" class="headerlink" title="显式配置DefaultListableBeanFactory"></a>显式配置DefaultListableBeanFactory</h2><h3 id="注册SPEL解析器"><a href="#注册SPEL解析器" class="headerlink" title="注册SPEL解析器"></a>注册SPEL解析器</h3><p>显式注册解析SpEL的<code>StandardBeanExpressionResolver</code>，该resolver会在bean属性赋值前被调用来解析配置属性的SpEL表达式</p>
+<h2 id="显式配置-DefaultListableBeanFactory"><a href="#显式配置-DefaultListableBeanFactory" class="headerlink" title="显式配置 DefaultListableBeanFactory"></a>显式配置 DefaultListableBeanFactory</h2><h3 id="注册-SPEL-解析器"><a href="#注册-SPEL-解析器" class="headerlink" title="注册 SPEL 解析器"></a>注册 SPEL 解析器</h3><p>显式注册解析 SpEL 的<code>StandardBeanExpressionResolver</code>，该 resolver 会在 bean 属性赋值前被调用来解析配置属性的 SpEL 表达式</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">beanFactory.setBeanExpressionResolver(new StandardBeanExpressionResolver(beanFactory.getBeanClassLoader()));</span><br></pre></td></tr></table></figure>
 
-<h3 id="注册属性编辑注册器"><a href="#注册属性编辑注册器" class="headerlink" title="注册属性编辑注册器"></a>注册属性编辑注册器</h3><p>显式注册<code>ResourceEditorRegistrar</code>，注册器会在Bean加载阶段被调用，给BeanWrapper注册一些资源类型的<code>PropertyEditor</code></p>
-<ul>
-<li>如果用户想添加自定义的<code>PropertyEditor</code>，可以简单覆盖<code>PropertyEditorSupport</code>的<code>setAsText</code>方法来自定义一个<code>PropertyEditor</code>，再创建它的注册器<code>PropertyEditorRegistrar</code>，然后配置一个<code>CustomEditorConfigurer</code>Bean，在propertyEditorRegistrars属性中加入自定义的Registrar。<code>CustomEditorConfigurer</code>是bfpp，在beanFactory后置处理中将<code>PropertyEditorRegistrar</code>注册到BeanFactory</li>
-</ul>
+<h3 id="注册属性编辑注册器"><a href="#注册属性编辑注册器" class="headerlink" title="注册属性编辑注册器"></a>注册属性编辑注册器</h3><p>显式注册<code>ResourceEditorRegistrar</code>，注册器会在 Bean 加载阶段被调用，给 BeanWrapper 注册一些 IO 类型的<code>PropertyEditor</code></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">beanFactory.addPropertyEditorRegistrar(new ResourceEditorRegistrar(this, getEnvironment()));</span><br></pre></td></tr></table></figure>
 
-<h3 id="注册ApplicationContextAwareProcessor"><a href="#注册ApplicationContextAwareProcessor" class="headerlink" title="注册ApplicationContextAwareProcessor"></a>注册ApplicationContextAwareProcessor</h3><p>显式注册bpp：<code>ApplicationContextAwareProcessor</code>，它的作用是bean前置初始化时，为bean自动注入Aware方式指定的Spring容器组件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">   @Override</span><br><span class="line">public void registerCustomEditors(PropertyEditorRegistry registry) &#123;</span><br><span class="line">	ResourceEditor baseEditor = new ResourceEditor(this.resourceLoader, this.propertyResolver);</span><br><span class="line">	doRegisterEditor(registry, Resource.class, baseEditor);</span><br><span class="line">	doRegisterEditor(registry, ContextResource.class, baseEditor);</span><br><span class="line">	doRegisterEditor(registry, InputStream.class, new InputStreamEditor(baseEditor));</span><br><span class="line">	doRegisterEditor(registry, InputSource.class, new InputSourceEditor(baseEditor));</span><br><span class="line">	doRegisterEditor(registry, File.class, new FileEditor(baseEditor));</span><br><span class="line">	doRegisterEditor(registry, Path.class, new PathEditor(baseEditor));</span><br><span class="line">	doRegisterEditor(registry, Reader.class, new ReaderEditor(baseEditor));</span><br><span class="line">	doRegisterEditor(registry, URL.class, new URLEditor(baseEditor));</span><br><span class="line"></span><br><span class="line">	ClassLoader classLoader = this.resourceLoader.getClassLoader();</span><br><span class="line">	doRegisterEditor(registry, URI.class, new URIEditor(classLoader));</span><br><span class="line">	doRegisterEditor(registry, Class.class, new ClassEditor(classLoader));</span><br><span class="line">	doRegisterEditor(registry, Class[].class, new ClassArrayEditor(classLoader));</span><br><span class="line"></span><br><span class="line">	if (this.resourceLoader instanceof ResourcePatternResolver) &#123;</span><br><span class="line">		doRegisterEditor(registry, Resource[].class,</span><br><span class="line">				new ResourceArrayPropertyEditor((ResourcePatternResolver) this.resourceLoader, this.propertyResolver));</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果用户想添加自定义的<code>PropertyEditor</code>，可以简单覆盖<code>PropertyEditorSupport</code>的<code>setAsText</code>方法来自定义一个<code>PropertyEditor</code>，再创建它的注册器<code>PropertyEditorRegistrar</code>，然后配置一个<code>CustomEditorConfigurer</code>Bean，在 propertyEditorRegistrars 属性中加入这个 Registrar。<code>CustomEditorConfigurer</code>是 bfpp，在 beanFactory 后置处理中将<code>PropertyEditorRegistrar</code>注册到 BeanFactory</p>
+<h3 id="注册-ApplicationContextAwareProcessor"><a href="#注册-ApplicationContextAwareProcessor" class="headerlink" title="注册 ApplicationContextAwareProcessor"></a>注册 ApplicationContextAwareProcessor</h3><p>显式注册 bpp：<code>ApplicationContextAwareProcessor</code>，它的作用是 bean 前置初始化时，为 bean 自动注入 Aware 方式指定的 Spring 容器组件</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">beanFactory.addBeanPostProcessor(new ApplicationContextAwareProcessor(this));</span><br></pre></td></tr></table></figure>
 
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">private void invokeAwareInterfaces(Object bean) &#123;</span><br><span class="line">	if (bean instanceof Aware) &#123;</span><br><span class="line">		if (bean instanceof EnvironmentAware) &#123;</span><br><span class="line">			((EnvironmentAware) bean).setEnvironment(this.applicationContext.getEnvironment());</span><br><span class="line">		&#125;</span><br><span class="line">		if (bean instanceof EmbeddedValueResolverAware) &#123;</span><br><span class="line">			((EmbeddedValueResolverAware) bean).setEmbeddedValueResolver(this.embeddedValueResolver);</span><br><span class="line">		&#125;</span><br><span class="line">		if (bean instanceof ResourceLoaderAware) &#123;</span><br><span class="line">			((ResourceLoaderAware) bean).setResourceLoader(this.applicationContext);</span><br><span class="line">		&#125;</span><br><span class="line">		if (bean instanceof ApplicationEventPublisherAware) &#123;</span><br><span class="line">			((ApplicationEventPublisherAware) bean).setApplicationEventPublisher(this.applicationContext);</span><br><span class="line">		&#125;</span><br><span class="line">		if (bean instanceof MessageSourceAware) &#123;</span><br><span class="line">			((MessageSourceAware) bean).setMessageSource(this.applicationContext);</span><br><span class="line">		&#125;</span><br><span class="line">		if (bean instanceof ApplicationContextAware) &#123;</span><br><span class="line">			((ApplicationContextAware) bean).setApplicationContext(this.applicationContext);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h3 id="注册ApplicationListenerDetector"><a href="#注册ApplicationListenerDetector" class="headerlink" title="注册ApplicationListenerDetector"></a>注册ApplicationListenerDetector</h3><p>显式注册bpp：<code>ApplicationListenerDetector</code>，作用是对于类型为<code>ApplicationListener</code>子类的bean，后置初始化处理时注册到ApplicationContext。这些应用事件监听器最终会被注册到事件组播器<code>ApplicationEventMulticaster</code>，Spring容器关闭时，<code>ApplicationListenerDetector</code>会在bean销毁前置回调时，从<code>ApplicationEventMulticaster</code>里移除</p>
+<h3 id="注册-ApplicationListenerDetector"><a href="#注册-ApplicationListenerDetector" class="headerlink" title="注册 ApplicationListenerDetector"></a>注册 ApplicationListenerDetector</h3><p>显式注册 bpp：<code>ApplicationListenerDetector</code>，作用是对于类型为<code>ApplicationListener</code>子类的 bean，后置初始化处理时注册到 ApplicationContext。这些应用事件监听器最终会被注册到事件组播器<code>ApplicationEventMulticaster</code>。Spring 容器关闭时，<code>ApplicationListenerDetector</code>会在 bean 销毁前置回调时，将其从<code>ApplicationEventMulticaster</code>里移除</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">beanFactory.addBeanPostProcessor(new ApplicationListenerDetector(this));</span><br></pre></td></tr></table></figure>
 
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">public Object postProcessAfterInitialization(Object bean, String beanName) &#123;</span><br><span class="line">	if (bean instanceof ApplicationListener) &#123;</span><br><span class="line">		// potentially not detected as a listener by getBeanNamesForType retrieval</span><br><span class="line">		Boolean flag = this.singletonNames.get(beanName);</span><br><span class="line">		if (Boolean.TRUE.equals(flag)) &#123;</span><br><span class="line">			// singleton bean (top-level or inner): register on the fly</span><br><span class="line">			this.applicationContext.addApplicationListener((ApplicationListener&lt;?&gt;) bean);</span><br><span class="line">		&#125;</span><br><span class="line">		else if (Boolean.FALSE.equals(flag)) &#123;</span><br><span class="line">			...</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	return bean;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">public void postProcessBeforeDestruction(Object bean, String beanName) &#123;</span><br><span class="line">	if (bean instanceof ApplicationListener) &#123;</span><br><span class="line">		try &#123;</span><br><span class="line">			ApplicationEventMulticaster multicaster = this.applicationContext.getApplicationEventMulticaster();</span><br><span class="line">			multicaster.removeApplicationListener((ApplicationListener&lt;?&gt;) bean);</span><br><span class="line">			multicaster.removeApplicationListenerBean(beanName);</span><br><span class="line">		&#125;</span><br><span class="line">		catch (IllegalStateException ex) &#123;</span><br><span class="line">			// ApplicationEventMulticaster not initialized yet - no need to remove a listener</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h3 id="系统环境变量以bean的形式注册到BeanFactory"><a href="#系统环境变量以bean的形式注册到BeanFactory" class="headerlink" title="系统环境变量以bean的形式注册到BeanFactory"></a>系统环境变量以bean的形式注册到BeanFactory</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">if (!beanFactory.containsLocalBean(ENVIRONMENT_BEAN_NAME)) &#123;</span><br><span class="line">	beanFactory.registerSingleton(ENVIRONMENT_BEAN_NAME, getEnvironment());</span><br><span class="line">&#125;</span><br><span class="line">if (!beanFactory.containsLocalBean(SYSTEM_PROPERTIES_BEAN_NAME)) &#123;</span><br><span class="line">	beanFactory.registerSingleton(SYSTEM_PROPERTIES_BEAN_NAME, getEnvironment().getSystemProperties());</span><br><span class="line">&#125;</span><br><span class="line">if (!beanFactory.containsLocalBean(SYSTEM_ENVIRONMENT_BEAN_NAME)) &#123;</span><br><span class="line">	beanFactory.registerSingleton(SYSTEM_ENVIRONMENT_BEAN_NAME, getEnvironment().getSystemEnvironment());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="注册-environment-相关-bean-到-BeanFactory"><a href="#注册-environment-相关-bean-到-BeanFactory" class="headerlink" title="注册 environment 相关 bean 到 BeanFactory"></a>注册 environment 相关 bean 到 BeanFactory</h3><p>注册 ConfigurableEnvironment 到 bf<br>通过 environment 可以拿到 map 类型的 JVM 参数和系统环境变量，这两个 map 也一并注册到 bf</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">   if (!beanFactory.containsLocalBean(ENVIRONMENT_BEAN_NAME)) &#123;</span><br><span class="line">	beanFactory.registerSingleton(ENVIRONMENT_BEAN_NAME, getEnvironment());</span><br><span class="line">&#125;</span><br><span class="line">if (!beanFactory.containsLocalBean(SYSTEM_PROPERTIES_BEAN_NAME)) &#123;</span><br><span class="line">	// JVM参数</span><br><span class="line">	beanFactory.registerSingleton(SYSTEM_PROPERTIES_BEAN_NAME, getEnvironment().getSystemProperties());</span><br><span class="line">&#125;</span><br><span class="line">if (!beanFactory.containsLocalBean(SYSTEM_ENVIRONMENT_BEAN_NAME)) &#123;</span><br><span class="line">	// 环境变量</span><br><span class="line">	beanFactory.registerSingleton(SYSTEM_ENVIRONMENT_BEAN_NAME, getEnvironment().getSystemEnvironment());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h2 id="回调三方对bean工厂的定制接口"><a href="#回调三方对bean工厂的定制接口" class="headerlink" title="回调三方对bean工厂的定制接口"></a>回调三方对bean工厂的定制接口</h2><p>提供模板方法postProcessBeanFactory，由<code>AbstractApplicationContext</code>的子类（第三方实现类）覆写，定制beanFactory</p>
+<h2 id="后置处理-bf"><a href="#后置处理-bf" class="headerlink" title="后置处理 bf"></a>后置处理 bf</h2><h3 id="提供模板方法后置处理-bf"><a href="#提供模板方法后置处理-bf" class="headerlink" title="提供模板方法后置处理 bf"></a>提供模板方法后置处理 bf</h3><p>提供模板方法 postProcessBeanFactory，由<code>AbstractApplicationContext</code>的子类（可由用户实现）覆写，后置处理 beanFactory</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">postProcessBeanFactory(beanFactory);</span><br></pre></td></tr></table></figure>
 
-<h2 id="调用bfpp执行bean工厂后置处理"><a href="#调用bfpp执行bean工厂后置处理" class="headerlink" title="调用bfpp执行bean工厂后置处理"></a>调用bfpp执行bean工厂后置处理</h2><p>bfpp的来源有两种渠道：</p>
+<h3 id="调用-bfpp-执行-bean-工厂后置处理"><a href="#调用-bfpp-执行-bean-工厂后置处理" class="headerlink" title="调用 bfpp 执行 bean 工厂后置处理"></a>调用 bfpp 执行 bean 工厂后置处理</h3><h4 id="bfpp-的来源"><a href="#bfpp-的来源" class="headerlink" title="bfpp 的来源"></a>bfpp 的来源</h4><p>1、调用方法<code>addBeanFactoryPostProcessor</code>显式注册到 AbstractApplicationContext</p>
 <ul>
-<li><p>调用方法<code>addBeanFactoryPostProcessor</code>显式注册到AbstractApplicationContext</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public List&lt;BeanFactoryPostProcessor&gt; getBeanFactoryPostProcessors() &#123;</span><br><span class="line">	return this.beanFactoryPostProcessors;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>通过BD走bean加载流程得到的bfpp。<code>AbstractApplicationContext</code>会从beanFactory的全局BD里枚举bfpp的beanName，然后加载bfpp</p>
+<li>注意，Spring 提供的容器没有调该方法添加任何 bfpp，可以理解为是给用户自定义容器用的。但要保证该方法必须在 refresh 方法前被调用，否则不起作用</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">public void addBeanFactoryPostProcessor(BeanFactoryPostProcessor postProcessor) &#123;</span><br><span class="line">	Assert.notNull(postProcessor, &quot;BeanFactoryPostProcessor must not be null&quot;);</span><br><span class="line">	this.beanFactoryPostProcessors.add(postProcessor);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>2、通过 bd 走 bean 加载流程得到的 bfpp。<code>AbstractApplicationContext</code>会从 bf 的全局 bd 里枚举 bfpp 的 beanName，然后加载 bfpp</p>
 <ul>
-<li>这细分为两类，一类是用户自定义的BeanFactoryPostProcessor bean，另一类是Spring显式注册bfpp的BD到bean工厂，<code>ConfigurationClassPostProcessor</code>就是这种方式注册的</li>
+<li>这细分为两类，一类是用户自己注册的 BeanFactoryPostProcessor bean，另一类是 Spring 注册内部的 bfpp 的 bd 到 bf，<code>ConfigurationClassPostProcessor</code>就是这种方式注册的</li>
 </ul>
-</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">	postProcessorNames = beanFactory.getBeanNamesForType(BeanFactoryPostProcessor.class, true, false);</span><br><span class="line">	for (String ppName : postProcessorNames) &#123;</span><br><span class="line">		... ...</span><br><span class="line">		beanPostProcessors.add(beanFactory.getBean(ppName, BeanFactoryPostProcessor.class));</span><br><span class="line">	&#125;</span><br><span class="line">```		</span><br><span class="line"></span><br><span class="line">bfpp的调用顺序：</span><br><span class="line">- 优先执行显式注册的bfpp，再执行通过BD加载的bfpp</span><br><span class="line">- 优先执行`BeanDefinitionRegistryPostProcessor`，再执行其他的bfpp</span><br><span class="line">	- `BeanDefinitionRegistryPostProcessor`是`BeanFactoryPostProcessor`的子接口</span><br><span class="line">	- 对于`BeanDefinitionRegistryPostProcessor`，先调用`postProcessBeanDefinitionRegistry`方法，预处理bean工厂的BD，再调用bfpp的后置处理方法</span><br><span class="line">- 优先执行实现了`PriorityOrdered`、`Ordered`接口的bfpp</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<pre><code>for (BeanFactoryPostProcessor postProcessor : beanFactoryPostProcessors) &#123;
-    if (postProcessor instanceof BeanDefinitionRegistryPostProcessor) &#123;
-        BeanDefinitionRegistryPostProcessor registryProcessor =
-                (BeanDefinitionRegistryPostProcessor) postProcessor;
-        registryProcessor.postProcessBeanDefinitionRegistry(registry);
-        registryProcessors.add(registryProcessor);
-    &#125;
-    else &#123;
-        regularPostProcessors.add(postProcessor);
-    &#125;
-&#125;
-... ...
-invokeBeanFactoryPostProcessors(registryProcessors, beanFactory);
-... ...
-invokeBeanFactoryPostProcessors(regularPostProcessors, beanFactory);		
-</code></pre>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">bfpp的应用场景举例：</span><br><span class="line">- `ConfigurationClassPostProcessor`</span><br><span class="line">	- 它本身是一个`BeanDefinitionRegistryPostProcessor`。注解方式的Spring容器`AnnotationConfigApplicationContext`在构造函数中将它的bd注册到beanFactory。它的`postProcessBeanDefinitionRegistry`方法负责注册通过配置类bean（@Configuration修饰）间接定义的所有beanDefinition到BeanFactory</span><br><span class="line">- `CustomEditorConfigurer`</span><br><span class="line">	- 第三方可以注册这个bean，通过它间接注册一组自定义的`PropertyEditorRegistrar`到beanFactory</span><br><span class="line">		- 这组属性编辑注册器在bean加载阶段被回调，将属性编辑器注册到BeanWrapper，这些属性编辑器在Bean属性赋值前被回调，修改BD.PV里定义的bean属性值</span><br><span class="line">	- 测试代码：populatebean.propertyeditor.PropertyEditorTest</span><br><span class="line">- `PropertySourcesPlaceholderConfigurer`</span><br><span class="line">	- Spring解析标签&quot;context:property-placeholder&quot;，注册PPC：PropertySourcesPlaceholderConfigurer。bean工厂后置处理阶段，回调PPC，将BD.pv里定义的占位符替换为系统配置文件里的实际值</span><br><span class="line">	- 测试代码：applicationcontext.PropertyPlaceHolderConfigurerTest</span><br><span class="line"></span><br><span class="line">## 注册bpp到BeanFactory</span><br><span class="line">bpp的来源只能通过配置方式，bpp不能显式注册到ApplicationContext</span><br><span class="line">- 这里不会执行bpp的处理方法，而是在bean加载的对应阶段回调执行。需要明确，bpp作用于bean，bfpp作用于beanFactory</span><br><span class="line"></span><br><span class="line">优先注册实现了`PriorityOrdered`、`Ordered`接口的bpp</span><br></pre></td></tr></table></figure>
-<pre><code>String[] postProcessorNames = beanFactory.getBeanNamesForType(BeanPostProcessor.class, true, false);
-... ...
-for (String ppName : postProcessorNames) &#123;
-    if (beanFactory.isTypeMatch(ppName, PriorityOrdered.class)) &#123;
-        BeanPostProcessor pp = beanFactory.getBean(ppName, BeanPostProcessor.class);
-        priorityOrderedPostProcessors.add(pp);
-        if (pp instanceof MergedBeanDefinitionPostProcessor) &#123;
-            internalPostProcessors.add(pp);
-        &#125;
-    &#125;
-    else if (beanFactory.isTypeMatch(ppName, Ordered.class)) &#123;
-        orderedPostProcessorNames.add(ppName);
-    &#125;
-    else &#123;
-        nonOrderedPostProcessorNames.add(ppName);
-    &#125;
-&#125;
-... ...
-sortPostProcessors(priorityOrderedPostProcessors, beanFactory);
-registerBeanPostProcessors(beanFactory, priorityOrderedPostProcessors);
-... ...
-sortPostProcessors(orderedPostProcessors, beanFactory);
-registerBeanPostProcessors(beanFactory, orderedPostProcessors);
-... ...
-registerBeanPostProcessors(beanFactory, nonOrderedPostProcessors);
-</code></pre>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">## 注册应用事件组播器ApplicationEventMulticaster</span><br><span class="line">Spring优先注册的是第三方自定义的`ApplicationEventMulticaster`，如果不存在，则会默认注册`SimpleApplicationEventMulticaster`</span><br><span class="line">- `ApplicationContext`发布`ApplicationEvent`时使用注册的`ApplicationEventMulticaster`，因此`SimpleApplicationEventMulticaster`是默认的应用事件发布器</span><br><span class="line">- 组播器`ApplicationEventMulticaster`使用观察者模式组播应用事件给注册到它的事件监听器</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<pre><code>ConfigurableListableBeanFactory beanFactory = getBeanFactory();
-if (beanFactory.containsLocalBean(APPLICATION_EVENT_MULTICASTER_BEAN_NAME)) &#123;
-    this.applicationEventMulticaster =
-            beanFactory.getBean(APPLICATION_EVENT_MULTICASTER_BEAN_NAME, ApplicationEventMulticaster.class);
-&#125;
-else &#123;
-    this.applicationEventMulticaster = new SimpleApplicationEventMulticaster(beanFactory);
-    beanFactory.registerSingleton(APPLICATION_EVENT_MULTICASTER_BEAN_NAME, this.applicationEventMulticaster);
-&#125;
-</code></pre>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">`SimpleApplicationEventMulticaster`</span><br><span class="line">- `SimpleApplicationEventMulticaster`如果set线程池，回调监听器的任务提交到线程池中执行</span><br><span class="line">- `SimpleApplicationEventMulticaster`会筛选与应用事件匹配的`ApplicationListener`，再回调来处理事件，筛选规则是：</span><br><span class="line">    - 如果`ApplicationListener`是`GenericApplicationListener`，调用它的supportsEventType和supportsSourceType判断事件类型和事件源对象类型是否满足</span><br><span class="line">    - 否则，使用适配器模式包装成一个`GenericApplicationListenerAdapter`。如果`ApplicationListener`是`SmartApplicationListener`，调用它的supportsEventType和supportsSourceType判断事件类型和事件源对象类型是否满足，否则，只要`ApplicationEvent`的类型为ApplicationListener关注的同级或子级事件类型即可</span><br><span class="line">- 测试代码：applicationcontext.ApplicationListenerTest</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">## 注册应用事件监听器ApplicationListener</span><br><span class="line">注册应用事件监听器`ApplicationListener`到组播器`ApplicationEventMulticaster`</span><br><span class="line">- `ApplicationListener`的来源渠道同bfpp，显式添加到ApplicationContext或通过注册的BD走bean加载得到的bean</span><br><span class="line">- 这里只将显式添加到`ApplicationContext`的`ApplicationListener`注册到`ApplicationEventMulticaster`</span><br><span class="line">	- 通过注册的BD走bean加载得到的`ApplicationListener`，在前面介绍的`ApplicationListenerDetector`（bpp）后置初始化处理时注册到`ApplicationEventMulticaster`。最终效果都是一样的，只是注册的时机不同</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<pre><code>protected void registerListeners() &#123;
-    // 显式注册到Spring容器的监听器，注册到应用事件组播器
-    for (ApplicationListener&lt;?&gt; listener : getApplicationListeners()) &#123;
-        getApplicationEventMulticaster().addApplicationListener(listener);
-    &#125;
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">postProcessorNames = beanFactory.getBeanNamesForType(BeanFactoryPostProcessor.class, true, false);</span><br><span class="line">for (String ppName : postProcessorNames) &#123;</span><br><span class="line">	... ...</span><br><span class="line">	beanPostProcessors.add(beanFactory.getBean(ppName, BeanFactoryPostProcessor.class));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-    // 通过注册的BD走bean加载的监听器，beanName注册到应用事件组播器
-    String[] listenerBeanNames = getBeanNamesForType(ApplicationListener.class, true, false);
-    for (String listenerBeanName : listenerBeanNames) &#123;
-        getApplicationEventMulticaster().addApplicationListenerBean(listenerBeanName);
-    &#125;
-&#125;
-</code></pre>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">## 注册属性占位符解析器StringValueResolver</span><br><span class="line">如果bean工厂不存在占位符解析器`StringValueResolver`，则注册默认的属性占位符解析器：`ConfigurablePropertyResolver`到beanFactory，它使用系统环境变量作为配置源，解析bean属性中的占位符</span><br></pre></td></tr></table></figure>
-<pre><code>if (!beanFactory.hasEmbeddedValueResolver()) &#123;
-    beanFactory.addEmbeddedValueResolver(strVal -&gt; getEnvironment().resolvePlaceholders(strVal));
-&#125;
-</code></pre>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">如果通过配置标签&quot;context:property-placeholder&quot;，注册了`PropertySourcesPlaceholderConfigurer`，在beanFactory后置处理时，会注册一个Lambda写的匿名`StringValueResolver`来解析bean属性中的占位符，配置源来自系统环境变量和第三方定义的应用配置文件</span><br></pre></td></tr></table></figure>
-<pre><code>public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException &#123;
-    if (this.propertySources == null) &#123;
-        this.propertySources = new MutablePropertySources();
-        if (this.environment != null) &#123;
-            this.propertySources.addLast(
-                new PropertySource&lt;Environment&gt;(ENVIRONMENT_PROPERTIES_PROPERTY_SOURCE_NAME, this.environment) &#123;
-                    @Override
-                    @Nullable
-                    public String getProperty(String key) &#123;
-                        return this.source.getProperty(key);
-                    &#125;
-                &#125;
-            );
-        &#125;
-        try &#123;
-            PropertySource&lt;?&gt; localPropertySource =
-                    new PropertiesPropertySource(LOCAL_PROPERTIES_PROPERTY_SOURCE_NAME, mergeProperties());
-            if (this.localOverride) &#123;
-                this.propertySources.addFirst(localPropertySource);
-            &#125;
-            else &#123;
-                this.propertySources.addLast(localPropertySource);
-            &#125;
-        &#125;
-        catch (IOException ex) &#123;
-            throw new BeanInitializationException(&quot;Could not load properties&quot;, ex);
-        &#125;
-    &#125;
-
-    processProperties(beanFactory, new PropertySourcesPropertyResolver(this.propertySources));
-    this.appliedPropertySources = this.propertySources;
-&#125;
-</code></pre>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
-<pre><code>protected void processProperties(ConfigurableListableBeanFactory beanFactoryToProcess,
-        final ConfigurablePropertyResolver propertyResolver) throws BeansException &#123;
-
-    propertyResolver.setPlaceholderPrefix(this.placeholderPrefix);
-    propertyResolver.setPlaceholderSuffix(this.placeholderSuffix);
-    propertyResolver.setValueSeparator(this.valueSeparator);
-
-    StringValueResolver valueResolver = strVal -&gt; &#123;
-        String resolved = (this.ignoreUnresolvablePlaceholders ?
-                propertyResolver.resolvePlaceholders(strVal) :
-                propertyResolver.resolveRequiredPlaceholders(strVal));
-        if (this.trimValues) &#123;
-            resolved = resolved.trim();
-        &#125;
-        return (resolved.equals(this.nullValue) ? null : resolved);
-    &#125;;
-
-    ...
-    beanFactoryToProcess.embeddedValueResolvers.add(valueResolver);
-&#125;
-</code></pre>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">## 加载单例beans</span><br><span class="line">预加载所有非懒加载的单例到beanFactory（好处是提前暴露bean配置的错误）</span><br><span class="line">- 如果加载的bean实现了`SmartInitializingSingleton`接口，加载后回调afterSingletonsInstantiated方法</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<pre><code>List&lt;String&gt; beanNames = new ArrayList&lt;&gt;(this.beanDefinitionNames);
-for (String beanName : beanNames) &#123;
-    RootBeanDefinition bd = getMergedLocalBeanDefinition(beanName);
-    if (!bd.isAbstract() &amp;&amp; bd.isSingleton() &amp;&amp; !bd.isLazyInit()) &#123;
-        if (isFactoryBean(beanName)) &#123;
-            ... ...
-        else &#123;
-            getBean(beanName);
-        &#125;
-    &#125;
-&#125;
-
-for (String beanName : beanNames) &#123;
-    Object singletonInstance = getSingleton(beanName);
-    if (singletonInstance instanceof SmartInitializingSingleton) &#123;
-        SmartInitializingSingleton smartSingleton = (SmartInitializingSingleton) singletonInstance;
-        ... ...
-        smartSingleton.afterSingletonsInstantiated();
-    &#125;
-&#125;
-</code></pre>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">## Spring容器初始化后置处理 </span><br><span class="line">走到这里说明Spring容器初始化核心流程已经结束，接下来进行收尾工作</span><br><span class="line"></span><br><span class="line">### 回调Bean的生命周期start方法</span><br><span class="line">注册`LifecycleProcessor`到ApplicationContext，优先从BD获取并加载配置注册的bean，不存在则创建默认的`DefaultLifecycleProcessor`</span><br></pre></td></tr></table></figure>
-<pre><code>protected void initLifecycleProcessor() &#123;
-    ConfigurableListableBeanFactory beanFactory = getBeanFactory();
-    if (beanFactory.containsLocalBean(LIFECYCLE_PROCESSOR_BEAN_NAME)) &#123;
-        this.lifecycleProcessor =
-                beanFactory.getBean(LIFECYCLE_PROCESSOR_BEAN_NAME, LifecycleProcessor.class);
-    &#125;
-    else &#123;
-        DefaultLifecycleProcessor defaultProcessor = new DefaultLifecycleProcessor();
-        defaultProcessor.setBeanFactory(beanFactory);
-        this.lifecycleProcessor = defaultProcessor;
-        beanFactory.registerSingleton(LIFECYCLE_PROCESSOR_BEAN_NAME, this.lifecycleProcessor);
-    &#125;
-&#125;
-</code></pre>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">	</span><br><span class="line">调用LifecycleProcessor#onRefresh，此时autoStartupOnly=true，将`SmartLifecycle`bean分组后调用它的start方法实现自动启动</span><br><span class="line">- 如果是单独调LifecycyleProcessor#start方法，autoStartupOnly=false，会对所有的`SmartLifecycle`和`Lifeclcye`bean，分组后回调start方法</span><br><span class="line">- 如果是`SmartLifecycle` bean，isAutoStartup方法必须返回true，才会回调start方法</span><br><span class="line">- 分组通过`Phased`接口获得分组号，未实现则为0号。最后按分组号从小到大回调组内bean的start方法</span><br><span class="line">	- Spring容器close时，按分组号从大到小回调stop方法，与start方法顺序相反</span><br><span class="line">	</span><br></pre></td></tr></table></figure>
-<pre><code>private void startBeans(boolean autoStartupOnly) &#123;
-    Map&lt;String, Lifecycle&gt; lifecycleBeans = getLifecycleBeans();
-    Map&lt;Integer, LifecycleGroup&gt; phases = new HashMap&lt;&gt;();
-    lifecycleBeans.forEach((beanName, bean) -&gt; &#123;
-        if (!autoStartupOnly || (bean instanceof SmartLifecycle &amp;&amp; ((SmartLifecycle) bean).isAutoStartup())) &#123;
-            int phase = getPhase(bean);
-            LifecycleGroup group = phases.get(phase);
-            if (group == null) &#123;
-                group = new LifecycleGroup(phase, this.timeoutPerShutdownPhase, lifecycleBeans, autoStartupOnly);
-                phases.put(phase, group);
-            &#125;
-            group.add(beanName, bean);
-        &#125;
-    &#125;);
-    if (!phases.isEmpty()) &#123;
-        List&lt;Integer&gt; keys = new ArrayList&lt;&gt;(phases.keySet());
-        Collections.sort(keys);
-        for (Integer key : keys) &#123;
-            phases.get(key).start();
-        &#125;
-    &#125;
-&#125;
-</code></pre>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
-<pre><code>private void doStart(Map&lt;String, ? extends Lifecycle&gt; lifecycleBeans, String beanName, boolean autoStartupOnly) &#123;
-    Lifecycle bean = lifecycleBeans.remove(beanName);
-    if (bean != null &amp;&amp; bean != this) &#123;
-        String[] dependenciesForBean = getBeanFactory().getDependenciesForBean(beanName);
-        // 优先启动所有Lifycycle bean依赖的lifecycle beans
-        for (String dependency : dependenciesForBean) &#123;
-            doStart(lifecycleBeans, dependency, autoStartupOnly);
-        &#125;
-        if (!bean.isRunning() &amp;&amp;
-                (!autoStartupOnly || !(bean instanceof SmartLifecycle) || ((SmartLifecycle) bean).isAutoStartup())) &#123;
-            try &#123;
-                // 启动lifecycle bean
-                bean.start();
-            &#125;
-            ... ...
-        &#125;
-    &#125;
-&#125;
-</code></pre>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">### 组播Spring容器初始化完成事件</span><br><span class="line">通过`ApplicationEventMulticaster`组播`ApplicationContext`的刷新完成事件`ContextRefreshedEvent`到注册的`ApplicationListener` </span><br></pre></td></tr></table></figure>
-<pre><code>publishEvent(new ContextRefreshedEvent(this));
-... ...
-
-protected void publishEvent(Object event, @Nullable ResolvableType eventType) &#123;
-    Assert.notNull(event, &quot;Event must not be null&quot;);
-    
-    ApplicationEvent applicationEvent;
-    if (event instanceof ApplicationEvent) &#123;
-        applicationEvent = (ApplicationEvent) event;
-    &#125;
-    else &#123;
-        applicationEvent = new PayloadApplicationEvent&lt;&gt;(this, event);
-        if (eventType == null) &#123;
-            eventType = ((PayloadApplicationEvent&lt;?&gt;) applicationEvent).getResolvableType();
-        &#125;
-    &#125;
-
-    ... ...
-    getApplicationEventMulticaster().multicastEvent(applicationEvent, eventType);
-    ... ...
-&#125;
-</code></pre>
-<p>&#96;&#96;&#96;</p>
-<h1 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h1><p>综上，可以总结出ApplicationContext具备这些定制和扩展能力：</p>
+<h4 id="bfpp-的调用顺序"><a href="#bfpp-的调用顺序" class="headerlink" title="bfpp 的调用顺序"></a>bfpp 的调用顺序</h4><p>1、调用显式注册的<code>BeanDefinitionRegistryPostProcessor</code>的子类的<code>postProcessBeanDefinitionRegistry</code>方法</p>
 <ul>
-<li>支持SPEL<ul>
-<li>显式注册表达式解析器到beanFactory</li>
+<li>BeanDefinitionRegistryPostProcessor 是 bfpp 的子接口，定义<code>postProcessBeanDefinitionRegistry</code>方法，预处理 bd</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">         for (BeanFactoryPostProcessor postProcessor : beanFactoryPostProcessors) &#123;</span><br><span class="line">	if (postProcessor instanceof BeanDefinitionRegistryPostProcessor) &#123;</span><br><span class="line">		BeanDefinitionRegistryPostProcessor registryProcessor =</span><br><span class="line">				(BeanDefinitionRegistryPostProcessor) postProcessor;</span><br><span class="line">		registryProcessor.postProcessBeanDefinitionRegistry(registry);</span><br><span class="line">		registryProcessors.add(registryProcessor);</span><br><span class="line">	&#125;</span><br><span class="line">	else &#123;</span><br><span class="line">		regularPostProcessors.add(postProcessor);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>2、加载并调用 bd 注册到 bf 的<code>BeanDefinitionRegistryPostProcessor</code>的子类的<code>postProcessBeanDefinitionRegistry</code>方法</p>
+<ul>
+<li>优先排序并执行实现了 PriorityOrdered 接口的 BeanDefinitionRegistryPostProcessor<ul>
+<li>排序使用的 comparator：<code>AnnotationAwareOrderComparator</code></li>
 </ul>
 </li>
-<li>支持自定义bean属性编辑器<ul>
-<li>通过bfpp后置处理时把属性编辑注册器注册到beanFactory</li>
+<li>排序执行实现了 Ordered 接口的 BeanDefinitionRegistryPostProcessor</li>
+<li>排序执行剩下的 BeanDefinitionRegistryPostProcessor</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">String[] postProcessorNames =</span><br><span class="line">					beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false);</span><br><span class="line">			for (String ppName : postProcessorNames) &#123;</span><br><span class="line">				if (beanFactory.isTypeMatch(ppName, PriorityOrdered.class)) &#123;</span><br><span class="line">					currentRegistryProcessors.add(beanFactory.getBean(ppName, BeanDefinitionRegistryPostProcessor.class));</span><br><span class="line">					processedBeans.add(ppName);</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			sortPostProcessors(currentRegistryProcessors, beanFactory);</span><br><span class="line">			registryProcessors.addAll(currentRegistryProcessors);</span><br><span class="line">			// 执行Spring注册的BeanDefinitionRegistryPostProcessor，这里会执行ConfigurationClassPostProcessor的postProcessBeanDefinitionRegistry</span><br><span class="line">			invokeBeanDefinitionRegistryPostProcessors(currentRegistryProcessors, registry);</span><br><span class="line">			currentRegistryProcessors.clear();</span><br><span class="line"></span><br><span class="line">			// Next, invoke the BeanDefinitionRegistryPostProcessors that implement Ordered.</span><br><span class="line">			// 因为ConfigurationClassPostProcessor.postProcessBeanDefinitionRegistry会注册从ConfigurationBean发现的所有bean</span><br><span class="line">			// 所以需要筛选出新增的BeanDefinitionRegistryPostProcessor，调用它的postProcessBeanDefinitionRegistry</span><br><span class="line">			postProcessorNames = beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false);</span><br><span class="line">			for (String ppName : postProcessorNames) &#123;</span><br><span class="line">				if (!processedBeans.contains(ppName) &amp;&amp; beanFactory.isTypeMatch(ppName, Ordered.class)) &#123;</span><br><span class="line">					currentRegistryProcessors.add(beanFactory.getBean(ppName, BeanDefinitionRegistryPostProcessor.class));</span><br><span class="line">					processedBeans.add(ppName);</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			sortPostProcessors(currentRegistryProcessors, beanFactory);</span><br><span class="line">			registryProcessors.addAll(currentRegistryProcessors);</span><br><span class="line">			invokeBeanDefinitionRegistryPostProcessors(currentRegistryProcessors, registry);</span><br><span class="line">			currentRegistryProcessors.clear();</span><br><span class="line"></span><br><span class="line">			// Finally, invoke all other BeanDefinitionRegistryPostProcessors until no further ones appear.</span><br><span class="line">			boolean reiterate = true;</span><br><span class="line">			while (reiterate) &#123;</span><br><span class="line">				reiterate = false;</span><br><span class="line">				postProcessorNames = beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false);</span><br><span class="line">				for (String ppName : postProcessorNames) &#123;</span><br><span class="line">					if (!processedBeans.contains(ppName)) &#123;</span><br><span class="line">						currentRegistryProcessors.add(beanFactory.getBean(ppName, BeanDefinitionRegistryPostProcessor.class));</span><br><span class="line">						processedBeans.add(ppName);</span><br><span class="line">						reiterate = true;</span><br><span class="line">					&#125;</span><br><span class="line">				&#125;</span><br><span class="line">				sortPostProcessors(currentRegistryProcessors, beanFactory);</span><br><span class="line">				registryProcessors.addAll(currentRegistryProcessors);</span><br><span class="line">				invokeBeanDefinitionRegistryPostProcessors(currentRegistryProcessors, registry);</span><br><span class="line">				currentRegistryProcessors.clear();</span><br><span class="line">			&#125;</span><br></pre></td></tr></table></figure>
+
+<p>3、调用 BeanDefinitionRegistryPostProcessor 子类的 postProcessBeanFactory 方法，后置处理 bfpp</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">invokeBeanFactoryPostProcessors(registryProcessors, beanFactory);</span><br></pre></td></tr></table></figure>
+
+<p>4、调用显示注册的 bfpp 的 postProcessBeanFactory 方法，后置处理 bfpp</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">invokeBeanFactoryPostProcessors(regularPostProcessors, beanFactory);</span><br></pre></td></tr></table></figure>
+
+<p>5、加载并调用 bd 注册到 bf 的 bfpp 的 postProcessBeanFactory 方法，后置处理 bfpp</p>
+<ul>
+<li>会 skip 上面已经调用过的 BeanDefinitionRegistryPostProcessor 子类和显示注册的 bfpp</li>
+<li>依然是先排序后执行，优先 PriorityOrdered，其次 Ordered，再次剩下的</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">      String[] postProcessorNames =</span><br><span class="line">		beanFactory.getBeanNamesForType(BeanFactoryPostProcessor.class, true, false);</span><br><span class="line"></span><br><span class="line">// Separate between BeanFactoryPostProcessors that implement PriorityOrdered,</span><br><span class="line">// Ordered, and the rest.</span><br><span class="line">List&lt;BeanFactoryPostProcessor&gt; priorityOrderedPostProcessors = new ArrayList&lt;&gt;();</span><br><span class="line">List&lt;String&gt; orderedPostProcessorNames = new ArrayList&lt;&gt;();</span><br><span class="line">List&lt;String&gt; nonOrderedPostProcessorNames = new ArrayList&lt;&gt;();</span><br><span class="line">for (String ppName : postProcessorNames) &#123;</span><br><span class="line">	if (processedBeans.contains(ppName)) &#123;</span><br><span class="line">		// skip - already processed in first phase above</span><br><span class="line">	&#125;</span><br><span class="line">	else if (beanFactory.isTypeMatch(ppName, PriorityOrdered.class)) &#123;</span><br><span class="line">		priorityOrderedPostProcessors.add(beanFactory.getBean(ppName, BeanFactoryPostProcessor.class));</span><br><span class="line">	&#125;</span><br><span class="line">	else if (beanFactory.isTypeMatch(ppName, Ordered.class)) &#123;</span><br><span class="line">		orderedPostProcessorNames.add(ppName);</span><br><span class="line">	&#125;</span><br><span class="line">	else &#123;</span><br><span class="line">		nonOrderedPostProcessorNames.add(ppName);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// First, invoke the BeanFactoryPostProcessors that implement PriorityOrdered.</span><br><span class="line">sortPostProcessors(priorityOrderedPostProcessors, beanFactory);</span><br><span class="line">invokeBeanFactoryPostProcessors(priorityOrderedPostProcessors, beanFactory);</span><br><span class="line"></span><br><span class="line">// Next, invoke the BeanFactoryPostProcessors that implement Ordered.</span><br><span class="line">List&lt;BeanFactoryPostProcessor&gt; orderedPostProcessors = new ArrayList&lt;&gt;();</span><br><span class="line">for (String postProcessorName : orderedPostProcessorNames) &#123;</span><br><span class="line">	orderedPostProcessors.add(beanFactory.getBean(postProcessorName, BeanFactoryPostProcessor.class));</span><br><span class="line">&#125;</span><br><span class="line">sortPostProcessors(orderedPostProcessors, beanFactory);</span><br><span class="line">invokeBeanFactoryPostProcessors(orderedPostProcessors, beanFactory);</span><br><span class="line"></span><br><span class="line">// Finally, invoke all other BeanFactoryPostProcessors.</span><br><span class="line">List&lt;BeanFactoryPostProcessor&gt; nonOrderedPostProcessors = new ArrayList&lt;&gt;();</span><br><span class="line">for (String postProcessorName : nonOrderedPostProcessorNames) &#123;</span><br><span class="line">	nonOrderedPostProcessors.add(beanFactory.getBean(postProcessorName, BeanFactoryPostProcessor.class));</span><br><span class="line">&#125;</span><br><span class="line">invokeBeanFactoryPostProcessors(nonOrderedPostProcessors, beanFactory);</span><br></pre></td></tr></table></figure>
+
+<h4 id="bfpp-的应用场景举例"><a href="#bfpp-的应用场景举例" class="headerlink" title="bfpp 的应用场景举例"></a>bfpp 的应用场景举例</h4><p><code>ConfigurationClassPostProcessor</code></p>
+<ul>
+<li>它是<code>BeanDefinitionRegistryPostProcessor</code>的子类。基于注解的 Spring 容器会在构建 bf 阶段将 bd 注册进去。它的 postProcessBeanDefinitionRegistry 方法负责把配置类 bean 间接引入的所有 bean 的 bd 注册到 bf</li>
+</ul>
+<p><code>CustomEditorConfigurer</code></p>
+<ul>
+<li>用户可以配置这个 bean，bf 后置处理阶段，间接注册一组自定义的<code>PropertyEditorRegistrar</code>到 bf</li>
+<li>测试代码：populatebean.propertyeditor.PropertyEditorTest</li>
+</ul>
+<p><code>PropertySourcesPlaceholderConfigurer</code></p>
+<ul>
+<li>Spring 解析标签”context:property-placeholder”，注册 PPC：PropertySourcesPlaceholderConfigurer。bf 后置处理阶段，将 bd.pv 里定义的占位符替换为实际值<ul>
+<li>占位符替换优先级：JVM 参数-&gt;系统环境变量-&gt;应用配置文件</li>
 </ul>
 </li>
-<li>支持自定义BeanFactoryPostProcessor<ul>
-<li>显式注册或配置方式自定义bfpp</li>
+<li>测试代码：populatebean.value.ValueTest#testPPC</li>
+</ul>
+<h2 id="加载并添加配置的-bpp-到-bf"><a href="#加载并添加配置的-bpp-到-bf" class="headerlink" title="加载并添加配置的 bpp 到 bf"></a>加载并添加配置的 bpp 到 bf</h2><p>bpp 的来源只能通过配置方式，这也体现了 Spring 容器的定位，是面向 bf，而非面向 bean，所以如果需要 bpp，只能配置，不能直接通过 Spring 容器添加</p>
+<ul>
+<li>优先注册实现了<code>PriorityOrdered</code>、<code>Ordered</code>接口的 bpp</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">String[] postProcessorNames = beanFactory.getBeanNamesForType(BeanPostProcessor.class, true, false);</span><br><span class="line">... ...</span><br><span class="line">for (String ppName : postProcessorNames) &#123;</span><br><span class="line">	if (beanFactory.isTypeMatch(ppName, PriorityOrdered.class)) &#123;</span><br><span class="line">		BeanPostProcessor pp = beanFactory.getBean(ppName, BeanPostProcessor.class);</span><br><span class="line">		priorityOrderedPostProcessors.add(pp);</span><br><span class="line">		if (pp instanceof MergedBeanDefinitionPostProcessor) &#123;</span><br><span class="line">			internalPostProcessors.add(pp);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	else if (beanFactory.isTypeMatch(ppName, Ordered.class)) &#123;</span><br><span class="line">		orderedPostProcessorNames.add(ppName);</span><br><span class="line">	&#125;</span><br><span class="line">	else &#123;</span><br><span class="line">		nonOrderedPostProcessorNames.add(ppName);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">... ...</span><br><span class="line">sortPostProcessors(priorityOrderedPostProcessors, beanFactory);</span><br><span class="line">registerBeanPostProcessors(beanFactory, priorityOrderedPostProcessors);</span><br><span class="line">... ...</span><br><span class="line">sortPostProcessors(orderedPostProcessors, beanFactory);</span><br><span class="line">registerBeanPostProcessors(beanFactory, orderedPostProcessors);</span><br><span class="line">... ...</span><br><span class="line">registerBeanPostProcessors(beanFactory, nonOrderedPostProcessors);</span><br></pre></td></tr></table></figure>
+
+<h3 id="AutowiredAnnotationBeanPostProcessor"><a href="#AutowiredAnnotationBeanPostProcessor" class="headerlink" title="AutowiredAnnotationBeanPostProcessor"></a>AutowiredAnnotationBeanPostProcessor</h3><p>基于注解的 Spring 容器，例如<code>AnnotationConfigApplicationContext</code>，在构造函数里就会给 bf 注册<code>AutowiredAnnotationBeanPostProcessor</code>的 bd，然后在这个阶段加载并将其添加到 bf。该 bpp 的作用是在 bean 加载的依赖注入阶段，解析得到@Value 的实际值或者加载@Autowired 修饰的 依赖 bean，并反射注入</p>
+<ul>
+<li>对于@Value，如果使用占位符，使用 StringValueResolver 来解析，如果使用 spel，使用 Spring 容器的 spel 解析器来解析</li>
+</ul>
+<h2 id="获取并添加应用事件组播器-ApplicationEventMulticaster-到-Spring-容器"><a href="#获取并添加应用事件组播器-ApplicationEventMulticaster-到-Spring-容器" class="headerlink" title="获取并添加应用事件组播器 ApplicationEventMulticaster 到 Spring 容器"></a>获取并添加应用事件组播器 ApplicationEventMulticaster 到 Spring 容器</h2><p>如果 bf 有组播器的 bd，即用户注册了一个自己的组播器 bean，则直接加载后作为 Spring 容器的应用事件组播器。否则 new 一个 Spring 提供的默认组播器<code>SimpleApplicationEventMulticaster</code></p>
+<ul>
+<li>Spring 容器发布应用事件时使用组播器，它通过观察者模式组播应用事件给注册到它的事件监听器</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">ConfigurableListableBeanFactory beanFactory = getBeanFactory();</span><br><span class="line">if (beanFactory.containsLocalBean(APPLICATION_EVENT_MULTICASTER_BEAN_NAME)) &#123;</span><br><span class="line">	this.applicationEventMulticaster =</span><br><span class="line">			beanFactory.getBean(APPLICATION_EVENT_MULTICASTER_BEAN_NAME, ApplicationEventMulticaster.class);</span><br><span class="line">&#125;</span><br><span class="line">else &#123;</span><br><span class="line">	this.applicationEventMulticaster = new SimpleApplicationEventMulticaster(beanFactory);</span><br><span class="line">	beanFactory.registerSingleton(APPLICATION_EVENT_MULTICASTER_BEAN_NAME, this.applicationEventMulticaster);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="SimpleApplicationEventMulticaster"><a href="#SimpleApplicationEventMulticaster" class="headerlink" title="SimpleApplicationEventMulticaster"></a>SimpleApplicationEventMulticaster</h3><p>作为 Spring 容器默认的事件组播器，有如下特性：</p>
+<ul>
+<li><p>如果 set 线程池，回调监听器的任务提交到线程池中执行</p>
+</li>
+<li><p>会筛选与应用事件匹配的<code>ApplicationListener</code>，再回调来处理事件，筛选规则是：</p>
+<ul>
+<li>如果<code>ApplicationListener</code>是<code>GenericApplicationListener</code>，调用它的 supportsEventType 和 supportsSourceType 判断事件类型和事件载体类型是否满足</li>
+<li>否则，使用适配器模式包装成一个<code>GenericApplicationListenerAdapter</code>。如果<code>ApplicationListener</code>是<code>SmartApplicationListener</code>，调用它的 supportsEventType 和 supportsSourceType 判断事件类型和事件源对象类型是否满足，否则，只要<code>ApplicationEvent</code>的类型为 ApplicationListener 泛型指定事件类型或子类型即可</li>
 </ul>
 </li>
-<li>支持自定义BeanPostProcessor<ul>
-<li>配置方式发现自定义bpp</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">   protected boolean supportsEvent(</span><br><span class="line">		ApplicationListener&lt;?&gt; listener, ResolvableType eventType, @Nullable Class&lt;?&gt; sourceType) &#123;</span><br><span class="line"></span><br><span class="line">	GenericApplicationListener smartListener = (listener instanceof GenericApplicationListener ?</span><br><span class="line">			(GenericApplicationListener) listener : new GenericApplicationListenerAdapter(listener));</span><br><span class="line">	return (smartListener.supportsEventType(eventType) &amp;&amp; smartListener.supportsSourceType(sourceType));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试代码：applicationcontext.ApplicationListenerTest</p>
+<h2 id="将显式添加到容器的-ApplicationListener-添加到组播器"><a href="#将显式添加到容器的-ApplicationListener-添加到组播器" class="headerlink" title="将显式添加到容器的 ApplicationListener 添加到组播器"></a>将显式添加到容器的 ApplicationListener 添加到组播器</h2><p>添加应用事件监听器<code>ApplicationListener</code>到组播器<code>ApplicationEventMulticaster</code></p>
+<ul>
+<li><code>ApplicationListener</code>的来源渠道同 bfpp，显式添加到 Spring 容器 或配置为 bean。这里只将显式添加到 Spring 容器的 listener 注册到<code>ApplicationEventMulticaster</code><ul>
+<li>配置的 listener bean，通过前面介绍的 bpp：<code>ApplicationListenerDetector</code>，在 bean 后置初始化处理时添加到<code>ApplicationEventMulticaster</code></li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">protected void registerListeners() &#123;</span><br><span class="line">	// 显式注册到Spring容器的监听器，注册到应用事件组播器</span><br><span class="line">	for (ApplicationListener&lt;?&gt; listener : getApplicationListeners()) &#123;</span><br><span class="line">		getApplicationEventMulticaster().addApplicationListener(listener);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	// 通过注册的BD走bean加载的监听器，beanName注册到应用事件组播器</span><br><span class="line">	String[] listenerBeanNames = getBeanNamesForType(ApplicationListener.class, true, false);</span><br><span class="line">	for (String listenerBeanName : listenerBeanNames) &#123;</span><br><span class="line">		getApplicationEventMulticaster().addApplicationListenerBean(listenerBeanName);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="添加属性占位符解析器-StringValueResolver-到-bf"><a href="#添加属性占位符解析器-StringValueResolver-到-bf" class="headerlink" title="添加属性占位符解析器 StringValueResolver 到 bf"></a>添加属性占位符解析器 StringValueResolver 到 bf</h2><p>StringValueResolver 把@Value 注解表达式中的“占位符”替换为实际值。如果 bean 工厂不存在占位符解析器<code>StringValueResolver</code>，则添加一个 lambda 表达式实现的匿名 resolver 到 bf，底层使用<code>PropertySourcesPropertyResolver</code>解析@Value 注解表达式中的占位符</p>
+<ul>
+<li>注意，只有@Value 表达式用占位符，即”${xxx}”书写，才会依赖 StringValueResolver</li>
+<li>解析@Value 并注入是通过上面介绍的 bpp：AutowiredAnnotationBeanPostProcessor</li>
+<li>解析占位符用到的配置源包括：JVM 参数、系统环境变量、应用配置文件，优先级为<ul>
+<li>JVM 参数</li>
+<li>系统环境变量</li>
+<li>应用配置文件</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">if (!beanFactory.hasEmbeddedValueResolver()) &#123;</span><br><span class="line">	beanFactory.addEmbeddedValueResolver(strVal -&gt; getEnvironment().resolvePlaceholders(strVal));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="PropertySourcesPlaceholderConfigurer"><a href="#PropertySourcesPlaceholderConfigurer" class="headerlink" title="PropertySourcesPlaceholderConfigurer"></a>PropertySourcesPlaceholderConfigurer</h3><p>如果 Spring 容器基于 XML 配置，且通过标签”context:property-placeholder”注册了<code>PropertySourcesPlaceholderConfigurer</code>，在 bf 后置处理时，就会添加一个 Lambda 写的匿名<code>StringValueResolver</code>到 bf，同时解析并替换 bd.pv 中的占位符。因此，上面判断 beanFactory.hasEmbeddedValueResolver() 就返回 true，不会再次添加 StringValueResolver</p>
+<p>PropertySourcesPlaceholderConfigurer 给 bf 添加的 StringValueResolver 的配置源可以包含额外指定的应用配置文件</p>
+<p>除了 xml 方式注册 PropertySourcesPlaceholderConfigurer，因为它就是一个 bfpp，所以也可以用户自己将其配置成 bean，添加一些 k-v 或者直接为 location 设置应用配置文件资源，作为配置源</p>
+<p>测试代码：</p>
+<ul>
+<li>populatebean.value.ValueTest#testPPC2</li>
+<li>org.springframework.context.support.PropertySourcesPlaceholderConfigurerTests#replacementFromEnvironmentProperties</li>
+<li>org.springframework.context.support.PropertySourcesPlaceholderConfigurerTests#localPropertiesViaResource</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException &#123;</span><br><span class="line">	if (this.propertySources == null) &#123;</span><br><span class="line">		this.propertySources = new MutablePropertySources();</span><br><span class="line">		if (this.environment != null) &#123;</span><br><span class="line">			this.propertySources.addLast(</span><br><span class="line">				new PropertySource&lt;Environment&gt;(ENVIRONMENT_PROPERTIES_PROPERTY_SOURCE_NAME, this.environment) &#123;</span><br><span class="line">					@Override</span><br><span class="line">					@Nullable</span><br><span class="line">					public String getProperty(String key) &#123;</span><br><span class="line">						return this.source.getProperty(key);</span><br><span class="line">					&#125;</span><br><span class="line">				&#125;</span><br><span class="line">			);</span><br><span class="line">		&#125;</span><br><span class="line">		try &#123;</span><br><span class="line">			PropertySource&lt;?&gt; localPropertySource =</span><br><span class="line">					new PropertiesPropertySource(LOCAL_PROPERTIES_PROPERTY_SOURCE_NAME, mergeProperties());</span><br><span class="line">			if (this.localOverride) &#123;</span><br><span class="line">				this.propertySources.addFirst(localPropertySource);</span><br><span class="line">			&#125;</span><br><span class="line">			else &#123;</span><br><span class="line">				this.propertySources.addLast(localPropertySource);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		catch (IOException ex) &#123;</span><br><span class="line">			throw new BeanInitializationException(&quot;Could not load properties&quot;, ex);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	processProperties(beanFactory, new PropertySourcesPropertyResolver(this.propertySources));</span><br><span class="line">	this.appliedPropertySources = this.propertySources;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">protected void processProperties(ConfigurableListableBeanFactory beanFactoryToProcess,</span><br><span class="line">		final ConfigurablePropertyResolver propertyResolver) throws BeansException &#123;</span><br><span class="line"></span><br><span class="line">	propertyResolver.setPlaceholderPrefix(this.placeholderPrefix);</span><br><span class="line">	propertyResolver.setPlaceholderSuffix(this.placeholderSuffix);</span><br><span class="line">	propertyResolver.setValueSeparator(this.valueSeparator);</span><br><span class="line"></span><br><span class="line">	StringValueResolver valueResolver = strVal -&gt; &#123;</span><br><span class="line">		String resolved = (this.ignoreUnresolvablePlaceholders ?</span><br><span class="line">				propertyResolver.resolvePlaceholders(strVal) :</span><br><span class="line">				propertyResolver.resolveRequiredPlaceholders(strVal));</span><br><span class="line">		if (this.trimValues) &#123;</span><br><span class="line">			resolved = resolved.trim();</span><br><span class="line">		&#125;</span><br><span class="line">		return (resolved.equals(this.nullValue) ? null : resolved);</span><br><span class="line">	&#125;;</span><br><span class="line"></span><br><span class="line">	...</span><br><span class="line">	beanFactoryToProcess.embeddedValueResolvers.add(valueResolver);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果没注册 PropertySourcesPlaceholderConfigurer，则 xml 的<property>标签里指定的占位符不会被替换，因为依赖注入阶段不会对 bd.pv 中的 value 做占位符解析处理。测试代码：</p>
+<ul>
+<li>populatebean.value.ValueTest</li>
+</ul>
+<h2 id="加载单例-beans"><a href="#加载单例-beans" class="headerlink" title="加载单例 beans"></a>加载单例 beans</h2><p>预加载所有非懒加载的单例到 beanFactory（好处是提前暴露 bean 配置的错误）</p>
+<ul>
+<li>如果加载的 bean 实现了<code>SmartInitializingSingleton</code>接口，加载后回调 afterSingletonsInstantiated 方法</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">List&lt;String&gt; beanNames = new ArrayList&lt;&gt;(this.beanDefinitionNames);</span><br><span class="line">for (String beanName : beanNames) &#123;</span><br><span class="line">	RootBeanDefinition bd = getMergedLocalBeanDefinition(beanName);</span><br><span class="line">	if (!bd.isAbstract() &amp;&amp; bd.isSingleton() &amp;&amp; !bd.isLazyInit()) &#123;</span><br><span class="line">		if (isFactoryBean(beanName)) &#123;</span><br><span class="line">			... ...</span><br><span class="line">		else &#123;</span><br><span class="line">			getBean(beanName);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">for (String beanName : beanNames) &#123;</span><br><span class="line">	Object singletonInstance = getSingleton(beanName);</span><br><span class="line">	if (singletonInstance instanceof SmartInitializingSingleton) &#123;</span><br><span class="line">		SmartInitializingSingleton smartSingleton = (SmartInitializingSingleton) singletonInstance;</span><br><span class="line">		... ...</span><br><span class="line">		smartSingleton.afterSingletonsInstantiated();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Spring-容器初始化后置处理"><a href="#Spring-容器初始化后置处理" class="headerlink" title="Spring 容器初始化后置处理"></a>Spring 容器初始化后置处理</h2><p>此时 Spring 容器初始化流程已经结束，接下来进行的是容器初始化后置处理</p>
+<h3 id="回调-SmartLifecycle-Bean-的-start-方法"><a href="#回调-SmartLifecycle-Bean-的-start-方法" class="headerlink" title="回调 SmartLifecycle Bean 的 start 方法"></a>回调 SmartLifecycle Bean 的 start 方法</h3><blockquote>
+<p>有些 bean 在 Spring 容器初始化完成后要执行一些生命周期钩子函数</p>
+</blockquote>
+<p>如果用户注册了实现<code>LifecycleProcessor</code>接口的 bean，优先从 bd 获取并加载该 bean 作为 Spring 容器的生命周期处理器，否则创建默认的<code>DefaultLifecycleProcessor</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">protected void initLifecycleProcessor() &#123;</span><br><span class="line">	ConfigurableListableBeanFactory beanFactory = getBeanFactory();</span><br><span class="line">	if (beanFactory.containsLocalBean(LIFECYCLE_PROCESSOR_BEAN_NAME)) &#123;</span><br><span class="line">		this.lifecycleProcessor =</span><br><span class="line">				beanFactory.getBean(LIFECYCLE_PROCESSOR_BEAN_NAME, LifecycleProcessor.class);</span><br><span class="line">	&#125;</span><br><span class="line">	else &#123;</span><br><span class="line">		DefaultLifecycleProcessor defaultProcessor = new DefaultLifecycleProcessor();</span><br><span class="line">		defaultProcessor.setBeanFactory(beanFactory);</span><br><span class="line">		this.lifecycleProcessor = defaultProcessor;</span><br><span class="line">		beanFactory.registerSingleton(LIFECYCLE_PROCESSOR_BEAN_NAME, this.lifecycleProcessor);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>调用 LifecycleProcessor#onRefresh 方法，默认调用 DefaultLifecycleProcessor 的 onRefresh 方法，内部调用 startBeans 方法，参数 autoStartupOnly&#x3D;true<br>该方法先将实现了<code>SmartLifecycle</code>接口的 bean 分组，然后按分组号排序后，从小到大以组为维度调用组内部 SmartLifecycle bean 的 start 方法</p>
+<ul>
+<li>SmartLifecycle bean 的 isAutoStartup 方法必须返回 true，才会回调 start 方法</li>
+<li>如果调用 DefaultLifecycleProcessor#start 方法，参数 autoStartupOnly&#x3D;false，会对所有的<code>SmartLifecycle</code>和<code>Lifeclcye</code>bean，分组后回调 start 方法</li>
+<li>通过<code>Phased</code>接口获得分组号，如果 SmartLifecycle bean 未实现该接口，则为 0 号<ul>
+<li>Spring 容器 close 时，按分组号从大到小回调 stop 方法，与 start 方法顺序相反</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">getLifecycleProcessor().onRefresh();</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">private void startBeans(boolean autoStartupOnly) &#123;</span><br><span class="line">	Map&lt;String, Lifecycle&gt; lifecycleBeans = getLifecycleBeans();</span><br><span class="line">	Map&lt;Integer, LifecycleGroup&gt; phases = new HashMap&lt;&gt;();</span><br><span class="line">	lifecycleBeans.forEach((beanName, bean) -&gt; &#123;</span><br><span class="line">		if (!autoStartupOnly || (bean instanceof SmartLifecycle &amp;&amp; ((SmartLifecycle) bean).isAutoStartup())) &#123;</span><br><span class="line">			int phase = getPhase(bean);</span><br><span class="line">			LifecycleGroup group = phases.get(phase);</span><br><span class="line">			if (group == null) &#123;</span><br><span class="line">				group = new LifecycleGroup(phase, this.timeoutPerShutdownPhase, lifecycleBeans, autoStartupOnly);</span><br><span class="line">				phases.put(phase, group);</span><br><span class="line">			&#125;</span><br><span class="line">			group.add(beanName, bean);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;);</span><br><span class="line">	if (!phases.isEmpty()) &#123;</span><br><span class="line">		List&lt;Integer&gt; keys = new ArrayList&lt;&gt;(phases.keySet());</span><br><span class="line">		Collections.sort(keys);</span><br><span class="line">		for (Integer key : keys) &#123;</span><br><span class="line">			phases.get(key).start();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">private void doStart(Map&lt;String, ? extends Lifecycle&gt; lifecycleBeans, String beanName, boolean autoStartupOnly) &#123;</span><br><span class="line">	Lifecycle bean = lifecycleBeans.remove(beanName);</span><br><span class="line">	if (bean != null &amp;&amp; bean != this) &#123;</span><br><span class="line">		String[] dependenciesForBean = getBeanFactory().getDependenciesForBean(beanName);</span><br><span class="line">		// 优先启动所有Lifycycle bean依赖的lifecycle beans</span><br><span class="line">		for (String dependency : dependenciesForBean) &#123;</span><br><span class="line">			doStart(lifecycleBeans, dependency, autoStartupOnly);</span><br><span class="line">		&#125;</span><br><span class="line">		if (!bean.isRunning() &amp;&amp;</span><br><span class="line">				(!autoStartupOnly || !(bean instanceof SmartLifecycle) || ((SmartLifecycle) bean).isAutoStartup())) &#123;</span><br><span class="line">			try &#123;</span><br><span class="line">				// 启动lifecycle bean</span><br><span class="line">				bean.start();</span><br><span class="line">			&#125;</span><br><span class="line">			... ...</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="组播-Spring-容器初始化完成事件"><a href="#组播-Spring-容器初始化完成事件" class="headerlink" title="组播 Spring 容器初始化完成事件"></a>组播 Spring 容器初始化完成事件</h3><p>通过<code>ApplicationEventMulticaster</code>组播<code>ApplicationContext</code>的刷新完成事件<code>ContextRefreshedEvent</code>到注册的<code>ApplicationListener</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">publishEvent(new ContextRefreshedEvent(this));</span><br><span class="line">... ...</span><br><span class="line"></span><br><span class="line">protected void publishEvent(Object event, @Nullable ResolvableType eventType) &#123;</span><br><span class="line">	Assert.notNull(event, &quot;Event must not be null&quot;);</span><br><span class="line"></span><br><span class="line">	ApplicationEvent applicationEvent;</span><br><span class="line">	if (event instanceof ApplicationEvent) &#123;</span><br><span class="line">		applicationEvent = (ApplicationEvent) event;</span><br><span class="line">	&#125;</span><br><span class="line">	else &#123;</span><br><span class="line">		applicationEvent = new PayloadApplicationEvent&lt;&gt;(this, event);</span><br><span class="line">		if (eventType == null) &#123;</span><br><span class="line">			eventType = ((PayloadApplicationEvent&lt;?&gt;) applicationEvent).getResolvableType();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	... ...</span><br><span class="line">	getApplicationEventMulticaster().multicastEvent(applicationEvent, eventType);</span><br><span class="line">	... ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h1><p>综上，可以总结出 ApplicationContext 具备这些定制和扩展能力：</p>
+<ul>
+<li>支持 SPEL<ul>
+<li>显式注册表达式解析器到 beanFactory</li>
+</ul>
+</li>
+<li>支持自定义 bean 属性编辑器<ul>
+<li>通过 bfpp 后置处理时把属性编辑注册器注册到 beanFactory</li>
+</ul>
+</li>
+<li>支持自定义 BeanFactoryPostProcessor<ul>
+<li>显式注册或配置方式自定义 bfpp</li>
+</ul>
+</li>
+<li>支持自定义 BeanPostProcessor<ul>
+<li>配置方式发现自定义 bpp</li>
 </ul>
 </li>
 <li>支持自定义发布和监听应用事件<ul>
-<li>配置方式自定义事件组播器，否则Spring容器提供默认的组播器</li>
-<li>显式注册或配置方式自定义bfpp</li>
+<li>配置方式自定义事件组播器，否则 Spring 容器提供默认的组播器</li>
 </ul>
 </li>
-<li>支持Spring容器在启动或停止时刻回调LifeCycle bean对应的生命周期方法</li>
+<li>支持 Spring 容器在启动或停止时刻回调 LifeCycle bean 对应的生命周期方法</li>
 </ul>
 
     </div>
@@ -697,12 +590,12 @@ protected void publishEvent(Object event, @Nullable ResolvableType eventType) &#
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/04/23/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Spring%E6%BA%90%E7%A0%81-bean%E5%8A%A0%E8%BD%BD/" rel="prev" title="系统学习Spring源码-bean加载">
-      <i class="fa fa-chevron-left"></i> 系统学习Spring源码-bean加载
+    <a href="/2020/04/23/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Spring%E6%BA%90%E7%A0%81-aop/" rel="prev" title="系统学习Spring源码-aop">
+      <i class="fa fa-chevron-left"></i> 系统学习Spring源码-aop
     </a></div>
       <div class="post-nav-item">
-    <a href="/2020/04/23/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Spring%E6%BA%90%E7%A0%81-aop/" rel="next" title="系统学习Spring源码-aop">
-      系统学习Spring源码-aop <i class="fa fa-chevron-right"></i>
+    <a href="/2020/04/23/blog_article/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97/%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0Spring%E6%BA%90%E7%A0%81-BeanFactory%E6%9E%B6%E6%9E%84/" rel="next" title="系统学习Spring源码-BeanFactory架构">
+      系统学习Spring源码-BeanFactory架构 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -763,7 +656,7 @@ protected void publishEvent(Object event, @Nullable ResolvableType eventType) &#
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ApplicationContext%E6%9E%B6%E6%9E%84"><span class="nav-number">2.</span> <span class="nav-text">ApplicationContext架构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E7%B1%BB"><span class="nav-number">2.1.</span> <span class="nav-text">基础类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E7%B1%BB"><span class="nav-number">2.2.</span> <span class="nav-text">核心类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">2.3.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%B7%E6%96%B0Spring%E5%AE%B9%E5%99%A8"><span class="nav-number">3.</span> <span class="nav-text">刷新Spring容器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E5%88%B6%E7%B3%BB%E7%BB%9F%E5%8F%98%E9%87%8F"><span class="nav-number">3.1.</span> <span class="nav-text">定制系统变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%84%E5%BB%BADefaultListableBeanFactory"><span class="nav-number">3.2.</span> <span class="nav-text">构建DefaultListableBeanFactory</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%98%BE%E5%BC%8F%E9%85%8D%E7%BD%AEDefaultListableBeanFactory"><span class="nav-number">3.3.</span> <span class="nav-text">显式配置DefaultListableBeanFactory</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E5%86%8CSPEL%E8%A7%A3%E6%9E%90%E5%99%A8"><span class="nav-number">3.3.1.</span> <span class="nav-text">注册SPEL解析器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E5%86%8C%E5%B1%9E%E6%80%A7%E7%BC%96%E8%BE%91%E6%B3%A8%E5%86%8C%E5%99%A8"><span class="nav-number">3.3.2.</span> <span class="nav-text">注册属性编辑注册器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E5%86%8CApplicationContextAwareProcessor"><span class="nav-number">3.3.3.</span> <span class="nav-text">注册ApplicationContextAwareProcessor</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E5%86%8CApplicationListenerDetector"><span class="nav-number">3.3.4.</span> <span class="nav-text">注册ApplicationListenerDetector</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F%E4%BB%A5bean%E7%9A%84%E5%BD%A2%E5%BC%8F%E6%B3%A8%E5%86%8C%E5%88%B0BeanFactory"><span class="nav-number">3.3.5.</span> <span class="nav-text">系统环境变量以bean的形式注册到BeanFactory</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9E%E8%B0%83%E4%B8%89%E6%96%B9%E5%AF%B9bean%E5%B7%A5%E5%8E%82%E7%9A%84%E5%AE%9A%E5%88%B6%E6%8E%A5%E5%8F%A3"><span class="nav-number">3.4.</span> <span class="nav-text">回调三方对bean工厂的定制接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B0%83%E7%94%A8bfpp%E6%89%A7%E8%A1%8Cbean%E5%B7%A5%E5%8E%82%E5%90%8E%E7%BD%AE%E5%A4%84%E7%90%86"><span class="nav-number">3.5.</span> <span class="nav-text">调用bfpp执行bean工厂后置处理</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93-1"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ApplicationContext-%E6%9E%B6%E6%9E%84"><span class="nav-number">2.</span> <span class="nav-text">ApplicationContext 架构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E7%B1%BB"><span class="nav-number">2.1.</span> <span class="nav-text">基础类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ApplicationContext"><span class="nav-number">2.1.1.</span> <span class="nav-text">ApplicationContext</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ConfigurableApplicationContext"><span class="nav-number">2.1.2.</span> <span class="nav-text">ConfigurableApplicationContext</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AbstractApplicationContext"><span class="nav-number">2.1.3.</span> <span class="nav-text">AbstractApplicationContext</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E7%B1%BB"><span class="nav-number">2.2.</span> <span class="nav-text">核心类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ClassPathXmlApplicationContext"><span class="nav-number">2.2.1.</span> <span class="nav-text">ClassPathXmlApplicationContext</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AnnotationConfigWebApplicationContext"><span class="nav-number">2.2.2.</span> <span class="nav-text">AnnotationConfigWebApplicationContext</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GenericXmlApplicationContext"><span class="nav-number">2.2.3.</span> <span class="nav-text">GenericXmlApplicationContext</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AnnotationConfigApplicationContext"><span class="nav-number">2.2.4.</span> <span class="nav-text">AnnotationConfigApplicationContext</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E6%B3%A8%E8%A7%A3%E6%9E%84%E5%BB%BA-bf-%E7%9A%84%E8%AF%B4%E6%98%8E"><span class="nav-number">2.3.</span> <span class="nav-text">基于注解构建 bf 的说明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">2.4.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96-Spring-%E5%AE%B9%E5%99%A8"><span class="nav-number">3.</span> <span class="nav-text">初始化 Spring 容器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E5%88%B6%E7%B3%BB%E7%BB%9F%E5%8F%98%E9%87%8F"><span class="nav-number">3.1.</span> <span class="nav-text">定制系统变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%84%E5%BB%BA-DefaultListableBeanFactory"><span class="nav-number">3.2.</span> <span class="nav-text">构建 DefaultListableBeanFactory</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%98%BE%E5%BC%8F%E9%85%8D%E7%BD%AE-DefaultListableBeanFactory"><span class="nav-number">3.3.</span> <span class="nav-text">显式配置 DefaultListableBeanFactory</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E5%86%8C-SPEL-%E8%A7%A3%E6%9E%90%E5%99%A8"><span class="nav-number">3.3.1.</span> <span class="nav-text">注册 SPEL 解析器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E5%86%8C%E5%B1%9E%E6%80%A7%E7%BC%96%E8%BE%91%E6%B3%A8%E5%86%8C%E5%99%A8"><span class="nav-number">3.3.2.</span> <span class="nav-text">注册属性编辑注册器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E5%86%8C-ApplicationContextAwareProcessor"><span class="nav-number">3.3.3.</span> <span class="nav-text">注册 ApplicationContextAwareProcessor</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E5%86%8C-ApplicationListenerDetector"><span class="nav-number">3.3.4.</span> <span class="nav-text">注册 ApplicationListenerDetector</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E5%86%8C-environment-%E7%9B%B8%E5%85%B3-bean-%E5%88%B0-BeanFactory"><span class="nav-number">3.3.5.</span> <span class="nav-text">注册 environment 相关 bean 到 BeanFactory</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8E%E7%BD%AE%E5%A4%84%E7%90%86-bf"><span class="nav-number">3.4.</span> <span class="nav-text">后置处理 bf</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%90%E4%BE%9B%E6%A8%A1%E6%9D%BF%E6%96%B9%E6%B3%95%E5%90%8E%E7%BD%AE%E5%A4%84%E7%90%86-bf"><span class="nav-number">3.4.1.</span> <span class="nav-text">提供模板方法后置处理 bf</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B0%83%E7%94%A8-bfpp-%E6%89%A7%E8%A1%8C-bean-%E5%B7%A5%E5%8E%82%E5%90%8E%E7%BD%AE%E5%A4%84%E7%90%86"><span class="nav-number">3.4.2.</span> <span class="nav-text">调用 bfpp 执行 bean 工厂后置处理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#bfpp-%E7%9A%84%E6%9D%A5%E6%BA%90"><span class="nav-number">3.4.2.1.</span> <span class="nav-text">bfpp 的来源</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#bfpp-%E7%9A%84%E8%B0%83%E7%94%A8%E9%A1%BA%E5%BA%8F"><span class="nav-number">3.4.2.2.</span> <span class="nav-text">bfpp 的调用顺序</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#bfpp-%E7%9A%84%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF%E4%B8%BE%E4%BE%8B"><span class="nav-number">3.4.2.3.</span> <span class="nav-text">bfpp 的应用场景举例</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A0%E8%BD%BD%E5%B9%B6%E6%B7%BB%E5%8A%A0%E9%85%8D%E7%BD%AE%E7%9A%84-bpp-%E5%88%B0-bf"><span class="nav-number">3.5.</span> <span class="nav-text">加载并添加配置的 bpp 到 bf</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#AutowiredAnnotationBeanPostProcessor"><span class="nav-number">3.5.1.</span> <span class="nav-text">AutowiredAnnotationBeanPostProcessor</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E5%B9%B6%E6%B7%BB%E5%8A%A0%E5%BA%94%E7%94%A8%E4%BA%8B%E4%BB%B6%E7%BB%84%E6%92%AD%E5%99%A8-ApplicationEventMulticaster-%E5%88%B0-Spring-%E5%AE%B9%E5%99%A8"><span class="nav-number">3.6.</span> <span class="nav-text">获取并添加应用事件组播器 ApplicationEventMulticaster 到 Spring 容器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SimpleApplicationEventMulticaster"><span class="nav-number">3.6.1.</span> <span class="nav-text">SimpleApplicationEventMulticaster</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%86%E6%98%BE%E5%BC%8F%E6%B7%BB%E5%8A%A0%E5%88%B0%E5%AE%B9%E5%99%A8%E7%9A%84-ApplicationListener-%E6%B7%BB%E5%8A%A0%E5%88%B0%E7%BB%84%E6%92%AD%E5%99%A8"><span class="nav-number">3.7.</span> <span class="nav-text">将显式添加到容器的 ApplicationListener 添加到组播器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E5%B1%9E%E6%80%A7%E5%8D%A0%E4%BD%8D%E7%AC%A6%E8%A7%A3%E6%9E%90%E5%99%A8-StringValueResolver-%E5%88%B0-bf"><span class="nav-number">3.8.</span> <span class="nav-text">添加属性占位符解析器 StringValueResolver 到 bf</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#PropertySourcesPlaceholderConfigurer"><span class="nav-number">3.8.1.</span> <span class="nav-text">PropertySourcesPlaceholderConfigurer</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A0%E8%BD%BD%E5%8D%95%E4%BE%8B-beans"><span class="nav-number">3.9.</span> <span class="nav-text">加载单例 beans</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Spring-%E5%AE%B9%E5%99%A8%E5%88%9D%E5%A7%8B%E5%8C%96%E5%90%8E%E7%BD%AE%E5%A4%84%E7%90%86"><span class="nav-number">3.10.</span> <span class="nav-text">Spring 容器初始化后置处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9E%E8%B0%83-SmartLifecycle-Bean-%E7%9A%84-start-%E6%96%B9%E6%B3%95"><span class="nav-number">3.10.1.</span> <span class="nav-text">回调 SmartLifecycle Bean 的 start 方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%84%E6%92%AD-Spring-%E5%AE%B9%E5%99%A8%E5%88%9D%E5%A7%8B%E5%8C%96%E5%AE%8C%E6%88%90%E4%BA%8B%E4%BB%B6"><span class="nav-number">3.10.2.</span> <span class="nav-text">组播 Spring 容器初始化完成事件</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93-1"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -779,7 +672,7 @@ protected void publishEvent(Object event, @Nullable ResolvableType eventType) &#
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">121</span>
+          <span class="site-state-item-count">127</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -792,7 +685,7 @@ protected void publishEvent(Object event, @Nullable ResolvableType eventType) &#
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">3</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -830,7 +723,7 @@ protected void publishEvent(Object event, @Nullable ResolvableType eventType) &#
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2022</span>
+  <span itemprop="copyrightYear">2023</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -839,12 +732,12 @@ protected void publishEvent(Object event, @Nullable ResolvableType eventType) &#
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">297k</span>
+    <span title="站点总字数">338k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">8:15</span>
+    <span title="站点阅读时长">9:23</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>
